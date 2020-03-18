@@ -1,0 +1,76 @@
+[
+    {
+        "cid": "1",
+        "name": "Sales/Receipt",
+        "status": "0"
+    },
+    {
+        "cid": "2",
+        "name": "Sales/Advance",
+        "status": "0"
+    },
+    {
+        "cid": "3",
+        "name": "Sales/Refund",
+        "status": "0"
+    },
+    {
+        "cid": "4",
+        "name": "Purchase/Payment",
+        "status": "0"
+    },
+    {
+        "cid": "5",
+        "name": "Expense",
+        "status": "0"
+    },
+    {
+        "cid": "6",
+        "name": "Loan",
+        "status": "0"
+    },
+    {
+        "cid": "7",
+        "name": "Indirect Income",
+        "status": "0"
+    },
+    {
+        "cid": "8",
+        "name": "Capital",
+        "status": "0"
+    },
+    {
+        "cid": "9",
+        "name": "Investment",
+        "status": "0"
+    },
+    {
+        "cid": "10",
+        "name": "Deposit",
+        "status": "0"
+    },
+    
+    {
+        "cid": "11",
+        "name": "Duties & Taxes",
+        "status": "0"
+    },
+    
+    {
+        "cid": "12",
+        "name": "Bank to Bank",
+        "status": "0"
+    },
+    
+    {
+        "cid": "13",
+        "name": "Advance",
+        "status": "0"
+    },
+    
+    {
+        "cid": "14",
+        "name": "Fixed Asset",
+        "status": "0"
+    }
+]

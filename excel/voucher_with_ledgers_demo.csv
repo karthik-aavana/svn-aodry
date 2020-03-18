@@ -1,0 +1,5 @@
+Voucher Type,Invoice /Voucher Date,Invoice /Voucher Number,narration,Invoice /Voucher Total,Ledger 1, Amount ,CR/DR,Ledger 2,Amount,CR/DR,Ledger 3,Amount,CR/DR,Ledger 4, Amount ,CR/DR,Ledger 5, Amount ,CR/DR,Ledger 6,Amount,CR/DR,Ledger 7,Amount,CR/DR,Ledger 8,Amount,CR/DR,Ledger 9,Amount,CR/DR,Ledger 10,Amount,CR/DR,Ledger 11,Amount,CR/DR,Ledger 12,Amount,CR/DR,Ledger 13,Amount,CR/DR,Ledger 14,Amount,CR/DR,Ledger 15,Amount,CR/DR
+bank,,,,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+cash,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+journal,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+contra,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,

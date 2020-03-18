@@ -1,0 +1,76 @@
+ALTER TABLE `products` ADD `product_discount_value` DECIMAL(25,5) NOT NULL AFTER `delete_status`;
+
+ALTER TABLE `products` ADD `margin_discount_value` DECIMAL(2,2) NOT NULL AFTER `product_discount_value`, ADD `margin_discount_id` INT NOT NULL AFTER `margin_discount_value`;
+
+ALTER TABLE `products` CHANGE `product_discount_value` `product_discount_value` DECIMAL(5,2) NOT NULL;
+ALTER TABLE `products` CHANGE `margin_discount_value` `margin_discount_value` DECIMAL(5,2) NOT NULL;
+
+ALTER TABLE `products` ADD `product_basic_price` DECIMAL(5,2) NOT NULL AFTER `product_price`;
+
+
+ALTER TABLE `sales_item` ADD `sales_item_mrkd_discount_id` INT NOT NULL AFTER `sales_item_tax_cess_id`, ADD `sales_item_mrkd_discount_percentage` DECIMAL(2,2) NOT NULL AFTER `sales_item_mrkd_discount_id`, ADD `sales_item_mrkd_discount_amount` DECIMAL(5,5) NOT NULL AFTER `sales_item_mrkd_discount_percentage`, ADD `sales_item_mrgn_discount_id` INT NOT NULL AFTER `sales_item_mrkd_discount_amount`, ADD `sales_item_mrgn_discount_percentage` DECIMAL(2,2) NOT NULL AFTER `sales_item_mrgn_discount_id`, ADD `sales_item_mrgn_discount_amount` DECIMAL(5,5) NOT NULL AFTER `sales_item_mrgn_discount_percentage`, ADD `sales_item_selling_price` DECIMAL(5,5) NOT NULL AFTER `sales_item_mrgn_discount_amount`, ADD `sales_item_basic_total` DECIMAL(5,5) NOT NULL AFTER `sales_item_selling_price`, ADD `sales_item_out_tax_id` INT NOT NULL AFTER `sales_item_basic_total`, ADD `sales_item_out_tax_percentage` DECIMAL(2,2) NOT NULL AFTER `sales_item_out_tax_id`;
+
+ALTER TABLE `sales_item` ADD `sales_item_out_tax_amount` DECIMAL(5,5) NOT NULL AFTER `sales_item_out_tax_percentage`;
+
+ALTER TABLE `sales_item` CHANGE `sales_item_mrkd_discount_percentage` `sales_item_mrkd_discount_percentage` DECIMAL(5,2) NOT NULL, CHANGE `sales_item_mrgn_discount_percentage` `sales_item_mrgn_discount_percentage` DECIMAL(5,2) NOT NULL, CHANGE `sales_item_out_tax_percentage` `sales_item_out_tax_percentage` DECIMAL(5,2) NOT NULL;
+
+ALTER TABLE `sales_item` CHANGE `sales_item_mrkd_discount_amount` `sales_item_mrkd_discount_amount` DECIMAL(25,5) NOT NULL, CHANGE `sales_item_mrgn_discount_amount` `sales_item_mrgn_discount_amount` DECIMAL(25,5) NOT NULL, CHANGE `sales_item_selling_price` `sales_item_selling_price` DECIMAL(25,5) NOT NULL, CHANGE `sales_item_basic_total` `sales_item_basic_total` DECIMAL(25,5) NOT NULL, CHANGE `sales_item_out_tax_amount` `sales_item_out_tax_amount` DECIMAL(25,5) NOT NULL;
+
+ALTER TABLE `branch` CHANGE `branch_address` `branch_address` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
+
+ALTER TABLE `products` ADD `batch_serial` INT NOT NULL DEFAULT '0' AFTER `product_batch`, ADD `batch_parent_product_id` INT NOT NULL DEFAULT '0' AFTER `batch_serial`;
+
+ALTER TABLE `products` ADD `parent_id` INT NOT NULL DEFAULT '0' AFTER `barcode`;
+ALTER TABLE `products` CHANGE `batch_serial` `batch_serial` INT(11) NOT NULL DEFAULT '1';
+
+---- Done in local upto this -----------------
+Taxable value < 1000 = 5% GST should auto fetched
+
+
+------------------- Affected files 27/01/20------------------
+E:\xampp\htdocs\aodry-v4-1\application\config\modules.php
+E:\xampp\htdocs\aodry-v4-1\application\config\customization.php
+E:\xampp\htdocs\aodry-v4-1\application\controllers\Sales.php
+E:\xampp\htdocs\aodry-v4-1\application\controllers\Product.php
+E:\xampp\htdocs\aodry-v4-1\application\core\MY_Controller.php
+E:\xampp\htdocs\aodry-v4-1\application\libraries\Common.php
+E:\xampp\htdocs\aodry-v4-1\application\views\custom
+
+E:\xampp\htdocs\aodry-v4-1\assets\custom
+E:\xampp\htdocs\aodry-v4-1\assets\js\common.js
+E:\xampp\htdocs\aodry-v4-1\assets\js\modules\settings.js
+E:\xampp\htdocs\aodry-v4-1\assets\js\product\product_mrp.js
+E:\xampp\htdocs\aodry-v4-1\assets\js\tax\tax_gst.js
+
+local ---------
+code059
+leathercraft@gmail.com
+123456
+
+CCODE0035
+leathercraftt@gmail.com
+123456
+
+
+Usercode:- CODE031
+Email:- info@leathercraft.net.in
+Password:- password
+
+E:\xampp\htdocs\aodry-v4-1\application\controllers\Product.php
+E:\xampp\htdocs\aodry-v4-1\application\controllers\Supplier.php
+E:\xampp\htdocs\aodry-v4-1\application\libraries\Common.php
+E:\xampp\htdocs\aodry-v4-1\application\views\custom\Branch-57\leatherCraft.txt
+E:\xampp\htdocs\aodry-v4-1\application\views\custom\Branch-57\product\add.php
+E:\xampp\htdocs\aodry-v4-1\application\views\custom\Branch-57\product\edit.php
+E:\xampp\htdocs\aodry-v4-1\application\views\custom\Branch-57\product\edit_batch.php
+E:\xampp\htdocs\aodry-v4-1\application\views\custom\Branch-57\product\product_batch.php
+E:\xampp\htdocs\aodry-v4-1\application\views\custom\Branch-57\purchase\add.php
+E:\xampp\htdocs\aodry-v4-1\application\views\custom\Branch-57\sales\add.php
+E:\xampp\htdocs\aodry-v4-1\application\views\custom\Branch-57\sales\edit.php
+
+E:\xampp\htdocs\aodry-v4-1\assets\custom\Branch-57\js\purchase\purchase_basic_common.js
+E:\xampp\htdocs\aodry-v4-1\assets\custom\Branch-57\js\sales\sales_basic_common.js
+E:\xampp\htdocs\aodry-v4-1\assets\js\product\product.js
+E:\xampp\htdocs\aodry-v4-1\assets\js\supplier\supplier.js
+E:\xampp\htdocs\aodry-v4-1\assets\js\tax\tax_gst.js
+E:\xampp\htdocs\aodry-v4-1\assets\plugins\autocomplite\jquery.auto-complete.js

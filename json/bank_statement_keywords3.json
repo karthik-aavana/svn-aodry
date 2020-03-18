@@ -1,0 +1,66 @@
+
+    {
+        "date1":     [
+                        {"date":"Date"},
+                        {"date":"SI. No. Date"},
+                        {"date":"Txn Date"},
+                        {"date":"Txn Date & Time"},
+                        {"date":"Txn Date &Time"},
+                        {"date":"Tran Date"},
+                        {"date":"Transaction Date"}
+                    ],
+    "description1":  [
+                        {"description":"Description"},
+                        {"description":"descriptions"},
+                        {"description":"Particular"},
+                        {"description":"Particulars"},
+                        {"description":"Transaction"},
+                        {"description":"Transactions"},
+                        {"description":"Details"},
+                        {"description":"Narration"},
+                        {"description":"Narrations"}
+                    ],
+        "cheque1":   [
+                        {"reference_no":"Ref / Cheque No"},
+                        {"reference_no":"Chq No"},
+                        {"reference_no":"Chq No."},
+                        {"reference_no":"Chq.No."},
+                        {"reference_no":"Chq. / Ref No."},
+                        {"reference_no":"Cheque No."},
+                        {"reference_no":"Chq / Ref number"},
+                        {"reference_no":"Ref No./Cheque No."},
+                        {"reference_no":"Instrument"},
+                        {"reference_no":"Instruments"}
+                    ],
+        "debit1":    [
+                        {"debit":"Debit"},
+                        {"debit":"Debit Amount"},
+                        {"debit":"Withdrawals"},
+                        {"debit":"Withdrawal"},
+                        {"debit":"Withdrawal Amount"},
+                        {"debit":"dr"}
+                    ],
+        "credit1":   [
+                        {"credit":"Credit"},
+                        {"credit":"Credit Amount"},
+                        {"credit":"Deposits"},
+                        {"credit":"Deposit"},
+                        {"credit":"Deposit Amount"},
+                        {"credit":"cr"}
+                    ],
+        "dr/cr1":    [
+                        {"dr/cr":"CR/DR"},
+                        {"dr/cr":"Dr / Cr"}
+                    ],
+        "amount1":   [
+                        {"amount":"Transaction Amount"},
+                        {"amount":"Amount"}
+                    ],
+        "balance1":  [
+                        {"closing_balance":"Balance"},
+                        {"closing_balance":"Closing Balance"},
+                        {"closing_balance":"Post Balance"},
+                        {"closing_balance":"Balance(INR)"},
+                        {"closing_balance":"Balance Amount"}
+                    ]
+    }

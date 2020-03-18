@@ -1,0 +1,1 @@
+<?phpdefined('BASEPATH') OR exit('No direct script access allowed');class General_voucher_model extends CI_Model{        public function addTransactionOption($array,$type){            $this->session->userdata('SESS_BRANCH_ID')      $this->session->userdata('SESS_USER_ID');                  }}

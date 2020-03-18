@@ -1,0 +1,16 @@
+[
+	{"qid":1,"cid":1,"name":"Who is the Customer ?","type":"customer","ledger":"","status":0},
+	{"qid":2,"cid":2,"name":"Who is the Customer ?","type":"customer_advance","ledger":"","status":0},
+	{"qid":3,"cid":3,"name":"Who is the Customer ?","type":"customer_refund","ledger":"","status":0},
+	{"qid":4,"cid":4,"name":"Who is the Vender ?","type":"suppliers","ledger":"","status":0},
+	{"qid":5,"cid":5,"name":"Who is the Vender ?","type":"expense","ledger":"","status":0},
+	{"qid":6,"cid":6,"name":"What is purpose of transaction ?","type":"loan","ledger":"","status":0},
+	{"qid":7,"cid":7,"name":"What is purpose of transaction ?","type":"indirect_income","ledger":"","status":0},
+	{"qid":8,"cid":8,"name":"What is purpose of transaction ?","type":"capital","ledger":"","status":0},
+	{"qid":9,"cid":9,"name":"What is purpose of transaction ?","type":"investment","ledger":"","status":0},
+	{"qid":10,"cid":10,"name":"What is purpose of transaction ?","type":"deposit","ledger":"","status":0},
+	{"qid":11,"cid":11,"name":"What is purpose of transaction ?","type":"duties_taxes","ledger":"","status":0},
+	{"qid":12,"cid":12,"name":"What is purpose of transaction ?","type":"bank_to_bank","ledger":"","status":0},
+	{"qid":13,"cid":13,"name":"What is purpose of transaction ?","type":"advance","ledger":"","status":0},
+	{"qid":14,"cid":14,"name":"What is purpose of transaction ?","type":"fixed_asset","ledger":"","status":0}
+]

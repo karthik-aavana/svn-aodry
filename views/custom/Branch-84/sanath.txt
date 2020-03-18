@@ -1,0 +1,158 @@
+Module  Task  Description                                             
+Brand New module need to develop  "- Add Brand option 
+- With brand name prefix option need to add for tat brand which will used in to create invoice number
+- Edit and delete option
+- Brand listings"                                             
+Product Brand selection option  - Give to select brand option from dropdown                                               
+Sales "- Brand drop-down
+- Discount column
+- MRP column
+- Free QNT column
+- Inline search option
+- Cash discount option
+- Round off auto
+- remove sidebar
+- UOM column to select uom
+- Invoice number generation as per brand" "- As per selection of brand product should come in search option
+- Add row option need to add and give input in title column to search product
+- One Trade discount already is there it should auto fetched and editable one more columnn need to add schem discount and editable
+- Calculaton take first discount percentage on price and apply second discount like 100 % 10 = 90; 90%10 = 81 taxable amount.
+- Take discount ledger as total discount amount 
+- Add Cash discount input box after total table so, total invoice value - cash discount = final invoice amount (Ledgers will be a Cash Discount ).
+-  MRP column only for disply perpose no need to do any calculation part
+- Free QNT column editable which don't affect in calculation but only on stock changes
+- Round off selection need to remove, select directly near by value.
+- Give option to side bar so, invoice can visible in full screen.
+- Add one more column to select uom 
+- Invoice number generation will be depends on selected brands prefix and auto generation
+- By default select general brand (All the products will be visible for general brand)"                                             
+PDF "- Template size variation
+- Invoice template settings need to developed
+- HSN summry table need to add
+- Header in each page"  "- Template size option like A4, Land Scap
+- Invoice settings need to add option like : 
+-- Free column option visibility
+-- HSN column option
+-- Header in each page setting
+-- HSN summary settings
+- HSN summry table
+- Header in each page"                                              
+Reports   - Brand wise reports  - One more reports need to developed as per brand with all the amount                                               
+
+
+---------------------- Sanath----------------------
+
+CREATE TABLE `brand` (
+  `brand_id` int(11) NOT NULL,
+  `brand_name` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `brand_invoice_first_prefix` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `brand_reference_first_prefix` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `brand_invoice_last_prefix` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'year_with_month,month_with_number/number',
+  `invoice_seperation` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'slash / hyphon',
+  `invoice_type` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'regular(nonstop),monthly,yearly',
+  `invoice_creation` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'automatic/manual',
+  `invoice_readonly` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'yes',
+  `branch_id` int(11) NOT NULL,
+  `added_date` date DEFAULT NULL,
+  `added_user_id` int(11) DEFAULT NULL,
+  `updated_date` date DEFAULT NULL,
+  `updated_user_id` int(11) DEFAULT NULL,
+  `delete_status` smallint(6) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `brand`
+--
+ALTER TABLE `brand`
+  ADD PRIMARY KEY (`brand_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `brand`
+--
+ALTER TABLE `brand`
+  MODIFY `brand_id` int(11) NOT NULL AUTO_INCREMENT;
+
+INSERT INTO `modules` (`module_id`, `module_name`, `delete_status`) VALUES (NULL, 'Brand', '0');
+
+ALTER TABLE `products` ADD `brand_id` INT NOT NULL AFTER `product_type`;
+
+ALTER TABLE `sales` ADD `brand_id` INT NOT NULL AFTER `payment_mode`;
+
+ALTER TABLE `sales_item` ADD `sales_item_scheme_discount_id` INT NOT NULL AFTER `sales_item_mrgn_discount_amount`, ADD `sales_item_scheme_discount_amount` DECIMAL(25,5) NOT NULL AFTER `sales_item_scheme_discount_id`, ADD `sales_item_scheme_discount_percentage` DECIMAL(5,2) NOT NULL AFTER `sales_item_scheme_discount_amount`;
+
+ALTER TABLE `sales` ADD `sales_cash_discount` DECIMAL(25,5) NOT NULL AFTER `sales_grand_total`;
+ALTER TABLE `sales_item` ADD `sales_item_uom_id` INT NOT NULL AFTER `sales_item_out_tax_amount`;
+ALTER TABLE `sales_item` ADD `sales_item_free_quantity` INT NOT NULL AFTER `sales_item_quantity`;
+ALTER TABLE `sales_item` ADD `sales_item_mrp_price` DECIMAL(25,5) NOT NULL AFTER `sales_item_basic_total`;
+ALTER TABLE `sales` ADD `sales_brand_invoice_number` VARCHAR(200) NOT NULL AFTER `sales_invoice_number`;
+
+ALTER TABLE `products` ADD `product_opening_quantity` INT NOT NULL DEFAULT '0' AFTER `product_missing_quantity`;
+
+
+------------------------- New ---------------------------------
+ALTER TABLE `sales_item` ADD `sales_item_cash_discount_amount` DECIMAL(25,2) NOT NULL AFTER `sales_item_discount_amount`;
+
+ALTER TABLE `customer` ADD `food_licence_number` VARCHAR(500) NOT NULL AFTER `drug_licence_no`;
+ALTER TABLE `products` ADD `product_profit_margin` DECIMAL(25,5) NOT NULL AFTER `product_basic_price`;
+
+ALTER TABLE `products` ADD `equal_unit_number` INT NOT NULL AFTER `product_unit_id`, ADD `equal_uom_id` INT NOT NULL AFTER `equal_unit_number`;
+
+View:
+
+Stock
+custom/branch-
+Header.php
+
+Controller :
+Sales.php
+Stock.php
+Brand.php
+Product.php
+superadmin/module.php
+
+Library:
+Common.php
+SSP.php
+
+Core:
+MY_Controller.php
+
+Assets:
+Js/Brand
+Custom/branch-
+
+E:\xampp\htdocs\aodry-v4-1\application\views\custom\Branch-84\product\batchlist.php
+E:\xampp\htdocs\aodry-v4-1\application\views\custom\Branch-84\product\edit_batch.php
+E:\xampp\htdocs\aodry-v4-1\application\views\custom\Branch-84\product\list.php
+E:\xampp\htdocs\aodry-v4-1\application\views\custom\Branch-84\product\product_batch.php
+E:\xampp\htdocs\aodry-v4-1\application\controllers\Product.php
+E:\xampp\htdocs\aodry-v4-1\assets\js\product\product.js
+E:\xampp\htdocs\aodry-v4-1\assets\js\product\product_mrp.js
+E:\xampp\htdocs\aodry-v4-1\assets\js\sales\sales_basic_common.js
+
+https://aodry.com/accounts3/brand
+code034
+sanath@gmail.com
+password
+
+https://aodry.com/tseting2/brand
+code052
+sanath@gmail.com
+password
+
+https://accounts.aodry.com/auth/login
+CODE035
+sanathagency1986@gmail.com
+password
+
+- inline search in purchase
+- NAN issue need to fixed
+- Instead of plus icon need to give inline discount add (text box)

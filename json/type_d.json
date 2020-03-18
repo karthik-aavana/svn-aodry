@@ -1,0 +1,7 @@
+[
+	{"subid":1,"cid":1,"name":"Goods","last":"no","status":0},
+	{"subid":2,"cid":1,"name":"Assets","last":"no","status":0},
+	{"subid":3,"cid":2,"name":"Goods","last":"no","status":0},
+	{"subid":4,"cid":2,"name":"Assets","last":"yes","status":0},
+	{"subid":5,"cid":4,"name":"Services","last":"yes","status":0}
+]
