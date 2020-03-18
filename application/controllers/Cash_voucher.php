@@ -1,5 +1,4 @@
 <?php
-/*test commitd*/
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Cash_voucher extends MY_Controller
