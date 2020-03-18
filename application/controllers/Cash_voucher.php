@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
+/*test*/
 class Cash_voucher extends MY_Controller
 {
 
