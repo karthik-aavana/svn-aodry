@@ -80,7 +80,7 @@ $this->load->view('layout/header');
         }
 
         if (!investment_name.match(name_regex1)) {
-            $('#err_investment_name').text("Please Enter Valid Deposit Name ");
+            $('#err_investment_name').text("Please Enter Valid Investments Name ");
             return false;
         } else {
             $("#err_investment_name").text("");
@@ -100,7 +100,7 @@ $this->load->view('layout/header');
                         dataType: 'json',
                         success: function (json) {
                             if(json.rows > 0){
-                                $('#err_investment_name').text('Name already used!');
+                                $('#err_investment_name').text('Investments Name already used!');
                                 $('[name=investment_name_used]').val('1');
                             }
                         }, complete: function () {

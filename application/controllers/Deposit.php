@@ -404,7 +404,7 @@ class Deposit extends MY_Controller {
         $where = array("deposit_id" => $id);
         if ($this->general_model->updateData($table, $data, $where)) {
            $this->deleteOptionFixed($id);
-            $successMsg = 'Depsit Deleted Successfully';
+            $successMsg = 'Deposit Deleted Successfully';
             $this->session->set_flashdata('partner_success',$successMsg);
             $log_data = array(
                 'user_id' => $this->session->userdata('SESS_USER_ID'),

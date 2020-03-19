@@ -195,6 +195,7 @@ $this->load->view('layout/header');
 
             $('[name=partner_name_used]').val('0');
             $('#err_partner_name').text('');
+            if(part_name != ''){
             xhr = $.ajax({
                 url: '<?= base_url(); ?>share_holder/PartnerValidation',
                 type: 'post',
@@ -209,6 +210,7 @@ $this->load->view('layout/header');
 
                 }
             })
+            }
         });
     });
     $("#customer_submit").click(function (event) {
@@ -261,7 +263,10 @@ $this->load->view('layout/header');
         } else {
             $("#err_address").text("");
         }
-
+        if (pan_number == "" || pan_number == null) {
+             $('#err_pan_number').text("Please Enter Pan Number");
+                return false;
+        }
 
         if (pan_number != "") {
             if (!pan_number.match(name_regex)) {

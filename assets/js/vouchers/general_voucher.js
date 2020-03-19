@@ -206,13 +206,15 @@ $(document).ready(function (){
                     $("#div_partner").hide();
                 }
                  
-                $('#payment_mode').html('');
+                
                
                 if( trans_category == 'Cash Receipt/Received from unknown' ||  trans_category == 'Cash Paid/Payment to unknown' ){
-
+                    $('#payment_mode').html('');
                     $('#payment_mode').append('<option value="">Select</option>');
                     $('#payment_mode').append('<option value="cash">Cash</option>');
-                }else if(trans_category == 'Cash withdrawal from bank' || trans_category == 'Cash deposited in bank' || trans_category == 'Bank Receipt/Received from unkown' || trans_category == 'Bank Paid/Payment to unkown'){
+                }else if(trans_category == 'Cash withdrawal from bank' || trans_category == 'Cash deposited in bank' || trans_category == 'Bank Receipt/Received from unknown' || trans_category == 'Bank Paid/Payment to unknown'){
+                    $('#payment_mode').html('');
+                    console.log('hdie')
                     $.ajax({
                         url: base_url + 'general_voucher/getAllBank',
                         type: 'POST',
@@ -229,6 +231,7 @@ $(document).ready(function (){
                         }
                     });
                 }else if(trans_category != 'Cash deposited in bank' || trans_category != 'Bank Receipt/Received from unknown' || trans_category != 'Bank Paid/Payment to unknown' || trans_category != 'Cash withdrawal from bank' || trans_category != 'Cash Receipt/Received from unknown' ||  trans_category != 'Cash Paid/Payment to unknown'){
+                    $('#payment_mode').html('');
                      $.ajax({
                         url: base_url + 'general_voucher/getAllBank',
                         type: 'POST',

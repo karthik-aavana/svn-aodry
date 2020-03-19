@@ -3700,6 +3700,9 @@ Class General_voucher extends MY_Controller
             $this->general_model->addBunchVoucher($data_bunch, $voucher_date);
         }
 
+        $successMsg = 'General Voucher Added Successfully';
+        $this->session->set_flashdata('partner_success',$successMsg);
+
        redirect("general_voucher/general_voucher_list", 'refresh');
 
     }
@@ -6690,6 +6693,8 @@ Class General_voucher extends MY_Controller
         $this->db->where('journal_voucher_id', $general_voucher_id);
         $this->db->delete($tables);
         $this->db->insert_batch('accounts_journal_voucher', $ledger_entry);
+        $successMsg = 'General Voucher Updated Successfully';
+        $this->session->set_flashdata('partner_success',$successMsg);
         redirect("general_voucher/general_voucher_list", 'refresh');
 
     }
@@ -6900,6 +6905,8 @@ Class General_voucher extends MY_Controller
         $id  = $this->input->post('delete_id');
         $id  = $this->encryption_url->decode($id);
         if ($this->general_model->updateData('tbl_transaction_purpose', ["status" => 0 ], array('id' => $id ))){
+            $successMsg = 'General Voucher Deleted Successfully';
+        $this->session->set_flashdata('partner_success',$successMsg);
            redirect("general_voucher/general_voucher_list", 'refresh');
         }
     }

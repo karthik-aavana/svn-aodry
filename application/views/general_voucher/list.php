@@ -87,12 +87,12 @@ $this->load->view('general/upload_popup.php');
 // $this->load->view('general/delete_modal');
 ?>
 <script>
-    var getVoucher;
+    var getVoucher;    
     $(document).ready(function(){
         getVoucher = GetAllVoucher();
         <?php 
-        $journal_voucher_success = $this->session->flashdata('journal_voucher_success');
-        $journal_voucher_error = $this->session->flashdata('journal_voucher_error');
+        $journal_voucher_success = $this->session->flashdata('partner_success');
+        $journal_voucher_error = $this->session->flashdata('partner_error');
         ?>
         var alert_success = '<?= $journal_voucher_success; ?>';
         var alert_failure = '<?= $journal_voucher_error; ?>';

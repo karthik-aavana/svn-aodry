@@ -92,12 +92,12 @@ $this->load->view('layout/header');
                                     <span class="validation-color" id="err_pan_number"><?php echo form_error('pan_number'); ?></span>
                                 </div>
                                 <div class="form-group col-md-3" style="display: none;" id="div_share_nos">
-                                    <label for="no_of_shares">No of shares<span class="validation-color">*</span></label>
+                                    <label for="no_of_shares">No of shares<span class="validation-color"></span></label>
                                     <input class="form-control text-right number" type="text" name="txt_no_of_shares" id="txt_no_of_shares" maxlength="15" value="<?php echo $data[0]->no_of_shares; ?>" />
                                     <span class="validation-color" id="err_no_of_shares"><?php echo form_error('no_of_shares'); ?></span>
                                 </div>
                                 <div class="form-group col-md-3" style="display: none;" id="div_share_value">
-                                    <label for="face_value">Face Value per share<span class="validation-color">*</span></label>
+                                    <label for="face_value">Face Value per share<span class="validation-color"></span></label>
                                     <input class="form-control text-right number" type="text" name="txt_face_value" id="txt_face_value" maxlength="15" value="<?php echo $data[0]->face_value_share; ?>" />
                                     <span class="validation-color" id="err_face_value"><?php echo form_error('face_value'); ?></span>
                                 </div>
@@ -136,7 +136,7 @@ $this->load->view('layout/header');
                                     <span class="validation-color" id="err_type_director"><?php echo form_error('type_director'); ?></span>
                                 </div>
                                 <div class="form-group col-md-3" id="div_partner_initial_capt_amt">
-                                    <label for="capital_amount">Initial Capital Amount<span class="validation-color">*</span></label>
+                                    <label for="capital_amount">Initial Capital Amount<span class="validation-color"></span></label>
                                     <input class="form-control text-right number" type="text" name="txt_capital_amount" id="txt_capital_amount" maxlength="15" value="<?php echo $data[0]->initial_capital_amount; ?>" />
                                     <span class="validation-color" id="err_capital_amount"><?php echo form_error('capital_amount'); ?></span>
                                 </div> 
@@ -171,22 +171,22 @@ $this->load->view('layout/header');
                                     <span class="validation-color" id="err_txt_remuneration"><?php echo form_error('remuneration'); ?></span>
                                 </div>
                                 <div class="form-group col-md-3" id="div_partner_capt_roi">
-                                    <label for="roi_capital_intrest">Rate of Interest on capital (%)<span class="validation-color">*</span></label>
+                                    <label for="roi_capital_intrest">Rate of Interest on capital (%)<span class="validation-color"></span></label>
                                     <input class="form-control text-right number" type="text" name="txt_roi_capital_intrest" id="txt_roi_capital_intrest" maxlength="15" value="<?php echo $data[0]->rate_of_interest_capital; ?>"  />
                                     <span class="validation-color" id="err_roi_capital_intrest"><?php echo form_error('roi_capital_intrest'); ?></span>
                                 </div>
                                 <div class="form-group col-md-3" id="div_partner_profit">
-                                    <label for="share_profit">Percentage share of profit (%)<span class="validation-color">*</span></label>
-                                    <input class="form-control text-right number" type="text" name="txt_share_profit" id="txt_share_profit" maxlength="15" value="<?php echo $data[0]->percentage_share_of_profit; ?>" />
+                                    <label for="share_profit">Percentage share of profit (%)<span class="validation-color"></span></label>
+                                    <input class="form-control text-right number" type="text" name="txt_share_profit" id="txt_share_profit" maxlength="15" value="33" />
                                     <span class="validation-color" id="err_share_profit"><?php echo form_error('share_profit'); ?></span>
                                 </div>                               
                                 <div class="form-group col-md-3" style="display: none;" id="div_share_premium">
-                                    <label for="security_premimum">Security Premium<span class="validation-color">*</span></label>
+                                    <label for="security_premimum">Security Premium<span class="validation-color"></span></label>
                                     <input class="form-control text-right number" type="text" name="txt_security_premimum" id="txt_security_premimum" maxlength="15" value="<?php echo $data[0]->security_premium; ?>" />
                                     <span class="validation-color" id="err_security_premimum"><?php echo form_error('security_premimum'); ?></span>
                                 </div>
                                 <div class="form-group col-md-3" style="display: none;" id="div_share_paid_capital">
-                                    <label for="amount_paid_capital">Amount of paid up capital<span class="validation-color">*</span></label>
+                                    <label for="amount_paid_capital">Amount of paid up capital<span class="validation-color"></span></label>
                                     <input class="form-control text-right number" type="text" name="txt_amount_paid_capital" id="txt_amount_paid_capital" maxlength="15" value="<?php echo $data[0]->amount_paid_capital; ?>" />
                                     <span class="validation-color" id="err_amount_paid_capital"><?php echo form_error('amount_paid_capital'); ?></span>
                                 </div>
@@ -238,16 +238,7 @@ $this->load->view('layout/header');
             $('#div_share_paid_capital').hide();
             $('#lbl_partner_name').html('Partner Name<span class="validation-color">*</span>');
             $('#div_share_type').hide();
-            $('#txt_roi_capital_intrest').val('');
-            $('#txt_share_profit').val('');
-            $('#txt_date_apptmnt').val('');
-            $('#type_director').val('');
-            $('#txt_no_of_shares').val('');
-            $('#txt_face_value').val('');
-            $('#txt_security_premimum').val('');
-            $('#txt_amount_paid_capital').val('');
-            $('#txt_capital_amount').val('');
-            $('#cmb_share_type').val('');
+           
         } else if (type == 'shareholder') {
             $('#div_partner_initial_capt_amt').hide();
             $('#eligible_claim').hide();
@@ -260,19 +251,10 @@ $this->load->view('layout/header');
             $('#div_share_value').show();
             $('#div_share_premium').show();
             $('#div_share_paid_capital').show();
-            $('#txt_remuneration').val('');
+           
             $('#lbl_partner_name').html('Shareholder Name<span class="validation-color">*</span>');
             $('#div_share_type').show();
-            $('#txt_roi_capital_intrest').val('');
-            $('#txt_share_profit').val('');
-            $('#txt_date_apptmnt').val('');
-            $('#type_director').val('');
-            $('#txt_no_of_shares').val('');
-            $('#txt_face_value').val('');
-            $('#txt_security_premimum').val('');
-            $('#txt_amount_paid_capital').val('');
-            $('#txt_capital_amount').val('');
-            $('#cmb_share_type').val('');
+            
         } else if (type == 'director') {
             $('#div_partner_initial_capt_amt').hide();
             $('#eligible_claim').hide();
@@ -285,38 +267,30 @@ $this->load->view('layout/header');
             $('#div_share_value').hide();
             $('#div_share_premium').hide();
             $('#div_share_paid_capital').hide();
-            $('#txt_remuneration').val('');
             $('#lbl_partner_name').html('Director Name<span class="validation-color">*</span>');
             $('#div_share_type').hide();
-            $('#txt_roi_capital_intrest').val('');
-            $('#txt_share_profit').val('');
-            $('#txt_date_apptmnt').val('');
-            $('#type_director').val('');
-            $('#txt_no_of_shares').val('');
-            $('#txt_face_value').val('');
-            $('#txt_security_premimum').val('');
-            $('#txt_amount_paid_capital').val('');
-            $('#txt_capital_amount').val('');
-            $('#cmb_share_type').val('');
+           
         }
         $('[name=partner_name]').on('blur', function () {
             var part_name = $(this).val();
             var partner_id = $('#partner_id').val();
             $('[name=partner_name_used]').val('0');
             $('#err_partner_name').text('');
-            xhr = $.ajax({
-                url: '<?= base_url(); ?>share_holder/PartnerValidation',
-                type: 'post',
-                data: {partner_name: part_name, id: partner_id},
-                dataType: 'json',
-                success: function (json) {
-                    if (json.rows > 0) {
-                        $('#err_partner_name').text('Name already used!');
-                        $('[name=partner_name_used]').val('1');
+            if(part_name != '' || part_name != null){
+                xhr = $.ajax({
+                    url: '<?= base_url(); ?>share_holder/PartnerValidation',
+                    type: 'post',
+                    data: {partner_name: part_name, id: partner_id},
+                    dataType: 'json',
+                    success: function (json) {
+                        if (json.rows > 0) {
+                            $('#err_partner_name').text('Name already used!');
+                            $('[name=partner_name_used]').val('1');
+                        }
+                    }, complete: function () {
                     }
-                }, complete: function () {
-                }
-            });
+                });
+            }
         });
         $("#gst_number").on("blur keyup", function (event) {
             var gstin = $('#gst_number').val();
@@ -380,7 +354,7 @@ $this->load->view('layout/header');
             $("#err_partner_type").text("");
         }
         if (partner_name == null || partner_name == "") {
-            $("#err_partner_name").text("Please Enter  "+ partner_type "+ Name.");
+            $("#err_partner_name").text("Please Enter  "+ partner_type +" Name.");
             return false;
         } else {
             $("#err_partner_name").text("");

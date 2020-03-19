@@ -76,6 +76,7 @@ class Share_holder extends MY_Controller {
                     }
 
                     if (in_array($data['shareholder_module_id'], $data['active_delete'])) {  
+                        if($post->sharholder_type != 'shareholder'){
                         $ledger_id = $post->partner_ledger_id;  
                         $this->db->select('ledger_id');
                         $this->db->from('accounts_journal_voucher');
@@ -85,7 +86,22 @@ class Share_holder extends MY_Controller {
                         if(empty($result_option)){                  
                             $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-id="' . $shareholder_id . '" data-path="share_holder/delete" data-toggle="tooltip" data-placement="bottom" title="Delete"> <i class="fa fa-trash-o"></i> </a></span>';
                         }
-                       
+                       }else{
+                        
+                        $id = $post->id;
+                        $branch_id = $this->session->userdata('SESS_BRANCH_ID');
+                        $this->db->select('*');
+                        $this->db->from('tbl_journal_voucher');
+                        $this->db->where('partner_shareholder_id',$id);
+                        $this->db->where('input_type','shareholder');
+                        $this->db->where('branch_id',$branch_id);
+                        
+                        $sup = $this->db->get();
+                        $result_option = $sup->result();  
+                        if(empty($result_option)){  
+                            $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-id="' . $shareholder_id . '" data-path="share_holder/delete" data-toggle="tooltip" data-placement="bottom" title="Delete"> <i class="fa fa-trash-o"></i> </a></span>';
+                        }
+                       }
                     }
                     $cols .= '</div></div>';
                     $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';

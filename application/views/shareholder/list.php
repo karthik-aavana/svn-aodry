@@ -85,10 +85,10 @@ $this->load->view('customer/customer_bulk_upload');
             },
         });
         anime.timeline({loop: !0}).add({targets: ".ml8 .circle-white", scale: [0, 3], opacity: [1, 0], easing: "easeInOutExpo", rotateZ: 360, duration: 8e3}), anime({targets: ".ml8 .circle-dark-dashed", rotateZ: 360, duration: 8e3, easing: "linear", loop: !0});
-<?php
-$partner_success = $this->session->flashdata('partner_success');
-$partner_error = $this->session->flashdata('partner_error');
-?>
+        <?php
+            $partner_success = $this->session->flashdata('partner_success');
+            $partner_error = $this->session->flashdata('partner_error');
+        ?>
         var alert_success = '<?= $partner_success; ?>';
         var alert_failure = '<?= $partner_error; ?>';
         if (alert_success != '') {
