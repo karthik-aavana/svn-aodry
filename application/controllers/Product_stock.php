@@ -117,7 +117,7 @@ class Product_stock extends MY_Controller {
                     $nestedData['product_alert_quantity'] = '<input type="text" name="reorder" id="reorder_' . $product_id . '" value="' . $reoder . '" data-id="' . $product_id . '" class="disable_in"/><span><a href="#" data-id="' . $product_id . '" class="edit_cell" ><i class="fa fa-pencil"></i> | </a> <a class="save_cell" data-id="' . $product_id . '" href="#"><i class="fa fa-save"></i></a></span>';
                     $nestedData['product_damaged_quantity'] = ($post->product_damaged_quantity) ? $post->product_damaged_quantity : 0;
                     $nestedData['product_missing_quantity'] = ($post->product_missing_quantity) ? $post->product_missing_quantity : 0;
-                    $nestedData['view'] = '<a href="#" class="history" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#view_product" data-id="' . $product_id . '"><i class="fa fa-eye"></i></a>';
+                    $nestedData['view'] = '<a href="#" class="history_damage" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#view_product" data-id="' . $product_id . '"><i class="fa fa-eye"></i></a>';
                     $cols = '';
                     $cols .= '<a href="#" class="damaged_product" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#damaged_product" data-id="' . $product_id . '"><i class="fa fa-eye"></i></a>';
                     $nestedData['action'] = $cols;

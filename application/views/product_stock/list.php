@@ -44,7 +44,7 @@ $this->load->view('layout/header');
                 <div class="box">
                     <div class="box-header with-border">
                         <h3 class="box-title">Product Stock</h3>
-                        <a class="btn btn-sm btn-info pull-right btn-flat" data-toggle="modal" data-target="#add_missing_product" href="#">Report Damaged/Missing Stock</a>
+                        <a class="btn btn-sm btn-info pull-right btn-flat" data-toggle="modal" data-target="#add_missing_product" >Report Damaged/Missing Stock</a>
                     </div>                   
                     <div class="box-body">                       
                         <table id="list_datatable" class="table table-bordered table-striped table-hover">
