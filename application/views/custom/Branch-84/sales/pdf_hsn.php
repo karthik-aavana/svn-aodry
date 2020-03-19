@@ -20,40 +20,43 @@ if (@$converted_rate)
         <title></title>
         <style type="text/css">    
             .custom-page-start {
-                margin-top: 50px;
+                margin-top: 25px;
             }           
-            .total_table th, .total_table td{
-                padding: 40px;                
+            .total_table th, .total_table tr td{
+                padding: 40px;    
+                border: 1px solid #444;            
             }             
         </style>
         <style><?php $this->load->view('common/common_pdf'); ?></style>
     </head>
     <body>
-        <span style="float: right; margin-top: -25px"><h3><small style="font-size: 8px;line-height: 2"><?= ($invoice_type != '' ? '(' . $invoice_type . ')' : ''); ?></small></h3>
-            <br><p class="right"></p></span>
-        <table class="item-table-th item-table-td table mt-49" style="min-height: 300px">
-            <tr><th colspan="5" style="text-align: left;">Date : <?php
+        <span style="float: right; margin-top: -25px"><small style="font-size: 8px;line-height: 2"><?=($invoice_type != '' ? '('.$invoice_type.')' : ''); ?></small></h3>
+           <br><p class="right"></p></span>
+        
+            <table class="item-table-th item-table-td table mt-20" style="min-height: 300px">
+                <tr>
+                    <th colspan="5" style="text-align: left;">Date : <?php
                                 $date = $data[0]->sales_date;
                                 $date_for = date('d-m-Y', strtotime($date));
                                 echo $date_for;
                                 ?> </th>
-                <th colspan="5" style="text-align:left;">TAX INVOICE</th>
+                <th colspan="6" style="text-align:left;">TAX INVOICE</th>
                 <th colspan="5" style="text-align: right;">Bill No : <?php
-                                if (isset($data[0]->sales_invoice_number)) {
-                                    echo $data[0]->sales_invoice_number;
+                                if (isset($data[0]->sales_brand_invoice_number)) {
+                                    echo $data[0]->sales_brand_invoice_number;
                                 }
                                 ?> 
                 </th>
             </tr>
             <tr>
                 <td colspan="6" style="text-align: left;">
-                    <table class="table" style="font-size:16px;">
+                    <table class="table" style="font-size:13px;">
                         <!-- <tr><td colspan="2"><b> From,</b></td></tr> -->
-                        <tr><td>From : </td>
+                        <tr><td style="width:35%"><b>From : </b></td>
                             <td class="uppercase"><?= strtolower($branch[0]->firm_name) ?></td>
                         </tr>
-                        <tr><td>Address : </td>
-                            <td><?php
+                        <tr><td><b>Address : </b></td>
+                            <td style="text-align: left;"><?php
                                 if (isset($branch[0]->branch_address)) {
                                     echo str_replace(array(
                                         "\r\n",
@@ -64,7 +67,7 @@ if (@$converted_rate)
                                 ?>
                             </td>
                         </tr>
-                        <tr><td>Contact No : </td>
+                        <tr><td><b>Contact No : </b></td>
                             <td><?php
                                 if (isset($data[0]->branch_land_number)) {
                                     if ($data[0]->branch_land_number != "") {
@@ -82,7 +85,7 @@ if (@$converted_rate)
                                 }
                                 ?></td>
                         </tr> -->
-                        <tr><td>PAN : </td>
+                        <tr><td><b>PAN :</b> </td>
                             <td><?php
                                 if (isset($branch[0]->branch_pan_number)) {
                                     if ($branch[0]->branch_pan_number != "" || $branch[0]->branch_pan_number != null) {
@@ -92,7 +95,7 @@ if (@$converted_rate)
                                 <?php } ?>
                             </td>
                         </tr>
-                        <tr><td>GSTIN : </td>
+                        <tr><td><b>GSTIN :</b> </td>
                             <td><?php
                                 if (isset($branch[0]->branch_gstin_number)) {
                                     if ($branch[0]->branch_gstin_number != "" || $branch[0]->branch_gstin_number != null) {
@@ -101,16 +104,16 @@ if (@$converted_rate)
                                     ?>
                                 <?php } ?></td>
                         </tr>
-                        <tr><td>Drug Licence# : </td>
+                        <tr><td><b>Drug Licence# :</b> </td>
                             <td><?=(@$branch[0]->drug_licence_no_1 && $branch[0]->drug_licence_no_1 != '' ? $branch[0]->drug_licence_no_1 : '')?></td>
                         </tr>
-                        <tr><td>Food Licence# : </td>
+                        <tr><td><b>Food Licence# :</b> </td>
                             <td><?=(@$branch[0]->drug_licence_no_2 && $branch[0]->drug_licence_no_2 != '' ? $branch[0]->drug_licence_no_2 : '')?></td>
                         </tr>
                     </table>
                 </td>
-                <td colspan="4" style="text-align: left;">
-                    <table class="table" style="font-size:16px;">
+                <td colspan="6" style="text-align: left;">
+                    <table class="table" style="font-size:13px;">
                         <!-- <tr>
                             <td style="width:45%">Bill No : </td>
                             <td class="uppercase" style="text-align: left;">
@@ -132,24 +135,24 @@ if (@$converted_rate)
                             </td>
                         </tr> -->
                         <tr>
-                            <td style="width:33%">Route : </td>
+                            <td style="width:35%"><b>Route : </b></td>
                             <td class="uppercase" style="text-align: left;">
                             </td>
                         </tr>
                         <tr>
-                            <td style="width:33%">Salesman : </td>
+                            <td style="width:35%"><b>Salesman : </b></td>
                             <td class="uppercase" style="text-align: left;">
                             </td>
                         </tr>
                     </table>
                 </td>
-                <td colspan="5" style="text-align: left;">
-                    <table class="table" style="font-size:16px;">
+                <td colspan="4" style="text-align: left;">
+                    <table class="table" style="font-size:13px;">
                         <!-- <tr><td colspan="2"><b> BILL TO,</b></td></tr> -->
-                        <tr><td style="width:45%">Bill to : </td>
+                        <tr><td style="width:32%"><b>Bill to : </b></td>
                             <td class="uppercase" style="text-align: left;"><?= strtolower($data[0]->customer_name) ?></td>
                         </tr>
-                        <tr><td>Address : </td>
+                        <tr><td><b>Address : </b></td>
                             <td style="text-align: left;"><?php
                                 /* if ($data[0]->shipping_address_id != $data[0]->billing_address_id) { */
                                 if (!empty($billing_address)) {
@@ -164,7 +167,7 @@ if (@$converted_rate)
                                 /* } */
                                 ?></td>
                         </tr>
-                        <tr><td>Contact No : </td>
+                        <tr><td><b>Contact No : </b></td>
                             <td style="text-align: left;"><?php
                                 if (isset($data[0]->customer_mobile)) {
                                     if ($data[0]->customer_mobile != "") {
@@ -182,7 +185,7 @@ if (@$converted_rate)
                                 }
                                 ?></td>
                         </tr> -->
-                        <tr><td>PAN : </td>
+                        <tr><td><b>PAN : </b></td>
                             <td style="text-align: left;"><?php
                                 if (isset($data[0]->customer_pan_number)) {
                                     if ($data[0]->customer_pan_number != "" || $data[0]->customer_pan_number != null) {
@@ -193,7 +196,7 @@ if (@$converted_rate)
 
                             </td>
                         </tr>
-                        <tr><td>GSTIN : </td>
+                        <tr><td><b>GSTIN : </b></td>
                             <td style="text-align: left;"><?php
                                 if (isset($data[0]->customer_gstin_number)) {
                                     if ($data[0]->customer_gstin_number != "") {
@@ -202,34 +205,47 @@ if (@$converted_rate)
                                 }
                                 ?></td>
                         </tr>
-                        <tr><td>Drug Licence# : </td>
+                        <tr><td><b>Drug Licence# : </b></td>
                             <td style="text-align: left;"><?=(@$data[0]->drug_licence_no && $data[0]->drug_licence_no != '' ? str_replace(',','<br>',$data[0]->drug_licence_no) : '')?></td>
                         </tr>
-                        <tr><td>Food Licence# : </td>
+                        <tr><td><b>Food Licence# : </b></td>
                             <td style="text-align: left;"><?=(@$data[0]->food_licence_number && $data[0]->food_licence_number != '' ? str_replace(',','<br>',$data[0]->food_licence_number) : '')?></td>
                         </tr>
                     </table>                        
                 </td>
             </tr>
+        </table>
+        <table class="item-table table_hsn mt-5"  style="font-size:11px; margin-left: 0px; padding-left: 0px;">
+                
+                 
+                <thead style="display: table-header-group;"> 
+                    <tr >
 
-            <tr class="total_table">
-                <th>Sl<br>No</th>
-                <th>Product Name</th>
-                <th>HSN Code</th>
-                <th>Batch</th>
-                <th>MRP</th>
-                <th>Qty</th>
-                <th>Rate</th>
-                <th>T.Disc</th>
-                <th>Sch</th>
-                <th>Taxable<br>Amt</th>
-                <th>SGST%</th>
-                <th>Amt</th>
-                <th>CGST%</th>
-                <th>Amt</th>
-                <th>Total</th>
-            </tr>
-            <?php
+                        <th rowspan="2">Sl<br>No</th>
+                        <th rowspan="2">Product Name</th>
+                        <th rowspan="2">HSN Code</th>
+                        <th rowspan="2">Batch</th>
+                        <th rowspan="2">MRP</th>
+                        <th rowspan="2">Qty</th>
+                        <th rowspan="2">Rate</th>
+                        <th colspan="2">T.Disc</th>
+                        <th colspan="2">Sch</th>
+                        <th rowspan="2">Cash<br>Disc</th>
+                        <th rowspan="2">Taxable<br>Amt</th>
+                        <th colspan="2">Tax</th>               
+                        <th rowspan="2">Total</th>
+                    </tr>
+                    <tr style="font-size:15px;">
+                        <th align="right">%</th>
+                        <th align="right">Amt</th>
+                        <th align="right">%</th>
+                        <th align="right">Amt</th>
+                        <th align="right">%</th>
+                        <th align="right">Amt</th>     
+                    </tr>
+                    </thead>
+                    <tbody>  
+                    <?php
             $i = 1;
             $quantity = 0;
             $price = 0;
@@ -241,6 +257,7 @@ if (@$converted_rate)
             $gst_amount = 0;
             $discount_amount = 0;
             $discount_percentage = 0;
+            $gst_summry = array();
             foreach ($items as $value) {
                 $product_name = '';
                 if ($value->item_type == 'product' || $value->item_type == 'product_inventory') {
@@ -274,40 +291,98 @@ if (@$converted_rate)
                 $tot_sgst += $value->sales_item_sgst_amount;
                 $tot_cgst += $value->sales_item_cgst_amount;
                 ?>
-                <tr class="total_table">
+                <tr>
                     <td align="left"><?php echo $i; ?></td>
-                    <td align="left"><?php echo strtoupper(strtolower($product_name)); ?></td>
-                    <td align="right"><?php echo $value->product_hsn_sac_code; ?></td>
+                    <td align="left" style="width: 20%;"><?php echo strtoupper(strtolower($product_name)); ?></td>
+                    <td align="left"><?php echo $value->product_hsn_sac_code; ?></td>
                     <td></td>                    
                     <td align="right"><?php echo precise_amount($value->sales_item_mrp_price); ?></td>
                     <td align="right"><?php echo precise_amount($value->sales_item_quantity); ?></td>
                     <td align="right"><?php echo precise_amount($value->sales_item_unit_price); ?></td>
-                    <td align="right"><?php echo precise_amount($value->sales_item_discount_amount); ?><br>(<?php echo precise_amount($value->item_discount_percentage); ?>%)</td>
-                    <td align="right"><?php echo precise_amount($value->sales_item_scheme_discount_amount); ?><br>(<?php echo precise_amount($value->sales_item_scheme_discount_percentage); ?>%)</td>
+                    <td align="right"><?php echo precise_amount($value->item_discount_percentage); ?></td>
+                    <td align="right"><?php echo precise_amount($value->sales_item_discount_amount); ?></td>
+                    <td align="right"><?php echo precise_amount($value->sales_item_scheme_discount_percentage); ?></td>
+                    <td align="right"><?php echo precise_amount($value->sales_item_scheme_discount_amount); ?></td>
+                    <td align="right"><?php echo precise_amount($value->sales_item_cash_discount_amount); ?></td>
+                    <!-- <td align="right"><?php echo precise_amount($value->sales_item_discount_amount); ?><br>(<?php echo precise_amount($value->item_discount_percentage); ?>%)</td> -->
+                    <!-- <td align="right"><?php echo precise_amount($value->sales_item_scheme_discount_amount); ?><br>(<?php echo precise_amount($value->sales_item_scheme_discount_percentage); ?>%)</td> -->
                     <td align="right"><?php echo precise_amount($value->sales_item_taxable_value); ?></td>
-                    <td align="right"><?php echo precise_amount($value->sales_item_sgst_percentage); ?></td>
+                    <td align="right"><?php echo precise_amount($value->sales_item_tax_percentage); ?></td>
+                    <td align="right"><?php echo precise_amount($value->sales_item_tax_amount); ?></td>
+                    <!-- <td align="right"><?php echo precise_amount($value->sales_item_sgst_percentage); ?></td>
                     <td align="right"><?php echo precise_amount($value->sales_item_sgst_amount); ?></td>
                     <td align="right"><?php echo precise_amount($value->sales_item_cgst_percentage); ?></td>
-                    <td align="right"><?php echo precise_amount($value->sales_item_sgst_amount); ?></td>
+                    <td align="right"><?php echo precise_amount($value->sales_item_sgst_amount); ?></td> -->
                     <td align="right"><?php echo precise_amount($value->sales_item_grand_total); ?></td>
                 </tr>
+                <?php
+                    if ($igst_exist > 0) { ?>
+                            <?php
+
+                            if ($value->sales_item_igst_amount < 1) {
+                                echo '-';
+                            } else { 
+                                $gst_summry['igst']['igst_'.$value->sales_item_igst_percentage]['percentage'] = $value->sales_item_igst_percentage;
+                                if(@$gst_summry['igst']['igst_'.$value->sales_item_igst_percentage]['amount']){
+                                    $gst_summry['igst']['igst_'.$value->sales_item_igst_percentage]['gst_amount'] += $value->sales_item_igst_amount;
+                                    $gst_summry['igst']['igst_'.$value->sales_item_igst_percentage]['amount'] += $value->sales_item_taxable_value;
+                                }else{
+                                    $gst_summry['igst']['igst_'.$value->sales_item_igst_percentage]['gst_amount'] = $value->sales_item_igst_amount;
+                                    $gst_summry['igst']['igst_'.$value->sales_item_igst_percentage]['amount'] = $value->sales_item_taxable_value;
+                                } 
+                            } ?>
+                    <?php } elseif ($cgst_exist > 0 || $sgst_exist > 0) { ?>
+                            <?php
+                            if ($value->sales_item_cgst_amount < 1) {
+                                echo '-';
+                            } else {
+                                $gst_summry['cgst']['cgst_'.$value->sales_item_cgst_percentage]['percentage'] = $value->sales_item_cgst_percentage;
+                                if(@$gst_summry['cgst']['cgst_'.$value->sales_item_cgst_percentage]['amount']){
+                                    $gst_summry['cgst']['cgst_'.$value->sales_item_cgst_percentage]['gst_amount'] += $value->sales_item_cgst_amount;
+                                    $gst_summry['cgst']['cgst_'.$value->sales_item_cgst_percentage]['amount'] += $value->sales_item_taxable_value;
+                                }else{
+                                    $gst_summry['cgst']['cgst_'.$value->sales_item_cgst_percentage]['gst_amount'] = $value->sales_item_cgst_amount;
+                                    $gst_summry['cgst']['cgst_'.$value->sales_item_cgst_percentage]['amount'] = $value->sales_item_taxable_value;
+                                } ?>
+                            <?php } ?>
+                            <?php
+                            if ($value->sales_item_sgst_amount < 1) {
+                                echo '-';
+                            } else {
+                                $gst_summry['sgst']['cgst_'.$value->sales_item_sgst_percentage]['percentage'] = $value->sales_item_sgst_percentage;
+                                if(@$gst_summry['sgst']['cgst_'.$value->sales_item_sgst_percentage]['amount']){
+                                    $gst_summry['sgst']['cgst_'.$value->sales_item_sgst_percentage]['gst_amount'] += $value->sales_item_sgst_amount;
+                                    $gst_summry['sgst']['cgst_'.$value->sales_item_sgst_percentage]['amount'] += $value->sales_item_taxable_value;
+                                }else{
+                                    $gst_summry['sgst']['cgst_'.$value->sales_item_sgst_percentage]['gst_amount'] = $value->sales_item_sgst_amount;
+                                    $gst_summry['sgst']['cgst_'.$value->sales_item_sgst_percentage]['amount'] = $value->sales_item_taxable_value;
+                                }?>
+                            <?php } ?>
+                        </td>
+                    <?php } ?>
                 <?php
                 $i++;
             }
             ?>
-            <tr><td style="height: 15px"></td></tr>
+           
+            
+             <!-- <tr><td colspan="16" style="border-bottom: 1px solid #444;">&nbsp;</td></tr> -->
+        
+                    </tbody>
+        </table>    
+        <table class="item-table mt-5"  style="font-size:11px; margin-left: 0px; padding-left: 0px;">
             <tr>
                 <td colspan="10">
-                    <table class="table" style="font-size:18px;">
+                    <table style="font-size:12px;">
                         <tr><td colspan="7" style="text-align: center; border-top: 1px solid #333; border-bottom: 1px solid #333"><b>HSN Summary</b></td></tr>
                         <tr style="border-top: 1px solid #333;">
-                            <td><b>HSN</b></td>
-                            <td><b>Taxable Amt</b></td>
-                            <td><b>CGST %</b></td>
-                            <td><b>Value</b></td>
-                            <td><b>SGST %</b></td>
-                            <td><b>Value</b></td>
-                            <td><b>Tax Amt</b></td>
+                            <th><b>HSN</b></th>
+                            <th><b>Taxable Amt</b></td>
+                            <th><b>CGST %</b></th>
+                            <th><b>Value</b></th>
+                            <th><b>SGST %</b></th>
+                            <th><b>Value</b></th>
+                            <th><b>Tax Amt</b></th>
                         </tr>
                         <?php
                         foreach ($hsn as $key => $value) {
@@ -330,26 +405,54 @@ if (@$converted_rate)
 
                     </table>
                 </td>
-            <tr>
-                <td colspan="5"></td>
+                <td colspan="6"></td>
             </tr>
-        </tr>
-        <tr><td colspan="15" style="border-bottom: 1px solid #444;">&nbsp;</td></tr>
-        <tr>
+            <tr>
             <td colspan="4" style="text-align: left;">
-                <table>
+                <table style="font-size:12px;">
                     <tr>
-                        <td>****GST Summary ****</td>
-
+                        <th colspan="4">****GST Summary ****</th>
                     </tr>
                     <tr>
-                        <td>-</td>
-
+                        <th>Type</th>
+                        <th>Tax%</th>
+                        <th>TBL Amt</th>
+                        <th>Tax Amt</th>
                     </tr>
+                    <?php if($igst_exist > 0){ ?>
+                        <?php foreach ($gst_summry['igst'] as $key => $value) {?>
+                        <tr>
+                            <td>IGST</td>
+                            <td><?php echo precise_amount($value['percentage']) ?></td>
+                            <td><?php echo precise_amount($value['amount']) ?></td>
+                            <td><?php echo precise_amount($value['gst_amount']) ?></td>
+                        </tr>
+                        <?php } ?>
+                    <?php } ?>
+                    <?php if($cgst_exist > 0){ ?>
+                        <?php foreach ($gst_summry['cgst'] as $key => $value) {?>
+                        <tr>
+                            <td>CGST</td>
+                            <td><?php echo precise_amount($value['percentage']) ?></td>
+                            <td><?php echo precise_amount($value['amount']) ?></td>
+                            <td><?php echo precise_amount($value['gst_amount']) ?></td>
+                        </tr>
+                        <?php } ?>
+                    <?php } ?>
+                    <?php if($sgst_exist > 0){ ?>
+                        <?php foreach ($gst_summry['sgst'] as $key => $value) {?>
+                        <tr>
+                            <td>SGST</td>
+                            <td><?php echo precise_amount($value['percentage']) ?></td>
+                            <td><?php echo precise_amount($value['amount']) ?></td>
+                            <td><?php echo precise_amount($value['gst_amount']) ?></td>
+                        </tr>
+                        <?php } ?>
+                    <?php } ?>
                 </table>
             </td>
-            <td colspan="2" style="text-align: left;">
-                <table>
+            <td colspan="2" style="text-align: left;" style="border: none;">&nbsp;
+               <!--  <table>
                     <tr>
                         <td>SCh</td>
 
@@ -358,21 +461,21 @@ if (@$converted_rate)
                         <td>-</td>
 
                     </tr>
-                </table>
+                </table> -->
             </td>
-            <td colspan="5" style="text-align: left;">Bank Details:<br>Bank Name : <br> A/c No : <br> Branch Name : <br> IFSC Code :</td>
+            <td colspan="5" style="text-align: left; font-size:11px;">Bank Details:<br>Bank Name : <br> A/c No : <br> Branch Name : <br> IFSC Code :</td>
             <td colspan="5" style="text-align: left;">
-                <table class="table" style="font-size:16px;">
-                    <tr><td style="text-align: right;">Taxable Amt:</td>
+                <table style="font-size:14px;">
+                    <tr><th style="text-align: right;">Taxable Amt:</th>
                         <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->sales_sub_total)); ?></td>
                     </tr>
-                    <tr><td style="text-align: right;">Total Disc:</td>
+                    <tr><th style="text-align: right;">Total Disc:</th>
                         <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->sales_discount_amount)); ?></td>
                     </tr>
-                    <tr><td style="text-align: right;">Net Amt:</td>
+                    <tr><th style="text-align: right;">Net Amt:</th>
                         <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->sales_grand_total)); ?></td>
                     </tr>
-                    <tr><td style="text-align: right;">Net Payable:</td>
+                    <tr><th style="text-align: right;">Net Payable:</th>
                         <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->sales_grand_total)); ?></td>
                     </tr>
                 </table>
@@ -380,13 +483,13 @@ if (@$converted_rate)
         </tr>
         <tr>
             <th colspan="10" style="text-align: left;">Amount In Words : <b><?php echo $data[0]->currency_name . " " . $this->numbertowords->convert_number(precise_amount(($data[0]->sales_grand_total * $convert_rate)), $data[0]->unit, $data[0]->decimal_unit) . " Only"; ?></td>
-                    <th colspan="5" style="text-align: right;">Grand Total : <?php echo precise_amount($data[0]->sales_grand_total) ?></td>
+                    <th colspan="6" style="text-align: right;">Grand Total : <?php echo precise_amount($data[0]->sales_grand_total) ?></td>
                         </tr>
                     <tr>
                         <td colspan="10" style="text-align: left;">Products Once Sold Cannot be taken back or exchanged. Please check items before taking  delivery. Subject to State jurisdiction Only.</td>
-                        <td colspan="5" style="text-align: right;">For, <b class="uppercase"><?= strtolower($branch[0]->firm_name) ?></b><br>Signature</td>
+                        <td colspan="6" style="text-align: right;">For, <b class="uppercase"><?= strtolower($branch[0]->firm_name) ?></b><br>Signature</td>
                     </tr>
-    </table>
+        </table>
     <!-- Custom HTML header --> 
     <!-- <div id="header"> 
       <span style="float: right; margin-top: -25px"><h3><small style="font-size: 8px;line-height: 2"><?= ($invoice_type != '' ? $invoice_type : ''); ?></small></h3> 

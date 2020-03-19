@@ -182,3 +182,32 @@ textarea {
     padding: 3px;
     font-size: 0.7em;
 }
+
+.mt-5 {
+    margin-top: 5px;
+}
+
+
+.item-table_hsn tr th, .item-table_hsn tr td {
+    border: 1px solid #444;
+    padding: 2px;
+    font-size: 9px;
+}
+
+
+table_hsn tr th, table_hsn tr td {
+    vertical-align: top;
+    border-collapse: collapse;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    font-size: 13px;
+    color: #333;
+    margin-top: 20px;
+    text-align: center;
+}
