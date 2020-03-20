@@ -2591,6 +2591,23 @@ class Product extends MY_Controller
         echo json_encode($data);
     }
 
+    public function get_check_product_code()
+    {
+        $product_name = strtoupper(trim($this->input->post('product_name')));
+        $product_name = preg_replace('!\s+!', ' ', strtolower(trim($product_name)));
+        $product_code = strtoupper(trim($this->input->post('product_code')));
+        $product_id   = $this->input->post('product_id');
+        $data         = $this->general_model->getRecords('*,count(*) num ', 'products', array(
+            'branch_id'     => $this->session->userdata('SESS_BRANCH_ID'),
+            'delete_status' => 0,
+            'LOWER(product_name)'  => $product_name,
+            'product_code'  => $product_code,
+            'batch_parent_product_id' => 0,
+            'product_id!='  => $product_id),"","product_name");
+
+        echo json_encode($data);
+    }
+
     public function varient_list()
     {
         $product_module_id = $this->config->item('product_module');
@@ -3783,6 +3800,23 @@ class Product extends MY_Controller
         $this->db->select('product_name');
         $this->db->where('branch_id', $branch_id); 
         $this->db->like('product_name', $product_name);                
+        $qry = $this->db->get('products');
+        $pri_grps = $qry->result_array();
+        $this->data['flag'] = false;
+        if(!empty($pri_grps)){
+            $this->data['flag'] = true;
+            $this->data['data'] = $pri_grps;
+        }
+        echo json_encode($this->data);
+    }
+
+    public function getProductname_leatherCraft(){
+        $product_name = $this->input->post('product_name');
+        $branch_id     = $this->session->userdata("SESS_BRANCH_ID");
+        $this->db->select('product_name');
+        $this->db->where('branch_id', $branch_id); 
+        $this->db->group_by('product_name');
+        $this->db->order_by('product_id', 'DESC');              
         $qry = $this->db->get('products');
         $pri_grps = $qry->result_array();
         $this->data['flag'] = false;

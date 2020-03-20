@@ -24,7 +24,36 @@ class CustomerHook {
 							);
 		$cust_data['shipping'] = $cust_data['billing'];
 
-		$data = array(
+        $user_id = $this->ci->session->userdata('SESS_USER_ID');
+        $branch_id = $this->ci->session->userdata('SESS_BRANCH_ID');
+        //ecom url 
+        $ecom_url = $this->ci->general_model->getRecords('ecom_url', 'branch', array(
+                    'branch_id'     => $branch_id,
+                    'ecommerce'  => '1'));
+        $url = $ecom_url[0]->ecom_url;
+
+        //user detail
+        $branch_detail = $this->ci->general_model->getRecords('*', 'users', array(
+                    'id'     => $user_id));
+
+        /*$branch_detail = $this->ci->db->query("SELECT email, password, branch_code FROM `users` WHERE id = {$user_id}");
+        $branch_detail = $branch_detail->row();*/
+
+        //login code
+        $login_code = $this->ci->general_model->getRecords('token', 'ecom_branch_setting', array(
+                    'branch_id'     => $branch_id));
+
+        $data = array(
+            'Method' => 'CreateCustomer',
+            'branch' => array(
+                'User' => $branch_detail[0]->email,
+                'Password' => base64_encode('123456'),
+                'Code' => $branch_detail[0]->branch_code,
+                'LoginCode' => $login_code[0]->token
+            ),
+            'data' => $cust_data
+        );
+		/*$data = array(
                 'Method' => 'CreateCustomer',
                 'branch' => array(
                     'User' => 'credittest12@gmail.com',
@@ -33,9 +62,9 @@ class CustomerHook {
                     'LoginCode' => ''
                 ),
                 'data' => $cust_data
-            );
+            );*/
 
-		$url = 'http://192.168.1.85/fashnett/wp-json/api/v1/CreateCustomer';
+		$url = $url.'/CreateCustomer';
 		$result = $this->ci->common->postCurlData($url,$cust_data);
         $result = json_decode($result,true);
         $look_up_ary = array();
