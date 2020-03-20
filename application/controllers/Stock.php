@@ -392,6 +392,7 @@ class Stock extends MY_Controller {
                     $nestedData['opening_stock'] = (int) $post->product_opening_quantity;
                     $nestedData['purchase_qty'] = (int) $post->purchase_qty;
                     $nestedData['sales_qty'] = (int) $post->sales_qty;
+                    $nestedData['product_batch'] = $post->product_batch;
                     $send_data[] = $nestedData;
                     
                 }
