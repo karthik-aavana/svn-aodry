@@ -14529,7 +14529,7 @@ public function tds_report_sales_list(){
 
 
     public function get_stock_movement(){
-        $string = "P.product_id, P.product_quantity, P.product_sku, P.product_code, P.product_name, P.product_price, P.product_opening_quantity, SUM(S.sales_item_quantity) as sales_qty, SUM(PU.purchase_item_quantity) as purchase_qty, SUM(SC.sales_credit_note_item_quantity) as sales_credit_qty, SUM(SD.sales_debit_note_item_quantity) as sales_debit_qty, SUM(PUD.purchase_debit_note_item_quantity) as purchase_debit_qty, SUM(PUC.purchase_credit_note_item_quantity) as purchase_credit_qty, P.product_selling_price";
+        $string = "P.product_id, P.product_quantity, P.product_sku, P.product_code, P.product_name, P.product_price as price, P.product_opening_quantity, SUM(S.sales_item_quantity) as sales_qty, SUM(PU.purchase_item_quantity) as purchase_qty, SUM(SC.sales_credit_note_item_quantity) as sales_credit_qty, SUM(SD.sales_debit_note_item_quantity) as sales_debit_qty, SUM(PUD.purchase_debit_note_item_quantity) as purchase_debit_qty, SUM(PUC.purchase_credit_note_item_quantity) as purchase_credit_qty, P.product_selling_price, AVG(PU. purchase_item_unit_price) as purchase_price, AVG(S.sales_item_unit_price) as sales_price";
         $table  = "products P";
         $order = ["P.product_id" => "desc"];
         $where = array(
