@@ -29,7 +29,10 @@
 										<th>Colour</th>
 										<th>HSN Code</th>
 										<th>Unit</th>
-										<th>Closing Stock Qty</th>	
+                                        <th>Opening Stock</th>
+                                        <th>Purchase Stock</th>
+                                        <th>Sales Stock</th>  
+										<th>Closing Stock</th>	
 										<th>MAP</th>
 										<th>GST</th>
 										<th>Selling Price</th>
@@ -84,6 +87,9 @@ $(document).ready(function() {
                 {"data": "colour"},
                 {"data": "product_hsn_sac_code"},
                 {"data": "uom"},
+                {"data": "opening_stock"},
+                {"data": "purchase_qty"},
+                {"data": "sales_qty"},
                 {"data": "product_quantity"},
                 {"data": "map"},
                 {"data": "gst"},
