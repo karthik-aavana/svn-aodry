@@ -4276,11 +4276,11 @@ class Product extends MY_Controller
                   
                     $product_id  = $post->product_id;
 
-                    $unit_price = round($post->product_price,2);
+                    $unit_price = round($post->purchase_price,2);
                     if($unit_price > 0){
                         $unit_price = $unit_price;
                     }else{
-                        $unit_price = round($post->product_selling_price,2);
+                        $unit_price = round($post->sales_price,2);
                     }
                     
                     $opening_quantity = round($post->product_opening_quantity,2);
@@ -4306,7 +4306,7 @@ class Product extends MY_Controller
                     $nestedData['purchase_qty'] = $in_qty;
                     $nestedData['sales_qty']  = $out_qty;
                     $nestedData['closing_stock'] = round($closing_stock,2);
-                    $nestedData['unit_price'] = round($unit_price,2);
+                    $nestedData['unit_price'] = $this->precise_amount($unit_price,2);
                     $nestedData['closing_value'] = $this->precise_amount($closing_value,2);
 
                         $send_data[]          = $nestedData;
