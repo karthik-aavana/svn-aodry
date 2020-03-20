@@ -2591,6 +2591,23 @@ class Product extends MY_Controller
         echo json_encode($data);
     }
 
+    public function get_check_product_code()
+    {
+        $product_name = strtoupper(trim($this->input->post('product_name')));
+        $product_name = preg_replace('!\s+!', ' ', strtolower(trim($product_name)));
+        $product_code = strtoupper(trim($this->input->post('product_code')));
+        $product_id   = $this->input->post('product_id');
+        $data         = $this->general_model->getRecords('*,count(*) num ', 'products', array(
+            'branch_id'     => $this->session->userdata('SESS_BRANCH_ID'),
+            'delete_status' => 0,
+            'LOWER(product_name)'  => $product_name,
+            'product_code'  => $product_code,
+            'batch_parent_product_id' => 0,
+            'product_id!='  => $product_id),"","product_name");
+
+        echo json_encode($data);
+    }
+
     public function varient_list()
     {
         $product_module_id = $this->config->item('product_module');
@@ -3793,6 +3810,23 @@ class Product extends MY_Controller
         echo json_encode($this->data);
     }
 
+    public function getProductname_leatherCraft(){
+        $product_name = $this->input->post('product_name');
+        $branch_id     = $this->session->userdata("SESS_BRANCH_ID");
+        $this->db->select('product_name');
+        $this->db->where('branch_id', $branch_id); 
+        $this->db->group_by('product_name');
+        $this->db->order_by('product_id', 'DESC');              
+        $qry = $this->db->get('products');
+        $pri_grps = $qry->result_array();
+        $this->data['flag'] = false;
+        if(!empty($pri_grps)){
+            $this->data['flag'] = true;
+            $this->data['data'] = $pri_grps;
+        }
+        echo json_encode($this->data);
+    }
+
     public function sales_product(){
         $product_module_id         = $this->config->item('product_module');
         $data['product_module_id'] = $product_module_id;
@@ -4242,11 +4276,11 @@ class Product extends MY_Controller
                   
                     $product_id  = $post->product_id;
 
-                    $unit_price = round($post->purchase_price,2);
+                    $unit_price = round($post->product_price,2);
                     if($unit_price > 0){
                         $unit_price = $unit_price;
                     }else{
-                        $unit_price = round($post->sales_price,2);
+                        $unit_price = round($post->product_selling_price,2);
                     }
                     
                     $opening_quantity = round($post->product_opening_quantity,2);
@@ -4272,7 +4306,7 @@ class Product extends MY_Controller
                     $nestedData['purchase_qty'] = $in_qty;
                     $nestedData['sales_qty']  = $out_qty;
                     $nestedData['closing_stock'] = round($closing_stock,2);
-                    $nestedData['unit_price'] = $this->precise_amount($unit_price,2);
+                    $nestedData['unit_price'] = round($unit_price,2);
                     $nestedData['closing_value'] = $this->precise_amount($closing_value,2);
 
                         $send_data[]          = $nestedData;
