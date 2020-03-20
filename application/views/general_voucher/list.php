@@ -91,11 +91,12 @@ $this->load->view('general/upload_popup.php');
     $(document).ready(function(){
         getVoucher = GetAllVoucher();
         <?php 
-        $journal_voucher_success = $this->session->flashdata('partner_success');
-        $journal_voucher_error = $this->session->flashdata('partner_error');
+        $journal_voucher_success = $this->session->flashdata('journal_voucher_success');
+        $journal_voucher_error = $this->session->flashdata('journal_voucher_error');
         ?>
         var alert_success = '<?= $journal_voucher_success; ?>';
         var alert_failure = '<?= $journal_voucher_error; ?>';
+       // alert('alert_success');
         if(alert_success != ''){
             alert_d.text = alert_success;
             PNotify.success(alert_d);

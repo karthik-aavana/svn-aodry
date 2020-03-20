@@ -3488,10 +3488,10 @@ Class General_voucher extends MY_Controller
                     $ledger_entry[$from_ledger_id]["ledger_from"] = $from_ledger_id;
                     $ledger_entry[$from_ledger_id]["ledger_to"] = $to_ledger_id;
                     $ledger_entry[$from_ledger_id]["journal_voucher_id"] = $general_voucher_id;
-                    $ledger_entry[$from_ledger_id]["voucher_amount"] =  $tds_amount;
+                    $ledger_entry[$from_ledger_id]["voucher_amount"] =  $voucher_amount;
                     $ledger_entry[$from_ledger_id]["converted_voucher_amount"] = 0;
                     $ledger_entry[$from_ledger_id]["dr_amount"] = 0; 
-                    $ledger_entry[$from_ledger_id]["cr_amount"] =  $tds_amount;
+                    $ledger_entry[$from_ledger_id]["cr_amount"] =  $voucher_amount;
                     $ledger_entry[$from_ledger_id]['ledger_id'] = $from_ledger_id;
 
                     $ledger_entry[$to_ledger_id]["ledger_from"] = $from_ledger_id;
@@ -6468,10 +6468,10 @@ Class General_voucher extends MY_Controller
                     $ledger_entry[$from_ledger_id]["ledger_from"] = $from_ledger_id;
                     $ledger_entry[$from_ledger_id]["ledger_to"] = $to_ledger_id;
                     $ledger_entry[$from_ledger_id]["journal_voucher_id"] = $general_voucher_id;
-                    $ledger_entry[$from_ledger_id]["voucher_amount"] =  $tds_amount;
+                    $ledger_entry[$from_ledger_id]["voucher_amount"] =  $voucher_amount;
                     $ledger_entry[$from_ledger_id]["converted_voucher_amount"] = 0;
                     $ledger_entry[$from_ledger_id]["dr_amount"] = 0; 
-                    $ledger_entry[$from_ledger_id]["cr_amount"] =  $tds_amount;
+                    $ledger_entry[$from_ledger_id]["cr_amount"] =  $voucher_amount;
                     $ledger_entry[$from_ledger_id]['ledger_id'] = $from_ledger_id;
 
                     $ledger_entry[$to_ledger_id]["ledger_from"] = $from_ledger_id;
@@ -6696,7 +6696,6 @@ Class General_voucher extends MY_Controller
         $successMsg = 'General Voucher Updated Successfully';
         $this->session->set_flashdata('partner_success',$successMsg);
         redirect("general_voucher/general_voucher_list", 'refresh');
-
     }
 
     public function transaction_purpose_list(){
@@ -6905,9 +6904,8 @@ Class General_voucher extends MY_Controller
         $id  = $this->input->post('delete_id');
         $id  = $this->encryption_url->decode($id);
         if ($this->general_model->updateData('tbl_transaction_purpose', ["status" => 0 ], array('id' => $id ))){
-            $successMsg = 'General Voucher Deleted Successfully';
-        $this->session->set_flashdata('partner_success',$successMsg);
-           redirect("general_voucher/general_voucher_list", 'refresh');
+          
+           redirect("general_voucher/transaction_purpose_list", 'refresh');
         }
     }
 
@@ -6934,7 +6932,7 @@ Class General_voucher extends MY_Controller
 
           
             $successMsg = 'General Voucher Deleted Successfully';
-            $this->session->set_flashdata('advance_voucher_success',$successMsg);
+            $this->session->set_flashdata('partner_success',$successMsg);
             $log_data = array(
                     'user_id'           => $this->session->userdata('SESS_USER_ID'),
                     'table_id'          => $id,
@@ -6946,7 +6944,7 @@ Class General_voucher extends MY_Controller
             redirect('general_voucher/general_voucher_list', 'refresh');
         } else {
             $errorMsg = 'General Voucher Delete Unsuccessful';
-            $this->session->set_flashdata('advance_voucher_error',$errorMsg);
+            $this->session->set_flashdata('partner_error',$errorMsg);
             redirect('general_voucher/general_voucher_list', 'refresh');
         }
     }

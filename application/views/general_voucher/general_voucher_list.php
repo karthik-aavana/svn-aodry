@@ -63,6 +63,21 @@ $this->load->view('general/delete_modal');
     $(document).ready(function(){
         getVoucher = GetAllVoucher();
     });
+    $(document).ready(function(){
+        <?php 
+        $general_voucher_success = $this->session->flashdata('partner_success');
+        $general_voucher_error = $this->session->flashdata('partner_error');
+        ?>
+        var alert_success = '<?= $general_voucher_success; ?>';
+        var alert_failure = '<?= $general_voucher_error; ?>';
+        if(alert_success != ''){
+            alert_d.text = alert_success;
+            PNotify.success(alert_d);
+        }else if(alert_failure != ''){
+            alert_d.text = alert_failure;
+            PNotify.error(alert_d);
+        }
+    });
       
 
     function GetAllVoucher(){
