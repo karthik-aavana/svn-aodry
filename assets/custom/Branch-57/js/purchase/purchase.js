@@ -133,13 +133,13 @@ $(document).ready(function () {
             $('#err_department').text("");
         }
 
-        if ($('#cmb_subdepartment').val() == "") {
+        /*if ($('#cmb_subdepartment').val() == "") {
             $('#err_subdepartment').text("Please Select the Sub-department.");
             $('#cmb_subdepartment').focus();
             return !1
         }else{
             $('#err_subdepartment').text("");
-        }
+        }*/
 
 
 

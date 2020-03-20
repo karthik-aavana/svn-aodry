@@ -1,37 +1,39 @@
 $(document).ready(function () {    
     $("#err_brand_name").text("");
     var xhr;
-     $('#brand_name').on('blur',function(){
-            $('#brand_name').trigger('keyup');
-        })
-        $('#brand_name').on('keyup',function(){
-            var nm = $(this).val();
-            var id = $('#brand_id').val();
-            
-            if(nm != ''){
-                if(xhr && xhr.readyState != 4){
-                    xhr.abort();
-                }
-                xhr = $.ajax({
-                    url: base_url + "brand/validateBrand",
-                    dataType: "JSON",
-                    method: "POST",
-                    data: {brand_name: nm,brand_id: id},
-                    success: function (result) {
-                        if(result > 0){
-                            $('[name=exist]').val(1);
-                            $("#err_brand_name").text("Brand name already exist!");
-                        }else{
-                            $('[name=exist]').val(0);
-                            $("#err_brand_name").text("");
-                        }
-                    }
-                })
-            }else{
-                $('[name=exist]').val(0);
-                $("#err_brand_name").text("");
+    $('#brand_name').on('blur',function(){
+        $('#brand_name').trigger('keyup');
+    })
+    $('#brand_name').on('keyup',function(){
+        var nm = $(this).val();
+        var id = $('#brand_id').val();
+        $("#brand_submit").attr('disabled',true);
+        if(nm != ''){
+            if(xhr && xhr.readyState != 4){
+                xhr.abort();
             }
-        })
+            xhr = $.ajax({
+                url: base_url + "brand/validateBrand",
+                dataType: "JSON",
+                method: "POST",
+                data: {brand_name: nm,brand_id: id},
+                success: function (result) {
+                    if(result > 0){
+                        $('[name=exist]').val(1);
+                        $("#err_brand_name").text("Brand name already exist!");
+                    }else{
+                        $('[name=exist]').val(0);
+                        $("#err_brand_name").text("");
+                        $("#brand_submit").attr('disabled',false);
+                    }
+                }
+            })
+        }else{
+            $('[name=exist]').val(0);
+            $("#err_brand_name").text("");
+            $("#brand_submit").attr('disabled',false);
+        }
+    })
     $("#brand_submit").click(function (event){
         var brand_name = $('#brand_name').val();
         var brand_id = $('#brand_id').val();/*
@@ -97,7 +99,7 @@ $(document).ready(function () {
         if(brand_id != '' && brand_id != 0 && typeof brand_id != 'undefined'){
             action = 'edit_brand';
         }
-        
+        var section_area = $('[name=section_area]').val();
         $.ajax({
             url: base_url + 'brand/'+action,
             type: 'POST',
@@ -117,11 +119,21 @@ $(document).ready(function () {
                     $('#brand_popup').modal('hide');
                     $('#brand_popup').find('input').val('');
                     $('#brand_popup').find('select').val('').prop('selected',true).change();
-                    BrandTable.destroy();
-                    BrandTable = getBrandList();
-                    $('#plus_btn').show();
-                    $('#filter').hide();
-                    $('.filter_body').html('');
+                    if(section_area != 'product'){
+                        BrandTable.destroy();
+                        BrandTable = getBrandList();
+                        $('#plus_btn').show();
+                        $('#filter').hide();
+                        $('.filter_body').html('');
+                    }else{
+                        var opt = '<option value="">Select Brand</option>';
+                        $.each(data.all_brand,function(k,v){
+                            var select = '';
+                            if(v.brand_id == data.brand_id) select = 'selected';
+                            opt += '<option value="'+v.brand_id+'" '+select+'>'+v.brand_name+'</option>';
+                        });
+                        $('#product_brand').html(opt);
+                    }
                 }else{
                     PNotify.error(alert_d);
                 }

@@ -168,7 +168,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                         <div class="form-group">
                                             <label for="date">GRN Date</label>
                                             <div class="input-group date">
-                                                <input type="text" class="form-control datepicker" id="grn_date" name="grn_date" autocomplete="off">
+                                                <input type="text" class="form-control datepicker" id="grn_date" name="grn_date" value="<?php echo $date; ?>" autocomplete="off">
                                                 <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
                                             </div>
                                             <span class="validation-color" id="err_date"></span>
@@ -195,7 +195,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                         <label for="subdepartment">Subdepartment<span class="validation-color">*</span></label>
+                                         <label for="subdepartment">Subdepartment</label>
                                          <div class="input-group">
                                             <div class="input-group-addon">
                                                 <a data-backdrop="static" data-keyboard="false" href="#" data-toggle="modal" data-target="#subdepartment_modal" class="new_subdepartment pull-right">+</a>

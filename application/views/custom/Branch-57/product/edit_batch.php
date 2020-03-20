@@ -18,7 +18,7 @@ $this->load->view('layout/header');
                                 <div class="form-group">
                                     <label for="product">Product <span class="validation-color">*</span> </label>
                                     <select class="form-control select2" id="product_option">
-                                        <option value="<?=$products_detail->batch_parent_product_id;?>" serial='<?=$products_detail->batch_serial;?>' batch='<?=$products_detail->batch_serial;?>'><?=$products_detail->product_name;?></option>
+                                        <option value="<?=$products_detail->batch_parent_product_id;?>" serial='<?=$products_detail->batch_serial;?>' batch='<?=$products_detail->batch_serial;?>'><?=$products_detail->product_code.' - '.$products_detail->product_name;?></option>
                                     </select>
                                     <input type="hidden" name="product_id" value="<?=$products_detail->product_id;?>">
                                     <span class="validation-color" id="err_product_option"></span>

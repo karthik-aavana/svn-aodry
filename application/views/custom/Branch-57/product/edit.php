@@ -17,6 +17,7 @@ $this->load->view('layout/header');
         </ol>
     </div>
     <form name="form" id="form" method="post" action="<?php echo base_url('product/edit_product'); ?>" encType="multipart/form-data">
+        <input type="hidden" name="section_area" value="product">
         <section class="content mt-50">
             <div class="row">
                 <div class="col-md-12">
@@ -33,7 +34,7 @@ $this->load->view('layout/header');
                                             <label for="product_code">Article<span class="validation-color">*</span></label>
                                             <input type="hidden" name="section_area" value="edit_product">
                                             <input type="hidden" name="product_id" id="product_id" value="<?php echo $data[0]->product_id; ?>">
-                                            <input type="text" class="form-control" tabindex="1" id="product_code" name="product_code" value="<?php echo $data[0]->product_code; ?>" <?php
+                                            <input type="text" class="form-control product_code_edit" tabindex="1" id="product_code" name="product_code" value="<?php echo $data[0]->product_code; ?>" <?php
                                             if ($access_settings[0]->invoice_readonly == 'yes') {
                                                 /*echo "readonly";*/
                                             }
@@ -406,21 +407,26 @@ $this->load->view('layout/header');
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label for="product_brand">Product Brand<span class="validation-color">*</span></label>
-                                            <select class="form-control select2" id="product_brand" name="product_brand">
-                                                <option value="">Select Brand</option>
-                                                <?php if(!empty($brand)){
-                                                    foreach ($brand as $key => $value) { ?>
-                                                        <option value="<?=$value->brand_id;?>" <?=($data[0]->brand_id == $value->brand_id ? 'selected' : '');?>><?=$value->brand_name;?></option>
-                                                    <?php }
-                                                } ?>
-                                            </select>
+                                            <label for="product_brand">Product Brand</label>
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <a href="" data-toggle="modal" data-target="#brand_popup" data-name="product" class="pull-right">+</a>
+                                                </div>
+                                                <select class="form-control select2" id="product_brand" name="product_brand">
+                                                    <option value="">Select Brand</option>
+                                                    <?php if(!empty($brand)){
+                                                        foreach ($brand as $key => $value) { ?>
+                                                            <option value="<?=$value->brand_id;?>" <?=($data[0]->brand_id == $value->brand_id ? 'selected' : '');?>><?=$value->brand_name;?></option>
+                                                        <?php }
+                                                    } ?>
+                                                </select>
+                                            </div>
                                             <span class="validation-color" id="err_product_brand"></span>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label for="exp_date">Expiry date<span class="validation-color">*</span></label>
+                                            <label for="exp_date">Expiry date</label>
                                             <div class="input-group date">
                                                 <input type="text" class="form-control datepicker" id="exp_date" name="exp_date" value="<?=($data[0]->exp_date != '0000-00-00' ? date('d-m-Y', strtotime($data[0]->exp_date)) : '');?>">
                                                 <div class="input-group-addon">
@@ -432,6 +438,18 @@ $this->load->view('layout/header');
                                     </div>
                                 </div>
                                 <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="mfg_date">Manufacture date</label>
+                                            <div class="input-group date">
+                                                <input type="text" class="form-control datepicker" id="mfg_date" name="mfg_date" value="<?=($data[0]->mfg_date != '0000-00-00' ? date('d-m-Y', strtotime($data[0]->mfg_date)) : '');?>">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                            </div> 
+                                            <span class="validation-color" id="err_mfg_date"></span>
+                                        </div>
+                                    </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="product_price">Purchase Price</label>
@@ -557,6 +575,7 @@ $this->load->view('category/category_modal');
 $this->load->view('subcategory/subcategory_modal');
 $this->load->view('uqc/uom_modal');
 $this->load->view('discount/discount_modal_product');
+$this->load->view('brand/brand_popup');
 //$this->load->view('service/tds_modal');
 if (in_array($tax_module_id, $active_add)) {
     $this->load->view('tax/tax_modal_tds');
