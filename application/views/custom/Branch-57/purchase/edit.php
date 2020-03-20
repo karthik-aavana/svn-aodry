@@ -215,7 +215,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                     <div class="form-group">
                                         <label for="date">GRN Date</label>
                                         <div class="input-group date">
-                                        <input type="text" class="form-control datepicker" id="grn_date" name="grn_date" autocomplete="off" value="<?= $data[0]->purchase_grn_date; ?>">
+                                        <input type="text" class="form-control datepicker" id="grn_date" name="grn_date" autocomplete="off" value="<?= ($data[0]->purchase_grn_date != '' && $data[0]->purchase_grn_date != '0000-00-00' ? date('d-m-Y', strtotime($data[0]->purchase_grn_date)) : ''); ?>">
                                          <div class="input-group-addon">
                                                 <i class="fa fa-calendar"></i>
                                             </div>
@@ -248,7 +248,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                         <label for="subdepartment">Subdepartment<span class="validation-color">*</span></label>
+                                         <label for="subdepartment">Subdepartment</label>
                                          <div class="input-group">
                                             <div class="input-group-addon">
                                                 <a data-backdrop="static" data-keyboard="false" href="#" data-toggle="modal" data-target="#subdepartment_modal" class="new_subdepartment pull-right">+</a>
@@ -321,7 +321,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                     <div class="form-group">
                                         <label for="nature_of_supply">Purchase Order Date</label>
                                         <div class="input-group date">
-                                        <input type="text" class="form-control datepicker" id="purchase_order_date" name="purchase_order_date" value="<?= ($data[0]->purchase_order_date == '1970-01-01' ? '' : $data[0]->purchase_order_date); ?>">
+                                        <input type="text" class="form-control datepicker" id="purchase_order_date" name="purchase_order_date" value="<?= ($data[0]->purchase_order_date == '1970-01-01' || $data[0]->purchase_order_date == '0000-00-00' || $data[0]->purchase_order_date == '' ? '' : $data[0]->purchase_order_date); ?>">
                                             <div class="input-group-addon">
                                                 <i class="fa fa-calendar"></i>
                                             </div>

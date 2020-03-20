@@ -105,46 +105,47 @@ class Brand extends MY_Controller
 
     public function add_brand(){
         $brand_module_id             = $this->config->item('brand_module');
-        $data['module_id']               = $brand_module_id;
-        $modules                         = $this->modules;
-        $privilege                       = "add_privilege";
-        $data['privilege']               = $privilege;
-        $section_modules                 = $this->get_section_modules($brand_module_id, $modules, $privilege);
+        $data['module_id']           = $brand_module_id;
+        $modules                     = $this->modules;
+        $privilege                   = "add_privilege";
+        $data['privilege']           = $privilege;
+        $section_modules             = $this->get_section_modules($brand_module_id, $modules, $privilege);
         
         /* presents all the needed */
         $data=array_merge($data,$section_modules);
         $json = array();
         $brand_data = array(
-                "brand_name"                   => $this->input->post('brand_name'),
-                "added_date"             => date('Y-m-d'),
-                "added_user_id"          => $this->session->userdata('SESS_USER_ID'),
-                "branch_id"              => $this->session->userdata('SESS_BRANCH_ID')
-            );
-            if(@$this->input->post('invoice_first_prefix')){
-                $brand_data['brand_invoice_first_prefix'] = $this->input->post('invoice_first_prefix');
-            }
-            if(@$this->input->post('reference_first_prefix')){
-                $brand_data['brand_reference_first_prefix'] = $this->input->post('reference_first_prefix');
-            }
-            if(@$this->input->post('invoice_last_prefix')){
-                $brand_data['brand_invoice_last_prefix'] = $this->input->post('invoice_last_prefix');
-            }
-            if(@$this->input->post('invoice_seperation')){
-                $brand_data['invoice_seperation'] = $this->input->post('invoice_seperation');
-            }
-            if(@$this->input->post('invoice_type')){
-                $brand_data['invoice_type'] = $this->input->post('invoice_type');
-            }
-            if(@$this->input->post('invoice_creation')){
-                $brand_data['invoice_creation'] = $this->input->post('invoice_creation');
-            }
-            if(@$this->input->post('invoice_readonly')){
-                $brand_data['invoice_readonly'] = $this->input->post('invoice_readonly');
-            }
+            "brand_name"             => $this->input->post('brand_name'),
+            "added_date"             => date('Y-m-d'),
+            "added_user_id"          => $this->session->userdata('SESS_USER_ID'),
+            "branch_id"              => $this->session->userdata('SESS_BRANCH_ID')
+        );
+        if(@$this->input->post('invoice_first_prefix')){
+            $brand_data['brand_invoice_first_prefix'] = $this->input->post('invoice_first_prefix');
+        }
+        if(@$this->input->post('reference_first_prefix')){
+            $brand_data['brand_reference_first_prefix'] = $this->input->post('reference_first_prefix');
+        }
+        if(@$this->input->post('invoice_last_prefix')){
+            $brand_data['brand_invoice_last_prefix'] = $this->input->post('invoice_last_prefix');
+        }
+        if(@$this->input->post('invoice_seperation')){
+            $brand_data['invoice_seperation'] = $this->input->post('invoice_seperation');
+        }
+        if(@$this->input->post('invoice_type')){
+            $brand_data['invoice_type'] = $this->input->post('invoice_type');
+        }
+        if(@$this->input->post('invoice_creation')){
+            $brand_data['invoice_creation'] = $this->input->post('invoice_creation');
+        }
+        if(@$this->input->post('invoice_readonly')){
+            $brand_data['invoice_readonly'] = $this->input->post('invoice_readonly');
+        }
         
 
         if ($id = $this->general_model->insertData('brand', $brand_data)){
             $table    = "log";
+
             $log_data = array(
                     'user_id' => $this->session->userdata('SESS_USER_ID'),
                     'table_id'   => $id,
@@ -153,6 +154,8 @@ class Brand extends MY_Controller
                     'branch_id'  => $this->session->userdata('SESS_BRANCH_ID'),
                     'message'    => 'Brand Inserted' );
             $this->general_model->insertData($table, $log_data);
+            $json['brand_id'] = $id;
+            $json['all_brand'] = $this->general_model->getRecords('*', 'brand', array('delete_status' => 0,'branch_id' => $this->session->userdata('SESS_BRANCH_ID')));
             $json['flag'] = true;
             $json['msg'] = 'Brand Added Successfully';
         }else{

@@ -336,10 +336,11 @@ class Stock extends MY_Controller {
             if (!empty($posts)) {
                 foreach ($posts as $post) {
                     $price = $post->price;
-                    $tax = $post->igst + $post->sgst + $post->cgst;
+                    $tax = (int) $post->igst + (int) $post->sgst + (int) $post->cgst;
                     //$basic_price = $post->product_basic_price;
-                    $basic_price = $post->price;
-                    $closing = (int) $post->product_quantity + (int) $post->product_opening_quantity;
+                    $basic_price = (int) $post->price;
+                   // $closing = (int) $post->product_quantity + (int) $post->product_opening_quantity;
+                    $closing = (int) $post->purchase_qty + (int) $post->product_opening_quantity - (int) $post->sales_qty;
                     $map = $basic_price * $closing;
 
                     $combination_id = $post->product_combination_id;
@@ -388,6 +389,9 @@ class Stock extends MY_Controller {
                     $nestedData['gst'] = $this->precise_amount($tax,$access_common_settings[0]->amount_precision);
                     $nestedData['selling_price'] = $this->precise_amount($price,$access_common_settings[0]->amount_precision);
                     $nestedData['brand_name'] = $post->brand_name;
+                    $nestedData['opening_stock'] = (int) $post->product_opening_quantity;
+                    $nestedData['purchase_qty'] = (int) $post->purchase_qty;
+                    $nestedData['sales_qty'] = (int) $post->sales_qty;
                     $send_data[] = $nestedData;
                     
                 }

@@ -22,7 +22,7 @@ $this->load->view('layout/header');
                                         <?php 
                                         foreach ($products as $key => $value) { 
                                             if($value->product_name != ''){ ?>
-                                        	<option value="<?=$value->product_id;?>" serial='<?=$value->batch_serial;?>' batch='<?=$value->batch_serial;?>' batch_val='<?=$value->product_batch;?>' code='<?=$value->product_code;?>' ><?=$value->product_name;?></option>
+                                        	<option value="<?=$value->product_id;?>" serial='<?=$value->batch_serial;?>' batch='<?=$value->batch_serial;?>' batch_val='<?=$value->product_batch;?>' code='<?=$value->product_code;?>' ><?=$value->product_code.' - '.$value->product_name;?></option>
                                         <?php }
                                         } ?>
                                     </select>

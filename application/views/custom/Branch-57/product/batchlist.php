@@ -50,6 +50,7 @@ $this->load->view('layout/header');
                             <?php
                             if (in_array($product_module_id, $active_add)) {
                                 ?>
+                                <a class="btn btn-sm btn-info pull-right" href="<?php echo base_url('product/add'); ?>">Add Product</a>
                                 <a class="btn btn-sm btn-info pull-right" href="<?php echo base_url('product/product_batch'); ?>" title='Create New Product Batch'>New Batch</a>
                             <?php }
                             ?>
