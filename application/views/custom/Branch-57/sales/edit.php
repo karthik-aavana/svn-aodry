@@ -328,7 +328,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                         <label for="subdepartment">Subdepartment<span class="validation-color">*</span></label>
+                                         <label for="subdepartment">Subdepartment</label>
                                           <div class="input-group">
                                             <div class="input-group-addon">
                                                 <a data-backdrop="static" data-keyboard="false" href="#" data-toggle="modal" data-target="#subdepartment_modal" class="new_subdepartment pull-right">+</a>
