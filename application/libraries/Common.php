@@ -14357,7 +14357,7 @@ public function tds_report_sales_list(){
     }
 
     public function get_closing_stock_report(){
-        $string = "P.product_name, P.product_code, P.product_hsn_sac_code, P.product_id, P.product_basic_price, P.product_quantity, P.product_combination_id, SUM(SI.sales_item_quantity) as sales_qty, AVG(SI.sales_item_unit_price) as price, SUM(SI.sales_item_igst_amount) as igst, SUM(SI.sales_item_sgst_amount) as sgst, SUM(SI.sales_item_cgst_amount) as cgst, D.department_name, SD.sub_department_name, U.uom, CT.category_name, B.branch_name, B.branch_code, SC.sub_category_name, BD.brand_name, P.product_opening_quantity, SUM(PI.purchase_item_quantity) as purchase_qty, PI.purchase_id";
+        $string = "P.product_name, P.product_code, P.product_hsn_sac_code, P.product_id, P.product_basic_price, P.product_quantity, P.product_combination_id, SUM(SI.sales_item_quantity) as sales_qty, AVG(SI.sales_item_unit_price) as price, SUM(SI.sales_item_igst_amount) as igst, SUM(SI.sales_item_sgst_amount) as sgst, SUM(SI.sales_item_cgst_amount) as cgst, D.department_name, SD.sub_department_name, U.uom, CT.category_name, B.branch_name, B.branch_code, SC.sub_category_name, BD.brand_name, P.product_opening_quantity, SUM(PI.purchase_item_quantity) as purchase_qty, PI.purchase_id, P.product_batch";
         $table  = "products P";
         $where = array(
             'P.branch_id' => $this->ci->session->userdata('SESS_BRANCH_ID'),
