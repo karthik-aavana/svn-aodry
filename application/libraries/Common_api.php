@@ -210,7 +210,7 @@ class Common_api{
             $method = $post['Method'];
             if(@$post['branch']){
                 $branch = $post['branch'];
-                if(@$branch['User'] && @$branch['Password'] && @$branch['Code']){
+                if(@$branch['User'] && @$branch['Password'] && @$branch['Code'] && @$branch['LoginCode']){
                     $branch_code = $branch['Code'];
                     if ($this->ci->ion_auth->login($branch['Code'], $branch['User'], base64_decode($branch['Password']),'0')) {
 
@@ -220,27 +220,40 @@ class Common_api{
                         if($query->num_rows() > 0){
                             $branch_detail = $query->result();
                             $this->branch_id = $branch_detail[0]->branch_id;
-                            $data = $this->get_default_country_state($this->branch_id);
-                            $branch_data = $this->ci->db->select('users.id as user_id,branch.branch_id,branch.financial_year_id,concat(YEAR(tbl_financial_year.from_date),"-",YEAR(tbl_financial_year.to_date)) as financial_year_title,branch.branch_default_currency,currency.currency_symbol,currency.currency_code,currency.currency_text')->from('users')->join('branch', 'users.branch_id = branch.branch_id')->join('currency', 'currency.currency_id = branch.branch_default_currency')->join('tbl_financial_year', 'tbl_financial_year.year_id = branch.financial_year_id')->where('users.id', $branch_detail[0]->id)->where('username !=', 'superadmin')->get()->row();
-                                
-                            $this->user_id = $branch_data->user_id;
-                            
-                            $this->ci->session->set_userdata('SESS_BRANCH_ID',trim($branch_detail[0]->branch_id));
-                            $this->ci->session->set_userdata('SESS_USER_ID',trim($branch_data->user_id));
-                            $this->ci->session->set_userdata('SESS_FINANCIAL_YEAR_TITLE',trim($branch_data->financial_year_title));
-                            $this->ci->session->set_userdata('SESS_FINANCIAL_YEAR_ID',trim($branch_data->financial_year_id));
-                            $this->ci->session->set_userdata('SESS_DEFAULT_CURRENCY_TEXT',trim($branch_data->currency_text));
-                            $this->ci->session->set_userdata('SESS_DEFAULT_CURRENCY_CODE',trim($branch_data->currency_code));
-                            $this->ci->session->set_userdata('SESS_DEFAULT_CURRENCY',trim($branch_data->branch_default_currency));
-                            $this->ci->session->set_userdata('SESS_DEFAULT_CURRENCY_SYMBOL',trim($branch_data->currency_symbol));
 
-                            $this->SESS_FINANCIAL_YEAR_TITLE = trim($branch_data->financial_year_title);
-                            $this->SESS_FINANCIAL_YEAR_ID = $branch_data->financial_year_id;
-                            $this->SESS_DEFAULT_CURRENCY_TEXT = $branch_data->currency_text;
-                            $this->SESS_DEFAULT_CURRENCY_CODE = $branch_data->currency_code;
-                            $this->SESS_DEFAULT_CURRENCY = $branch_data->branch_default_currency;
-                            $this->SESS_DEFAULT_CURRENCY_SYMBOL = $branch_data->currency_symbol;
-                            $resp['modules'] = $this->get_modules($branch_data);
+                            $b_id = $this->branch_id;
+                            $qry = $this->ci->db->select('branch_id,token')->where([
+                                'branch_id' => $b_id,
+                                'token' => $branch['LoginCode']
+                                ])->get('ecom_branch_setting');
+                            if($qry->num_rows() > 0){
+                            
+                                $data = $this->get_default_country_state($this->branch_id);
+                                $branch_data = $this->ci->db->select('users.id as user_id,branch.branch_id,branch.financial_year_id,concat(YEAR(tbl_financial_year.from_date),"-",YEAR(tbl_financial_year.to_date)) as financial_year_title,branch.branch_default_currency,currency.currency_symbol,currency.currency_code,currency.currency_text')->from('users')->join('branch', 'users.branch_id = branch.branch_id')->join('currency', 'currency.currency_id = branch.branch_default_currency')->join('tbl_financial_year', 'tbl_financial_year.year_id = branch.financial_year_id')->where('users.id', $branch_detail[0]->id)->where('username !=', 'superadmin')->get()->row();
+                                    
+                                $this->user_id = $branch_data->user_id;
+                                
+                                $this->ci->session->set_userdata('SESS_BRANCH_ID',trim($branch_detail[0]->branch_id));
+                                $this->ci->session->set_userdata('SESS_USER_ID',trim($branch_data->user_id));
+                                $this->ci->session->set_userdata('SESS_FINANCIAL_YEAR_TITLE',trim($branch_data->financial_year_title));
+                                $this->ci->session->set_userdata('SESS_FINANCIAL_YEAR_ID',trim($branch_data->financial_year_id));
+                                $this->ci->session->set_userdata('SESS_DEFAULT_CURRENCY_TEXT',trim($branch_data->currency_text));
+                                $this->ci->session->set_userdata('SESS_DEFAULT_CURRENCY_CODE',trim($branch_data->currency_code));
+                                $this->ci->session->set_userdata('SESS_DEFAULT_CURRENCY',trim($branch_data->branch_default_currency));
+                                $this->ci->session->set_userdata('SESS_DEFAULT_CURRENCY_SYMBOL',trim($branch_data->currency_symbol));
+
+                                $this->SESS_FINANCIAL_YEAR_TITLE = trim($branch_data->financial_year_title);
+                                $this->SESS_FINANCIAL_YEAR_ID = $branch_data->financial_year_id;
+                                $this->SESS_DEFAULT_CURRENCY_TEXT = $branch_data->currency_text;
+                                $this->SESS_DEFAULT_CURRENCY_CODE = $branch_data->currency_code;
+                                $this->SESS_DEFAULT_CURRENCY = $branch_data->branch_default_currency;
+                                $this->SESS_DEFAULT_CURRENCY_SYMBOL = $branch_data->currency_symbol;
+                                $resp['modules'] = $this->get_modules($branch_data);
+                        
+                            }else{
+                                $resp['status'] = 404;
+                                $resp['message'] = 'Invalid Branch Token.';
+                            }
                         }else{
                             $resp['status'] = 404;
                             $resp['message'] = 'Invalid branch detail.';
@@ -265,7 +278,7 @@ class Common_api{
     }
 
     public function get_default_country_state() {
-        $branch_data  = $this->branch_field($this->ci->branch_id);
+        $branch_data  = $this->branch_field($this->ci->session->userdata('SESS_BRANCH_ID'));
         
         $branch       = $this->ci->general_model->getJoinRecords($branch_data['string'], $branch_data['table'], $branch_data['where'], $branch_data['join'], $branch_data['order']);
         $country_data = $this->country_field();
@@ -276,20 +289,22 @@ class Common_api{
         $city         = $this->ci->general_model->getRecords($city_data['string'], $city_data['table'], $city_data['where']);
         $data         = array('branch' => $branch, 'country' => $country, 'state' => $state,
             'city'                         => $city);
+        //print_r($data);
         return $data;
     }
 
     public function get_modules($branch_data){
-        $sess_branch_id         = $branch_data->branch_id;
-        $sess_financial_year_id = $branch_data->financial_year_id;
-        $sess_user_id           = $branch_data->user_id;
-        $sess_default_currency  = $branch_data->branch_default_currency;
+        $sess_branch_id         = $this->ci->session->userdata('SESS_BRANCH_ID');
+        $sess_financial_year_id = $this->ci->session->userdata('SESS_FINANCIAL_YEAR_ID');
+        $sess_user_id           = $this->ci->session->userdata('SESS_USER_ID');
+        $sess_default_currency  = $this->ci->session->userdata('SESS_DEFAULT_CURRENCY');
         
         if (empty($sess_branch_id) || empty($sess_financial_year_id) || empty($sess_user_id) || empty($sess_default_currency)){
             return false;
         }
 
         $module_data = $this->module_field($sess_branch_id);
+
         $module      = $this->ci->general_model->getJoinRecords($module_data['string'], $module_data['table'], $module_data['where'], $module_data['join']);
         $settings = $active_modules = $sub_module= $active_view = $active_edit = $active_delete = $active_add = array();
         foreach ($module as $key => $value)
@@ -453,7 +468,7 @@ class Common_api{
         return $data;
     }
 
-    public function generate_invoice_number($th,$access_settings, $primary_id, $table_name, $date_field_name, $current_date, $option = ""){
+    public function generate_invoice_number_api($th,$access_settings, $primary_id, $table_name, $date_field_name, $current_date, $option = ""){
        
         $financial_year = explode('-', $this->ci->session->userdata('SESS_FINANCIAL_YEAR_TITLE'));
         if ((date("Y") != $financial_year[0]) && (date("Y") != $financial_year[1]))
@@ -540,7 +555,7 @@ class Common_api{
         return $reference_number;
     }
 
-    public function generate_reference_number($access_settings, $primary_id, $table_name, $date_field_name, $current_date, $option = "")
+    public function generate_reference_number_api($access_settings, $primary_id, $table_name, $date_field_name, $current_date, $option = "")
     {
         $financial_year = explode('-', $this->SESS_FINANCIAL_YEAR_TITLE);
 

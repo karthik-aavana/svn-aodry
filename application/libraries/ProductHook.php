@@ -1,11 +1,11 @@
 <?php
 class ProductHook {
-	public function __construct()
+    public function __construct()
     {
         $this->ci = &get_instance();
     }
 
-	public function CreateProduct($data){
+    public function CreateProduct($data){
         
         if($data['product_category_id'] != ''){
 
@@ -43,9 +43,39 @@ class ProductHook {
                 }
             }
             $data['attributes'] = $attributes;
-        } 
+        }
+
+        $user_id = $this->ci->session->userdata('SESS_USER_ID');
+        $branch_id = $this->ci->session->userdata('SESS_BRANCH_ID');
+        //ecom url 
+        $ecom_url = $this->ci->general_model->getRecords('ecom_url', 'branch', array(
+                    'branch_id'     => $branch_id,
+                    'ecommerce'  => '1'));
+        $url = $ecom_url[0]->ecom_url;
+
+        //user detail
+        $branch_detail = $this->ci->general_model->getRecords('*', 'users', array(
+                    'id'     => $user_id));
+
+        /*$branch_detail = $this->ci->db->query("SELECT email, password, branch_code FROM `users` WHERE id = {$user_id}");
+        $branch_detail = $branch_detail->row();*/
+
+        //login code
+        $login_code = $this->ci->general_model->getRecords('token', 'ecom_branch_setting', array(
+                    'branch_id'     => $branch_id));
 
         $data = array(
+            'Method' => 'CreateProduct',
+            'branch' => array(
+                'User' => $branch_detail[0]->email,
+                'Password' => base64_encode('123456'),
+                'Code' => $branch_detail[0]->branch_code,
+                'LoginCode' => $login_code[0]->token
+            ),
+            'data' => $data
+        );
+
+        /*$data = array(
             'Method' => 'CreateProduct',
             'branch' => array(
                 'User' => 'credittest12@gmail.com',
@@ -54,28 +84,29 @@ class ProductHook {
                 'LoginCode' => ''
             ),
             'data' => $data
-        );
+        );*/
 
         /* API URL */
         /*$url = 'http://192.168.1.36/Aodry-API/pro_api.php';*/
-        $url = 'http://192.168.1.86/fashnett/wp-json/api/v1/CreateProduct';
+        //$url = 'http://192.168.1.86/fashnett/wp-json/api/v1/CreateProduct';
+        $url = $url.'/CreateProduct';
         echo "<pre>";
         print_r($data);
-		$result = $this->ci->common->postCurlData($url,$data);
+        $result = $this->ci->common->postCurlData($url,$data);
 
         $result = json_decode($result,true);
         $look_up_ary = array();
         /*print_r($result);*/
         if(!empty($result)){
-            if(@$result['status'] && $result['status'] == 200){
+            if(@$result['status'] && $result['status'] == 200){ echo "<pre>";print_r($result);exit();
                 $resp = $result['data'];
                 foreach ($resp as $key => $value) {
                     $look_up_ary[] = array(
                                         'branch_id' => $this->ci->session->userdata('SESS_BRANCH_ID'),
                                         'aodry_product_id' => $value['aodry_product_id'],
-                                        'aodry_variant_id' => $value['aodry_variant_id'],
+                                        'aodry_variant_id' => $value['aodry_variant_id'] ? $value['aodry_variant_id'] : 0,
                                         'woo_product_id' => $value['woo_product_id'],
-                                        'woo_variant_id' => $value['woo_variant_id'],
+                                        'woo_variant_id' => $value['woo_variant_id'] ? $value['woo_variant_id'] : 0,
                                         'pro_title'  => $value['pro_title'],
                                         'pro_selling_price' => $value['pro_selling_price'],
                                         'pro_stock' => 0,
@@ -102,12 +133,12 @@ class ProductHook {
                                     );
             }
             $this->db->insert_batch('ecom_product_sync', $look_up_ary);
-            $logs = array('action_name' => 'CreateProduct','action_id'=> $data['product_id'],'status' => $resp['status'],'response' => $resp['message'],'user_id' => $this->ci->session->userdata('SESS_USER_ID'),'branch_id' =>$this->ci->session->userdata('SESS_BRANCH_ID'),'created_at' => date('Y-m-d H:i:s'));
+            $logs = array('action_name' => 'CreateProduct','action_id'=> $data['product_id'],'status' => $result['status'],'response' => $result['message'],'user_id' => $this->ci->session->userdata('SESS_UresultSER_ID'),'branch_id' =>$this->ci->session->userdata('SESS_BRANCH_ID'),'created_at' => date('Y-m-d H:i:s'));
 
                 $this->ci->db->insert('ecom_sync_logs',$logs);
         }
         exit;
-	}
+    }
 
     public function UpdateProduct($data){
         if(@$data['product_id']){
@@ -218,7 +249,7 @@ class ProductHook {
                     $this->general_model->updateData('ecom_product_sync', $update_error, array('aodry_product_id' => $data['product_id']));
                 }
 
-                $logs = array('action_name' => 'UpdateProduct','action_id'=> $data['product_id'],'status' => $resp['status'],'response' => $resp['message'],'user_id' => $this->ci->session->userdata('SESS_USER_ID'),'branch_id' =>$this->ci->session->userdata('SESS_BRANCH_ID'),'created_at' => date('Y-m-d H:i:s'));
+                $logs = array('action_name' => 'UpdateProduct','action_id'=> $data['product_id'],'status' => $result['status'],'response' => $result['message'],'user_id' => $this->ci->session->userdata('SESS_USER_ID'),'branch_id' =>$this->ci->session->userdata('SESS_BRANCH_ID'),'created_at' => date('Y-m-d H:i:s'));
 
                 $this->ci->db->insert('ecom_sync_logs',$logs);
             }
@@ -284,7 +315,7 @@ class ProductHook {
                     $this->general_model->updateData('ecom_product_sync', $update_error, array('aodry_product_id' => $data['product_id']));
                 }
 
-                $logs = array('action_name' => 'UpdateProductStock','action_id'=> $data['product_id'],'status' => $resp['status'],'response' => $resp['message'],'user_id' => $this->ci->session->userdata('SESS_USER_ID'),'branch_id' =>$this->ci->session->userdata('SESS_BRANCH_ID'),'created_at' => date('Y-m-d H:i:s'));
+                $logs = array('action_name' => 'UpdateProductStock','action_id'=> $data['product_id'],'status' => $result['status'],'response' => $result['message'],'user_id' => $this->ci->session->userdata('SESS_USER_ID'),'branch_id' =>$this->ci->session->userdata('SESS_BRANCH_ID'),'created_at' => date('Y-m-d H:i:s'));
 
                 $this->ci->db->insert('ecom_sync_logs',$logs);
             }
