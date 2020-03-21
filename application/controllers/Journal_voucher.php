@@ -109,10 +109,10 @@ Class Journal_voucher extends MY_Controller
         /* presents all the needed */
         $data=array_merge($data,$section_modules);
         
-        $voucher_details = $this->common->general_voucher_details($general_voucher_id);
-        $data['data']    = $this->general_model->getJoinRecords($voucher_details['string'], $voucher_details['table'], $voucher_details['where'], $voucher_details['join']);
+        $voucher_details = $this->common->general_ledger_details($general_voucher_id);
 
-        $this->load->view('journal_voucher/view_details', $data);
+        $data['data']    = $this->general_model->getJoinRecords($voucher_details['string'], $voucher_details['table'], $voucher_details['where'], $voucher_details['join']);
+        $this->load->view('journal_voucher/details', $data);
     }
 
 }

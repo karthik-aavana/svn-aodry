@@ -273,5 +273,25 @@ class Journal_ledger extends MY_Controller
         exit();
     }
 
+     public function view_details($id){ 
+        $journal_voucher_id = $this->encryption_url->decode($id);
+        $journal_voucher_id = $this->config->item('journal_voucher_module');
+        $data['module_id'] = $journal_voucher_id;
+        $data['journal_voucher__id'] = $journal_voucher_id;
+        $modules = $this->modules;
+        $privilege = "view_privilege";
+        $data['privilege'] = $privilege;
+        // exit;
+
+        $section_modules = $this->get_section_modules($journal_voucher_id, $modules, $privilege);
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
+
+        $voucher_details = $this->common->general_ledger_details($journal_voucher_id);
+        $data['data'] = $this->general_model->getJoinRecords($voucher_details['string'], $voucher_details['table'], $voucher_details['where'], $voucher_details['join']);
+
+        $this->load->view('sales_voucher/view_details', $data);
+    }
+
 }
 

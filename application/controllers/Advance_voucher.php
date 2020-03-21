@@ -113,7 +113,10 @@ class Advance_voucher extends MY_Controller {
                     if (in_array($email_sub_module_id, $data['active_view'])) {
 
                         $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#composeMail"><a href="#" data-toggle="tooltip"  class="btn btn-app composeMail" data-id="' . $advance_id . '" data-name="regular"  data-placement="bottom" title="Email Advance Voucher"><i class="fa fa-envelope-o"></i></a></span>';
+
                     }
+
+                $cols .= '<span> <a href="' . base_url('advance_voucher/view_details/') . $advance_id . '" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" data-original-title="View Ledger Details" target="_blank"> <i class="fa fa-eye"></i> </a></span>';
 
                   /*  if ($post->currency_id != $this->session->userdata('SESS_DEFAULT_CURRENCY') && $post->voucher_status != "2"){
                         $cols .= '<li>               <a data-backdrop="static" data-keyboard="false" class="convert_currency" data-toggle="modal" data-target="#convert_currency_modal" data-id="' . $advance_id . '" data-path="advance_voucher/convert_currency" data-currency_code="' . $post->currency_code . '" data-grand_total="' . $post->receipt_amount . '" href="#" title="Convert Currency" ><i class="fa fa-exchange"></i> Convert Currency</a>            </li>';
@@ -3189,7 +3192,7 @@ class Advance_voucher extends MY_Controller {
     function view_details($id) {
         $advance_voucher_id              = $this->encryption_url->decode($id);
         $advance_voucher_module_id       = $this->config->item('advance_voucher_module');
-        $data['module_id']               = $advance_voucher_module_id;
+        /*$data['module_id']               = $advance_voucher_module_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
         $data['privilege']               = $privilege;
@@ -3201,7 +3204,7 @@ class Advance_voucher extends MY_Controller {
         $data['access_settings']         = $section_modules['settings'];
         $data['access_common_settings']  = $section_modules['common_settings'];
         $email_sub_module_id             = $this->config->item('email_sub_module');
-        foreach ($modules['modules'] as $key => $value) {
+       foreach ($modules['modules'] as $key => $value) {
             $data['active_modules'][$key] = $value->module_id;
             if ($value->view_privilege == "yes") {
                 $data['active_view'][$key] = $value->module_id;
@@ -3212,13 +3215,20 @@ class Advance_voucher extends MY_Controller {
             } if ($value->add_privilege == "yes") {
                 $data['active_add'][$key] = $value->module_id;
             }
-        }
+        }*/
+
+        $data['advance_voucher_module_id'] = $advance_voucher_module_id;
+        $modules                   = $this->modules;
+        $privilege                 = "view_privilege";
+        $data['privilege']         = $privilege;
+        $section_modules           = $this->get_section_modules($advance_voucher_module_id, $modules, $privilege);
+        $access_common_settings     = $section_modules['access_common_settings'];
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
 
         $voucher_details = $this->common->advance_voucher_details($advance_voucher_id);
         $data['data']    = $this->general_model->getJoinRecords($voucher_details['string'], $voucher_details['table'], $voucher_details['where'], $voucher_details['join']);
-        //  echo "<pre>";
-        // print_r($data['data']);
-        // exit;
+        
         $this->load->view('advance_voucher/view_details', $data);
     }
 

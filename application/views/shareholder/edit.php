@@ -177,7 +177,7 @@ $this->load->view('layout/header');
                                 </div>
                                 <div class="form-group col-md-3" id="div_partner_profit">
                                     <label for="share_profit">Percentage share of profit (%)<span class="validation-color"></span></label>
-                                    <input class="form-control text-right number" type="text" name="txt_share_profit" id="txt_share_profit" maxlength="15" value="33" />
+                                    <input class="form-control text-right number" type="text" name="txt_share_profit" id="txt_share_profit" maxlength="15" value="<?php echo $data[0]->percentage_share_of_profit; ?>" />
                                     <span class="validation-color" id="err_share_profit"><?php echo form_error('share_profit'); ?></span>
                                 </div>                               
                                 <div class="form-group col-md-3" style="display: none;" id="div_share_premium">

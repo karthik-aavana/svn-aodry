@@ -1165,7 +1165,7 @@ Class General_voucher extends MY_Controller
                     $to_ledger_id = $this->ledger_model->getGroupLedgerId($cash_ac_ary);
                     $to_acc = $transaction_ledger;
 
-                if($transaction_category =='Cash deposited in bank'){
+                if($transaction_category =='Cash deposited in bank' || $transaction_category =='Cash withdrawal from bank'){
                     $default_other_id = $general_ledger['Bank_Charges'];
                     $other_ledger_name = $this->ledger_model->getDefaultLedgerId($default_other_id);
                    
@@ -2927,12 +2927,26 @@ Class General_voucher extends MY_Controller
                     $ledger_entry[$from_ledger_id]["cr_amount"] = $voucher_amount;
                     $ledger_entry[$from_ledger_id]['ledger_id'] = $from_ledger_id;
 
+                    if($interest_expense_amount > 0){
+                        $ledger_entry[$extra_ledger_id]["ledger_from"] = $from_ledger_id;
+                        $ledger_entry[$extra_ledger_id]["ledger_to"] = $extra_ledger_id;
+                        $ledger_entry[$extra_ledger_id]["journal_voucher_id"] = $general_voucher_id;
+                        $ledger_entry[$extra_ledger_id]["voucher_amount"] = $interest_expense_amount;
+                        $ledger_entry[$extra_ledger_id]["converted_voucher_amount"] = 0;
+                        $ledger_entry[$extra_ledger_id]["dr_amount"] = $interest_expense_amount;
+                        $ledger_entry[$extra_ledger_id]["cr_amount"] = 0;
+                        $ledger_entry[$extra_ledger_id]['ledger_id'] = $extra_ledger_id; 
+                        $cash_amount = $voucher_amount - $interest_expense_amount;
+                    }else{
+                        $cash_amount = $voucher_amount;
+                    }
+
                     $ledger_entry[$to_ledger_id]["ledger_from"] = $from_ledger_id;
                     $ledger_entry[$to_ledger_id]["ledger_to"] = $to_ledger_id;
                     $ledger_entry[$to_ledger_id]["journal_voucher_id"] = $general_voucher_id;
-                    $ledger_entry[$to_ledger_id]["voucher_amount"] = $voucher_amount;
+                    $ledger_entry[$to_ledger_id]["voucher_amount"] = $cash_amount;
                     $ledger_entry[$to_ledger_id]["converted_voucher_amount"] = 0;
-                    $ledger_entry[$to_ledger_id]["dr_amount"] = $voucher_amount;
+                    $ledger_entry[$to_ledger_id]["dr_amount"] = $cash_amount;
                     $ledger_entry[$to_ledger_id]["cr_amount"] = 0;
                     $ledger_entry[$to_ledger_id]['ledger_id'] = $to_ledger_id;
                 }
@@ -4147,7 +4161,7 @@ Class General_voucher extends MY_Controller
                     }
                     $to_ledger_id = $this->ledger_model->getGroupLedgerId($cash_ac_ary);
                     $to_acc = $transaction_ledger;
-                    if($transaction_category =='Cash deposited in bank'){
+                    if($transaction_category =='Cash deposited in bank' || $transaction_category =='Cash withdrawal from bank'){
                     $default_other_id = $general_ledger['Bank_Charges'];
                     $other_ledger_name = $this->ledger_model->getDefaultLedgerId($default_other_id);
                    
@@ -5906,12 +5920,26 @@ Class General_voucher extends MY_Controller
                     $ledger_entry[$from_ledger_id]["cr_amount"] = $voucher_amount;
                     $ledger_entry[$from_ledger_id]['ledger_id'] = $from_ledger_id;
 
+                    if($interest_expense_amount > 0){
+                        $ledger_entry[$extra_ledger_id]["ledger_from"] = $from_ledger_id;
+                        $ledger_entry[$extra_ledger_id]["ledger_to"] = $extra_ledger_id;
+                        $ledger_entry[$extra_ledger_id]["journal_voucher_id"] = $general_voucher_id;
+                        $ledger_entry[$extra_ledger_id]["voucher_amount"] = $interest_expense_amount;
+                        $ledger_entry[$extra_ledger_id]["converted_voucher_amount"] = 0;
+                        $ledger_entry[$extra_ledger_id]["dr_amount"] = $interest_expense_amount;
+                        $ledger_entry[$extra_ledger_id]["cr_amount"] = 0;
+                        $ledger_entry[$extra_ledger_id]['ledger_id'] = $extra_ledger_id; 
+                        $cash_amount = $voucher_amount - $interest_expense_amount;
+                    }else{
+                        $cash_amount = $voucher_amount;
+                    }
+
                     $ledger_entry[$to_ledger_id]["ledger_from"] = $from_ledger_id;
                     $ledger_entry[$to_ledger_id]["ledger_to"] = $to_ledger_id;
                     $ledger_entry[$to_ledger_id]["journal_voucher_id"] = $general_voucher_id;
-                    $ledger_entry[$to_ledger_id]["voucher_amount"] = $voucher_amount;
+                    $ledger_entry[$to_ledger_id]["voucher_amount"] = $cash_amount;
                     $ledger_entry[$to_ledger_id]["converted_voucher_amount"] = 0;
-                    $ledger_entry[$to_ledger_id]["dr_amount"] = $voucher_amount;
+                    $ledger_entry[$to_ledger_id]["dr_amount"] = $cash_amount;
                     $ledger_entry[$to_ledger_id]["cr_amount"] = 0;
                     $ledger_entry[$to_ledger_id]['ledger_id'] = $to_ledger_id;
                 }
@@ -7063,6 +7091,8 @@ Class General_voucher extends MY_Controller
 
                     $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-id="' . $general_voucher_id . '" data-path="general_voucher/delete_general_voucher" data-toggle="tooltip" data-placement="bottom" title="Delete General Voucher"> <i class="fa fa-trash-o"></i> </a></span>';
 
+                 $cols .= '<span><a href="' .base_url('journal_voucher/view_details/') . $general_voucher_id.'" target="_blank" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Details"><i class="fa fa-eye"></i></a></span>';
+
                     $cols .= '</div></div>';
                     
                     $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
@@ -7206,5 +7236,9 @@ Class General_voucher extends MY_Controller
             $data = $this->bank_account_call_new();
              echo json_encode($data);
     }
+
+    
+
+    
     
 }

@@ -1175,14 +1175,13 @@ class Common
         );
         return $data;
     }*/
-    public function advance_voucher_details($advance_voucher_id)
-    {
-        $string = "av.voucher_number,av.voucher_date,av.reference_number,av.receipt_amount,av.receipt_amount,av.reference_id,aav.accounts_advance_voucher_id,aav.cr_amount,aav.dr_amount,l.ledger_title as from_name,lr.ledger_title as to_name,aav.converted_voucher_amount,aav.advance_voucher_id";
+    public function advance_voucher_details($advance_voucher_id){
+
+        $string = "av.voucher_number, av.voucher_date, av.reference_number, av.receipt_amount, av.receipt_amount, av.reference_id, aav.accounts_advance_id, aav.cr_amount, aav.dr_amount, aav.voucher_amount, l.ledger_name as from_name, l.ledger_name, l.ledger_name as to_name, aav.converted_voucher_amount, aav.advance_voucher_id";
         $table  = "accounts_advance_voucher aav";
         $join   = [
             'advance_voucher av' => 'av.advance_voucher_id = aav.advance_voucher_id',
-            'ledgers l'          => 'l.ledger_id = aav.ledger_from',
-            'ledgers lr'         => 'lr.ledger_id=aav.ledger_to'];
+             'tbl_ledgers l'        => 'l.ledger_id = aav.ledger_id'];
         $where = [
             'aav.advance_voucher_id' => $advance_voucher_id,
             'aav.delete_status'      => 0];
@@ -14558,6 +14557,25 @@ public function tds_report_sales_list(){
             'filter' => $filter,
             'group'  => $group,
             'order'  => $order
+        );
+        return $data;
+    }
+
+    public function general_ledger_details($journal_voucher_id){
+        $string = "sv.voucher_number, sv.voucher_date, av.journal_voucher_id, av.cr_amount, av.dr_amount, l.ledger_name as from_name, l.ledger_name, l.ledger_name as to_name,  av.journal_voucher_id, sv.voucher_type, tp.purpose_option";
+        $table  = "accounts_journal_voucher av";
+        $join   = [
+            'tbl_journal_voucher sv' => 'sv.journal_voucher_id = av.journal_voucher_id',
+            'tbl_transaction_purpose_option tp' => 'sv.transaction_purpose_id = tp.id',
+            'tbl_ledgers l'        => 'l.ledger_id = av.ledger_id'];
+        $where = [
+            'av.journal_voucher_id' => $journal_voucher_id,
+            'av.delete_status'    => 0];
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'join'   => $join
         );
         return $data;
     }
