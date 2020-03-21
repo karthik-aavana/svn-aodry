@@ -172,7 +172,7 @@ class Deposit extends MY_Controller {
             }            
         }
 
-        $ledger_id = $this->input->post('ledger_id');
+        /*$ledger_id = $this->input->post('ledger_id');
 
         $general_ledger = $this->config->item('general_ledger');
         if($type == 'fixed deposit'){            
@@ -203,7 +203,79 @@ class Deposit extends MY_Controller {
             }
         }
            
-         $this->db->query("UPDATE tbl_ledgers SET ledger_name='{$partner_ledger_name}' WHERE ledger_id='{$ledger_id}'");
+         $this->db->query("UPDATE tbl_ledgers SET ledger_name='{$partner_ledger_name}' WHERE ledger_id='{$ledger_id}'");*/
+         $general_ledger = $this->config->item('general_ledger');
+        if($type == 'fixed deposit'){            
+            $default_fixed_id = $general_ledger['Fixed_Deposit'];
+            $partner_ledger_name = $this->ledger_model->getDefaultLedgerId($default_fixed_id);
+            $partner_ary = array(
+                        'ledger_name' => $deposit_name,
+                        'second_grp' => '',
+                        'primary_grp' => '',
+                        'main_grp' => 'Current Assets',
+                        'default_ledger_id' => $default_fixed_id,
+                        'default_value' => 0,
+                        'amount' => 0
+                    );
+                if(!empty($partner_ledger_name)){
+                    $partner_ledger = $partner_ledger_name->ledger_name;                    
+                    $partner_ledger = str_ireplace('{{X}}',$deposit_name, $partner_ledger);
+                    $partner_ary['ledger_name'] = $partner_ledger;
+                    $partner_ary['primary_grp'] = $partner_ledger_name->sub_group_1;
+                    $partner_ary['second_grp'] = $partner_ledger_name->sub_group_2;
+                    $partner_ary['main_grp'] = $partner_ledger_name->main_group;
+                    $partner_ary['default_ledger_id'] = $partner_ledger_name->ledger_id;
+                }
+                $deposit_ledger_id = $this->ledger_model->getGroupLedgerId($partner_ary);  
+        }elseif($type == 'recurring deposit'){
+            
+            $default_fixed_id = $general_ledger['Recurring_Deposit'];
+            $partner_ledger_name = $this->ledger_model->getDefaultLedgerId($default_fixed_id);
+            
+            $partner_ary = array(
+                        'ledger_name' => $deposit_name,
+                        'second_grp' => '',
+                        'primary_grp' => '',
+                        'main_grp' => 'Current Assets',
+                        'default_ledger_id' => $default_fixed_id,
+                        'default_value' => 0,
+                        'amount' => 0
+                    );
+                if(!empty($partner_ledger_name)){
+                    $partner_ledger = $partner_ledger_name->ledger_name;                    
+                    $partner_ledger = str_ireplace('{{X}}',$deposit_name, $partner_ledger);
+                    $partner_ary['ledger_name'] = $partner_ledger;
+                    $partner_ary['primary_grp'] = $partner_ledger_name->sub_group_1;
+                    $partner_ary['second_grp'] = $partner_ledger_name->sub_group_2;
+                    $partner_ary['main_grp'] = $partner_ledger_name->main_group;
+                    $partner_ary['default_ledger_id'] = $partner_ledger_name->ledger_id;
+                }
+                $deposit_ledger_id = $this->ledger_model->getGroupLedgerId($partner_ary); 
+        }elseif($type == 'others'){
+            
+            $default_fixed_id = $general_ledger['Other_Deposits']; 
+            $partner_ledger_name = $this->ledger_model->getDefaultLedgerId($default_fixed_id);
+            
+            $partner_ary = array(
+                        'ledger_name' => $deposit_name,
+                        'second_grp' => '',
+                        'primary_grp' => '',
+                        'main_grp' => 'Current Assets',
+                        'default_ledger_id' => $default_fixed_id,
+                        'default_value' => 0,
+                        'amount' => 0
+                    );
+                if(!empty($partner_ledger_name)){
+                    $partner_ledger = $partner_ledger_name->ledger_name;                    
+                    $partner_ledger = str_ireplace('{{X}}',$deposit_name, $partner_ledger);
+                    $partner_ary['ledger_name'] = $partner_ledger;
+                    $partner_ary['primary_grp'] = $partner_ledger_name->sub_group_1;
+                    $partner_ary['second_grp'] = $partner_ledger_name->sub_group_2;
+                    $partner_ary['main_grp'] = $partner_ledger_name->main_group;
+                    $partner_ary['default_ledger_id'] = $partner_ledger_name->ledger_id;
+                }
+                $deposit_ledger_id = $this->ledger_model->getGroupLedgerId($partner_ary); 
+        }
             $deposit_data = array(
                 "deposit_code" =>  $this->input->post('deposit_code'),
                 "deposit_type" => $this->input->post('cmb_deposit_type'),
@@ -213,7 +285,7 @@ class Deposit extends MY_Controller {
                 "comments" => $this->input->post('comments'),
                 "branch_id" => $this->session->userdata('SESS_BRANCH_ID'),
                 "updated_date" => date('Y-m-d'),
-                "ledger_id" => $ledger_id,
+                "ledger_id" => $deposit_ledger_id,
                 "updated_user_id" => $this->session->userdata('SESS_USER_ID') 
             );
 
