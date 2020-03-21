@@ -102,6 +102,7 @@ $this->load->view('layout/header');
             $('[name=deposit_name_used]').val('0');
             $('#err_deposit_name').text('');
             if(deposit_name != ''){
+                $('.add_deposit').attr('disabled', true);
             xhr = $.ajax({
                 url: '<?= base_url(); ?>deposit/DepositValidation',
                 type: 'post',
@@ -127,6 +128,7 @@ $this->load->view('layout/header');
             var deposit_tye = $('#cmb_deposit_type').val();
             $('[name=deposit_name_used]').val('0');
             if(deposit_bank != ''){
+                $('.add_deposit').attr('disabled', true);
             xhr = $.ajax({
                 url: '<?= base_url(); ?>deposit/BankValidation',
                 type: 'post',
@@ -136,6 +138,8 @@ $this->load->view('layout/header');
                     if (json.rows > 0) {
                         $('#err_bank').text('Bank Name already used!');
                         $('[name=deposit_name_used]').val('1');
+                    }else{
+                        $('.add_deposit').attr('disabled', false);
                     }
                 }, complete: function () {
 

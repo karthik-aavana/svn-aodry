@@ -120,7 +120,7 @@ $this->load->view('layout/header');
 <script type="text/javascript">
     var type = '<?php echo $data[0]->deposit_type; ?>';
     $(document).ready(function () {
-        $('.add_deposit').attr('disabled', true);
+        
         $('[name=txt_deposit_name]').on('blur', function () {
 
             var deposit_name = $(this).val();
@@ -128,6 +128,7 @@ $this->load->view('layout/header');
             $('[name=deposit_name_used]').val('0');
             $('#err_deposit_name').text('');
             if(deposit_name != ''){
+                $('.add_deposit').attr('disabled', true);
             xhr = $.ajax({
                 url: '<?= base_url(); ?>deposit/DepositValidation',
                 type: 'post',
@@ -155,6 +156,7 @@ $this->load->view('layout/header');
             $('[name=deposit_name_used]').val('0');
             $('#err_bank').text('');
             if(deposit_bank != ''){
+
             xhr = $.ajax({
                 url: '<?= base_url(); ?>deposit/BankValidation',
                 type: 'post',
@@ -164,6 +166,9 @@ $this->load->view('layout/header');
                     if (json.rows > 0) {
                         $('#err_bank').text('Bank Name already used!');
                         $('[name=deposit_name_used]').val('1');
+                        $('.add_deposit').attr('disabled', true);
+                    }else{
+                        $('.add_deposit').attr('disabled', false);
                     }
                 }, complete: function () {
 
