@@ -42,10 +42,25 @@ $this->load->view('layout/header');
                                             <span class="validation-color" id="err_product_code"><?php echo form_error('product_code'); ?></span>
                                         </div>
                                     </div>
-                                    <div class="col-md-3 product_name">
+                                    <div class="col-md-3">
                                         <div class="form-group">
-                                            <label for="product_name">Product Name <span class="validation-color">*</span></label>
-                                            <input type="text" class="form-control" id="product_name_edit" name="product_name_edit" value="<?php echo $data[0]->product_name; ?>" tabindex="2">
+                                            <label for="product_name_edit">Product Name <span class="validation-color">*</span></label>
+                                             <div class="input-group">
+                                        <div class="input-group-addon">
+                                           <a href="" data-toggle="modal" data-target="#master_product_modal" data-name="product" class="pull-right">+</a>
+                                       </div>
+                                        <select name="product_name_edit" id="product_name_edit" class="form-control select2" >
+                                            <option value="">Select Product</option>
+                                            <?php                                            
+                                            foreach ($product_master as $value) {
+                                                if($data[0]->product_name == $value->master_product_name){
+                                                    echo '<option value="'.$value->master_product_name.'" selected>'.$value->master_product_name.'</option>';
+                                                }else{
+                                                echo '<option value="'.$value->master_product_name.'">'.$value->master_product_name.'</option>';
+                                                }
+                                            }
+                                            ?>
+                                        </select></div>
                                             <span class="validation-color" id="err_product_name"><?php echo form_error('product_name'); ?></span>
                                         </div>
                                     </div>
@@ -589,6 +604,7 @@ if (in_array($subcategory_module_id, $active_add)) {
     $this->load->view('subcategory/subcategory_modal');
 }
 //$this -> load -> view('product/tds_modal');
+$this->load->view('product/master_product_modal');
 ?>
 <script type="text/javascript">
     $(document).ready(function () {

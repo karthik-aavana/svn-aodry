@@ -161,7 +161,9 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                             ?>
                                             <label for="Grn_no">GR Number</label>
                                             <input type="number" class="form-control" id="grn_number" name="grn_number" value="<?=end($last_val);?>" />
-                                            <span class = "validation-color" id = "err_invoice_number"></span>
+                                            <input type="hidden" name="purchase_id" value="0">
+                                            <input type="hidden" class="form-control" id="grn_used" name="grn_used" >
+                                            <span class = "validation-color" id = "err_grn_number"></span>
                                         </div>
                                     </div>                                    
                                     <div class="col-sm-3">
@@ -171,10 +173,10 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                 <input type="text" class="form-control datepicker" id="grn_date" name="grn_date" value="<?php echo $date; ?>" autocomplete="off">
                                                 <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
                                             </div>
-                                            <span class="validation-color" id="err_date"></span>
+                                            <span class="validation-color" id="err_grn_date"></span>
                                         </div>
                                     </div>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-3" style="display: none;">
                                     <div class="form-group">
                                         <label for="department">Department<span class="validation-color">*</span></label>
                                          <div class="input-group">
@@ -193,7 +195,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                         <span class="validation-color" id="err_department"></span>
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-3"  style="display: none;">
                                     <div class="form-group">
                                          <label for="subdepartment">Subdepartment</label>
                                          <div class="input-group">
@@ -664,4 +666,29 @@ if ($charges_sub_module == 1) {
     $('#err_purchase_code').text('Please select the supplier to do purchase.');
     $('.search_purchase_code').hide();
     $('#input_purchase_code').prop('disabled', true);
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('[name=grn_number]').on('blur', function () {
+            var grn_number = $(this).val();
+            $('[name=grn_used]').val('0');
+            $('#err_grn_number').text('');
+            if(grn_number != ''){
+            xhr = $.ajax({
+                url: '<?= base_url(); ?>purchase/GrnValidation',
+                type: 'post',
+                data: {grn_number: grn_number, id: 0},
+                dataType: 'json',
+                success: function (json) {
+                    if (json.rows > 0) {
+                        $('#err_grn_number').text('GR Number already used!');
+                        $('[name=grn_used]').val('1');
+                    }
+                }, complete: function () {
+
+                }
+            })
+            }
+        });
+    });    
 </script>

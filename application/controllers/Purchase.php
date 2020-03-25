@@ -287,6 +287,12 @@ class Purchase extends MY_Controller {
                             $cols .= '<span data-backdrop="static" data-keyboard="false" class="delete_button" data-toggle="modal" data-target="#delete_modal" data-id="' . $purchase_id . '" data-path="purchase/delete" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?" ><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" href="#" title="Delete Purchase" ><i class="fa fa-trash-o"></i></a></span>';
                         }
                     }
+                    $LeatherCraft_id = $this->config->item('LeatherCraft');
+
+                    if($LeatherCraft_id == $this->session->userdata('SESS_BRANCH_ID')){
+                        $cols .= '<span><a href="' .base_url('purchase/exportProductExcel/') . $purchase_id.'" target="_blank" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Voucher"><i class="fa fa-eye"></i></a></span>';
+                    }
+                    
                     $cols .= '</div></div>';
                     $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
                     $send_data[] = $nestedData;
@@ -588,13 +594,13 @@ class Purchase extends MY_Controller {
         $purchase_data['inclusion_other_charge_tax_id'] = $this->input->post('inclusion_other_charge_tax_id') ? (float) $this->input->post('inclusion_other_charge_tax_id') : 0;
         $purchase_data['exclusion_other_charge_tax_id'] = $this->input->post('exclusion_other_charge_tax_id') ? (float) $this->input->post('exclusion_other_charge_tax_id') : 0;
 
-        if(@$this->input->post('cmb_department')){
+        /*if(@$this->input->post('cmb_department')){
             $purchase_data['department_id'] = $this->input->post('cmb_department');
         }
         
         if(@$this->input->post('cmb_subdepartment')){
             $purchase_data['sub_department_id'] = $this->input->post('cmb_subdepartment');
-        }
+        }*/
 
         $round_off_value = $purchase_data['purchase_grand_total'];
         if ($section_modules['access_common_settings'][0]->round_off_access == "yes" && $this->input->post('round_off_key') == "yes") {
@@ -676,12 +682,17 @@ class Purchase extends MY_Controller {
             $js_data = json_decode($purchase_item_data);
             $js_data               = array_reverse($js_data);
             $item_table = $this->config->item('purchase_item_table');
-
+            $LeatherCraft_id = $this->config->item('LeatherCraft');
             if (!empty($js_data)) {
                 $js_data1 = array();
                 foreach ($js_data as $key => $value) {
                     if ($value != null && $value != '') {
-                        $item_id = $value->item_id;
+                        if($LeatherCraft_id == $this->session->userdata('SESS_BRANCH_ID')){
+                           $item_id =  $this->createBatchProduct($value->item_id,$this->input->post('grn_number'),$this->input->post('supplier'));
+                        }else{
+                            $item_id = $value->item_id;
+                        }
+                        
                         $item_type = $value->item_type;
                         $quantity = $value->item_quantity;
                         $purchase_item_unit_price_after_discount = ($value->item_price ? (float) $value->item_price : 0);
@@ -690,7 +701,7 @@ class Purchase extends MY_Controller {
                             $purchase_item_unit_price_after_discount = ($value->item_taxable_value / $value->item_quantity);
 
                         $item_data = array(
-                            "item_id" => $value->item_id,
+                            "item_id" => $item_id,
                             "item_type" => $value->item_type,
                             "purchase_item_quantity" => $value->item_quantity ? (float) $value->item_quantity : 0,
                             "purchase_item_unit_price" => $value->item_price ? (float) $value->item_price : 0,
@@ -787,13 +798,13 @@ class Purchase extends MY_Controller {
                                 'product_quantity' => $product_quantity);
                             /* print_r($stockData); */
                             $where = array(
-                                'product_id' => $value->item_id);
+                                'product_id' => $item_id);
                             $product_table = $this->config->item('product_table');
                             $this->general_model->updateData($product_table, $stockData, $where);
 
                             // quantity history
                             $history = array(
-                                "item_id" => $value->item_id,
+                                "item_id" => $item_id,
                                 "item_type" => 'product',
                                 "reference_id" => $purchase_id,
                                 "reference_number" => $invoice_number,
@@ -3552,12 +3563,12 @@ class Purchase extends MY_Controller {
         $purchase_data['exclusion_other_charge_tax_id'] = $this->input->post('exclusion_other_charge_tax_id') ? (float) $this->input->post('exclusion_other_charge_tax_id') : 0;
         
         /* customize for leather craft*/
-         if(@$this->input->post('cmb_department')){
+        /* if(@$this->input->post('cmb_department')){
             $purchase_data['department_id'] = $this->input->post('cmb_department');
         }
         if(@$this->input->post('cmb_subdepartment')){
             $purchase_data['sub_department_id'] = $this->input->post('cmb_subdepartment');
-        }
+        }*/
 
         $round_off_value = $purchase_data['purchase_grand_total'];
 
@@ -3795,20 +3806,32 @@ class Purchase extends MY_Controller {
                             unset($old_item_ids[$item_key]);
                             $purchase_item_id = $old_purchase_items[$item_key]->purchase_item_id;
                             array_push($not_deleted_ids, $purchase_item_id);
+                            $item_id = $value->item_id;
+                            if($LeatherCraft_id == $this->session->userdata('SESS_BRANCH_ID')){
+                                    $item_id =  $this->updateBarcodeProduct($item_id,$this->input->post('grn_number'),$this->input->post('supplier'));
+                            }
+                            
                             $where = array('purchase_item_id' => $purchase_item_id);
                             $this->general_model->updateData($table, $item_data, $where);
                         } else {
+                                if($LeatherCraft_id == $this->session->userdata('SESS_BRANCH_ID')){
+                                    $item_id =  $this->createBatchProduct($value->item_id,$this->input->post('grn_number'),$this->input->post('supplier'));
+                                }else{
+                                    $item_id = $value->item_id;
+                                }
+                                $item_data['item_id'] = $item_id;
+
                             $this->general_model->insertData($table, $item_data);
                         }
                         /* update product stock */
                         if ($value->item_type == "product" || $value->item_type == 'product_inventory') {
                             $product_string = '*';
                             $product_table = 'products';
-                            $product_where = array('product_id' => $value->item_id);
+                            $product_where = array('product_id' => $item_id);
                             $product = $this->general_model->getRecords($product_string, $product_table, $product_where, $order = "");
                             $product_qty = bcadd($product[0]->product_quantity, $quantity, $section_modules['access_common_settings'][0]->amount_precision);
                             /* update Product Price */
-                            $pro_price = $this->getAVGItemPrice($value->item_id);
+                            $pro_price = $this->getAVGItemPrice($item_id);
                             /* END */
                             $product_data = array(
                                 'product_price' => $pro_price,
@@ -3818,7 +3841,7 @@ class Purchase extends MY_Controller {
 
                             //update stock history
                             $where = array(
-                                'item_id' => $value->item_id,
+                                'item_id' => $item_id,
                                 'reference_id' => $purchase_id,
                                 'reference_type' => 'purchase',
                                 'delete_status' => 0);
@@ -3836,7 +3859,7 @@ class Purchase extends MY_Controller {
                             } else {
                                 // quantity history
                                 $history = array(
-                                    "item_id" => $value->item_id,
+                                    "item_id" => $item_id,
                                     "item_type" => 'product',
                                     "reference_id" => $purchase_id,
                                     "reference_number" => $invoice_number,
@@ -4920,5 +4943,259 @@ class Purchase extends MY_Controller {
               
         redirect('purchase/edit/'.$product_id, 'refresh');
     }
+
+
+    public function GrnValidation(){
+        $grn_number = trim($this->input->post('grn_number'));
+        $id = $this->input->post('id');
+        
+        $rows = $this->db->query("SELECT purchase_id FROM  purchase WHERE purchase_grn_number = '".$grn_number."' AND purchase_id != '{$id}' ")->num_rows();
+
+        echo json_encode(array('rows' => $rows ));
+    }
+
+    public function exportProductExcel($id){
+       // $from_date = strtotime(date('Y-m-d'));
+        require_once APPPATH . "/third_party/PHPExcel.php";
+        $object = new PHPExcel();
+
+        $table_columns = array("Barcode", "Article", "COLOUR", "SIZE", "Qty", "MRP", "BRAND", "Category", "Sub Category", "HSN Code");
+
+        $column = 0;
+
+        foreach($table_columns as $field){
+            $object->getActiveSheet()->setCellValueByColumnAndRow($column, 1, $field);
+            $column++;
+        }
+        $id = $this->encryption_url->decode($id);
+        $list_data = $this->common->purchase_product_list_field($id);
+        $posts = $this->general_model->getPageJoinRecords($list_data);
+        // echo '<pre>';
+        // print_r($posts);
+        // exit();
+        $excel_row = 2;
+        if(!empty($posts)){            
+            foreach ($posts as $key => $value) {
+                $combination_id = $value->product_combination_id;
+                    $colour_val = '-';
+                    $size_val = '-';
+                    if($combination_id != ''){
+                     $combination_data = $this->general_model->getRecords('*', 'product_combinations', array(
+                    'combination_id'   => $combination_id,
+                    'branch_id'     => $this->session->userdata("SESS_BRANCH_ID") ));
+                    $varient_value_id = $combination_data[0]->varient_value_id;
+
+                    $sql = "SELECT V.varient_key,VV.varients_value  FROM  varients_value VV
+                    JOIN varients V ON V.varients_id = VV.varients_id
+                     WHERE varients_value_id IN (".$varient_value_id.")";
+                     $qry = $this->db->query($sql);                    
+                     $key = '';
+                     if($qry->num_rows() > 0){
+                        $var_lal = $qry->result_array();
+                        foreach ($var_lal as $key1 => $val) {
+                            $key = strtolower($val['varient_key']);
+                            if($key == 'colour' || $key == 'colours' || $key == 'color'|| $key == 'colors'){
+                               $colour_val = $val['varients_value'];
+                            }
+
+                            if($key == 'size' || $key == 'sizes'){
+                               $size_val = $val['varients_value'];
+                            }
+                        }
+                    }
+                }
+                $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $value->product_barcode);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $value->product_code);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $colour_val);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $size_val);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $value->purchase_item_quantity);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $value->product_mrp_price);  
+                $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $value->brand_name);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(7, $excel_row, $value->category_name);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, $value->sub_category_name);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(9, $excel_row, $value->product_hsn_sac_code);
+                $excel_row++;
+            }
+        }
+        $object_writer = PHPExcel_IOFactory::createWriter($object, 'Excel5');
+        $file_name = "Purchase Product Data.xls";
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'.$file_name.'"');
+        $object_writer->save('php://output');
+    }
+
+    function createBatchProduct($item_id,$grn_number,$supplier_id){
+        $barcode = '';
+
+        $sup_data  = $this->general_model->getRecords('supplier_code', 'supplier', array(
+        'branch_id'     => $this->session->userdata('SESS_BRANCH_ID'),
+        'delete_status' => 0,
+        'supplier_id'  => $supplier_id));
+        $vendor_code = $sup_data[0]->supplier_code;
+
+        $data  = $this->general_model->getRecords('*,count(*) num ', 'products', array(
+        'branch_id'     => $this->session->userdata('SESS_BRANCH_ID'),
+        'delete_status' => 0,
+        'product_id'  => $item_id));
+        $article_code = $data[0]->product_code;
+        $combination_id = $data[0]->product_combination_id;
+
+            $colour_code = '';
+            $size_val = '';
+            if($combination_id != ''){
+                 $combination_data = $this->general_model->getRecords('*', 'product_combinations', array(
+                'combination_id'   => $combination_id,
+                'branch_id'     => $this->session->userdata("SESS_BRANCH_ID") ));
+                $varient_value_id = $combination_data[0]->varient_value_id;
+
+                $sql = "SELECT V.varient_key,VV.varients_value,VV.variant_value_code FROM  varients_value VV
+                JOIN varients V ON V.varients_id = VV.varients_id
+                 WHERE varients_value_id IN (".$varient_value_id.")";
+                 $qry = $this->db->query($sql);                    
+                 $key = '';
+                 if($qry->num_rows() > 0){
+                    $var_lal = $qry->result_array();
+                    foreach ($var_lal as $key1 => $val) {
+                        $key = strtolower($val['varient_key']);
+                        if($key == 'colour' || $key == 'colours' || $key == 'color'|| $key == 'colors'){
+                           $colour_code = $val['variant_value_code'];
+                        }
+
+                        if($key == 'size' || $key == 'sizes'){
+                               $size_val = $val['varients_value'];
+                        }
+                    }
+                }
+
+            }
+            $barcode = $vendor_code.$grn_number.$article_code. $colour_code.$size_val;
+            
+        $this->db->select('item_id');
+        $this->db->from('purchase_item');
+        $this->db->where('item_id',$item_id);
+        $this->db->where('delete_status',0);
+        $this->db->where('item_type','product');
+        $get_pi_qry = $this->db->get();
+        $ref_item_id = $get_pi_qry->result();
+        $product_data = array();
+        if(!empty($ref_item_id)){
+            $num = $data[0]->num;
+            $num = (int) $num + 1;
+            $batch = "BATCH-0".$num;
+            
+            $product_data["product_code"] = $data[0]->product_code;
+            $product_data["product_name"] = $data[0]->product_name;
+            $product_data["product_hsn_sac_code"] = $data[0]->product_hsn_sac_code;
+            $product_data["product_category_id"] = $data[0]->product_category_id;
+            $product_data["product_subcategory_id"] = $data[0]->product_subcategory_id;
+            $product_data["product_quantity"] = $data[0]->product_quantity;
+            $product_data["product_unit"] = $data[0]->product_unit;
+            $product_data["product_price"] = $data[0]->product_price;
+            $product_data["product_tds_id"] = $data[0]->product_tds_id;
+            $product_data["product_tds_value"] = $data[0]->product_tds_value;
+            $product_data["product_gst_id"] = $data[0]->product_gst_id;
+            $product_data["product_gst_value"] = $data[0]->product_gst_value;
+            $product_data["product_discount_id"] = $data[0]->product_discount_id;
+            $product_data["product_details"] = $data[0]->product_details;
+            $product_data["is_assets"] = $data[0]->is_assets;
+            $product_data["is_varients"] = $data[0]->is_varients;
+            $product_data["product_unit_id"] = $data[0]->product_unit_id;
+            $product_data["product_type"] = $data[0]->product_type;
+            $product_data["product_mrp_price"] = $data[0]->product_mrp_price;
+            $product_data["product_selling_price"] = $data[0]->product_selling_price;
+            $product_data["product_sku"] = $data[0]->product_sku;
+            $product_data["product_serail_no"] = $data[0]->product_serail_no;
+            $product_data["product_image"] = $data[0]->product_image;
+            $product_data["added_date"] =  date('Y-m-d');
+            $product_data["product_batch"] = $batch;
+            $product_data['batch_parent_product_id'] = $item_id;
+            $product_data["added_user_id"] = $this->session->userdata('SESS_USER_ID');
+            $product_data["branch_id"] = $this->session->userdata('SESS_BRANCH_ID');
+            $product_data['batch_serial'] = $data[0]->batch_serial;
+            $product_data['margin_discount_value'] = $data[0]->margin_discount_value;
+            $product_data['margin_discount_id'] = $data[0]->margin_discount_id;
+            $product_data['product_discount_value'] = $data[0]->product_discount_value;        
+            $product_data['product_basic_price'] = $data[0]->product_basic_price;
+            $product_data['product_profit_margin'] = $data[0]->product_profit_margin;
+            $product_data['brand_id'] = $data[0]->brand_id;
+            $product_data['product_opening_quantity'] = 0;
+            $product_data['packing'] = $data[0]->packing;
+            $product_data['exp_date'] = $data[0]->exp_date;
+            $product_data['mfg_date'] = $data[0]->mfg_date;
+            $product_data['equal_unit_number'] = $data[0]->equal_unit_number;
+            $product_data['equal_uom_id'] = $data[0]->equal_uom_id;
+            $product_data['product_combination_id'] = $data[0]->product_combination_id;
+            $product_data['product_barcode'] = $barcode;
+            $product_data['GRN' = $grn_number;
+
+            $product_id = $this->general_model->insertData('products', $product_data);
+            
+        }else{  
+            $update_barcode = array('product_barcode' => $barcode,'GRN' => $grn_number);
+            $this->general_model->updateData('products', $update_barcode, array('product_id' => $item_id));           
+          $product_id = $item_id;   
+        }
+
+        return $product_id;
+
+    }
+
+
+    function updateBarcodeProduct($item_id,$grn_number,$supplier_id){
+        $barcode = '';
+
+        $sup_data  = $this->general_model->getRecords('supplier_code', 'supplier', array(
+        'branch_id'     => $this->session->userdata('SESS_BRANCH_ID'),
+        'delete_status' => 0,
+        'supplier_id'  => $supplier_id));
+        $vendor_code = $sup_data[0]->supplier_code;
+
+        $data  = $this->general_model->getRecords('*,count(*) num ', 'products', array(
+        'branch_id'     => $this->session->userdata('SESS_BRANCH_ID'),
+        'delete_status' => 0,
+        'product_id'  => $item_id));
+        $article_code = $data[0]->product_code;
+        $combination_id = $data[0]->product_combination_id;
+
+            $colour_code = '';
+            $size_val = '';
+            if($combination_id != ''){
+                 $combination_data = $this->general_model->getRecords('*', 'product_combinations', array(
+                'combination_id'   => $combination_id,
+                'branch_id'     => $this->session->userdata("SESS_BRANCH_ID") ));
+                $varient_value_id = $combination_data[0]->varient_value_id;
+
+                $sql = "SELECT V.varient_key,VV.varients_value,VV.variant_value_code FROM  varients_value VV
+                JOIN varients V ON V.varients_id = VV.varients_id
+                 WHERE varients_value_id IN (".$varient_value_id.")";
+                 $qry = $this->db->query($sql);                    
+                 $key = '';
+                 if($qry->num_rows() > 0){
+                    $var_lal = $qry->result_array();
+                    foreach ($var_lal as $key1 => $val) {
+                        $key = strtolower($val['varient_key']);
+                        if($key == 'colour' || $key == 'colours' || $key == 'color'|| $key == 'colors'){
+                           $colour_code = $val['variant_value_code'];
+                        }
+
+                        if($key == 'size' || $key == 'sizes'){
+                               $size_val = $val['varients_value'];
+                        }
+                    }
+                }
+
+            }
+            $barcode = $vendor_code.$grn_number.$article_code. $colour_code.$size_val;
+        
+              
+            $update_barcode = array('product_barcode' => $barcode,'GRN' => $grn_number);
+            $this->general_model->updateData('products', $update_barcode, array('product_id' => $item_id));           
+          $product_id = $item_id;   
+        
+
+        return $product_id;
+
+    }
+
 
 }

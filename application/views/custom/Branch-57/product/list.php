@@ -50,7 +50,7 @@ $this->load->view('layout/header');
                             <?php
                             if (in_array($product_module_id, $active_add)) {
                                 ?>
-                                <a class="btn btn-sm btn-info pull-right" href="<?php echo base_url('product/product_batchList'); ?>">Batch</a>
+                                <!-- <a class="btn btn-sm btn-info pull-right" href="<?php// echo base_url('product/product_batchList'); ?>">Batch</a> -->
                                 <a class="btn btn-sm btn-info pull-right" href="<?php echo base_url('product/add'); ?>">Add Product</a>
                             <?php }
                             ?>
@@ -69,7 +69,7 @@ $this->load->view('layout/header');
                                 <thead>
                                     <tr>
                                         <th width="2%">#</th>
-                                        <th>Product Code</th>
+                                        <th>Article</th>
                                         <th>Product Name</th>
                                         <th>Product Type</th>
                                         <th>HSN Code</th>

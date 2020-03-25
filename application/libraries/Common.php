@@ -5994,18 +5994,28 @@ class Common
         return $data;
     }
 
-    public function mainProduct_list_field(){
+    public function mainProduct_list_field($LeatherCraft_id){
         $string             = "p.*,c.category_name,u.first_name,u.last_name,m.uom,b.brand_name";
         $table              = "products p";
         $join['category c'] = "c.category_id=p.product_category_id";
         $join['users u']    = "u.id = p.added_user_id";
         $join['uqc m']    = 'm.id = p.product_unit_id' . '#' . 'left';
         $join['brand b']    = 'b.brand_id = p.brand_id' . '#' . 'left';
-        $where = array(
+        if($LeatherCraft_id == $this->ci->session->userdata('SESS_BRANCH_ID')){
+            $where = array(
+            'p.batch_parent_product_id' => 0,
+            'p.branch_id'     => $this->ci->session->userdata('SESS_BRANCH_ID'),
+            'p.delete_status' => 0,
+            'p.product_combination_id' => NULL
+            );
+        }else{
+            $where = array(
             'p.batch_parent_product_id' => 0,
             'p.branch_id'     => $this->ci->session->userdata('SESS_BRANCH_ID'),
             'p.delete_status' => 0
-        );
+            );
+        }
+        
         $order = [
             "p.product_id" => "desc"];
         $filter = array(
@@ -14576,6 +14586,32 @@ public function tds_report_sales_list(){
             'table'  => $table,
             'where'  => $where,
             'join'   => $join
+        );
+        return $data;
+    }
+
+    public function purchase_product_list_field($id){
+        $string = 'pr.product_barcode, pr.product_code, pr.product_mrp_price, pr.product_hsn_sac_code, pr.product_combination_id, PI.purchase_item_quantity, CT.category_name, SC.sub_category_name, BD.brand_name, PI.item_id';
+        $table  = 'purchase_item PI';
+        $join = [
+                "products pr"  => "pr.product_id = PI.item_id and PI.item_type = 'product'" ,
+                "category CT" => "CT.category_id=pr.product_category_id",
+                "sub_category SC" => "SC.sub_category_id=pr.product_subcategory_id". "#" . "left",
+                "brand BD" => "pr.brand_id = BD.brand_id". "#" . "left"
+                ];
+        $where = array(
+            'pr.branch_id'     => $this->ci->session->userdata('SESS_BRANCH_ID'),
+            'PI.purchase_id' => $id
+        );
+        $order = ["PI.item_id" => "asc"];
+        $filter = array();
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'join'   => $join,
+            'filter' => $filter,
+            'order'  => $order
         );
         return $data;
     }

@@ -19,8 +19,7 @@ class Product extends MY_Controller
         /*$this->load->library('ProductHook');*/
     }
 
-    public function index(){
-
+    public function index(){        
         $product_module_id         = $this->config->item('product_module');
         $data['product_module_id'] = $product_module_id;
         $modules                   = $this->modules;
@@ -53,7 +52,7 @@ class Product extends MY_Controller
             $limit               = $this->input->post('length');
             $start               = $this->input->post('start');
             $order               = $columns[$this->input->post('order')[0]['column']];
-            $dir                 = $this->input->post('order')[0]['dir'];
+            $dir                 = $this->input->post('order')[0]['dir'];            
             $list_data           = $this->common->product_list_field();
             $list_data['search'] = 'all';
             $totalData           = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -156,7 +155,8 @@ class Product extends MY_Controller
             $start               = $this->input->post('start');
             $order               = $columns[$this->input->post('order')[0]['column']];
             $dir                 = $this->input->post('order')[0]['dir'];
-            $list_data           = $this->common->mainProduct_list_field();
+            $LeatherCraft_id = $this->config->item('LeatherCraft');
+            $list_data           = $this->common->mainProduct_list_field($LeatherCraft_id);
             $list_data['search'] = 'all';
             $totalData           = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered       = $totalData;
@@ -427,8 +427,6 @@ class Product extends MY_Controller
             "added_date"             => date('Y-m-d'),
             "added_user_id"          => $this->session->userdata('SESS_USER_ID'),
             "branch_id"              => $this->session->userdata('SESS_BRANCH_ID'));
-
-
         if($this->input->post('product_brand')){
             $product_data['brand_id'] = $this->input->post('product_brand');
         }
@@ -574,6 +572,10 @@ class Product extends MY_Controller
 
         $data['varients_key']     = $this->general_model->getRecords('*', 'varients', array(
             'delete_status' => 0,
+            'branch_id'     => $this->session->userdata('SESS_BRANCH_ID')));
+
+        $data['product_master']     = $this->general_model->getRecords('*', 'tbl_product_master', array(
+            'status' => 1,
             'branch_id'     => $this->session->userdata('SESS_BRANCH_ID')));
 
         // $data['varients_key'] = $this->general_model->getRecords('*', 'varients', array(
@@ -1294,6 +1296,7 @@ class Product extends MY_Controller
                                     $tcs_product_id ='';
                                     $gst_product_id = '';
                                     $discount_product_id = '';
+                                    $product_unit_id = '';
                                     /*$product_id = 0;
                                     $product_batch = '';*/
                                     $product_code   = $this->generate_invoice_number($access_settings, $primary_id, $table_name, $date_field_name, $current_date);
@@ -2105,6 +2108,9 @@ class Product extends MY_Controller
         $data['varient_value_dropdown'] = $varient_value_dropdown;
         $data['tax_gst']          = $this->tax_call_type('GST');
         $data['tax_tds']          = $this->tax_call_type('TCS');
+        $data['product_master']     = $this->general_model->getRecords('*', 'tbl_product_master', array(
+            'status' => 1,
+            'branch_id'     => $this->session->userdata('SESS_BRANCH_ID')));
         $this->load->view('product/edit', $data);
     }
 
@@ -2226,13 +2232,26 @@ class Product extends MY_Controller
         if($this->input->post('product_equal_unit')){
             $product_data['equal_uom_id'] = $this->input->post('product_equal_unit');
         }
+
+
         /*echo "<pre>";
         print_r($product_data);
         exit();*/
+        $LeatherCraft_id = $this->config->item('LeatherCraft');
         $ecomm_variant_product = array();
         if ($this->general_model->updateData('products', $product_data, array(
             'product_id' => $product_id))){
-
+            if($LeatherCraft_id == $this->session->userdata("SESS_BRANCH_ID") ){
+                $data_update_com = $this->general_model->getRecords('*', 'product_combinations', array(
+                    'product_id' => $product_id,
+                    'status' => 'Y',
+                    'branch_id' => $this->session->userdata("SESS_BRANCH_ID") ));
+               
+                foreach ($data_update_com as  $value) {                    
+                   $this->general_model->updateData('products', $product_data, array('product_combination_id' => $value->combination_id));
+                }
+            }
+        
             if(isset($_POST['combination'])){
                 $insert_product = array();
                 $product_combination_ids = $_POST['combination'];
@@ -4276,11 +4295,11 @@ class Product extends MY_Controller
                   
                     $product_id  = $post->product_id;
 
-                    $unit_price = round($post->product_price,2);
+                    $unit_price = round($post->purchase_price,2);
                     if($unit_price > 0){
                         $unit_price = $unit_price;
                     }else{
-                        $unit_price = round($post->product_selling_price,2);
+                        $unit_price = round($post->sales_price,2);
                     }
                     
                     $opening_quantity = round($post->product_opening_quantity,2);
@@ -4306,7 +4325,7 @@ class Product extends MY_Controller
                     $nestedData['purchase_qty'] = $in_qty;
                     $nestedData['sales_qty']  = $out_qty;
                     $nestedData['closing_stock'] = round($closing_stock,2);
-                    $nestedData['unit_price'] = round($unit_price,2);
+                    $nestedData['unit_price'] = $this->precise_amount($unit_price,2);
                     $nestedData['closing_value'] = $this->precise_amount($closing_value,2);
 
                         $send_data[]          = $nestedData;
@@ -4369,7 +4388,7 @@ class Product extends MY_Controller
                      
                     if(!empty($allDataInSheet)){
 
-                        if(strtolower($allDataInSheet[1]['A']) == 'article' && strtolower($allDataInSheet[1]['B']) == 'product name' && strtolower($allDataInSheet[1]['C']) == 'product type' && strtolower($allDataInSheet[1]['D']) == 'product hsn sac code' && strtolower($allDataInSheet[1]['E']) == 'category' && strtolower($allDataInSheet[1]['F']) == 'subcategory' && strtolower($allDataInSheet[1]['G']) == 'unit of measurement' && strtolower($allDataInSheet[1]['H']) == 'gst tax percentage' && strtolower($allDataInSheet[1]['I']) == 'tcs tax percentage' && strtolower($allDataInSheet[1]['J']) == 'markdown discount' && strtolower($allDataInSheet[1]['K']) == 'mrp' && strtolower($allDataInSheet[1]['L']) == 'serial number' && strtolower($allDataInSheet[1]['M']) == 'description' && strtolower($allDataInSheet[1]['N']) == 'marginal discount' && strtolower($allDataInSheet[1]['O']) == 'size' && strtolower($allDataInSheet[1]['P']) == 'colour' && strtolower($allDataInSheet[1]['Q']) == 'expiry date' && strtolower($allDataInSheet[1]['R']) == 'brand' && strtolower($allDataInSheet[1]['S']) == 'opening stock' && strtolower($allDataInSheet[1]['T']) == 'purchase price' && strtolower($allDataInSheet[1]['U']) == 'batch'){
+                        if(strtolower($allDataInSheet[1]['A']) == 'article' && strtolower($allDataInSheet[1]['B']) == 'product name' && strtolower($allDataInSheet[1]['C']) == 'product type' && strtolower($allDataInSheet[1]['D']) == 'product hsn sac code' && strtolower($allDataInSheet[1]['E']) == 'category' && strtolower($allDataInSheet[1]['F']) == 'subcategory' && strtolower($allDataInSheet[1]['G']) == 'unit of measurement' && strtolower($allDataInSheet[1]['H']) == 'gst tax percentage' && strtolower($allDataInSheet[1]['I']) == 'tcs tax percentage' && strtolower($allDataInSheet[1]['J']) == 'markdown discount' && strtolower($allDataInSheet[1]['K']) == 'mrp' && strtolower($allDataInSheet[1]['L']) == 'serial number' && strtolower($allDataInSheet[1]['M']) == 'description' && strtolower($allDataInSheet[1]['N']) == 'marginal discount' && strtolower($allDataInSheet[1]['O']) == 'size' && strtolower($allDataInSheet[1]['P']) == 'colour' && strtolower($allDataInSheet[1]['Q']) == 'expiry date' && strtolower($allDataInSheet[1]['R']) == 'brand' && strtolower($allDataInSheet[1]['S']) == 'opening stock' && strtolower($allDataInSheet[1]['T']) == 'purchase price' && strtolower($allDataInSheet[1]['U']) == 'batch' && strtolower($allDataInSheet[1]['V']) == 'ean code/barcode'){
                                 $header_row = array_shift($allDataInSheet);
                                 $product_exist = $this->general_model->GetProductName();
                                 $product_exist = array_column($product_exist, 'product_name', 'product_name');
@@ -4380,8 +4399,8 @@ class Product extends MY_Controller
                                 $sub_category = $this->general_model->GetSubCategory_bulk('product');
                                 $sub_category_id = array_column($sub_category, 'category_id_sub','subcategory_name');
                                 $sub_category= array_column($sub_category, 'sub_category_id', 'subcategory_name');
-                                $uom = $this->general_model->Get_uqc_bulk_latest('product');
-                                $uom = array_column($uom, 'uom_id', 'uom');
+                                $uom = $this->general_model->Get_uqc_bulk_leathercraft('product');
+                                $uom = array_column($uom, 'uom_id', 'uom');                                
                                 $gst = $this->general_model->Get_tax_bulk('GST');
                                 $gst = array_column($gst, 'tax_id', 'tax_value');
                                 $tcs = $this->general_model->Get_tax_bulk('TCS');
@@ -4398,6 +4417,11 @@ class Product extends MY_Controller
                                 $current_date             = date('Y-m-d');
                                 $error_array = array(); 
 
+                                $type_array = array();
+                                $type_array['raw material'] = "rawmaterial";
+                                $type_array['semi finished goods'] ="semifinishedgoods";
+                                $type_array['finished goods'] ="finishedgoods";
+
                                 foreach($allDataInSheet as $row){ 
                                     $product_code = (trim($row['A']));
                                     $product_name = strtolower(trim($row['B']));
@@ -4407,9 +4431,13 @@ class Product extends MY_Controller
                                     $name_subcategory= strtolower(trim($row['F']));
                                     $unit_of_measurement= strtolower(trim($row['G']));
                                     $product_gst= trim($row['H']);
+                                    $product_gst = rtrim($product_gst, "%");
                                     $product_tcs= trim($row['I']);
+                                    $product_tcs = rtrim($product_tcs, "%");
                                     $marginal_discount_product = trim($row['N']);
+                                    $marginal_discount_product = rtrim($marginal_discount_product, "%");
                                     $discount_product = trim($row['J']);
+                                    $discount_product = rtrim($discount_product, "%");
                                     $product_sku = '';
                                     $product_category_id = '';
                                     $product_subcategory_id = '';
@@ -4427,84 +4455,99 @@ class Product extends MY_Controller
                                     $purchase_price = trim($row['T']);
                                     $expiry_date = date('Y-m-d',strtotime($expiry_date));
                                     $product_batch = trim($row['U']);
+                                    $product_barcode = trim($row['V']);
                                     $parent_id = 0;
-                                    if($product_batch == '') $product_batch = "BATCH-01";
-                                    $next_batch = 1;
-                                    /*$product_id = 0;
-                                    $product_batch = '';*/
-                                    if(!$product_code)$product_code   = $this->generate_invoice_number($access_settings, $primary_id, $table_name, $date_field_name, $current_date);
+                                    /*$product_code   = $this->generate_invoice_number($access_settings, $primary_id, $table_name, $date_field_name, $current_date);*/
                                     $batch = $this->get_bulk_check_product($product_name,0);
 
                                     if(count($batch) > 0){
 
                                         if($product_size != '' || $product_colour != '' ){
-                                            $value = '';
-                                            $var_val_id = '';
-                                            $n = 1;
-                                            /*$product_code = $batch[0]->product_code;*/
-                                            $varient_product_id = $batch[0]->product_id;
-                                            if($product_colour != ''){
-                                                $colour_key_id = $this->get_varient_key_id('Colour');
-                                                $colour_id = $this->get_varient_value_id($product_colour,$colour_key_id);
-                                                $value .= $product_colour.' / ';
-                                                $var_val_id .= $colour_id.',';
-                                                $data_product_var_val[$n]['varients_value_id'] = $colour_id;
-                                                $data_product_var_val[$n]['varients_id'] =  $colour_key_id;
-                                                $data_product_var_val[$n]['product_varients_id'] =  $varient_product_id;
-                                                $data_product_var_val[$n]['delete_status'] =  0;
-                                                $n = $n+1;
-                                            }
-                                            if($product_size != ''){
-                                                $size_key_id = $this->get_varient_key_id('Size');
-                                                $size_value_id = $this->get_varient_value_id($product_size,$size_key_id);
-                                                $value .= $product_size.' / ';
-                                                $var_val_id .= $size_value_id.',';
-                                                $data_product_var_val[$n]['varients_value_id'] = $size_value_id;
-                                                $data_product_var_val[$n]['varients_id'] =  $size_key_id;
-                                                $data_product_var_val[$n]['product_varients_id'] =  $varient_product_id;
-                                                $data_product_var_val[$n]['delete_status'] =  0;
-                                            }
-                                            $var_val_id = rtrim($var_val_id, ",");
-                                            $value = rtrim($value, ' / ');
+                                          $value = '';
+                                          $var_val_id = '';
+                                          $n = 1;
+                                          $product_code_comb = $batch[0]->product_code;
+                                          $varient_product_id = $batch[0]->product_id;
+                                          if($product_colour != ''){
+                                             $colour_key_id = $this->get_varient_key_id('Colour');
+                                             $colour_id = $this->get_varient_value_id($product_colour,$colour_key_id);
+                                             $value .= $product_colour.' / ';
+                                             $var_val_id .= $colour_id.',';
+                                             $data_product_var_val[$n]['varients_value_id'] = $colour_id;
+                                             $data_product_var_val[$n]['varients_id'] =  $colour_key_id;
+                                             $data_product_var_val[$n]['product_varients_id'] =  $varient_product_id;
+                                             $data_product_var_val[$n]['delete_status'] =  0;
+                                             $n = $n+1;
+                                          }
+                                          if($product_size != ''){
+                                            $size_key_id = $this->get_varient_key_id('Size');
+                                            $size_value_id = $this->get_varient_value_id($product_size,$size_key_id);
+                                            $value .= $product_size.' / ';
+                                            $var_val_id .= $size_value_id.',';
+                                            $data_product_var_val[$n]['varients_value_id'] = $size_value_id;
+                                             $data_product_var_val[$n]['varients_id'] =  $size_key_id;
+                                             $data_product_var_val[$n]['product_varients_id'] =  $varient_product_id;
+                                             $data_product_var_val[$n]['delete_status'] =  0;
+                                          }
+                                          $var_val_id = rtrim($var_val_id, ",");
+                                          $value = rtrim($value, ' / ');
                                           
-                                            /*$product_batch = "BATCH-01";*/
-                                            $data_com = array();
-                                            $data_com['product_code'] = $product_code;
-                                            $data_com['combinations'] = $value;
-                                            $data_com['status'] = 'O';
-                                            $data_com['branch_id'] = $this->session->userdata("SESS_BRANCH_ID");
-                                            $data_com['branch_id'] = $this->session->userdata("SESS_BRANCH_ID");
-                                            $data_com['varient_value_id'] = $var_val_id;
-                                            $data_com['product_id'] = $varient_product_id;
-                                            $combination_id = $this->general_model->insertData('product_combinations', $data_com);
+                                          
+                                          $data_com = array();
+                                          $data_com['product_code'] = $product_code_comb;
+                                          $data_com['combinations'] = $value;
+                                          $data_com['status'] = 'N';
+                                          $data_com['branch_id'] = $this->session->userdata("SESS_BRANCH_ID");
+                                          $data_com['branch_id'] = $this->session->userdata("SESS_BRANCH_ID");
+                                          $data_com['varient_value_id'] = $var_val_id;
+                                          $data_com['product_id'] = $varient_product_id;
+                                          $combination_id = $this->general_model->insertData('product_combinations', $data_com);
                                 
-                                            $this->db->insert_batch('product_varients_value', $data_product_var_val);
-                                            $is_varients = 'O';
-                                            $product_name = $product_name.' / '.$value;
+                                          $this->db->insert_batch('product_varients_value', $data_product_var_val);
+                                          $is_varients = 'N';
+                                          $product_name = $product_name.' / '.$value;
+                                          $batch = $this->get_bulk_check_product($product_name,0);
 
-                                            $update_compina_status = array('status' => 'Y');
-                                            $this->general_model->updateData('product_combinations', $update_compina_status, array('combination_id' => $combination_id));
+                                            if(count($batch) > 0){
+                                                $batch_num=$batch[0]->num;
+                                                $number = intval($batch_num)+1;
+                                                $product_batch = 'BATCH-0'.$number; 
+                                            }else{
+                                                $product_batch = "BATCH-01";
+                                            }
+
+                                           $update_compina_status = array('status' => 'Y');
+                                             $this->general_model->updateData('product_combinations', $update_compina_status, array('combination_id' => $combination_id));
                                         }else{
-                                            /*$batch_num=$batch[0]->num;*/
-                                            $batch_num = $batch[0]->batch_serial;
-                                            $old_batch = $batch[0]->product_batch;
-                                            $parent_id = $batch[0]->product_id;
-                                            $next_batch = intval($batch_num)+1;
-                                            $alphaBatch = $this->config->item('alphaBatch');
-                                            $product_batch = $alphaBatch[$next_batch].$old_batch;
-                                            $is_varients = 'O';
+                                            $batch_num=$batch[0]->num;
+                                            $number = intval($batch_num)+1;
+                                            $product_batch = 'BATCH-0'.$number; 
+                                            $is_varients = 'N'; 
+                                             $combination_id = NULL;
                                         }                                        
                                     } else {
-                                        if($product_size != '' || $product_colour != '' ){
-                                            $is_varients = 'Y'; 
-                                        }
+                                       if($product_size != '' || $product_colour != '' ){
+                                          $is_varients = 'Y'; 
+                                       }
+                                        $product_batch = "BATCH-01";
                                     }
 
+                                    
+                                    if(($product_type == 'semifinishedgoods' || $product_type == 'finishedgoods' || $product_type == 'rawmaterial')){
+                                            $product_type = $product_type;
+                                    }else{
+                                        $p_type = '';
+                                        $p_type = $type_array[$product_type];
+                                        if($p_type != '' && !empty($p_type)){
+                                                $product_type = $p_type;
+                                        }
+                                    }
+                                     
+
                                     if($product_type != '' && !empty($product_type)){
-                                        $product_type = preg_replace('/\s+/', '', trim(strtolower($product_type)));
                                         if(($product_type == 'semifinishedgoods' || $product_type == 'finishedgoods' || $product_type == 'rawmaterial')){
-                                            if($hsn_number != '' && !empty($hsn_number)){
-                                                if(in_array($hsn_number, $hsn)){
+                                           /* if($hsn_number != '' && !empty($hsn_number)){
+                                                if(in_array($hsn_number, $hsn)){*/
                                                     if($name_category !='' && !empty($name_category)){
                                                         if(isset($category[$name_category]) && $is_add == true){
                                                            $product_category_id = $category[$name_category];
@@ -4515,20 +4558,24 @@ class Product extends MY_Controller
                                                                     if($product_category_id == $subcategory_cat_value){
                                                                         $product_subcategory_id = $sub_category[$name_subcategory];
                                                                     }else {
-                                                                        $is_add = false;
+                                                                        $product_subcategory_id = '';
+                                                                        /*$is_add = false;
                                                                         $error = "SubCategory Name is Not Exist! For Entered Category Name";
-                                                                        $error_log .= $row['F'].' Undefined SubCategory Name! <br>';
+                                                                        $error_log .= $row['F'].' Undefined SubCategory Name! <br>';*/
                                                                     }
                                                                 }else {
-                                                                    $is_add = false;
+                                                                    /*$is_add = false;
                                                                     $error = "SubCategory Name is Not Exist! Please Update Your SubCategory Name";
-                                                                    $error_log .= $row['F'].' Undefined SubCategory Name! <br>';
+                                                                    $error_log .= $row['F'].' Undefined SubCategory Name! <br>';*/
+                                                                    $product_subcategory_id = '';
                                                                 }  
                                                             }            
-                                                        }else{
-                                                            $is_add = false;
+                                                        }else{       
+                                                            $product_category_id = $this->add_category($row['E']);
+                                                            $product_sku = $this->get_product_sku_bulk($product_code,$product_category_id);
+                                                            /*$is_add = false;
                                                             $error = "Category Name is Not Exist! Please Update Your Category Name";
-                                                            $error_log .= $row['E'].' Undefined Category Name! <br>';
+                                                            $error_log .= $row['E'].' Undefined Category Name! <br>';*/
                                                         }
                                                         if(($unit_of_measurement !='' || !empty($unit_of_measurement)) && $is_add == true){
                                                             if(isset($uom[$unit_of_measurement])){
@@ -4546,21 +4593,26 @@ class Product extends MY_Controller
                                                                                     if(isset($discount[$discount_product])){
                                                                                         $discount_product_id = $discount[$discount_product];
                                                                                     }else{
-                                                                                        $is_add = false;
+                                                                                        $discount_product_id = $this->add_discount($discount_product);
+                                                                                       /* $is_add = false;
                                                                                         $error = "Marginal Discount Value is Not Exist! Please Update Your Discount value";
-                                                                                        $error_log .= $row['J'].' Undefined Marginal Discount Value! <br>'; 
+                                                                                        $error_log .= $row['J'].' Undefined Marginal Discount Value! <br>'; */
                                                                                     }
                                                                                 }
                                                                             } else {
-                                                                                $is_add = false;
+                                                                                $tax_tcs_value = $product_tcs;
+                                                                                $tcs_product_id = $this->add_tax('TCS',$tax_tcs_value);
+                                                                               /* $is_add = false;
                                                                                 $error = "TCS Value is Not Exist! Please Update Your TCS value";
-                                                                                $error_log .= $row['I'].' Undefined TCS Value! <br>';
+                                                                                $error_log .= $row['I'].' Undefined TCS Value! <br>';*/
                                                                             }
                                                                         } 
                                                                     } else {
-                                                                        $is_add = false;
-                                                                        $error = "GST Value is Not Exist! Please Update Your GST value";
-                                                                        $error_log .= $row['H'].' Undefined GST Value! <br>';
+                                                                        // $is_add = false;
+                                                                        // $error = "GST Value is Not Exist! Please Update Your GST value";
+                                                                        // $error_log .= $row['H'].' Undefined GST Value! <br>';
+                                                                        $tax_value = $product_gst;
+                                                                        $gst_product_id = $this->add_tax('GST',$tax_value);
                                                                     }
                                                                 }
                                                             } else {
@@ -4577,20 +4629,21 @@ class Product extends MY_Controller
                                                         $is_add = false;
                                                         $error = "Category Name is Empty";
                                                     }
-                                                }else{
+                                               /* }else{
                                                     $is_add = false;
                                                     $error = "HSN Number is Not Exist! Please Update HSN Data";
                                                     $error_log .= $row['D'].' Undefined HSN Number! <br>';
-                                                }
-                                            }else{
+                                                }*/
+                                            /*}else{
                                                 $is_add = false;
                                                 $error = "HSN number should not empty!";
                                                 $error_log .= $row['C'].'HSN number should not empty! <br>';
-                                            }
-                                        }else{
-                                            $is_add = false;
-                                            $error = "Incorrect Product Type!";
-                                            $error_log .= $row['C'].' Incorrect Product Type! <br>';
+                                            }*/
+                                        }else{                                           
+                                                $is_add = false;
+                                                $error = "Incorrect Product Type!";
+                                                $error_log .= $row['C'].' Incorrect Product Type! <br>';
+                                            
                                         }
                                     }else{
                                         $is_add = false;
@@ -4617,9 +4670,10 @@ class Product extends MY_Controller
                                             if(isset($discount[$marginal_discount_product])){
                                                 $marginal_discount_product_id = $discount[$marginal_discount_product];
                                             }else{
-                                                $is_add = false;
+                                                $marginal_discount_product_id = $this->add_discount($marginal_discount_product);
+                                               /* $is_add = false;
                                                 $error = "Marginal Discount Value is Not Exist! Please Update Your Discount value";
-                                                $error_log .= $row['N'].' Undefined Markdown Discount Value! <br>'; 
+                                                $error_log .= $row['N'].' Undefined Markdown Discount Value! <br>'; */
                                             }
                                         }
                                     }
@@ -4685,26 +4739,28 @@ class Product extends MY_Controller
                                             "product_discount_id" => $discount_product_id,
                                             "product_discount_value" => $this->precise_amount($discount_product,2),
                                             "product_type" => $product_type,
-                                            "is_assets" => 'O' ,
+                                            "is_assets" => 'N' ,
                                             "is_varients" => $is_varients,
                                             "delete_status" => 0,
                                             "added_date" => date('Y-m-d'),
                                             "added_user_id" => $this->session->userdata('SESS_USER_ID'),
                                             "branch_id" => $this->session->userdata('SESS_BRANCH_ID'),
                                             "exp_date" => $expiry_date,
-                                            "batch_serial" => $next_batch,
+                                            "batch_serial" => '',
                                             "batch_parent_product_id" => $parent_id,
                                             "product_basic_price" => $this->precise_amount($basic_price, 2),
                                             "margin_discount_value" => $marginal_discount_product,
                                             "margin_discount_id" => $marginal_discount_product_id,
                                             "brand_id" => $brand_id,
+                                            "product_barcode" => $product_barcode,
+                                            "product_combination_id" => $combination_id
                                         );
 
                                         $product_id = $this->general_model->insertData($table_name, $headers);
-                                        if($next_batch > 1){
+                                        /*if($next_batch > 1){
                                             $update = array('batch_serial' => $next_batch);
                                             $this->general_model->updateData('products',$update,array('product_id' => $parent_id));
-                                        }
+                                        }*/
                                         if($is_varients == 'Y'){
                                             if($product_size != '' || $product_colour != '' ){
                                                 $value = '';
@@ -4739,11 +4795,11 @@ class Product extends MY_Controller
                                                 $var_val_id = rtrim($var_val_id, ",");
                                                 $value = rtrim($value, ' / ');
                                              
-                                                /*$product_batch = "BATCH-01";*/
+                                                $product_batch = "BATCH-01";
                                                 $data_com = array();
                                                 $data_com['product_code'] = $product_code;
                                                 $data_com['combinations'] = $value;
-                                                $data_com['status'] = 'O';
+                                                $data_com['status'] = 'Y';
                                                 $data_com['branch_id'] = $this->session->userdata("SESS_BRANCH_ID");
                                                 $data_com['branch_id'] = $this->session->userdata("SESS_BRANCH_ID");
                                                 $data_com['varient_value_id'] = $var_val_id;
@@ -4751,7 +4807,7 @@ class Product extends MY_Controller
                                                 $combination_id = $this->general_model->insertData('product_combinations', $data_com);
                                    
                                                 $this->db->insert_batch('product_varients_value', $data_product_var_val);
-                                                $is_varients = 'O';
+                                              $is_varients = 'N';
                                                 $product_name = $product_name.' / '.$value;
                                                 if($combination_id){
                                                     $headers_var = array(
@@ -4763,7 +4819,7 @@ class Product extends MY_Controller
                                                         "product_serail_no" => trim($row['L']),
                                                         "product_name" => $product_name,
                                                         "product_price"  => $purchase_price,
-                                                        "batch_serial" => $next_batch,
+                                                        "batch_serial" => '',
                                                         "batch_parent_product_id" => $parent_id,
                                                         "product_unit" => $product_unit_id,
                                                         "product_unit_id" => $product_unit_id,
@@ -4779,8 +4835,8 @@ class Product extends MY_Controller
                                                         "product_discount_id" => $discount_product_id,
                                                         "product_discount_value" => $this->precise_amount($discount_product,2),
                                                         "product_type" => $product_type,
-                                                        "is_assets" => 'O' ,
-                                                        "is_varients" => 'O',
+                                                        "is_assets" => 'N' ,
+                                                        "is_varients" => 'N',
                                                         "delete_status" => 0,
                                                         "added_date" => date('Y-m-d'),
                                                         "added_user_id" => $this->session->userdata('SESS_USER_ID'),
@@ -4790,6 +4846,8 @@ class Product extends MY_Controller
                                                         "margin_discount_value" => $marginal_discount_product,
                                                         "margin_discount_id" => $marginal_discount_product_id,
                                                         "brand_id" => $brand_id,
+                                                        "product_barcode" => $product_barcode,
+                                                        "product_combination_id" => $combination_id
                                                     );
 
                                                     $product_id = $this->general_model->insertData($table_name, $headers_var);
@@ -4847,7 +4905,8 @@ class Product extends MY_Controller
                 }
             }
         }
-        /*print_r($errors_email);*/
+        /*print_r($errors_email);
+        exit;*/
         if(!empty($errors_email)){
             $to = $this->session->userdata('SESS_IDENTITY');
             $to = $this->session->userdata('SESS_EMAIL');
@@ -4906,12 +4965,107 @@ class Product extends MY_Controller
          return $value_id;
    }
    
- public function get_bulkdtee(){
+    public function get_bulkdtee(){
         $det = $this->get_varient_key_id('Colour');
         echo $det;
     }
    
-    
+    public function add_product_master(){
+        
+        $data  = $this->general_model->getRecords('count(*) as num_product', 'tbl_product_master', array(
+                'master_product_name' => trim($this->input->post('master_product_name')),
+                'branch_id'     => $this->session->userdata('SESS_BRANCH_ID') ));
+        if($data[0]->num_product == 0) {
+            $product_data  = array(
+                    "master_product_name" => trim($this->input->post('master_product_name')),
+                    "branch_id"     => $this->session->userdata('SESS_BRANCH_ID') );
+            $id = $this->general_model->insertData('tbl_product_master', $product_data);
+            $log_data  = array(
+                    'user_id'           => $this->session->userdata('SESS_USER_ID'),
+                    'table_id'          => $id,
+                    'table_name'        => 'tbl_product_master',
+                    'financial_year_id' => $this->session->userdata('SESS_FINANCIAL_YEAR_ID'),
+                    "branch_id"         => $this->session->userdata('SESS_BRANCH_ID'),
+                    'message'           => 'Product name Inserted' );
+            $this->general_model->insertData('log', $log_data);
+            $data['data']               = $this->general_model->getRecords('*', 'tbl_product_master', array(
+                    'status' => 1));
+            $data['id'] = $id;
+            echo json_encode($data);
+        }else{
+            $result = 'duplicate' ; 
+            echo json_encode($result);
+        }
+    }
 
+
+    public function add_category($category){
+            $category_code = $this->product_model->getMaxCategoryId();
+            $category_data = array(
+                    "category_code" => $category_code,
+                    "category_name" => $category,
+                    "category_type" => 'product',
+                    "added_date"    => date('Y-m-d'),
+                    "added_user_id" => $this->session->userdata('SESS_USER_ID'),
+                    "branch_id"     => $this->session->userdata('SESS_BRANCH_ID') );
+            $id   = $this->general_model->insertData('category', $category_data);
+            
+            $log_data                        = array(
+                    'user_id'           => $this->session->userdata('SESS_USER_ID'),
+                    'table_id'          => $id,
+                    'table_name'        => 'category',
+                    'financial_year_id' => $this->session->userdata('SESS_FINANCIAL_YEAR_ID'),
+                    "branch_id"         => $this->session->userdata('SESS_BRANCH_ID'),
+                    'message'           => 'Category Inserted(Subcategory)' );
+            $this->general_model->insertData('log', $log_data);            
+            return $id;
+            
+    }
+
+    public function add_tax($tax_name,$tax_value){
+        $tax_data = array(
+                "tax_name"        => $tax_name,
+                "tax_value"       => $tax_value,
+                "tax_description" => '',
+                "section_id" => 0,
+                "added_date"      => date('Y-m-d'),
+                "added_user_id"   => $this->session->userdata("SESS_USER_ID"),
+                "branch_id"       => $this->session->userdata("SESS_BRANCH_ID") );
+        if($id = $this->general_model->insertData("tax", $tax_data)){
+            $log_data = array(
+                'user_id'           => $this->session->userdata("SESS_BRANCH_ID"),
+                'table_id'          => $id,
+                'table_name'        => 'tax',
+                'financial_year_id' => $this->session->userdata('SESS_FINANCIAL_YEAR_ID'),
+                "branch_id"         => $this->session->userdata("SESS_BRANCH_ID"),
+                'message'           => 'Tax Inserted' );
+                $log_table = $this->config->item('log_table');
+                $this->general_model->insertData($log_table , $log_data);
+        }
+        return $id;
+    }
+
+    public function add_discount($percentage) {
+        $discount_data = array(
+            "discount_name" => 'Discount',
+            "discount_value" => $percentage,
+            "added_date" => date('Y-m-d'),
+            "added_user_id" => $this->session->userdata('SESS_USER_ID'),
+            "branch_id" => $this->session->userdata('SESS_BRANCH_ID'),
+            "updated_date" => "",
+            "updated_user_id" => "");
+        if($id = $this->general_model->insertData("discount", $discount_data)){
+            $log_data = array(
+                'user_id'           => $this->session->userdata("SESS_BRANCH_ID"),
+                'table_id'          => $id,
+                'table_name'        => 'discount',
+                'financial_year_id' => $this->session->userdata('SESS_FINANCIAL_YEAR_ID'),
+                "branch_id"         => $this->session->userdata("SESS_BRANCH_ID"),
+                'message'           => 'Discount Inserted' );
+                $log_table = $this->config->item('log_table');
+                $this->general_model->insertData($log_table , $log_data);
+        }
+       return $id;
+    }
 
 }

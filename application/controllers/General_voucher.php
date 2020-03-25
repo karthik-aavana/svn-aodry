@@ -3504,8 +3504,8 @@ Class General_voucher extends MY_Controller
                     $ledger_entry[$from_ledger_id]["journal_voucher_id"] = $general_voucher_id;
                     $ledger_entry[$from_ledger_id]["voucher_amount"] =  $voucher_amount;
                     $ledger_entry[$from_ledger_id]["converted_voucher_amount"] = 0;
-                    $ledger_entry[$from_ledger_id]["dr_amount"] = 0; 
-                    $ledger_entry[$from_ledger_id]["cr_amount"] =  $voucher_amount;
+                    $ledger_entry[$from_ledger_id]["dr_amount"] = $voucher_amount;
+                    $ledger_entry[$from_ledger_id]["cr_amount"] =  0;
                     $ledger_entry[$from_ledger_id]['ledger_id'] = $from_ledger_id;
 
                     $ledger_entry[$to_ledger_id]["ledger_from"] = $from_ledger_id;
@@ -3513,8 +3513,8 @@ Class General_voucher extends MY_Controller
                     $ledger_entry[$to_ledger_id]["journal_voucher_id"] = $general_voucher_id;
                     $ledger_entry[$to_ledger_id]["voucher_amount"] = $voucher_amount;
                     $ledger_entry[$to_ledger_id]["converted_voucher_amount"] = 0;
-                    $ledger_entry[$to_ledger_id]["dr_amount"] = $voucher_amount;
-                    $ledger_entry[$to_ledger_id]["cr_amount"] = 0;
+                    $ledger_entry[$to_ledger_id]["dr_amount"] = 0;
+                    $ledger_entry[$to_ledger_id]["cr_amount"] = $voucher_amount;
                     $ledger_entry[$to_ledger_id]['ledger_id'] = $to_ledger_id;
                 }else{
                     if($input_type == 'interest liability'){
@@ -6498,8 +6498,8 @@ Class General_voucher extends MY_Controller
                     $ledger_entry[$from_ledger_id]["journal_voucher_id"] = $general_voucher_id;
                     $ledger_entry[$from_ledger_id]["voucher_amount"] =  $voucher_amount;
                     $ledger_entry[$from_ledger_id]["converted_voucher_amount"] = 0;
-                    $ledger_entry[$from_ledger_id]["dr_amount"] = 0; 
-                    $ledger_entry[$from_ledger_id]["cr_amount"] =  $voucher_amount;
+                    $ledger_entry[$from_ledger_id]["dr_amount"] = $voucher_amount;
+                    $ledger_entry[$from_ledger_id]["cr_amount"] =  0;
                     $ledger_entry[$from_ledger_id]['ledger_id'] = $from_ledger_id;
 
                     $ledger_entry[$to_ledger_id]["ledger_from"] = $from_ledger_id;
@@ -6507,8 +6507,8 @@ Class General_voucher extends MY_Controller
                     $ledger_entry[$to_ledger_id]["journal_voucher_id"] = $general_voucher_id;
                     $ledger_entry[$to_ledger_id]["voucher_amount"] = $voucher_amount;
                     $ledger_entry[$to_ledger_id]["converted_voucher_amount"] = 0;
-                    $ledger_entry[$to_ledger_id]["dr_amount"] = $voucher_amount;
-                    $ledger_entry[$to_ledger_id]["cr_amount"] = 0;
+                    $ledger_entry[$to_ledger_id]["dr_amount"] = 0;
+                    $ledger_entry[$to_ledger_id]["cr_amount"] = $voucher_amount;
                     $ledger_entry[$to_ledger_id]['ledger_id'] = $to_ledger_id;
                 }else{
 

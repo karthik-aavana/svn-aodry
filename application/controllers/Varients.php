@@ -167,7 +167,7 @@ class Varients extends MY_Controller {
 
             $i = 0;
             foreach ($varient_value_data as $key => $value) {
-
+               
                 $varient_data = array(
                     'varients_id' => $varient_key,
                     'varients_value' => $varient_value_data[$i],
@@ -223,6 +223,14 @@ class Varients extends MY_Controller {
                     'added_date' => date('Y-m-d'),
                     'added_user_id' => $this->session->userdata('SESS_USER_ID'),
                     'branch_id' => $this->session->userdata('SESS_BRANCH_ID'));
+                 
+                $LeatherCraft_id = $this->config->item('LeatherCraft');
+                if($LeatherCraft_id == $this->session->userdata('SESS_BRANCH_ID')){
+                     $data  = $this->general_model->getRecords('count(*) num', 'varients_value', array('branch_id' => $this->session->userdata('SESS_BRANCH_ID'), 'delete_status' => 0, 'varients_id'  => $varient_key));
+                    $code = $data[0]->num;
+                    $varient_data['variant_value_code'] = (int) $code + 1;
+                }
+
 
                 $id = $this->general_model->insertData('varients_value', $varient_data);
                 $i++;
@@ -291,6 +299,10 @@ class Varients extends MY_Controller {
             "updated_date" => date('Y-m-d'),
             "updated_user_id" => $this->session->userdata('SESS_USER_ID'),
             "branch_id" => $this->session->userdata('SESS_BRANCH_ID'));
+            if(@$this->input->post('varient_code')){
+                $varients_value_data['variant_value_code'] = $this->input->post('varient_code');
+            }
+
         if ($this->general_model->updateData('varients_value', $varients_value_data, array(
                     'varients_value_id' => $id))) {
             $result['flag'] = true;
@@ -424,5 +436,14 @@ class Varients extends MY_Controller {
             $this->session->set_flashdata('fail', 'Cannot be Deleted.');
             redirect("varients", 'refresh');
         }
+    }
+
+    public function codeValidation(){
+        $variant_code = trim($this->input->post('variant_code'));
+        $id = $this->input->post('id');
+        
+        $rows = $this->db->query("SELECT varients_value_id FROM varients_value WHERE variant_value_code = '".$variant_code."' AND varients_value_id != '{$id}' ")->num_rows();
+
+        echo  json_encode(array('rows' => $rows ));
     }
 }

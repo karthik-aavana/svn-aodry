@@ -43,9 +43,22 @@ $this->load->view('layout/header');
                                     <div class="form-group">
                                         <label for="product_name">Product Name <span class="validation-color">*</span></label>
                                         <input type="hidden" name="product_id" id="product_id" value="0">
-                                        <input list="product_name" class="form-control" name="product_name">
+                                        <!-- <input list="product_name" class="form-control" name="product_name">
                                         <datalist id="product_name" >
-                                        </datalist>
+                                        </datalist> -->
+                                         
+                                     <div class="input-group">
+                                        <div class="input-group-addon">
+                                           <a href="" data-toggle="modal" data-target="#master_product_modal" data-name="product" class="pull-right">+</a>
+                                       </div>
+                                        <select name="product_name" id="product_name" class="form-control select2" >
+                                            <option value="">Select Product</option>
+                                            <?php                                            
+                                            foreach ($product_master as $value) {
+                                                echo '<option value="'.$value->master_product_name.'">'.$value->master_product_name.'</option>';
+                                            }
+                                            ?>
+                                        </select></div>
                                         <span class="validation-color" id="err_product_name"><?php echo form_error('product_name'); ?></span>
                                     </div>
                                 </div>
@@ -159,10 +172,10 @@ $this->load->view('layout/header');
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="product_batch">Batch<span class="validation-color">*</span></label>
-                                        <input type="text" class="form-control" name="product_batch" id="product_batch" value="BATCH-01" >
+                                        <input type="text" class="form-control" name="product_batch" id="product_batch" value="BATCH-01" readonly>
                                         <span class="validation-color" id="err_product_batch"><?php echo form_error('product_batch'); ?></span>
                                     </div>
-                                </div>
+                                </div>                                
                                 <div class="col-md-3 product_uom">
                                     <div class="form-group ">
                                         <label for="product_unit">Unit of Measurement<span class="validation-color">*</span></label>
@@ -190,7 +203,7 @@ $this->load->view('layout/header');
                                         <input type="text" class="form-control" id="product_sku" name="product_sku" value="" readonly="">
                                         <span class="validation-color" id="product_sku_code"></span>
                                     </div>
-                                </div>
+                                </div>                                
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="product_mrp">MRP<span class="validation-color">*</span></label>
@@ -387,7 +400,7 @@ $this->load->view('layout/header');
                                         <input type="number" class="form-control" id="product_price" name="product_price" value="" >
                                         <span class="validation-color" id="product_price"></span>
                                     </div>
-                                </div>
+                                </div>                                
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
@@ -464,6 +477,7 @@ $this->load->view('layout/header');
 <?php
 $this->load->view('layout/footer');
 $this->load->view('product/hsn_modal');
+$this->load->view('product/master_product_modal');
 $this->load->view('category/category_modal');
 $this->load->view('subcategory/subcategory_modal');
 $this->load->view('uqc/uom_modal');
