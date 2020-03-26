@@ -131,7 +131,7 @@ $(document).ready(function() {
             return false;
         }
         if (customer_name == null || customer_name == "") {
-            $("#err_customer_name").text("Please Enter Customer Name.");
+            $("#err_customer_name").text("Please Enter Store Name.");
             return false;
         } else {
             $("#err_customer_name").text("");
@@ -145,7 +145,7 @@ $(document).ready(function() {
             return false;
         }
         if (!customer_name.match(name_regex1)) {
-            $('#err_customer_name').text("Please Enter Valid Customer Name ");
+            $('#err_customer_name').text("Please Enter Valid Store Name ");
             return false;
         } else {
             $("#err_customer_name").text("");

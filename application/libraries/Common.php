@@ -5769,13 +5769,14 @@ class Common
     }
     public function customer_list_field()
     {
-        $string = 'cust.*,c.city_name,co.country_name,st.state_name,u.first_name,u.last_name';
+        $string = 'cust.*,c.city_name,co.country_name,st.state_name,u.first_name,u.last_name,s.store_location';
         $table  = 'customer cust';
         // $join['contact_person cp']='cp.contact_person_id=cust.customer_contact_person_id';
         $join['cities c']     = 'cust.customer_city_id=c.city_id' . '#' . 'left';
         $join['states st']    = 'cust.customer_state_id=st.state_id';
         $join['countries co'] = 'cust.customer_country_id=co.country_id';
         $join['users u']      = 'cust.added_user_id=u.id';
+        $join['shipping_address s'] = 'cust.customer_id = s.shipping_party_id' . '#' . 'left';
         $where = array(
             'cust.branch_id'     => $this->ci->session->userdata('SESS_BRANCH_ID'),
             'cust.delete_status' => 0
