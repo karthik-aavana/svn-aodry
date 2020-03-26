@@ -90,7 +90,7 @@ $(document).ready(function() {
     var customer_code_exist = 0;
     $("#customer_submit").click(function(event) {
         //var gst_regex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
-        var customer_id = $('#customer_id'),val();
+        var customer_id = $('#customer_id').val();
         var customer_code = $('#customer_code').val() ? $('#customer_code').val() : "";
         var customer_name = $('#customer_name').val() ? $('#customer_name').val() : "";
         var customer_type = $('#customer_type').val() ? $('#customer_type').val() : "";

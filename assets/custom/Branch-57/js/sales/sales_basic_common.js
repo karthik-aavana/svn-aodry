@@ -263,9 +263,9 @@ $(document).ready(function () {
                                             table_row.find('input[name^="item_quantity"]').val(quantity);
                                             new_item = false;
                                             $("#input_sales_code").val("");
-                                            calculateTable(table_row);
+                                            calculateTable(table_row);    
+                                            break;
                                         }
-                                        break;
                                     }
                                 }
                                 if(new_item == true){
@@ -306,8 +306,8 @@ $(document).ready(function () {
                                 new_item = false;
                                 $("#input_sales_code").val("");
                                 calculateTable(table_row);
+                                break;
                             }
-                            break;
                         }
                     }
                     if(new_item == true){
