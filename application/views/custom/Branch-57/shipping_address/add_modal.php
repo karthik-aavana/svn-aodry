@@ -153,7 +153,7 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="store_location">Store Location </label>
+                                <label for="store_location">Store Location<span class="validation-color">*</span></label>
                                 <input type="text" class="form-control" id="store_location" name="store_location" value=""  maxlength="50">
                                 <span class="validation-color" id="err_store_location"><?php echo form_error('store_location'); ?></span>
                             </div>

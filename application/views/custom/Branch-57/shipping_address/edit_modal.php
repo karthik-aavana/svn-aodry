@@ -150,7 +150,7 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="edit_store_location">Store Location </label>
+                                <label for="edit_store_location">Store Location<span class="validation-color">*</span></label>
                                 <input type="text" class="form-control" id="edit_store_location" name="edit_store_location" value=""  maxlength="15">
                                 <span class="validation-color" id="err_edit_store_location"><?php echo form_error('edit_store_location'); ?></span>
                             </div>
