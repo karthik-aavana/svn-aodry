@@ -4529,6 +4529,7 @@ class Product extends MY_Controller
                                        if($product_size != '' || $product_colour != '' ){
                                           $is_varients = 'Y'; 
                                        }
+                                       $combination_id = NULL;
                                         $product_batch = "BATCH-01";
                                     }
 
