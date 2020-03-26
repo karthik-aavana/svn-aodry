@@ -3800,7 +3800,7 @@ class Purchase extends MY_Controller {
                               }
                               } */
                         }
-
+                        $LeatherCraft_id = $this->config->item('LeatherCraft');
                         $table = 'purchase_item';
                         if (($item_key = array_search($value->item_id, $old_item_ids)) !== false) {
                             unset($old_item_ids[$item_key]);
