@@ -355,7 +355,7 @@ $(document).ready(function () {
         }
     });
     
-    $("[name=product_name_edit],.product_code_edit").on("blur", function (event) {
+    /*$("[name=product_name_edit],.product_code_edit").on("blur", function (event) {
         var product_code = $('[name=product_code]').val();
         var product_name = $('[name=product_name_edit]').val();
         var product_id = $('#product_id').val();
@@ -392,14 +392,14 @@ $(document).ready(function () {
                     $("#err_product_code").text("");
                     flag_exit = 0;
                 }
-                /*if (result.length > 0) {
+                if (result.length > 0) {
                     var num = result[0].num;
                     num = parseInt(num) + 1;
                     $('#product_batch').val("BATCH-0" + num);
-                } */
+                } 
             }
         });
-    });
+    });*/
 
     $("#product_category").on("change", function (event) {
          var product_code = $('#product_code').val();
@@ -417,7 +417,7 @@ $(document).ready(function () {
             }
         });
     })
-    var flag_exit = 0;
+    /*var flag_exit = 0;
     var proXhr = null;
     $("[name=product_name],[name=product_code]").on("blur", function (event) {
         var product_code = $('[name=product_code]').val();
@@ -463,7 +463,7 @@ $(document).ready(function () {
                 }
             }
         });
-    });
+    });*/
 
     $("#hsn_sac_code").on("blur", function (event) {
         if ($('#hsn_sac_code').val() != "") {
@@ -574,4 +574,6 @@ $(document).ready(function () {
             $('#product_tds_code').val("");
         }
     });
+
+    
 });

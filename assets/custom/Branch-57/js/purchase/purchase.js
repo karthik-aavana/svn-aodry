@@ -115,6 +115,28 @@ $(document).ready(function () {
 
         }
 
+        if ($('#grn_number').val() == "") {
+
+            $('#err_grn_number').text("Please Enter GR Number.");
+
+            $('#grn_number').focus();
+            return !1
+        }else{
+            $('#err_grn_number').text("");
+        }
+
+        if ($('#grn_date').val() == "") {
+
+            $('#err_grn_date').text("Please Select GR Date.");
+
+            $('#grn_number').focus();
+
+            return !1
+        }else{
+            $('#err_grn_date').text("");
+        }
+
+
         if ($('#shipping_address').val() == "") {
 
             $('#err_shipping_address').text("Please Select the shipping address.");
@@ -125,13 +147,13 @@ $(document).ready(function () {
 
         }
 
-        if ($('#cmb_department').val() == "") {
+        /*if ($('#cmb_department').val() == "") {
             $('#err_department').text("Please Select the Department.");
             $('#cmb_department').focus();
             return !1
         }else{
             $('#err_department').text("");
-        }
+        }*/
 
         /*if ($('#cmb_subdepartment').val() == "") {
             $('#err_subdepartment').text("Please Select the Sub-department.");
