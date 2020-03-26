@@ -115,6 +115,8 @@
             data: { purchase_id: purchase_id},
             success: function (result) {
                 $('#sales_table_body').html('');
+                sales_data = new Array();
+                table_index = 0;
                 $.each(result,function(k,v){
                     add_row(v);
                     call_css();

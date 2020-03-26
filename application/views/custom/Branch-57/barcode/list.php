@@ -30,16 +30,9 @@ $this->load->view('layout/header');
                         <table id="list_datatable" class="table table-bordered table-striped table-hover table-responsive">
                             <thead>
                                 <tr>
-                                    <th>Product Name</th>
-                                    <th>Style</th>
-                                    <th>Unit</th>
-                                    <th>Selling Price</th>
+                                    <th>Article</th>
+                                    <th>Product name</th>
                                     <th>Category</th>
-                                    <th>SKU</th>
-                                    <!--<th>Serial No</th>
-                                    <th>Orientation</th>
-                                    <th>Height</th>
-                                    <th>Width</th> -->
                                     <th>Generate</th>
                                 </tr>
                             </thead>
@@ -51,9 +44,57 @@ $this->load->view('layout/header');
         </div>
     </section>
 </div>
+<?php
+$branch_id = $this->session->userdata('SESS_BRANCH_ID');
+?>
+<div id="barcode_popup" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <form role="form" id="form" method="post" action="<?php echo base_url('barcode/print_roll_barcode'); ?>" target="_blank">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Barcode</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-12">
+                            <label for="quantity">Quantity
+                                <span class="validation-color">*</span>
+                            </label>
+                            <input type="number" required="true" class="form-control" id="quantity" name="quantity" value="<?php echo set_value('quantity'); ?>">
+                            <input type="hidden" name="item_id" id="item_id">
+                            <input type="hidden" name="single_product" value="1">
+                            <input type="hidden" name="barcode_id" id="barcode_id">
+                            <span class="validation-color" id="err_quantity"><?php echo form_error('quantity'); ?></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" id="print_barcode" class="btn btn-primary">Print</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div> 
+        </form>
+    </div>
+</div>
+
 <?php  $this->load->view('layout/footer'); ?>
 <script>
     $(document).ready(function () {
+        $(document).on('click','.quantity_popup',function(){
+            var id = $(this).attr('item_id');
+            var barId = $(this).attr('barId');
+            $('#barcode_popup').find('[name=barcode_id]').val(barId);
+            $('#barcode_popup').find('[name=item_id]').val(id);
+            $('#barcode_popup').modal('show');
+        })
+
+        $('#print_barcode').on('click',function(){
+            $('#barcode_popup').modal('hide');
+        })
+
         $('#list_datatable').DataTable({
             "processing": true,
             "serverSide": true,
@@ -71,17 +112,10 @@ $this->load->view('layout/header');
             'processing': ' <h1 class="ml8"><span class="letters-container"> <span class="letters letters-left"><img src="<?php echo base_url('assets/'); ?>images/loader-icon.png" width="30px"></span></span><span class="circle circle-white"></span><span class="circle circle-dark"></span><span class="circle circle-container"><span class="circle circle-dark-dashed"></span></span></h1>'
             },
             "columns": [
+                {"data": "item_code"},
                 {"data": "product_name"},
-                {"data": "style"},
-                {"data": "unit"},
-                {"data": "selling_price"},
                 {"data": "category"},
-                {"data": "sku"},
-               /* {"data": "serial_no"},
-                {"data": "orientation"},
-                {"data": "height"},
-                {"data": "width"}, */
-                {"data": "action"},              
+                {"data": "action_popup"},              
             ],"columnDefs": [{
                         "targets": "_all",
                         "orderable": false

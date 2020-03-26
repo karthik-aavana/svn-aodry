@@ -70,6 +70,7 @@ class Barcode extends MY_Controller{
                 foreach ($posts as $post)
                 {
                     $barcode_id = $this->encryption_url->encode($post->id);
+                    $nestedData['item_code'] = $post->item_code;
                     $nestedData['product_name'] = $post->product_name;
                     $nestedData['style'] = $post->bar_style;
                     $nestedData['unit'] = $post->unit;
@@ -96,6 +97,7 @@ class Barcode extends MY_Controller{
                     }
                     $nestedData['width'] = $width;
                     $nestedData['action'] = '<a href="' . base_url('barcode/generate_barcode_from_list/') . $barcode_id . '">Generate Barcode</a>';
+                    $nestedData['action_popup'] = '<a href="javascript:void(0);" barId="'.$barcode_id.'" item_id="'.$post->product_id.'" class="quantity_popup">Generate Barcode</a>';
                     $send_data[]          = $nestedData;
                 }
             }
@@ -243,6 +245,7 @@ class Barcode extends MY_Controller{
     }
 
     function print_roll_barcode(){
+        $data              = $this->get_default_country_state();
         $product_module_id               = $this->config->item('product_module');
         $data['module_id']               = $product_module_id;
         $modules                         = $this->modules;
@@ -251,53 +254,114 @@ class Barcode extends MY_Controller{
         $section_modules                 = $this->get_section_modules($product_module_id, $modules, $privilege);
         
         /* presents all the needed */
-        $data = array_merge($data,$section_modules);       
-        $item_data  = $this->input->post('table_data');
-        $js_data    = json_decode($item_data);
-        foreach ($js_data as $key => $value){
-            $pid      = $value->item_id;
-            $quantity = $value->item_quantity;
-            $barcode_symbology = $value->item_barcode_symbology;
-            $colour_val = $size_val = '';
-            if($value->varient_value_id != ''){
-                $variant_val = $this->db->query('SELECT p.*,v.varient_key,vv.varients_value FROM `product_varients_value` p JOIN varients v ON p.varients_id=v.varients_id JOIN varients_value vv ON vv.varients_value_id = p.varients_value_id WHERE  p.varients_value_id IN('.$value->varient_value_id.')');
-               
-                $variants_keys = $variant_val->result_array();
-                foreach ($variants_keys as $key => $v) {
-                    $key = strtolower($v['varient_key']);
-                    if($key == 'colour' || $key == 'colours' || $key == 'color'|| $key == 'colors'){
-                        $colour_val = $v['varients_value'];
-                    }
+        $data = array_merge($data,$section_modules); 
+        
+        if($this->input->post('single_product')){
+            $item_id = $this->input->post('item_id');
+            $quantity = $this->input->post('quantity');
+            $string = "pr.product_id as item_id,pr.product_code as item_code,pr.product_name as item_name,pr.product_barcode as item_barcode_symbology,pr.product_combination_id,c.varient_value_id,U.uom as product_unit,pr.product_mrp_price as mrp,pr.mfg_date,B.brand_name,CT.category_name";
+            $table  = "purchase_item pi";
+            $join   = [            
+                'products pr' => 'pi.item_id = pr.product_id',
+                'uqc U'  => 'U.id = pr.product_unit_id#left',
+                'brand B' => 'pr.brand_id = B.brand_id#left',
+                'category CT' => 'pr.product_category_id = CT.category_id#left',
+                'product_combinations c' => 'pr.product_combination_id = c.combination_id#left',
+                'purchase p' => 'pi.purchase_id = p.purchase_id',
+            ];
+            $where = [
+                'pr.product_id'   => $item_id,
+                'pi.delete_status' => 0,
+                'pi.item_type'     => 'product'];
+            
+            $pro_data = $this->general_model->getJoinRecords($string, $table, $where, $join);
+            if(!empty($pro_data)){
+                $pro_data = $pro_data[0];
+                $barcode_symbology = $pro_data->item_barcode_symbology;
+                $colour_val = $size_val = '';
+                if($pro_data->varient_value_id != ''){
+                    $variant_val = $this->db->query('SELECT p.*,v.varient_key,vv.varients_value FROM `product_varients_value` p JOIN varients v ON p.varients_id=v.varients_id JOIN varients_value vv ON vv.varients_value_id = p.varients_value_id WHERE  p.varients_value_id IN('.$pro_data->varient_value_id.')');
+                   
+                    $variants_keys = $variant_val->result_array();
+                    foreach ($variants_keys as $key => $v) {
+                        $key = strtolower($v['varient_key']);
+                        if($key == 'colour' || $key == 'colours' || $key == 'color'|| $key == 'colors'){
+                            $colour_val = $v['varients_value'];
+                        }
 
-                    if($key == 'size' || $key == 'sizes'){
-                        $size_val = $v['varients_value'];
+                        if($key == 'size' || $key == 'sizes'){
+                            $size_val = $v['varients_value'];
+                        }
+                        if($colour_val != '' && $size_val != '') break;
                     }
-                    if($colour_val != '' && $size_val != '') break;
                 }
+                $branch_id         = $this->session->userdata('SESS_BRANCH_ID');
+                $barcode_id_generate = $this->generate_leatherCraft_barcode($pro_data);
+                $barcodes[] = array(
+                            'code'          => (@$pro_data->item_code ? $pro_data->item_code : ''),
+                            'product_unit' => (@$pro_data->product_unit ? $pro_data->product_unit : ''),
+                            'mfg_date' => (@$pro_data->mfg_date ? $pro_data->mfg_date : ''),
+                            'mrp' => (@$pro_data->mrp ? $pro_data->mrp : '0'),
+                            'color' => $colour_val,
+                            'size' => $size_val,
+                            'barcode_number' => $pro_data->item_barcode_symbology,
+                            'name'          => (@$pro_data->item_name ? $pro_data->item_name : ''),
+                            'barcode'       => $this->product_barcode($barcode_id_generate, $pro_data->item_barcode_symbology,''),
+                            'unit'          => (@$pro_data->product_unit ? $pro_data->product_unit : ''),
+                            'category_name' => (@$pro_data->category_name ? $pro_data->category_name : ''),
+                            'brand_name'    => (@$pro_data->brand_name ? $pro_data->brand_name : ''),
+                            'quantity'      => $quantity,
+                    );
             }
+            
+        } else{
+            $item_data  = $this->input->post('table_data');
+            $js_data    = json_decode($item_data);
+            foreach ($js_data as $key => $value){
+                $pid      = $value->item_id;
+                $quantity = $value->item_quantity;
+                $barcode_symbology = $value->item_barcode_symbology;
+                $colour_val = $size_val = '';
+                if($value->varient_value_id != ''){
+                    $variant_val = $this->db->query('SELECT p.*,v.varient_key,vv.varients_value FROM `product_varients_value` p JOIN varients v ON p.varients_id=v.varients_id JOIN varients_value vv ON vv.varients_value_id = p.varients_value_id WHERE  p.varients_value_id IN('.$value->varient_value_id.')');
+                   
+                    $variants_keys = $variant_val->result_array();
+                    foreach ($variants_keys as $key => $v) {
+                        $key = strtolower($v['varient_key']);
+                        if($key == 'colour' || $key == 'colours' || $key == 'color'|| $key == 'colors'){
+                            $colour_val = $v['varients_value'];
+                        }
 
-            $branch_id         = $this->session->userdata('SESS_BRANCH_ID');
-            $barcode_id_generate = $this->generate_leatherCraft_barcode($value);
-           /* echo "<pre>";
-            print_r($value);
-            exit;*/
-            $barcodes[] = array(
-                    'code'          => (@$value->item_code ? $value->item_code : ''),
-                    'product_unit' => (@$value->product_unit ? $value->product_unit : ''),
-                    'mfg_date' => (@$value->mfg_date ? $value->mfg_date : ''),
-                    'mrp' => (@$value->mrp ? $value->mrp : '0'),
-                    'color' => $colour_val,
-                    'size' => $size_val,
-                    'barcode_number' => $value->item_barcode_symbology,
-                    'name'          => (@$value->item_name ? $value->item_name : ''),
-                    'barcode'       => $this->product_barcode($barcode_id_generate, $value->item_barcode_symbology,''),
-                    'mrp' => (@$value->mrp ? $this->precise_amount($value->mrp,2) : ''),
-                    'unit'          => (@$value->product_unit ? $value->product_unit : ''),
-                    'category_name' => (@$value->category_name ? $value->category_name : ''),
-                    'brand_name'    => (@$value->brand_name ? $value->brand_name : ''),
-                    'quantity'      => $quantity,
-            );
-        }
+                        if($key == 'size' || $key == 'sizes'){
+                            $size_val = $v['varients_value'];
+                        }
+                        if($colour_val != '' && $size_val != '') break;
+                    }
+                }
+
+                $branch_id         = $this->session->userdata('SESS_BRANCH_ID');
+                $barcode_id_generate = $this->generate_leatherCraft_barcode($value);
+               /* echo "<pre>";
+                print_r($value);
+                exit;*/
+                $barcodes[] = array(
+                        'code'          => (@$value->item_code ? $value->item_code : ''),
+                        'product_unit' => (@$value->product_unit ? $value->product_unit : ''),
+                        'mfg_date' => (@$value->mfg_date ? $value->mfg_date : ''),
+                        'mrp' => (@$value->mrp ? $value->mrp : '0'),
+                        'color' => $colour_val,
+                        'size' => $size_val,
+                        'barcode_number' => $value->item_barcode_symbology,
+                        'name'          => (@$value->item_name ? $value->item_name : ''),
+                        'barcode'       => $this->product_barcode($barcode_id_generate, $value->item_barcode_symbology,''),
+                        'mrp' => (@$value->mrp ? $this->precise_amount($value->mrp,2) : ''),
+                        'unit'          => (@$value->product_unit ? $value->product_unit : ''),
+                        'category_name' => (@$value->category_name ? $value->category_name : ''),
+                        'brand_name'    => (@$value->brand_name ? $value->brand_name : ''),
+                        'quantity'      => $quantity,
+                );
+            }
+        }   
 
         $data['barcodes'] = $barcodes;
         $data['items']    = false;
@@ -529,10 +593,12 @@ class Barcode extends MY_Controller{
         /* presents all the needed */
 
         $data=array_merge($data,$section_modules);
+
         $list_data     = $this->common->barcode_list_field($id);
         $data['posts'] = $this->general_model->getPageJoinRecords($list_data);
         $this->load->view('barcode/generate_barcode', $data);
     }
+
 
     function print_barcode_list(){
         $product_module_id               = $this->config->item('product_module');
@@ -582,11 +648,16 @@ class Barcode extends MY_Controller{
                     'quantity'      => $quantity,
                     'style_height'  => $bci_size
             );
+
             $data['barcodes'] = $barcodes;
             //$this->data['currencies'] = $currencies;
             $data['style']    = $style;
-            $data['items']    = false;        
+            $data['items']    = false;
+
+             
             $this->load->view('barcode/print_barcode', $data);
         }
     }
+
 }
+

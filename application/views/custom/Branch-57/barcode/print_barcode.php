@@ -90,8 +90,8 @@
                             		<?php
                             		foreach ($barcodes as $key => $value) {
                             			for ($i=1; $i <= $value['quantity']; $i++) { ?>
-                            				<div class="item style10" style="display: block;overflow: hidden;text-align: center;border: 1px solid #000 !important;font-size: 11px;line-height: 20px;text-transform: capitalize;float: left;color: #000000;margin: 9.5px;padding: 12px;width: 146mm;height: 68mm;border: 0.5px dashed #555 !important;font-weight: normal;line-height: 1.4;position: relative;float: left;">
-		                            			<div class="horizontal_div" style="width: 92mm;float: left;">
+                            				<div class="item style10" style="display: block;overflow: hidden;text-align: center;border: 1px solid #000 !important;font-size: 11px;line-height: 20px;text-transform: capitalize;float: left;color: #000000;margin: 9.5px;padding: 12px;width: 146mm;height: 68mm;border: 0.5px dashed #555 !important;font-weight: normal;line-height: 1.5;position: relative;float: left;color: black !important;">
+		                            			<div class="horizontal_div" style="width: 92mm;float: left;    padding-top: 5px;">
 		                            				<div class="col-sm-12 f_left xsmall" style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 100%;text-align: left;font-size: xx-small;">
 			                            				<div class="col-sm-6 p_0" style="position: relative;min-height: 1px;float: left;width: 50%;padding: 0px;">Article</div>
 			                            				<div class="col-sm-3 p_0" style="position: relative;min-height: 1px;float: left;width: 25%;padding: 0px;">Color</div>
@@ -115,14 +115,44 @@
 			                            				<div class="col-sm-6 p_0 f_right fweight" style="position: relative;min-height: 1px;float: left;width: 50%;text-align: right;font-weight: bold;padding: 0px;">Mfg Date: <span class="xlarge" style="font-size: large;"><?=($value['mfg_date'] != '' && $value['mfg_date'] != '0000-00-00' ? date('m-y',strtotime($value['mfg_date'])) : '');?></span></div>
 			                            			</div>
 			                            			<div class="col-sm-12 f_left fweight" style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 100%;text-align: left;font-weight: bold;">
-			                            				Mkt By: Leathercraft lifestyle pvt ltd.<br>
-			                            				<span>855/6, 10th Main, 5th A Cros, Srinivas nagar, Banglore-50</span>
+			                            				Mkt By: <?php 
+			                            				if (isset($branch[0]->branch_name)) {
+								                            echo strtolower($branch[0]->branch_name);
+								                        }else{
+								                        	echo "Leathercraft lifestyle pvt ltd.";
+								                        }
+			                            				?><br>
+			                            				<span><?php
+									                    if (isset($branch[0]->branch_address)) {
+									                        echo str_replace(array(
+									                            "\r\n",
+									                            "\\r\\n",
+									                            "\n",
+									                            "\\n"), "<br>", $branch[0]->branch_address);
+									                        ?>
+									                        <?php
+									                    } else { ?>855/6, 10th Main, 5th A Cros, Srinivas nagar, Banglore-50 <?php } ?></span>
 			                            			</div>
 			                            			<div class="col-sm-12 f_left xsmall" style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 100%;text-align: left;font-size: xx-small;">
-			                            				Email ID: <span>info@leathercraft.net.in</span><br>
-			                            				Customer Care: <span> +91-9088997788</span>
+			                            				Email ID: <span><?php
+			                            				if (isset($branch[0]->branch_email_address)) {
+									                        if ($branch[0]->branch_email_address != "") {
+									                            echo $branch[0]->branch_email_address;
+									                        }else{
+									                        	echo "info@leathercraft.net.in";
+									                        }
+									                    }else{
+								                        	echo "info@leathercraft.net.in";
+								                        }
+			                            				?></span><br>
+			                            				Customer Care: <span> +91-
+			                            				<?php if ($branch[0]->branch_mobile != "" || $branch[0]->branch_mobile != null) {
+								                            echo $branch[0]->branch_mobile;
+								                        }else{
+								                        	echo "9088997788";
+								                        } ?></span>
 			                            			</div>
-			                            			<div class="col-sm-12 f_left xlarge fweight" style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 100%;text-align: left;font-size: large;font-weight: bold;">
+			                            			<div class="col-sm-12 f_left xlarge fweight" style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 100%;text-align: left;font-size: medium;font-weight: bold;">
 			                            				BRAND : <span><?=strtoupper($value['brand_name']);?></span>
 			                            			</div>
 		                            			</div>
@@ -144,7 +174,7 @@
 				                            				<div class="col-sm-6 p_0 f_right fweight" style="position: relative;min-height: 1px;float: left;width: 50%;text-align: right;font-weight: bold;padding: 0px;">Mfg Date: <span class="xlarge" style="font-size: medium;"><?=($value['mfg_date'] != '' && $value['mfg_date'] != '0000-00-00' ? date('m-y',strtotime($value['mfg_date'])) : '');?></span></div>
 				                            			</div>
 				                            			<div class="image_horizontal col-sm-12" style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 100%;">
-				                            				<img class="barcode_image" src="http://localhost/aodry-v4-1/assets/images/barcode/57/121212/12121250.png">
+				                            				<img class="barcode_image" src="<?=base_url() . $value['barcode'];?>">
 				                            			</div>
 				                            			<div class="col-sm-12" style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 100%;">
 				                            				<div class="col-sm-6 p_0 f_left" style="position: relative;min-height: 1px;float: left;width: 50%;text-align: left;padding: 0px;"></div>
