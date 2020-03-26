@@ -65,7 +65,7 @@ $this->load->view('layout/header');
                                 <tr>
                                     <th width="9px">#</th>
                                     <th>Customer Code</th>
-                                    <th>Company/Individual Name</th>
+                                    <th>Store Name</th>
                                     <th>Country</th>
                                     <th>State</th>
                                     <th>City</th>

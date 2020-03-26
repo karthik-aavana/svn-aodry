@@ -37,7 +37,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="company_name">
-                                    Company<span class="validation-color">*</span>
+                                    Store Name<span class="validation-color">*</span>
                                 </label>
                                 <select class="form-control select2" id="company_name" name="company_name">
                                     <option value="">Select Company</option>   

@@ -1102,5 +1102,6 @@ $this->load->view('sub_modules/shipping_address_modal');
     
 </script>
 <script src="<?php echo base_url('assets/custom/branch-'.$branch_id.'/js/sales/'); ?>sales.js"></script>
+<script src="<?php echo base_url('assets/custom/branch-'.$branch_id.'/js/sales/'); ?>ship_to.js"></script>
 <script src="<?php echo base_url('assets/custom/branch-'.$branch_id.'/js/sales/'); ?>sales_basic_common.js">
 </script>
