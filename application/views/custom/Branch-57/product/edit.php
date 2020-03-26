@@ -604,7 +604,7 @@ if (in_array($subcategory_module_id, $active_add)) {
     $this->load->view('subcategory/subcategory_modal');
 }
 //$this -> load -> view('product/tds_modal');
-$this->load->view('product/master_product_modal');
+$this->load->view('product/edit_master_product_modal');
 ?>
 <script type="text/javascript">
     $(document).ready(function () {
