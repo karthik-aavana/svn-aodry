@@ -66,7 +66,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                     $customer_id = $row->customer_id;
                                                     foreach ($shipping_address as $col) {
                                                         if($customer_id == $col->shipping_party_id) {
-                                                            if($row->customer_code != '' && $col->store_location){
+                                                            if($row->customer_code != '' && $col->store_location != ''){
                                                                 echo "<option data-id={$col->shipping_address_id} value='{$row->customer_id}'>$row->customer_code - $row->customer_name - $col->store_location</option>";
                                                             }elseif($row->customer_code != ''){
                                                                 echo "<option value='$row->customer_id'>$row->customer_code - $row->customer_name</option>";

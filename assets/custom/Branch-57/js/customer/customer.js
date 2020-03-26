@@ -342,16 +342,25 @@ $(document).ready(function() {
                 },*/
                 success: function(result) {
                     var data = result['data'];
-                 
+                    var shipping_address = result['shipping_address'];
                     var ledgers_data = result['ledgers_data'];
                     if (reference_type != 'ship') {
                         $('#customer').html('');
                         $('#customer').append('<option value="">Select</option>');
                         for (i = 0; i < data.length; i++) {
-                            if (data[i].customer_code != '') {
-                                $('#customer').append('<option value="' + data[i].customer_id + '">'+ data[i].customer_code +' - '+ data[i].customer_name + '</option>');
-                            } else {
-                                $('#customer').append('<option value="' + data[i].customer_id + '">' + data[i].customer_name + '</option>');
+                            var customer_id = data[i].customer_id;
+                            for (j = 0; j < shipping_address.length; j++) {
+                                if(customer_id == shipping_address[j].shipping_party_id) {
+                                    if (data[i].customer_code != '' && shipping_address[j].store_location != '') {
+                                        $('#customer').append('<option data-id="' + shipping_address[j].shipping_address_id + '" value="' + data[i].customer_id + '">'+ data[i].customer_code +' - '+ data[i].customer_name + ' - ' + shipping_address[j].store_location + '</option>');
+                                    }else if(data[i].customer_code != ''){
+                                        $('#customer').append('<option value="' + data[i].customer_id + '">'+ data[i].customer_code +' - '+ data[i].customer_name + '</option>');
+                                    }else if(shipping_address[j].store_location != ''){
+                                        $('#customer').append('<option data-id="' + shipping_address[j].shipping_address_id + '" value="' + data[i].customer_id + '">'+ data[i].customer_name + ' - ' + shipping_address[j].store_location + '</option>');
+                                    }else{
+                                        $('#customer').append('<option value="' + data[i].customer_id + '">' + data[i].customer_name + '</option>');
+                                    }
+                                }
                             }
                         }
                         $('#ship_to').append('<option value="' + result['id'] + '">' + customer_name.toUpperCase() + '</option>');

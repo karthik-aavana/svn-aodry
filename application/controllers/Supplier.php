@@ -433,7 +433,6 @@ class Supplier extends MY_Controller {
                                     $table = "shipping_address";
                                     $this->general_model->insertData($table, $shipping_address_data);
                                     }
-
                                 }else {
                                     $error_array[] = $error_log;
                                 }
@@ -483,8 +482,6 @@ class Supplier extends MY_Controller {
                 }
             }
         }
-       /* print_r($error);
-        exit();*/
         if(!empty($errors_email)){
             $to = $this->session->userdata('SESS_IDENTITY');
             $to = $this->session->userdata('SESS_EMAIL');
@@ -1230,7 +1227,7 @@ class Supplier extends MY_Controller {
     }
 
 
-     public function createTransOption_Supplier($suplier_name, $suplier_id){
+    public function createTransOption_Supplier($suplier_name, $suplier_id){
         $branch_id = $this->session->userdata('SESS_BRANCH_ID');
         $user_id = $this->session->userdata('SESS_USER_ID');
         $date = date('Y-m-d');
@@ -1338,6 +1335,15 @@ class Supplier extends MY_Controller {
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="'.$file_name.'"');
         $object_writer->save('php://output');
+    }
+    public function get_check_supplier_code() {
+        $supplier_code = strtoupper(trim($this->input->post('supplier_code')));
+        $supplier_id = $this->input->post('supplier_id');
+        $data = $this->general_model->getRecords('count(*) num', 'supplier', array(
+            'branch_id' => $this->session->userdata('SESS_BRANCH_ID'),
+            'delete_status' => 0,
+            'supplier_code' => $supplier_code));
+        echo json_encode($data);
     }
 
 }

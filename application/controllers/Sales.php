@@ -189,7 +189,7 @@ class Sales extends MY_Controller{
                     }
                     if(!empty($sales_credit_ledgers)){
                         foreach ($sales_credit_ledgers as $key => $led) {
-                            $sales_credit_note_id = $this->encryption_url->encode($led->sales_credit_note_id);
+                             $sales_credit_note_id = $this->encryption_url->encode($led->sales_credit_note_id);
                             $nestedData['customer'] .=  ' (<a href="' . base_url('sales_credit_note/view/') . $sales_credit_note_id . '">' . $led->sales_credit_note_invoice_number . '</a>)<br>';
                             array_push($total_receivable, $this->precise_amount($led->voucher_amount,$access_common_settings[0]->amount_precision).'(CN)');
                             $net_receivable -= $led->voucher_amount;
@@ -451,7 +451,7 @@ class Sales extends MY_Controller{
         $data['customer'] = $this->customer_call();
         $data['currency'] = $this->currency_call();
         $data['brands'] = $this->brand_call();
-
+        $data['shipping_address'] = $this->general_model->getRecords('*', 'shipping_address', array('delete_status' => 0,'branch_id'     => $this->session->userdata('SESS_BRANCH_ID') ));
         /*if($this->company_type == 'pharma'){
             $currecny =$this->sales_lib->sales_type('pharma',$data);
         }else{*/
@@ -598,7 +598,6 @@ class Sales extends MY_Controller{
             'shipping_party_type' => $data['data'][0]->sales_party_type ,
             'delete_status' => 0
         ));
-        
         $item_types = $this->general_model->getRecords('item_type,sales_item_description' , 'sales_item' , array(
             'sales_id' => $id ));
         $service     = 0;
@@ -659,7 +658,6 @@ class Sales extends MY_Controller{
         }
         $sales_service_items = array();
         $sales_product_items = array();
-        $data['brand_data'] = '';
         if (($data['data'][0]->sales_nature_of_supply == "service" || $data['data'][0]->sales_nature_of_supply == "both") && $service == 1)
         {
             $service_items       = $this->common->sales_items_service_list_field($id);
@@ -677,10 +675,7 @@ class Sales extends MY_Controller{
             {
                 $product_items       = $this->common->sales_items_product_list_field($id);
                 $sales_product_items = $this->general_model->getJoinRecords($product_items['string'] , $product_items['table'] , $product_items['where'] , $product_items['join']);
-                if($data['data'][0]->brand_id != 0){
-                    $brand_data = $this->db->query('SELECT invoice_readonly FROM brand WHERE brand_id='.$data['data'][0]->brand_id);
-                    $data['brand_data'] = $brand_data->result();
-                }
+                
             }
         }
         $data['items'] = array_merge($sales_product_items , $sales_service_items);
@@ -781,11 +776,9 @@ class Sales extends MY_Controller{
         else
         {
         }*/
-        if($term == '-') $term ='';
         $suggestions_query = $this->common->item_suggestions_field($item_access , $term , $brand_id);
 
         $data              = $this->general_model->getQueryRecords($suggestions_query);
-        
         // $data["product_inventoery"]=$inventory_access[0]->inventory_advanced;
         echo json_encode($data);
     }
@@ -1073,7 +1066,6 @@ class Sales extends MY_Controller{
                             "sales_item_mrp_price"      => (@$value->item_mrp_price ? (float) $value->item_mrp_price : 0),
                             "sales_item_sub_total"       => $value->item_sub_total ? (float) $value->item_sub_total : 0 ,
                             "sales_item_taxable_value"   => $value->item_taxable_value ? (float) $value->item_taxable_value : 0 ,
-                            "sales_item_cash_discount_amount" => (@$value->item_cash_discount ? (float) $value->item_cash_discount : 0) ,
                             "sales_item_discount_amount" => (@$value->item_discount_amount ? (float) $value->item_discount_amount : 0) ,
                             "sales_item_discount_id"     => (@$value->item_discount_id ? (float) $value->item_discount_id : 0 ),
                             "sales_item_tds_id"          => $value->item_tds_id ? (float) $value->item_tds_id : 0 ,
@@ -1208,7 +1200,6 @@ class Sales extends MY_Controller{
                                 if(@$value->free_item_quantity){
                                     if($value->free_item_quantity > 0) $value->item_quantity = $value->item_quantity + $value->free_item_quantity;
                                 }
-                                /*if($product_result[0]->)*/
                                 $product_quantity = ($product_result[0]->product_quantity - $value->item_quantity);
                                 $stockData        = array('product_quantity' => $product_quantity,'product_selling_price' => $product_selling_price);  
                                
@@ -3506,7 +3497,6 @@ class Sales extends MY_Controller{
                             "sales_item_mrp_price"      => (@$value->item_mrp_price ? (float) $value->item_mrp_price : 0),
                             "sales_item_sub_total"       => $value->item_sub_total ? (float) $value->item_sub_total : 0 ,
                             "sales_item_taxable_value"   => $value->item_taxable_value ? (float) $value->item_taxable_value : 0 ,
-                            "sales_item_cash_discount_amount" => (@$value->item_cash_discount ? (float) $value->item_cash_discount : 0) ,
                             "sales_item_discount_amount" => (@$value->item_discount_amount ? (float) $value->item_discount_amount : 0) ,
                             "sales_item_discount_id"     => (@$value->item_discount_id ? (float) $value->item_discount_id : 0) ,
                             "sales_item_tds_id"          => $value->item_tds_id ? (float) $value->item_tds_id : 0 ,
@@ -3798,20 +3788,19 @@ class Sales extends MY_Controller{
         $data['pdf_results'] = json_decode($rep , true);
         if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath')){
             if($print_type == 'cash_invoice'){
-                $html = $this->load->view('sales/half_pdf' , $data , true);
+                    $html = $this->load->view('sales/half_pdf' , $data , true);
             }elseif($print_type == 'tabular'){
-                $html = $this->load->view('sales/pdf' , $data , true); 
+                   $html = $this->load->view('sales/pdf' , $data , true); 
             }elseif($print_type == 'hsn_summary'){
                 $html = $this->load->view('sales/pdf_hsn' , $data , true);
             }elseif($print_type == 'aodry_format'){
                 $html = $this->load->view('sales/aodry_pdf' , $data , true);
             }
-        }else{ 
+        }else{
             $html = $this->load->view('sales/pdf' , $data , true); 
         }
-        echo $html;
-        exit;
-        
+        /*echo $html;
+        exit;*/
         /*include(APPPATH . 'third_party/tcpdf/tcpdf.php');
         //     // create new PDF document
         $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -4810,5 +4799,54 @@ class Sales extends MY_Controller{
         } else {
             $this->load->view('sales/brand_invoice', $data);
         }
+    }
+    public function get_billing_popup (){
+        $party_id = $this->input->post('party_id');
+        $party_type =  'customer';
+        if($this->input->post('party_type') != '') $party_type = $this->input->post('party_type');
+        
+        $country  = $this->general_model->getRecords('*', 'countries', array('country_name' => 'india' ));
+        $country_id = $country[0]->country_id;
+        $list_data  = $this->common->billing_address_list_popup($party_id,$party_type);
+        $shipping_address_data = $this->general_model->getPageJoinRecords($list_data);
+        $totalData           = $this->general_model->getPageJoinRecordsCount($list_data);
+       $send = array();
+       if(!empty($shipping_address_data)){
+       foreach ($shipping_address_data as $com) {
+            $id = $com->shipping_address_id;
+            $state_id = $com->state_id;
+            $country_id_shipping = $com->country_id;
+            if($country_id_shipping != $country_id){
+                $type = 'other';
+            }else{
+                $type = 'same';
+            }
+            $primary_address = $com->primary_address;
+            $nestedData['shipping_code'] = $com->shipping_code;
+            $nestedData['shipping_address'] = $com->shipping_address;
+            $nestedData['contact_person'] = $com->contact_person;
+            $nestedData['gst'] = $com->shipping_gstin;
+            $nestedData['state'] = $com->state_name;
+            if($primary_address == 'yes'){
+                $nestedData['action'] = '<input type="radio" name="apply_billing" value="'. $id.'" id="apply_billing_'. $id.'" checked/><input type="hidden" name="apply_country_id" value="'. $country_id_shipping.'" id="apply_country_id_'. $id.'" checked/><input type="hidden" name="state_id_suppuly" id="state_id_suppuly_'.$id.'" value="'.$state_id.'"><input type="hidden" name="country_type" id="country_type_'.$id.'" value="'.$type.'">';
+            }else{
+            $nestedData['action'] = '<input type="radio" name="apply_billing" value="'. $id.'" id="apply_billing_'. $id.'"/><input type="hidden" name="apply_country_id" value="'. $country_id_shipping.'" id="apply_country_id_'. $id.'" /><input type="hidden" name="state_id_suppuly" id="state_id_suppuly_'.$id.'" value="'.$state_id.'"><input type="hidden" name="country_type" id="country_type_'.$id.'" value="'.$type.'">';
+            }
+            $send[] = $nestedData;
+       }
+       $totalData = $totalData;
+       }else{
+        $totalData = 0;
+       }
+       
+       
+       $totalFiltered = 10;
+       $json_data = array(
+                "draw"            => intval($this->input->post('draw')),
+                "recordsTotal"    => intval($totalData),
+                "recordsFiltered" => intval($totalFiltered),
+                "shipping_address_id" => $id,
+                "data"            => $send);
+        echo json_encode($json_data);
     }
 }
