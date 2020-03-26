@@ -5126,7 +5126,7 @@ class Purchase extends MY_Controller {
             $product_data['equal_uom_id'] = $data[0]->equal_uom_id;
             $product_data['product_combination_id'] = $data[0]->product_combination_id;
             $product_data['product_barcode'] = $barcode;
-            $product_data['GRN' = $grn_number;
+            $product_data['GRN'] = $grn_number;
 
             $product_id = $this->general_model->insertData('products', $product_data);
             

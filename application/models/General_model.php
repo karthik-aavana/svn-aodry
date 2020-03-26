@@ -74,6 +74,18 @@ class General_model extends CI_Model{
       
       return $query->result_array();
     }
+
+     public function Get_uqc_bulk_leathercraft($type){
+        $this->db->select('id as uom_id,LOWER(description) as uom');
+        $this->db->from('uqc');
+        $this->db->where('delete_status', '0');
+        $this->db->where('uom_type', $type);
+        $this->db->or_where('uom_type', 'both');
+        $query = $this->db->get(); 
+      
+      return $query->result_array();
+    }
+    
     public function Get_uom_bulk(){
         $this->db->select('id as uom_id,LOWER(uom) as uom');
         $this->db->from('uqc');
