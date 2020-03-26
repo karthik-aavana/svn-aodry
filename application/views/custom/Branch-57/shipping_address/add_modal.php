@@ -29,7 +29,7 @@
                                 <select class="form-control" id="company_type" name="company_type">
                                     <option value="">Select Type</option>
                                     <option value="customer">Customer</option>
-                                    <option value="supplier">Supplier</option>
+                                    <!-- <option value="supplier">Supplier</option> -->
                                 </select>
                                 <span class="validation-color" id="err_company_type"><?php echo form_error('company_type'); ?></span>
                             </div>
@@ -149,6 +149,13 @@
                                 <label for="gst_number">GST Number </label>
                                 <input type="text" class="form-control" id="gst_number" name="gst_number" value=""  maxlength="15">
                                 <span class="validation-color" id="err_gst_number"><?php echo form_error('gst_number'); ?></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="store_location">Store Location </label>
+                                <input type="text" class="form-control" id="store_location" name="store_location" value=""  maxlength="50">
+                                <span class="validation-color" id="err_store_location"><?php echo form_error('store_location'); ?></span>
                             </div>
                         </div>
                     </div>
@@ -297,6 +304,7 @@
         var city = $('#cmb_city').val();
         var pin_number= $('#pin_code').val();
         var gst_number= $('#gst_number').val();
+        var store_location= $('#store_location').val();
         var gst_regex_format = "^([0][1-9]|[1-4][0-9])([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$";
         var name_regex = /^[-a-zA-Z\s0-9 ]+$/;
         var alpa_regex = /^[a-zA-Z ]+$/;
@@ -415,25 +423,47 @@
         } else {
             $("#err_txt_email").text("");
         }
-        var form_data = $('#frm_shipping_add').serializeArray();
-        console.log(form_data);
+        if (store_location == null || store_location == "") {
+            $("#err_store_location").text("Please Enter Store Location.");
+            return false;
+        } else {
+            $("#err_store_location").text("");
+        }
         $.ajax({
-            url: base_url + 'shipping_address/add_shipping_address',
+            url: base_url + 'shipping_address/get_check_shipping_with_location',
             dataType: 'JSON',
             method: 'POST',
-            data: form_data,
-            beforeSend: function(){
-                     // Show image container
-                    $("#loader_coco").show();
+            data: {
+                'company_name' :company_name,
+                'store_location': store_location
             },
             success: function (result) {
-                setTimeout(function () {
-                location.reload();
-                 $("#loader_coco").hide();
+                var count = result[0].num;
+                if (count > 0) {
+                    $("#err_store_location").text("Combination of Company and Store Location is Already Exist");
+                        return false;
+                }else{
+                    var form_data = $('#frm_shipping_add').serializeArray();
+                    $.ajax({
+                        url: base_url + 'shipping_address/add_shipping_address',
+                        dataType: 'JSON',
+                        method: 'POST',
+                        data: form_data,
+                        beforeSend: function(){
+                                 // Show image container
+                                $("#loader_coco").show();
+                        },
+                        success: function (result) {
+                            setTimeout(function () {
+                            location.reload();
+                             $("#loader_coco").hide();
 
-                });                
+                            });                
+                        }
+                    });
+                     anime.timeline({loop:!0}).add({targets:".ml8 .circle-white",scale:[0,3],opacity:[1,0],easing:"easeInOutExpo",rotateZ:360,duration:8e3}),anime({targets:".ml8 .circle-dark-dashed",rotateZ:360,duration:8e3,easing:"linear",loop:!0});
+                }
             }
         });
-         anime.timeline({loop:!0}).add({targets:".ml8 .circle-white",scale:[0,3],opacity:[1,0],easing:"easeInOutExpo",rotateZ:360,duration:8e3}),anime({targets:".ml8 .circle-dark-dashed",rotateZ:360,duration:8e3,easing:"linear",loop:!0});
     });
 </script>

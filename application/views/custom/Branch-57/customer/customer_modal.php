@@ -50,7 +50,7 @@
                     <div class="row">                                   
                         <div class="form-group col-md-6">
                             <label for="customer_name">
-                                Company/Firm Name<span class="validation-color">*</span>
+                                Store Name<span class="validation-color">*</span>
                             </label>
                             <input type="hidden" name="ledger_id" id="customer_ledger_id" value="0">
                             <input type="hidden" name="customer_name_used">
@@ -146,6 +146,11 @@
                             <label for="department">Department</label>
                             <input type="text" class="form-control" id="department" name="department"  >
                             <span class="validation-color" id="err_department"><?php echo form_error('department'); ?></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="store_location">Store Location<span class="validation-color">*</span></label>
+                            <input type="text" class="form-control" id="store_location" name="store_location"  >
+                            <span class="validation-color" id="err_store_location"><?php echo form_error('store_location'); ?></span>
                         </div>  
                         <div class="form-group col-md-12">
                             <label for="address">

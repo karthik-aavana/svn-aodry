@@ -63,11 +63,20 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                 <option value="">Select Customer</option>
                                                 <?php
                                                 foreach ($customer as $row) {
-                                                    if($row->customer_code != ''){
-                                                        echo "<option value='$row->customer_id'>$row->customer_code - $row->customer_name</option>";
-                                                    }else{
-                                                        echo "<option value='$row->customer_id'>$row->customer_name</option>";
-                                                    } 
+                                                    $customer_id = $row->customer_id;
+                                                    foreach ($shipping_address as $col) {
+                                                        if($customer_id == $col->shipping_party_id) {
+                                                            if($row->customer_code != '' && $col->store_location){
+                                                                echo "<option data-id={$col->shipping_address_id} value='{$row->customer_id}'>$row->customer_code - $row->customer_name - $col->store_location</option>";
+                                                            }elseif($row->customer_code != ''){
+                                                                echo "<option value='$row->customer_id'>$row->customer_code - $row->customer_name</option>";
+                                                            }elseif($col->store_location != ''){
+                                                                echo "<option data-id={$col->shipping_address_id} value='$row->customer_id'>$row->customer_name - $col->store_location</option>";
+                                                            }else{
+                                                                echo "<option value='$row->customer_id'>$row->customer_name</option>";
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                                 ?>
                                             </select>
@@ -80,10 +89,10 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                     <div class="form-group">
                                         <label for="nature_of_supply">Nature of Supply <span class="validation-color">*</span></label>
                                         <select class="form-control select2"  id="nature_of_supply" name="nature_of_supply">
-                                            <option value="">Select</option>
-                                            <option value="product">Product</option>
-                                            <option value="service">Service</option>
-                                            <option value="both" selected="selected">Both</option>
+                                            <!-- <option value="">Select</option> -->
+                                            <option value="product" selected="selected">Product</option>
+                                            <!-- <option value="service">Service</option>
+                                            <option value="both" selected="selected">Both</option> -->
                                         </select>                      
                                         <span class="validation-color" id="err_nature_supply"></span>
                                     </div>
@@ -196,7 +205,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                         <input type="text" class="form-control" id="order_number" name="order_number" value="" >
                                     </div>
                                 </div>
-                                 <div class="col-sm-3">
+                                 <!-- <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="department">Department<span class="validation-color">*</span></label>
                                         <div class="input-group">
@@ -228,7 +237,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                         </div>
                                         <span class="validation-color" id="err_subdepartment"></span>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
 
                             <div class="default_hide">
@@ -629,6 +638,7 @@ var settings_tds_visible = "<?= $access_settings[0]->tds_visible ?>";
 var settings_item_editable = "<?= $access_settings[0]->item_editable ?>";</script>
 <script src="<?php echo base_url('assets/custom/branch-'.$branch_id.'/js/sales/'); ?>sales.js"></script>
 <script src="<?php echo base_url('assets/custom/branch-'.$branch_id.'/js/sales/'); ?>sales_basic_common.js"></script>
+<script src="<?php echo base_url('assets/custom/branch-'.$branch_id.'/js/sales/'); ?>ship_to.js"></script>
 <script type="text/javascript">
     $('#err_sales_code').text('Please select the customer to do sales.');
     $('.search_sales_code').hide();

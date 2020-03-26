@@ -30,7 +30,7 @@
                                 <select class="form-control" id="company_type_edit" name="company_type_edit">
                                     <option value="">Select Type</option>
                                     <option value="customer">Customer</option>
-                                    <option value="supplier">Supplier</option>
+                                    <!-- <option value="supplier">Supplier</option> -->
                                 </select>
                                 <span class="validation-color" id="err_company_type_edit"><?php echo form_error('company_type_edit'); ?></span>
                                 <input type="hidden" name="shipping_address_id_edit" id="shipping_address_id_edit" value="">
@@ -146,6 +146,13 @@
                                 <label for="gst_number_edit">GST Number </label>
                                 <input type="text" class="form-control" id="gst_number_edit" name="gst_number_edit" value=""  maxlength="15">
                                 <span class="validation-color" id="err_gst_number_edit"><?php echo form_error('gst_number_edit'); ?></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="edit_store_location">Store Location </label>
+                                <input type="text" class="form-control" id="edit_store_location" name="edit_store_location" value=""  maxlength="15">
+                                <span class="validation-color" id="err_edit_store_location"><?php echo form_error('edit_store_location'); ?></span>
                             </div>
                         </div>
                     </div>
@@ -272,6 +279,7 @@
                 $('#cmb_city_edit').val(data[0].city_id);
                 $('#gst_number_edit').val(data[0].shipping_gstin);
                 $('#edit_pin_code').val(data[0].address_pin_code);
+                $('#edit_store_location').val(data[0].store_location);
             }
         });
     });
@@ -324,7 +332,8 @@
             var country = $('#cmb_country_edit1').val();
             var state = $('#cmb_state_edit').val();
             var city = $('#cmb_city_edit').val();
-            var pin_number= $('#edit_pin_code').val();   
+            var pin_number= $('#edit_pin_code').val();
+            var store_location = $('#edit_store_location').val();   
             var gst_regex_format = "^([0][1-9]|[1-4][0-9])([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$";
             var name_regex = /^[-a-zA-Z\s0-9 ]+$/;
             var alpa_regex = /^[a-zA-Z ]+$/;
@@ -429,46 +438,69 @@
         } else {
             $("#err_gst_number_edit").text("");
         }
-            if (!txt_email.match(email_regex) && txt_email != '') {
-                $('#err_txt_email_edit').text('Please Enter valid Email Address');
-                return false;
-            } else {
-                $("#err_txt_email_edit").text("");
+        if (!txt_email.match(email_regex) && txt_email != '') {
+            $('#err_txt_email_edit').text('Please Enter valid Email Address');
+            return false;
+        } else {
+            $("#err_txt_email_edit").text("");
+        }
+        if (txt_email.length < 2 && txt_email != '') {
+            $('#err_txt_email_edit').text("Email length must be greater than 2");
+            return false;
+        } else {
+            $("#err_txt_email_edit").text("");
+        }
+        if (store_location == null || store_location == "") {
+            $("#err_edit_store_location").text("Please Enter Store Location.");
+            return false;
+        } else {
+            $("#err_edit_store_location").text("");
+        }
+        var shipping_address_id = $('#shipping_address_id_edit').val();
+        $.ajax({
+            url: base_url + 'shipping_address/edit_get_check_shipping_with_location',
+            dataType: 'JSON',
+            method: 'POST',
+            data: {
+                'shipping_address_id' : shipping_address_id,
+                'company_name' :company_name,
+                'store_location': store_location
+            },
+            success: function (result) {
+                var count = result[0].num;
+                if (count > 0) {
+                    $("#err_edit_store_location").text("Combination of Company and Store Location is Already Exist");
+                        return false;
+                }else{
+                    var form_data = $('#frm_shipping_edit').serializeArray();
+                    $("#loader").show();
+                    $.ajax({
+                        url: base_url + 'shipping_address/edit_shipping_address',
+                        dataType: 'JSON',
+                        method: 'POST',
+                        data: form_data,
+                         beforeSend: function(){
+                             // Show image container
+                            $("#loader").show();
+                        },
+                        success: function (result) {
+                            setTimeout(function () {
+                                location.reload();
+                                $("#loader").hide();
+                            });
+                        }
+                    });
+                    anime.timeline({loop:!0}).add({targets:".ml8 .circle-white",scale:[0,3],opacity:[1,0],easing:"easeInOutExpo",rotateZ:360,duration:8e3}),anime({targets:".ml8 .circle-dark-dashed",rotateZ:360,duration:8e3,easing:"linear",loop:!0});
+                }
             }
-            if (txt_email.length < 2 && txt_email != '') {
-                $('#err_txt_email_edit').text("Email length must be greater than 2");
-                return false;
-            } else {
-                $("#err_txt_email_edit").text("");
-            }
+        });
             // if (contact_number == null || contact_number == "") {
             //     $("#err_contact_number_edit").text("Please Enter Contact Number.");
             //     return false;
             // } else {
             //     $("#err_contact_number_edit").text("");
             // }
-            var form_data = $('#frm_shipping_edit').serializeArray();
-            console.log(form_data);
-             $("#loader").show();
-            $.ajax({
-                url: base_url + 'shipping_address/edit_shipping_address',
-                dataType: 'JSON',
-                method: 'POST',
-                data: form_data,
-                 beforeSend: function(){
-                     // Show image container
-                    $("#loader").show();
-                },
-                success: function (result) {
-                    setTimeout(function () {
-                        location.reload();
-                        $("#loader").hide();
-                    });
-                }
-            });
-            anime.timeline({loop:!0}).add({targets:".ml8 .circle-white",scale:[0,3],opacity:[1,0],easing:"easeInOutExpo",rotateZ:360,duration:8e3}),anime({targets:".ml8 .circle-dark-dashed",rotateZ:360,duration:8e3,easing:"linear",loop:!0});
     });
-
-        });
+});
 
 </script>

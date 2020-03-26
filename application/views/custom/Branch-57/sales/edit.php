@@ -76,12 +76,25 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                             <?php
                                             foreach ($customer as $key) {
                                                 if ($key->customer_id == $data[0]->sales_party_id) {
-                                                    if($key->customer_code != ''){ ?>
+                                                    $store_location = $shipping_address[0]->store_location;
+                                                    if($key->customer_code != '' && $store_location != ''){ ?>
                                                     <option value='<?php
+                                                    echo $key->customer_id;
+                                                    ?>' selected>
+                                                        <?php echo $key->customer_code.' - '.$key->customer_name.' - '.$store_location; ?></option>
+                                                    <?php
+                                                    }elseif($key->customer_code != ''){ ?>
+                                                        <option value='<?php
                                                     echo $key->customer_id;
                                                     ?>' selected>
                                                         <?php echo $key->customer_code.' - '.$key->customer_name; ?></option>
                                                     <?php
+                                                    }elseif($store_location != ''){?>
+                                                        <option value='<?php
+                                                    echo $key->customer_id;
+                                                    ?>' selected>
+                                                        <?php echo $key->customer_name.' - '.$store_location; ?></option>
+                                                    <?php 
                                                     }else{
                                                     ?>
                                                     <option value='<?php
@@ -106,8 +119,8 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                         </label>
                                         <select class="form-control select2" id="nature_of_supply" name="nature_of_supply">
                                             <option value="product" <?= ( $data[0]->sales_nature_of_supply == "product" ? 'selected' : '') ?>>Product</option>
-                                            <option value="service" <?= ( $data[0]->sales_nature_of_supply == "service" ? 'selected' : '') ?>>Service</option>
-                                            <option value="both" <?= ( $data[0]->sales_nature_of_supply != "product" && $data[0]->sales_nature_of_supply != "service" ? 'selected' : '') ?>>Both</option>
+                                            <!-- <option value="service" <?= ( $data[0]->sales_nature_of_supply == "service" ? 'selected' : '') ?>>Service</option>
+                                            <option value="both" <?= ( $data[0]->sales_nature_of_supply != "product" && $data[0]->sales_nature_of_supply != "service" ? 'selected' : '') ?>>Both</option> -->
                                         </select>
                                         <!-- <?php
                                         if ($data[0]->sales_nature_of_supply == "product") {
@@ -303,7 +316,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                         ?>">
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <!-- <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="department">Department<span class="validation-color">*</span></label>
                                         <div class="input-group">
@@ -348,7 +361,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                         </div>
                                         <span class="validation-color" id="err_subdepartment"></span>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>                            
                             <?php
                             if (in_array($transporter_sub_module_id, $access_sub_modules)) {

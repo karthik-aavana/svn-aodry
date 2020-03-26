@@ -16,20 +16,23 @@
 							<table id="list_datatable" class="custom_datatable table table-bordered table-striped table-hover table-responsive" >
 								<thead>
 									<tr>
-										<th>Store</th>
-										<th>Store Name</th>
-										<th>Department</th>
-										<th>Sub Department</th>
+										<th>Store Code</th>
+										<!-- <th>Store Name</th> -->
+										<!-- <th>Department</th>
+										<th>Sub Department</th> -->
 										<th>Category</th>	
 										<th>Sub Category</th>
-                                        <th>Brand</th>	
+                                        <th>Brand Name</th>
+                                        <th>Article Number</th>	
 										<th>Product Name</th>	
+                                        <th>MRP</th>
 										<th>Barcode</th>
 										<th>Size</th>	
 										<th>Colour</th>
 										<th>HSN Code</th>
 										<th>Date</th>
-										<th>Supplier</th>	
+										<th>Supplier</th>
+                                        <th>GR Number</th>	
 										<th>Invoice No</th>
 										<th>Unit</th>
 										<th>Purchase Qty</th>
@@ -69,19 +72,22 @@
             },
             "columns": [                
             	{"data": "branch_code"},
-                {"data": "branch_name"},
-                {"data": "department_name"},
-                {"data": "sub_department_name"},
+                /*{"data": "branch_name"},*/
+                /*{"data": "department_name"},
+                {"data": "sub_department_name"},*/
                 {"data": "category_name"},
                 {"data": "sub_category_name"},
                 {"data": "brand_name"},
+                {"data": "article_number"},
                 {"data": "product_name"},
-                {"data": "product_code"},
+                {"data": "product_mrp_price"},
+                {"data": "product_barcode"},
                 {"data": "size"},
                 {"data": "colour"},
                 {"data": "product_hsn_sac_code"},
                 {"data": "purchase_date"},
                 {"data": "supplier_name"},
+                {"data": "purchase_grn_number"},
                 {"data": "purchase_invoice_number"},
                 {"data": "uom"},
                 {"data": "purchase_item_quantity"}

@@ -339,10 +339,10 @@ class Customer extends MY_Controller {
                                                                                             $error = "Invalid Pan Number";
                                                                                         }
                                                                                     }
-                                                            if($tan_number != '' && $is_add == true){
-                                                               if(!preg_match('/^[-a-zA-Z\s0-9 ]+$/', $tan_number)){
-                                                                  $is_add = false;
-                                                                $error = "Invalid Tan Number";
+                                                                                    if($tan_number != '' && $is_add == true){
+                                                                                        if(!preg_match('/^[-a-zA-Z\s0-9 ]+$/', $tan_number)){
+                                                                                            $is_add = false;
+                                                                                            $error = "Invalid Tan Number";
                                                                                         }
                                                                                     }
                                                                                     if($pin_code != '' && $is_add == true){
@@ -356,6 +356,363 @@ class Customer extends MY_Controller {
                                                                                             $is_add = false;
                                                                                             $error = "Value must be less than or equal to 365";
                                                                                         }
+                                                                                    }
+                                                                                }else{
+                                                                                    $is_add = false;
+                                                                                    $error = "Address Should Not Empty";
+                                                                                }
+                                                                            }else{
+                                                                                $is_add = false;
+                                                                                $error = "City Name Is Not Present In entered States";  
+                                                                            }
+                                                                        }else {
+                                                                            $is_add = false;
+                                                                            $error = "City Name Is Not Exit"; 
+                                                                        }
+                                                                    }else{
+                                                                       $is_add = false;
+                                                                        $error = "City Name Should Not Empty"; 
+                                                                    }
+                                                                }else{
+                                                                    $is_add = false;
+                                                                    $error = "States Name Is Not Exit In entered Country";
+                                                                }
+                                                            }else{
+                                                                $is_add = false;
+                                                                $error = "Entered State Name Is Not Exit!";
+                                                            }
+                                                        }else{
+                                                            $is_add = false;
+                                                            $error = "States Name Should Not Empty";
+                                                        }
+                                                    }else{
+                                                        $is_add = false;
+                                                        $error = "Entered Country Name Is Not Exit!";
+                                                    }
+                                                }elseif($is_add == true){
+                                                    $is_add = false;
+                                                    $error = "Country Name Should Not Empty";
+                                                }
+                                            }else{
+                                                $is_add = false;
+                                                $error = "Name already used";
+                                            }
+                                        }else{
+                                        $is_add = false;
+                                        $error = "Customer Name Should Not Empty";
+                                        }
+                                    }else{
+                                        $is_add = false;
+                                        $error = "Wrong Customer Type";
+                                    }
+                                }else{
+                                    $is_add = false;
+                                    $error = "Customer Type Should Not Empty";
+                                }
+                                if($is_add){
+                                    $headers = array(
+                                        'customer_name' => trim($row['B']),
+                                        "customer_code" => $invoice_number,
+                                        "reference_number" => $reference_number,
+                                        "reference_type" => 'customer',
+                                        "customer_type" => $customer_type,
+                                        "customer_address" => $address,
+                                        "customer_country_id" => $customer_country_id,
+                                        "customer_state_id" => $customer_state_id,
+                                        "customer_city_id" => $customer_city_id,
+                                        "contact_person" => trim($row['J']),
+                                        "customer_email" => trim($row['L']),
+                                        "ledger_id" => $customer_ledger_id,
+                                        "customer_gstin_number" => trim($row['C']),
+                                        "customer_pan_number" => trim($row['I']),    
+                                        "customer_mobile" => trim($row['K']),
+                                        "customer_postal_code" => trim($row['H']),
+                                        "due_days" => trim($row['M']),
+                                        "tan_number" => trim($row['N']),
+                                        "delete_status" => 0,
+                                        "added_date" => date('Y-m-d'),
+                                        "updated_date" => "",
+                                        "updated_user_id" => "",
+                                        "added_user_id" => $this->session->userdata('SESS_USER_ID'),
+                                        "branch_id" => $this->session->userdata('SESS_BRANCH_ID'),
+                                    );
+                                    if($id = $this->general_model->insertData($table_name, $headers)){
+                                        $txt_shipping_code = $invoice_number . "-1";
+
+                                        $shipping_address_data = array(
+                                            "shipping_address" => $address,
+                                            "primary_address" => 'yes',
+                                            "shipping_party_id" => $id,
+                                            "shipping_party_type" => 'customer',
+                                            "contact_person" => trim($row['J']),
+                                            /*"department" => trim($row['N']),*/
+                                            "email" => trim($row['L']),
+                                            "shipping_gstin" => trim($row['C']),
+                                            "contact_number" => trim($row['K']),
+                                            "department" => trim($row['O']),
+                                            "added_date" => date('Y-m-d'),
+                                            "added_user_id" => $this->session->userdata('SESS_USER_ID'),
+                                            "branch_id" => $this->session->userdata('SESS_BRANCH_ID'),
+                                            "country_id" => $customer_country_id,
+                                            "state_id" => $customer_state_id,
+                                            "city_id" => $customer_city_id,
+                                            "shipping_code" => $txt_shipping_code,
+                                            "address_pin_code" => trim($row['H']),
+                                            "updated_date" => "",
+                                            "updated_user_id" => ""
+                                        );
+                                        $table = "shipping_address";
+                                        $this->general_model->insertData($table, $shipping_address_data);
+                                        /*$ecommerce = 1;
+                                        if($ecommerce){
+                                            $headers['customer_id'] = $id;
+                                            $this->customerhook->CreateCustomer($headers);
+                                        }*/
+                                    }
+                                }else {
+                                        $error_array[] = $error;
+                                }
+                                /* $row['Error'] = $added_error;*/
+                                if(!$is_add && !empty($row)){
+                                    array_unshift($row,$error);
+                                    array_push($errors_email, array_values($row));
+                                }
+                                if(!empty($error_array)){
+                                    $errorMsg = implode('<br>', $error_array);
+                                    $this->session->set_flashdata('bulk_error_customer',$errorMsg);
+                                    /*$this->session->set_userdata('bulk_error', implode('<br>', $error_array)); */   
+                                }else{
+                                    $successMsg = 'Customer imported successfully.';
+                                    $this->session->set_flashdata('bulk_success_customer',$successMsg);
+                                    /*$this->session->set_userdata('bulk_success', $successMsg); */ 
+                                }
+                            }
+                            $table = "log";
+                                $log_data = array(
+                                                'user_id' => $this->session->userdata('SESS_USER_ID'),
+                                                'table_id' => 0,
+                                                'table_name' => 'customer',
+                                                'financial_year_id' => $this->session->userdata('SESS_FINANCIAL_YEAR_ID'),
+                                                'branch_id' => $this->session->userdata('SESS_BRANCH_ID'),
+                                                'message' => 'Bulk Customer Inserted. File_Name->'.$Updata['uploadData']['file_name']);
+                                            $this->general_model->insertData($table, $log_data);
+
+                                $log_data = array(
+                                                'user_id' => $this->session->userdata('SESS_USER_ID'),
+                                                'table_id' => 0,
+                                                'table_name' => 'shipping_address',
+                                                'financial_year_id' => $this->session->userdata('SESS_FINANCIAL_YEAR_ID'),
+                                                'branch_id' => $this->session->userdata('SESS_BRANCH_ID'),
+                                                'message' => 'Bulk Shipping Address Inserted. File_Name->'.$Updata['uploadData']['file_name']);
+                                            $this->general_model->insertData($table, $log_data);
+                        }else{
+                            $this->session->set_flashdata('bulk_error_customer',"File formate not correct!");
+                            /*$this->session->set_userdata('bulk_error', "File formate not correct!");*/
+                        }
+                    }else{
+                        $this->session->set_flashdata('bulk_error_customer',"Empty file!");
+                        /*$this->session->set_userdata('bulk_error', 'Empty file!');*/
+                    }
+                }catch (Exception $e) {
+                    $this->session->set_flashdata('bulk_error_customer',"Error on file upload, please try again.");
+                    /*$this->session->set_userdata('bulk_error', 'Error on file upload, please try again.');*/
+                }
+            }
+        }
+        if(!empty($errors_email)){
+            $to = $this->session->userdata('SESS_IDENTITY');
+            $to = $this->session->userdata('SESS_EMAIL');
+            /*$to = 'harish.sr@aavana.in';*/
+            array_unshift($header_row, 'Errors');
+            array_unshift($errors_email,$header_row);
+           $resp = $this->send_csv_mail($errors_email,'Customer Bulk Import Error Logs, <br><br> PFA,',"Customer bulk upload error logs in <{$import_xls_file}>",$to);
+            /*$this->session->set_userdata('bulk_error', 'Error email has been sent to registered email ID');*/
+            $this->session->set_flashdata('bulk_error_customer',"Error email has been sent to registered email ID");
+             /*$this->session->set_userdata('bulk_error', implode('<br>', $error_array)."<br>Error email has been sent to registered email ID"); */
+        }
+        redirect("customer", 'refresh');
+    }
+    public function add_bulk_upload_customer_leathercraft()
+    {
+        $data =  $insData = array();
+        $error_log = '';
+
+        $path = 'uploads/customerCSV/';
+        require_once APPPATH . "/third_party/PHPExcel.php";
+        $config['upload_path'] = $path;
+        $config['allowed_types'] = 'csv';
+        $config['remove_spaces'] = TRUE;
+        $this->load->library('upload', $config);
+        $this->upload->initialize($config);             
+        $errors_email  = $header_row = array();
+
+        if (!$this->upload->do_upload('bulk_customer')) {
+            /*$error = array('error' => );*/
+            $this->session->set_flashdata('bulk_error_customer',$this->upload->display_errors());
+            /*$this->session->set_userdata('bulk_error', $this->upload->display_errors());*/
+        }else {
+            $data = $this->get_default_country_state();
+            $customer_module_id = $this->config->item('customer_module');
+            $data['module_id'] = $customer_module_id;
+            $modules = $this->modules;
+            $privilege = "add_privilege";
+            $data['privilege'] = "add_privilege";
+            $section_modules = $this->get_section_modules($customer_module_id, $modules, $privilege);
+
+            /* presents all the needed */
+            $data = array_merge($data, $section_modules);
+
+            /* presents all the needed */
+            $Updata = array('uploadData' => $this->upload->data());
+
+            if (!empty($Updata['uploadData']['file_name'])) {
+                $import_xls_file = $Updata['uploadData']['file_name'];
+                $inputFileName = $path . $import_xls_file;
+                try {
+                    $inputFileType = PHPExcel_IOFactory::identify($inputFileName);               
+                    $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+                    $objPHPExcel = $objReader->load($inputFileName);
+                    $allDataInSheet = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
+                    //print_r($allDataInSheet);
+                    if(!empty($allDataInSheet)){
+                        if(strtolower($allDataInSheet[1]['A']) == 'customer type' && strtolower($allDataInSheet[1]['B']) == 'store name' && strtolower($allDataInSheet[1]['C']) == 'gst number' && strtolower($allDataInSheet[1]['D']) == 'country' && strtolower($allDataInSheet[1]['E']) == 'state' && strtolower($allDataInSheet[1]['F']) == 'city' && strtolower($allDataInSheet[1]['G']) == 'address' && strtolower($allDataInSheet[1]['H']) == 'pin code' && strtolower($allDataInSheet[1]['I']) == 'pan number' && strtolower($allDataInSheet[1]['J']) == 'contact person name' && strtolower($allDataInSheet[1]['K']) == 'contact number' && strtolower($allDataInSheet[1]['L']) == 'email' && strtolower($allDataInSheet[1]['M']) == 'due days' && strtolower($allDataInSheet[1]['N']) == 'tan number' && strtolower($allDataInSheet[1]['O']) == 'department' && strtolower($allDataInSheet[1]['P']) == 'store location'){
+                            
+                            $header_row = array_shift($allDataInSheet);
+
+                            $country_bulk = $this->general_model->customer_bulk_country();
+                            $country_bulk = array_column($country_bulk, 'country_id', 'country_name');
+                            $states_bulk = $this->general_model->customer_bulk_state();
+                            $states_bulk_country = array_column($states_bulk, 'country_id', 'state_name');
+                            $states_bulk= array_column($states_bulk, 'state_id', 'state_name');
+                            $city_bulk = $this->general_model->customer_bulk_city();
+                            $city_bulk_state = array_column($city_bulk, 'state_id', 'city_name');
+                            $city_bulk = array_column($city_bulk, 'city_id', 'city_name');
+                            $access_settings = $data['access_settings'];
+                            $primary_id = "customer_id";
+                            $table_name = "customer";
+                            $date_field_name = "added_date";
+                            $current_date = date('Y-m-d');
+                            $sales_ledger = $this->config->item('sales_ledger');
+                            $default_customer_id = $sales_ledger['CUSTOMER'];
+                            $customer_ledger_name = $this->ledger_model->getDefaultLedgerId($default_customer_id);
+                                
+                            
+                            foreach($allDataInSheet as $row){ 
+                                $customer_type = strtolower(trim($row['A']));
+                                $customer_name = strtolower(trim($row['B']));
+                                $gst_number = trim($row['C']);
+                                $country = strtolower(trim($row['D']));
+                                $states = strtolower(trim($row['E']));
+                                $city = strtolower(trim($row['F']));
+                                $address = trim($row['G']);
+                                $email = trim($row['L']);
+                                $pin_code = trim($row['H']);
+                                $due_days = trim($row['M']);
+                                $pan_number = trim($row['I']);
+                                $tan_number = trim($row['N']);
+                                $department = trim($row['O']);
+                                $store_location = trim($row['P']);
+                                $customer_ledger_id = '';
+                                $customer_country_id = '';
+                                $customer_state_city_id = '';
+                                $customer_state_id = '';
+                                $customer_city_id = '';
+                                $is_add = true;
+                                $error = '';
+                                $invoice_number = $this->generate_invoice_number($access_settings, $primary_id, $table_name, $date_field_name, $current_date);
+                                
+                                $reference_number = $this->generate_reference_number($access_settings, $primary_id, $table_name, $date_field_name, $current_date);
+                                if($customer_type != '' && !empty($customer_type)){
+                                    if($customer_type == 'company' || $customer_type == 'firm' || $customer_type == 'private limited company' || $customer_type == 'proprietorship' || $customer_type == 'partnership' || $customer_type == 'one person company' || $customer_type == 'limited liability partnership'){
+                                        if($customer_type == 'firm'){
+                                            $customer_type = 'individual';
+                                        }
+                                        if($customer_name != '' && !empty($customer_name)){
+                                            $Customer_check = $this->Bulk_CustomerValidation($customer_name);
+                                            if($Customer_check["rows"] <= 0){
+                                                $customer_ary = array(
+                                                                'ledger_name' => trim($row['B']),
+                                                                'second_grp' => '',
+                                                                'primary_grp' => 'Sundry Debtors',
+                                                                'main_grp' => 'Current Assets',
+                                                                'default_ledger_id' => 0,
+                                                                'default_value' => trim($row['B']),
+                                                                'amount' => 0
+                                                            );
+                                                if(!empty($customer_ledger_name)){
+                                                    $customer_ledger = $customer_ledger_name->ledger_name;
+                                                    /*$customer_ledger = str_ireplace('{{SECTION}}',$section_name , $customer_ledger);*/
+                                                    $customer_ledger = str_ireplace('{{X}}',trim($row['B']), $customer_ledger);
+                                                    $customer_ary['ledger_name'] = $customer_ledger;
+                                                    $customer_ary['primary_grp'] = $customer_ledger_name->sub_group_1;
+                                                    $customer_ary['second_grp'] = $customer_ledger_name->sub_group_2;
+                                                    $customer_ary['main_grp'] = $customer_ledger_name->main_group;
+                                                    $customer_ary['default_ledger_id'] = $customer_ledger_name->ledger_id;
+                                                }
+                                                $customer_ledger_id = $this->ledger_model->getGroupLedgerId($customer_ary);
+                                                /*$customer_ledger_id = $this->ledger_model->addGroupLedger(array(
+                                                        'ledger_name' => trim($row['B']),
+                                                        'subgrp_2' => 'Sundry Debtors',
+                                                        'subgrp_1' => '',
+                                                        'main_grp' => 'Current Assets',
+                                                        'amount' =>  0
+                                                ));*/
+                                                if($gst_number != '' && $is_add == true){
+                                                    if(preg_match("/^([0][1-9]|[1-4][0-9])([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$/", $gst_number)){
+                                                    } else{
+                                                    $is_add = false;
+                                                    $error = "Enter Valid GST Number";
+                                                    }
+                                                }
+                                                if($country !='' && !empty($country) && $is_add == true){
+                                                    if(isset($country_bulk[$country])){
+                                                        $customer_country_id = $country_bulk[$country];
+                                                        if($states !='' && !empty($states)){
+                                                            if(isset($states_bulk_country[$states])){
+                                                                $state_country_id = $states_bulk_country[$states];
+                                                                if($customer_country_id == $state_country_id){
+                                                                    $customer_state_id = $states_bulk[$states];
+                                                                    if($city !='' && !empty($city)){
+                                                                        if(isset($city_bulk_state[$city])){
+                                                                            $customer_state_city_id =$city_bulk_state[$city];
+                                                                            if($customer_state_id == $customer_state_city_id){
+                                                                                $customer_state_city_id = $city_bulk[$city];
+                                                                                if($address != '' && !empty($address)){
+                                                                                    $customer_address = $address;
+                                                                                    if($store_location != '' && !empty($store_location)){
+                                                                                        if($email != '' && $is_add == true){
+                                                                                            if(!preg_match('/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/', $email)){
+                                                                                                $is_add = false;
+                                                                                                $error = "Invalid Email";
+                                                                                            }
+                                                                                        }
+                                                                                        if($pan_number != '' && $is_add == true){
+                                                                                            if(!preg_match('/^[-a-zA-Z\s0-9 ]+$/', $pan_number)){
+                                                                                                $is_add = false;
+                                                                                                $error = "Invalid Pan Number";
+                                                                                            }
+                                                                                        }
+                                                                                        if($tan_number != '' && $is_add == true){
+                                                                                            if(!preg_match('/^[-a-zA-Z\s0-9 ]+$/', $tan_number)){
+                                                                                                $is_add = false;
+                                                                                                $error = "Invalid Tan Number";
+                                                                                            }
+                                                                                        }
+                                                                                        if($pin_code != '' && $is_add == true){
+                                                                                            if(!preg_match('/^[0-9]\+$/', $pin_code)){
+                                                                                                $is_add = false;
+                                                                                                $error = "Invalid Pin Code";;
+                                                                                            }
+                                                                                        }
+                                                                                        if($due_days != '' && $is_add == true){
+                                                                                            if ($due_days < 0 || $due_days > 365 ) {
+                                                                                                $is_add = false;
+                                                                                                $error = "Value must be less than or equal to 365";
+                                                                                            }
+                                                                                        }
+                                                                                    }else{
+                                                                                      $is_add = false;
+                                                                                        $error = "Store Location Should Not Empty";  
                                                                                     }
                                                                                 }else{
                                                                                     $is_add = false;
@@ -445,10 +802,12 @@ class Customer extends MY_Controller {
                                             "shipping_party_id" => $id,
                                             "shipping_party_type" => 'customer',
                                             "contact_person" => trim($row['J']),
+                                            /*"department" => trim($row['N']),*/
                                             "email" => trim($row['L']),
                                             "shipping_gstin" => trim($row['C']),
                                             "contact_number" => trim($row['K']),
                                             "department" => trim($row['O']),
+                                            "store_location" => trim($row['P']),
                                             "added_date" => date('Y-m-d'),
                                             "added_user_id" => $this->session->userdata('SESS_USER_ID'),
                                             "branch_id" => $this->session->userdata('SESS_BRANCH_ID'),
@@ -460,7 +819,6 @@ class Customer extends MY_Controller {
                                             "updated_date" => "",
                                             "updated_user_id" => ""
                                         );
-
                                         $table = "shipping_address";
                                         $this->general_model->insertData($table, $shipping_address_data);
                                         /*$ecommerce = 1;
@@ -519,8 +877,6 @@ class Customer extends MY_Controller {
                 }
             }
         }
-      /*  print_r($error_array);
-        exit();*/
         if(!empty($errors_email)){
             $to = $this->session->userdata('SESS_IDENTITY');
             $to = $this->session->userdata('SESS_EMAIL');
@@ -534,7 +890,6 @@ class Customer extends MY_Controller {
         }
         redirect("customer", 'refresh');
     }
-
     function send_csv_mail ($csvData, $body, $subject,$to) {
 
         /*$to = 'chetna.b@aavana.in';*/
@@ -594,7 +949,7 @@ class Customer extends MY_Controller {
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
 
-        $string = 'cust.*,s.department';
+        $string = 'cust.*,s.department,s.store_location';
         $table = 'customer cust';
         $join = ['shipping_address s' => 'cust.customer_id=s.shipping_party_id#left'];
         $where = array(
@@ -728,10 +1083,6 @@ class Customer extends MY_Controller {
             $customer_data['drug_licence_no'] = $this->input->post('dl_no');
         }
 
-        if($this->input->post('food_ln')){
-            $customer_data['food_licence_number'] = $this->input->post('food_ln');
-        }
-
         $table = "customer";
         $where = array("customer_id" => $id);
         
@@ -770,6 +1121,9 @@ class Customer extends MY_Controller {
                     "updated_user_id" => $this->session->userdata('SESS_USER_ID'),
                     "address_pin_code" => $this->input->post('txt_pin_code')
                 );
+            if($this->input->post('store_location')){
+                $shipping_address_data['store_location'] = $this->input->post('store_location');
+            }
            /* echo '<pre>';
             print_r($shipping_address_data);
             exit();*/
@@ -927,11 +1281,6 @@ class Customer extends MY_Controller {
         if($this->input->post('dl_no')){
             $customer_data['drug_licence_no'] = $this->input->post('dl_no');
         }
-
-        if($this->input->post('food_ln')){
-            $customer_data['food_licence_number'] = $this->input->post('food_ln');
-        }
-
         $table = "customer";
         if ($id = $this->general_model->insertData($table, $customer_data)) {
             //$reference_number = $this->input->post('reference_number');
@@ -965,6 +1314,9 @@ class Customer extends MY_Controller {
                 "updated_date" => "",
                 "updated_user_id" => ""
             );
+            if($this->input->post('store_location')){
+                $shipping_address_data['store_location'] = $this->input->post('store_location');
+            }
            /* echo '<pre>';
             print_r($shipping_address_data);
             exit();*/
@@ -1122,9 +1474,6 @@ class Customer extends MY_Controller {
         if($this->input->post('dl_no')){
             $customer_data['drug_licence_no'] = $this->input->post('dl_no');
         }
-        if($this->input->post('food_ln')){
-            $customer_data['food_licence_number'] = $this->input->post('food_ln');
-        }
         $table = "customer";
         $customer_id = $this->general_model->insertData($table, $customer_data);
         $log_data = array(
@@ -1164,6 +1513,9 @@ class Customer extends MY_Controller {
            /* echo '<pre>';
             print_r($shipping_address_data);
             exit();*/
+            if($this->input->post('store_location')){
+                $shipping_address_data['store_location'] = $this->input->post('store_location');
+            }
             $table = "shipping_address";
             $this->general_model->insertData($table, $shipping_address_data);
             $table = "log";
@@ -1272,6 +1624,14 @@ class Customer extends MY_Controller {
             'delete_status' => 0,
             'customer_code' => $customer_code,
             'customer_id!=' => $customer_id));
+        echo json_encode($data);
+    }
+    public function get_check_customer_code_add() {
+        $customer_code = strtoupper(trim($this->input->post('customer_code')));
+        $data = $this->general_model->getRecords('count(*) num', 'customer', array(
+            'branch_id' => $this->session->userdata('SESS_BRANCH_ID'),
+            'delete_status' => 0,
+            'customer_code' => $customer_code));
         echo json_encode($data);
     }
 

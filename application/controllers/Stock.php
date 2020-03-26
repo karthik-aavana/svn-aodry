@@ -110,12 +110,14 @@ class Stock extends MY_Controller {
 
                     $nestedData['branch_code'] = $post->customer_code;
                     $nestedData['branch_name'] = $post->customer_name;
+                    $nestedData['store_location'] = $post->store_location;
                     $nestedData['department_name'] = $post->department_name;
                     $nestedData['sub_department_name'] = $post->sub_department_name;
                     $nestedData['category_name'] = $post->category_name;
                     $nestedData['sub_category_name'] = $post->sub_category_name;
+                    $nestedData['article_number'] = $post->product_code;
                     $nestedData['product_name'] = $post->product_name;
-                    $nestedData['product_code'] = $post->product_code;
+                    $nestedData['product_barcode'] = $post->product_barcode;
                     $nestedData['size'] = $size_val;
                     $nestedData['colour'] = $colour_val;
                     $nestedData['product_hsn_sac_code'] = $post->product_hsn_sac_code;
@@ -249,14 +251,17 @@ class Stock extends MY_Controller {
                     $nestedData['category_name'] = $post->category_name;
                     $nestedData['sub_category_name'] = $post->sub_category_name;
                     $nestedData['product_name'] = $post->product_name;
-                    $nestedData['product_code'] = $post->product_code;
+                    $nestedData['article_number'] = $post->product_code;
+                    $nestedData['product_barcode'] = $post->product_barcode;
                     $nestedData['size'] = $size_val;
                     $nestedData['colour'] = $colour_val;
                     $nestedData['product_hsn_sac_code'] = $post->product_hsn_sac_code;
                     $nestedData['purchase_date'] = date('d-m-Y', strtotime($post->purchase_date));
                     $nestedData['supplier_name'] = $post->supplier_name;
+                    $nestedData['purchase_grn_number'] = $post->purchase_grn_number;
                     $nestedData['purchase_invoice_number'] = $post->purchase_invoice_number;
                     $nestedData['uom'] = $post->uom;
+                    $nestedData['product_mrp_price'] = $this->precise_amount($post->product_mrp_price, $access_common_settings[0]->amount_precision);
                     $nestedData['purchase_item_quantity'] = $post->purchase_item_quantity;
                     $nestedData['gross_purchase'] = $this->precise_amount($gross_purchase,$access_common_settings[0]->amount_precision);
                     $nestedData['discount'] = $this->precise_amount($post->purchase_item_discount_amount,$access_common_settings[0]->amount_precision);
@@ -372,14 +377,18 @@ class Stock extends MY_Controller {
                     }
                 }
 
-                    $nestedData['branch_code'] = $post->branch_code;
-                    $nestedData['branch_name'] = $post->branch_name;
+                    // $nestedData['branch_code'] = $post->branch_code;
+                    // $nestedData['branch_name'] = $post->branch_name;
+                    $nestedData['branch_code'] = $post->supplier_code;
+                    $nestedData['branch_name'] = $post->supplier_name;
+                    $nestedData['store_location'] = $post->store_location;
                     $nestedData['department_name'] = $post->department_name;
                     $nestedData['sub_department_name'] = $post->sub_department_name;
                     $nestedData['category_name'] = $post->category_name;
                     $nestedData['sub_category_name'] = $post->sub_category_name;
                     $nestedData['product_name'] = $post->product_name;
                     $nestedData['product_code'] = $post->product_code;
+                    $nestedData['product_barcode'] = $post->product_barcode;
                     $nestedData['size'] = $size_val;
                     $nestedData['colour'] = $colour_val;
                     $nestedData['product_hsn_sac_code'] = $post->product_hsn_sac_code;

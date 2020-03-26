@@ -16,20 +16,22 @@
 							<table id="list_datatable" class="custom_datatable table table-bordered table-striped table-hover table-responsive" >
 								<thead>
 									<tr>
-										<th>Store</th>
+										<th>Store Code</th>
 										<th>Store Name</th>
-										<th>Department</th>
-										<th>Sub Department</th>
+                                        <th>Store Location</th>
+										<!-- <th>Department</th>
+										<th>Sub Department</th> -->
 										<th>Category</th>	
 										<th>Sub Category</th>
-                                        <th>Brand</th>  	
+                                        <th>Brand Name</th>
+                                        <th>Article Number</th> 	
 										<th>Product Name</th>	
 										<th>Barcode</th>
 										<th>Size</th>	
 										<th>Colour</th>
 										<th>HSN Code</th>
 										<th>Date</th>
-										<th>Customer</th>	
+										<!-- <th>Customer</th> -->	
 										<th>Invoice No</th>
 										<th>Unit</th>
 										<th>Sales Qty</th>	
@@ -89,18 +91,20 @@ $(document).ready(function() {
             "columns": [                
             	{"data": "branch_code"},
                 {"data": "branch_name"},
-                {"data": "department_name"},
-                {"data": "sub_department_name"},
+                {"data": "store_location"},
+                /*{"data": "department_name"},
+                {"data": "sub_department_name"},*/
                 {"data": "category_name"},
                 {"data": "sub_category_name"},
                 {"data": "brand_name"},
+                {"data": "article_number"},
                 {"data": "product_name"},
-                {"data": "product_code"},
+                {"data": "product_barcode"},
                 {"data": "size"},
                 {"data": "colour"},
                 {"data": "product_hsn_sac_code"},
                 {"data": "sales_date"},
-                {"data": "customer_name"},
+                /*{"data": "customer_name"},*/
                 {"data": "sales_invoice_number"},
                 {"data": "uom"},
                 {"data": "sales_item_quantity"},

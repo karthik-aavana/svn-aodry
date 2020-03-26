@@ -197,6 +197,9 @@ class Shipping_Address extends MY_Controller {
                 "updated_user_id" => $this->session->userdata('SESS_USER_ID'),
                 "address_pin_code" => $this->input->post('edit_pin_code')
         );
+        if($this->input->post('edit_store_location')){
+            $shipping_address_data['store_location'] = $this->input->post('edit_store_location');
+        }
         $table = "shipping_address";
         if ($this->general_model->updateData($table, $shipping_address_data, array('shipping_address_id' => $shipping_address_id))) {
 
@@ -257,7 +260,9 @@ class Shipping_Address extends MY_Controller {
             "updated_date" => "",
             "updated_user_id" => ""
         );
-
+        if($this->input->post('store_location')){
+                $shipping_address_data['store_location'] = $this->input->post('store_location');
+            }
         $table = "shipping_address";
         if ($id = $this->general_model->insertData($table, $shipping_address_data)) {
 
@@ -473,6 +478,31 @@ class Shipping_Address extends MY_Controller {
         $count = $count + 1;
         $shipping_code = $customer[0]->party_code . '-' . $count;
         $data = array('shipping_code' => $shipping_code);
+        echo json_encode($data);
+    }
+
+    public function get_check_shipping_with_location() {
+        $company_id = strtoupper(trim($this->input->post('company_name')));
+        $store_location = strtoupper(trim($this->input->post('store_location')));
+        $data = $this->general_model->getRecords('count(*) num', 'shipping_address', array(
+            "shipping_party_id" => $company_id,
+            "store_location" => $store_location,
+            'branch_id' => $this->session->userdata('SESS_BRANCH_ID'),
+            'delete_status' => 0,
+            'shipping_party_type' => 'customer'));
+        echo json_encode($data);
+    }
+    public function edit_get_check_shipping_with_location() {
+        $shipping_address_id = $this->input->post('shipping_address_id');
+        $company_id = strtoupper(trim($this->input->post('company_name')));
+        $store_location = strtoupper(trim($this->input->post('store_location')));
+        $data = $this->general_model->getRecords('count(*) num', 'shipping_address', array(
+            "shipping_party_id" => $company_id,
+            "store_location" => $store_location,
+            "shipping_address_id !=" => $shipping_address_id,
+            'branch_id' => $this->session->userdata('SESS_BRANCH_ID'),
+            'delete_status' => 0,
+            'shipping_party_type' => 'customer'));
         echo json_encode($data);
     }
 

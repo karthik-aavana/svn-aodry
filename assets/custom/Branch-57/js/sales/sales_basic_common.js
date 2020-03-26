@@ -222,19 +222,21 @@ $(document).ready(function () {
                 success: function (data) {
                     var suggestions = [];
                     for (var i = 0; i < data.length; ++i) {
-                        var kv = data[i].item_code + " " + data[i].item_name+ ' ' + data[i].product_batch
-                        suggestions.push(kv);
-                        kv = kv.replace(/ /g, "_"); 
-                        var item_code = kv;//data[i].item_code+'-'+data[i].product_batch;
-                        var code = item_code.toString().split(' ');
-                        mapping[code[0]] =
-                            data[i].item_id +
-                            "-" +
-                            data[i].item_type +
-                            "-" +
-                            settings_discount_visible +
-                            "-" +
-                            settings_tax_type;
+                        if(data[i].product_quantity > 0){
+                            var kv = data[i].item_code + " " + data[i].item_name+ ' ' + data[i].product_batch
+                            suggestions.push(kv);
+                            kv = kv.replace(/ /g, "_"); 
+                            var item_code = kv;//data[i].item_code+'-'+data[i].product_batch;
+                            var code = item_code.toString().split(' ');
+                            mapping[code[0]] =
+                                data[i].item_id +
+                                "-" +
+                                data[i].item_type +
+                                "-" +
+                                settings_discount_visible +
+                                "-" +
+                                settings_tax_type;
+                        }
                     }
                     
                     //console.log(term);
@@ -248,11 +250,30 @@ $(document).ready(function () {
                             type: "GET",
                             dataType: "JSON",
                             success: function (data1) {
-                                
-                                $('#table-total').show();
-                                add_row(data1);
-                                call_css();
-                                $("#input_sales_code").val("");
+                                var product_id = data1[0]. product_id;
+                                var new_item = true;
+                                if(sales_data.length != 0){
+                                    for (var i = 0; i < sales_data.length; i++) {
+                                        var pre_item_id = sales_data[i].item_id;
+                                        if (pre_item_id == product_id) {
+                                            var row_index = sales_data[i].item_key_value;
+                                            var table_row = $("#"+ row_index);
+                                            var quantity = table_row.find('input[name^="item_quantity"]').val();
+                                            quantity = ++quantity;
+                                            table_row.find('input[name^="item_quantity"]').val(quantity);
+                                            new_item = false;
+                                            $("#input_sales_code").val("");
+                                            calculateTable(table_row);
+                                        }
+                                        break;
+                                    }
+                                }
+                                if(new_item == true){
+                                    $('#table-total').show();
+                                    add_row(data1);
+                                    call_css();
+                                    $("#input_sales_code").val("");
+                                }
                             }
                         });
                         suggest("");
@@ -271,10 +292,30 @@ $(document).ready(function () {
                 type: "GET",
                 dataType: "JSON",
                 success: function (data) {
-                    $('#table-total').show();
-                    add_row(data);
-                    call_css();
-                    $("#input_sales_code").val("");
+                    var product_id = data[0]. product_id;
+                    var new_item = true;
+                    if(sales_data.length != 0){
+                        for (var i = 0; i < sales_data.length; i++) {
+                            var pre_item_id = sales_data[i].item_id;
+                            if (pre_item_id == product_id) {
+                                var row_index = sales_data[i].item_key_value;
+                                var table_row = $("#"+ row_index);
+                                var quantity = table_row.find('input[name^="item_quantity"]').val();
+                                quantity = ++quantity;
+                                table_row.find('input[name^="item_quantity"]').val(quantity);
+                                new_item = false;
+                                $("#input_sales_code").val("");
+                                calculateTable(table_row);
+                            }
+                            break;
+                        }
+                    }
+                    if(new_item == true){
+                        $('#table-total').show();
+                        add_row(data);
+                        call_css();
+                        $("#input_sales_code").val("");
+                    }
                 }
             });
         }
