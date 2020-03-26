@@ -2128,7 +2128,7 @@ class Product extends MY_Controller
 
         $product_code = $this->input->post('product_code');
         $branch_id = $this->session->userdata('SESS_BRANCH_ID');
-        $product_name = $this->input->post('product_name_edit');
+        $product_name_edit = $this->input->post('product_name_edit');
         $product_id = $this->input->post('product_id');
         $url = '';
         if (isset($_FILES["product_image"]["name"]) && $_FILES["product_image"]["name"] != ""){
