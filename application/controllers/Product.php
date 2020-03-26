@@ -4459,7 +4459,7 @@ class Product extends MY_Controller
                                     $parent_id = 0;
                                     /*$product_code   = $this->generate_invoice_number($access_settings, $primary_id, $table_name, $date_field_name, $current_date);*/
                                     $batch = $this->get_bulk_check_product($product_name,0);
-
+                                    $combination_id = NULL;
                                     if(count($batch) > 0){
 
                                         if($product_size != '' || $product_colour != '' ){
@@ -4527,7 +4527,7 @@ class Product extends MY_Controller
                                         }                                        
                                     } else {
                                        if($product_size != '' || $product_colour != '' ){
-                                          $is_varients = 'Y'; 
+                                          $is_varients = 'Y';                                           
                                        }
                                        $combination_id = NULL;
                                         $product_batch = "BATCH-01";
@@ -4740,7 +4740,7 @@ class Product extends MY_Controller
                                             "product_discount_id" => $discount_product_id,
                                             "product_discount_value" => $this->precise_amount($discount_product,2),
                                             "product_type" => $product_type,
-                                            "is_assets" => 'N' ,
+                                            "is_assets" => 'N',
                                             "is_varients" => $is_varients,
                                             "delete_status" => 0,
                                             "added_date" => date('Y-m-d'),
@@ -4753,9 +4753,12 @@ class Product extends MY_Controller
                                             "margin_discount_value" => $marginal_discount_product,
                                             "margin_discount_id" => $marginal_discount_product_id,
                                             "brand_id" => $brand_id,
-                                            "product_barcode" => $product_barcode,
-                                            "product_combination_id" => $combination_id
+                                            "product_barcode" => $product_barcode
                                         );
+
+                                        if($is_varients == 'N'){
+                                            $headers["product_combination_id"] = $combination_id;
+                                        }
 
                                         $product_id = $this->general_model->insertData($table_name, $headers);
                                         /*if($next_batch > 1){
