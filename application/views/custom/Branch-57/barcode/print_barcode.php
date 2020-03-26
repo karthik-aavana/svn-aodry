@@ -111,6 +111,8 @@
 			                            			<div class="col-sm-12" style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 100%;">
 			                            				<div class="col-sm-6 p_0 f_left" style="position: relative;min-height: 1px;float: left;width: 50%;text-align: left;padding: 0px;"> Unit : One Pair</div>
 			                            				<div class="col-sm-6 p_0 f_right" style="position: relative;min-height: 1px;float: left;width: 50%;text-align: right;padding: 0px;"><?=$value['barcode_number'];?></div>
+			                            			</div>
+			                            			<div class="col-sm-12" style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 100%;">
 			                            				<div class="col-sm-6 p_0 f_left fweight" style="position: relative;min-height: 1px;float: left;width: 50%;text-align: left;font-weight: bold;padding: 0px;"> MRP: Rs.<span class="xlarge" style="font-size: large;"><?=$value['mrp'];?></span></div>
 			                            				<div class="col-sm-6 p_0 f_right fweight" style="position: relative;min-height: 1px;float: left;width: 50%;text-align: right;font-weight: bold;padding: 0px;">Mfg Date: <span class="xlarge" style="font-size: large;"><?=($value['mfg_date'] != '' && $value['mfg_date'] != '0000-00-00' ? date('m-y',strtotime($value['mfg_date'])) : '');?></span></div>
 			                            			</div>

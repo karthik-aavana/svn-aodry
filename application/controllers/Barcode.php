@@ -304,7 +304,7 @@ class Barcode extends MY_Controller{
                             'mrp' => (@$pro_data->mrp ? $pro_data->mrp : '0'),
                             'color' => $colour_val,
                             'size' => $size_val,
-                            'barcode_number' => $pro_data->item_barcode_symbology,
+                            'barcode_number' => ($pro_data->item_barcode_symbology != '' ? $pro_data->item_barcode_symbology : $pro_data->item_code ),
                             'name'          => (@$pro_data->item_name ? $pro_data->item_name : ''),
                             'barcode'       => $this->product_barcode($barcode_id_generate, $pro_data->item_barcode_symbology,''),
                             'unit'          => (@$pro_data->product_unit ? $pro_data->product_unit : ''),
@@ -351,7 +351,7 @@ class Barcode extends MY_Controller{
                         'mrp' => (@$value->mrp ? $value->mrp : '0'),
                         'color' => $colour_val,
                         'size' => $size_val,
-                        'barcode_number' => $value->item_barcode_symbology,
+                        'barcode_number' => ($value->item_barcode_symbology != '' ? $value->item_barcode_symbology : $value->item_code),
                         'name'          => (@$value->item_name ? $value->item_name : ''),
                         'barcode'       => $this->product_barcode($barcode_id_generate, $value->item_barcode_symbology,''),
                         'mrp' => (@$value->mrp ? $this->precise_amount($value->mrp,2) : ''),
@@ -519,6 +519,7 @@ class Barcode extends MY_Controller{
     function generate_leatherCraft_barcode($pro_data){
         $branch_id = $this->session->userdata('SESS_BRANCH_ID');
         $code   = $pro_data->item_barcode_symbology;
+        if(!$code) $code = $pro_data->item_code;
         $height = array(
                 '0' => '',
                 '1' => 30,
