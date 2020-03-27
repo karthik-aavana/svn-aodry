@@ -3536,7 +3536,7 @@ class Common
         if ($item_access == "both")
         {
 
-            $sql = 'SELECT * FROM ((SELECT product_id as item_id,product_code as item_code, product_hsn_sac_code as hsn_sac_code, product_name as item_name,"product" as item_type, delete_status, branch_id, product_batch,product_quantity,product_opening_quantity FROM products where delete_status=0 and branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . ' and batch_parent_product_id = 0  AND is_varients="N" '.$brand_where.' '.$pro_where.' order by product_id desc)' .
+            $sql = 'SELECT * FROM ((SELECT product_id as item_id,product_code as item_code, product_hsn_sac_code as hsn_sac_code, product_name as item_name,"product" as item_type, delete_status, branch_id, product_batch,product_quantity,product_opening_quantity FROM products where delete_status=0 and product_combination_id IS NOT NULL AND branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . ' and batch_parent_product_id = 0  AND is_varients="N" '.$brand_where.' '.$pro_where.' order by product_id desc)' .
             'UNION ALL' .
             '(SELECT service_id as item_id,service_code as item_code,service_hsn_sac_code as hsn_sac_code,service_name as item_name,"service" as item_type,delete_status,branch_id, "" as product_batch, 0 as product_quantity,0 as product_opening_quantity FROM services where delete_status=0 and branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . ' '.$ser_where.' order by service_id desc)
                 ) AS u where u.delete_status=0 && u.branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . '';
@@ -3545,7 +3545,7 @@ class Common
         }
         elseif ($item_access == "product")
         {
-            $sql = 'SELECT * FROM ((SELECT product_id as item_id,product_code as item_code,product_hsn_sac_code as hsn_sac_code,product_name as item_name,"product" as item_type,delete_status,branch_id,product_batch,product_quantity,product_opening_quantity FROM products where delete_status=0 and batch_parent_product_id = 0 AND is_varients="N" '.$brand_where.' AND branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . ' '.$pro_where.' order by product_id desc)) AS u where u.delete_status=0 && u.branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . '';
+            $sql = 'SELECT * FROM ((SELECT product_id as item_id,product_code as item_code,product_hsn_sac_code as hsn_sac_code,product_name as item_name,"product" as item_type,delete_status,branch_id,product_batch,product_quantity,product_opening_quantity FROM products where delete_status=0 and product_combination_id IS NOT NULL AND batch_parent_product_id = 0 AND is_varients="N" '.$brand_where.' AND branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . ' '.$pro_where.' order by product_id desc)) AS u where u.delete_status=0 && u.branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . '';
             // $data=$this->db->query($sql)->result();
         }
         else
@@ -5804,13 +5804,14 @@ class Common
     }
     public function customer_list_field()
     {
-        $string = 'cust.*,c.city_name,co.country_name,st.state_name,u.first_name,u.last_name';
+        $string = 'cust.*,c.city_name,co.country_name,st.state_name,u.first_name,u.last_name,s.store_location';
         $table  = 'customer cust';
         // $join['contact_person cp']='cp.contact_person_id=cust.customer_contact_person_id';
         $join['cities c']     = 'cust.customer_city_id=c.city_id' . '#' . 'left';
         $join['states st']    = 'cust.customer_state_id=st.state_id';
         $join['countries co'] = 'cust.customer_country_id=co.country_id';
         $join['users u']      = 'cust.added_user_id=u.id';
+        $join['shipping_address s'] = 'cust.customer_id = s.shipping_party_id' . '#' . 'left';
         $where = array(
             'cust.branch_id'     => $this->ci->session->userdata('SESS_BRANCH_ID'),
             'cust.delete_status' => 0
@@ -14292,7 +14293,7 @@ public function tds_report_sales_list(){
     }
 
     public function get_sales_stock_report(){
-        $string = "P.product_name, P.product_code, P.product_hsn_sac_code, P.product_id, P.product_combination_id, SI.sales_item_quantity, SI.sales_item_unit_price, S.sales_invoice_number, C.customer_name, C.customer_code, S.sales_date, SI.sales_item_discount_amount, SI.sales_item_tds_amount, SI.sales_item_igst_amount, SI.sales_item_sgst_amount, SI.sales_item_cgst_amount, SI.sales_item_tax_cess_amount, D.department_name, SD.sub_department_name, U.uom, CT.category_name, B.branch_name, B.branch_code, SC.sub_category_name,BD.brand_name";
+        $string = "P.product_name, P.product_code, P.product_barcode, P.product_hsn_sac_code, P.product_id, P.product_combination_id, SI.sales_item_quantity, SI.sales_item_unit_price, S.sales_invoice_number, C.customer_name, C.customer_code, S.sales_date, SI.sales_item_discount_amount, SI.sales_item_tds_amount, SI.sales_item_igst_amount, SI.sales_item_sgst_amount, SI.sales_item_cgst_amount, SI.sales_item_tax_cess_amount, D.department_name, SD.sub_department_name, U.uom, CT.category_name, B.branch_name, B.branch_code, SC.sub_category_name,BD.brand_name,sa.store_location";
         $table  = "products P";
         $where = array(
             'P.branch_id'         => $this->ci->session->userdata('SESS_BRANCH_ID'),
@@ -14303,6 +14304,7 @@ public function tds_report_sales_list(){
              "department D"   => "D.department_id = S.department_id". "#" . "left",
              "sub_department SD"   => "S.sub_department_id = SD.sub_department_id". "#" . "left",
              "customer C" => "C.customer_id = S.sales_party_id",
+             "shipping_address sa" => "sa.shipping_party_id = C.customer_id",
              "branch B" => "B.branch_id = P.branch_id",
             'uqc U'      => 'U.id = P.product_unit_id  and SI.item_type = "product"' . '#' . 'left',
             "category CT" => "CT.category_id=P.product_category_id",
@@ -14310,7 +14312,22 @@ public function tds_report_sales_list(){
             "brand BD" => "P.brand_id = BD.brand_id". "#" . "left"
              ];
         $group = array('S.sales_id,P.product_id');
-        $filter = array('P.product_name');
+        $filter = array(
+            'P.product_name',
+            'P.product_code',
+            'sa.store_location',
+            'SC.sub_category_name',
+            'CT.category_name',
+            'C.customer_code',
+            'C.customer_name',
+            'B.branch_name',
+            'P.product_barcode',
+            'P.product_hsn_sac_code',
+            'S.sales_invoice_number',
+            'U.uom',
+            'S.sales_date',
+            'SI.sales_item_discount_amount'
+        );
         $data = array(
             'string' => $string,
             'table'  => $table,
@@ -14324,7 +14341,7 @@ public function tds_report_sales_list(){
 
 
     public function get_purchase_stock_report(){
-        $string = "P.product_name, P.product_code, P.product_hsn_sac_code, P.product_id, P.product_combination_id, PI.purchase_item_quantity, PI.purchase_item_unit_price, PS.purchase_invoice_number, C.supplier_name, C.supplier_code, PS.purchase_date, PI.purchase_item_discount_amount, PI.purchase_item_tds_amount, PI.purchase_item_igst_amount, PI.purchase_item_cgst_amount, PI.purchase_item_sgst_amount, PI.purchase_item_tax_cess_amount, D.department_name, SD.sub_department_name, U.uom, CT.category_name, B.branch_name, B.branch_code, SC.sub_category_name,BD.brand_name";
+        $string = "P.product_name, P.product_code, P.product_barcode, P.product_hsn_sac_code, P.product_id, P.product_combination_id, P.product_mrp_price, PI.purchase_item_quantity, PI.purchase_item_unit_price, PS.purchase_invoice_number, C.supplier_name, C.supplier_code, PS.purchase_date, PI.purchase_item_discount_amount, PI.purchase_item_tds_amount, PI.purchase_item_igst_amount, PI.purchase_item_cgst_amount, PI.purchase_item_sgst_amount, PI.purchase_item_tax_cess_amount, D.department_name, SD.sub_department_name, U.uom, CT.category_name, B.branch_name, B.branch_code, SC.sub_category_name,BD.brand_name,PS.purchase_grn_number";
         $table  = "products P";
         $where = array(
             'P.branch_id'         => $this->ci->session->userdata('SESS_BRANCH_ID'),
@@ -14343,7 +14360,22 @@ public function tds_report_sales_list(){
             "brand BD" => "P.brand_id = BD.brand_id". "#" . "left"
              ];
         $group = array('PS.purchase_id,P.product_id');
-       $filter = array('P.product_name');
+       $filter = array(
+            'P.product_name',
+            'C.supplier_code',
+            'C.supplier_name',
+            'CT.category_name',
+            'SC.sub_category_name',
+            'BD.brand_name',
+            'P.product_code',
+            'P.product_barcode',
+            'P.product_hsn_sac_code',
+            'PS.purchase_date',
+            'PS.purchase_invoice_number',
+            'PS.purchase_grn_number',
+            'U.uom',
+            'P.product_mrp_price'
+        );
         $data = array(
             'string' => $string,
             'table'  => $table,
@@ -14401,7 +14433,7 @@ public function tds_report_sales_list(){
     }
 
     public function get_closing_stock_report(){
-        $string = "P.product_name, P.product_code, P.product_hsn_sac_code, P.product_id, P.product_basic_price, P.product_quantity, P.product_combination_id, SUM(SI.sales_item_quantity) as sales_qty, AVG(SI.sales_item_unit_price) as price, SUM(SI.sales_item_igst_amount) as igst, SUM(SI.sales_item_sgst_amount) as sgst, SUM(SI.sales_item_cgst_amount) as cgst, D.department_name, SD.sub_department_name, U.uom, CT.category_name, B.branch_name, B.branch_code, SC.sub_category_name, BD.brand_name, P.product_opening_quantity, SUM(PI.purchase_item_quantity) as purchase_qty, PI.purchase_id, P.product_batch";
+        $string = "P.product_name, P.product_code, P.product_barcode, P.product_hsn_sac_code, P.product_id, P.product_basic_price, P.product_quantity, P.product_combination_id, (select SUM(SI.sales_item_quantity) from sales_item SI where P.product_id = SI.item_id and SI.item_type = 'product') as sales_qty, AVG(SI.sales_item_unit_price) as price, SUM(SI.sales_item_igst_amount) as igst, SUM(SI.sales_item_sgst_amount) as sgst, SUM(SI.sales_item_cgst_amount) as cgst, D.department_name, SD.sub_department_name, U.uom, CT.category_name, B.branch_name, B.branch_code, SC.sub_category_name, BD.brand_name, P.product_opening_quantity, (select SUM(PI.purchase_item_quantity) from purchase_item PI where `P`.`product_id` = `PI`.`item_id` and `PI`.`item_type` = 'product') as purchase_qty, PI.purchase_id, P.product_batch, C.supplier_name,C.supplier_code, sa.store_location";
         $table  = "products P";
         $where = array(
             'P.branch_id' => $this->ci->session->userdata('SESS_BRANCH_ID'),
@@ -14410,6 +14442,8 @@ public function tds_report_sales_list(){
              "purchase_item PI"  => "P.product_id = PI.item_id and PI.item_type = 'product'". "#" . "left" ,
              "purchase PU"   => "PU.purchase_id = PI.purchase_id". "#" . "left",
              "sales_item SI"  => "P.product_id = SI.item_id and SI.item_type = 'product'". "#" . "left" ,
+             "supplier C" => "C.supplier_id = PU.purchase_party_id",
+             "shipping_address sa" => "sa.shipping_party_id = C.supplier_id",
              "department D"   => "D.department_id = PU.department_id". "#" . "left",
         "sub_department SD" => "PU.sub_department_id = SD.sub_department_id". "#" . "left",            
              "branch B" => "B.branch_id = P.branch_id",
@@ -14418,8 +14452,21 @@ public function tds_report_sales_list(){
             "sub_category SC" => "SC.sub_category_id=P.product_subcategory_id". "#" . "left",
             "brand BD" => "P.brand_id = BD.brand_id". "#" . "left"
              ];
-        $group = array('PU.department_id,PU.sub_department_id,P.product_id');
-        $filter = array('P.product_name');
+        $group = array('P.product_id');
+        $filter = array(
+                        'P.product_name',
+                        'C.supplier_name',
+                        'sa.store_location',
+                        'CT.category_name',
+                        'SC.sub_category_name',
+                        'BD.brand_name',
+                        'P.product_code',
+                        'P.product_batch',
+                        'P.product_barcode',
+                        'P.product_hsn_sac_code',
+                        'U.uom',
+                        'P.product_opening_quantity'
+                    );
         
         $order = ["PI.purchase_id" => "desc"];
         $data = array(

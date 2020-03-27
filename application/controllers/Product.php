@@ -802,6 +802,10 @@ class Product extends MY_Controller
                         $insert_product[$i]['product_opening_quantity'] = $this->input->post('product_opening_stock');
                     }
 
+                    if($this->input->post('mfg_date')){
+                        $product_data['mfg_date'] = date('Y-m-d',strtotime($this->input->post('mfg_date')));
+                    }
+
                     $this->general_model->updateData('product_combinations', $update_compina_status, array('combination_id' => $combination_id));   
                     $a++;
                     $variant_id = $this->general_model->insertData('products', $insert_product[$i]);
@@ -2239,8 +2243,12 @@ class Product extends MY_Controller
         exit();*/
         $LeatherCraft_id = $this->config->item('LeatherCraft');
         $ecomm_variant_product = array();
-        if ($this->general_model->updateData('products', $product_data, array(
-            'product_id' => $product_id))){
+        if($LeatherCraft_id == $this->session->userdata("SESS_BRANCH_ID") ){
+            $where_array = array( 'product_code' => $product_code);
+        }else{
+             $where_array = array( 'product_id' => $product_id);
+        }
+        if ($this->general_model->updateData('products', $product_data, $where_array)){
             if($LeatherCraft_id == $this->session->userdata("SESS_BRANCH_ID") ){
                 $data_update_com = $this->general_model->getRecords('*', 'product_combinations', array(
                     'product_id' => $product_id,
@@ -2324,6 +2332,14 @@ class Product extends MY_Controller
                     }
                     if($this->input->post('product_opening_stock')){
                         $insert_product[$i]['product_opening_quantity'] = $this->input->post('product_opening_stock');
+                    }
+
+                    if($this->input->post('exp_date')){
+                        $product_data['exp_date'] = date('Y-m-d',strtotime($this->input->post('exp_date')));
+                    }
+
+                    if($this->input->post('mfg_date')){
+                        $product_data['mfg_date'] = date('Y-m-d',strtotime($this->input->post('mfg_date')));
                     }
 
                     $this->general_model->updateData('product_combinations', $update_compina_status, array('combination_id' => $combination_id));   
@@ -4525,7 +4541,7 @@ class Product extends MY_Controller
                                             $product_batch = 'BATCH-0'.$number; 
                                             $is_varients = 'N'; 
                                             $parent_id = $batch[0]->product_id;
-                                             $combination_id = NULL;
+                                            $combination_id = NULL;
                                         }                                        
                                     } else {
                                        if($product_size != '' || $product_colour != '' ){
