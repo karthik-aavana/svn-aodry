@@ -81,7 +81,7 @@ $this->load->view('layout/header');
                                     </select> <span class="validation-color" id="err_customer_type"><?php echo form_error('customer_type'); ?></span>
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="customer_name" id="cust_name">Company/Firm Name<span class="validation-color">*</span>
+                                    <label for="customer_name" id="cust_name">Store Name<span class="validation-color">*</span>
                                     </label>
                                     <label hidden="hidden" for="customer_name" id="comp_name">Company Name<span class="validation-color">*</span>
                                     </label>									

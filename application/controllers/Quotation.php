@@ -627,7 +627,6 @@ class Quotation extends MY_Controller {
 
         $data['customer'] = $this->customer_call();
         $data['currency'] = $this->currency_call();
-        $data['shipping_address'] = $this->general_model->getRecords('*', 'shipping_address', array('delete_status' => 0,'branch_id'     => $this->session->userdata('SESS_BRANCH_ID') ));
         if ($data['data'][0]->quotation_tax_amount > 0 || $data['access_settings'][0]->tax_type != "no_tax") {
 
             $data['tax'] = $this->tax_call();
@@ -785,11 +784,10 @@ class Quotation extends MY_Controller {
         $data['data'] = $this->general_model->getRecords('*', 'quotation', array(
             'quotation_id' => $id));
 
-        /*$data['shipping_address'] = $this->general_model->getRecords('*', 'shipping_address', array(
+        $data['shipping_address'] = $this->general_model->getRecords('*', 'shipping_address', array(
             'shipping_party_id' => $data['data'][0]->quotation_party_id,
             'shipping_party_type' => $data['data'][0]->quotation_party_type
-        ));*/
-        $data['shipping_address'] = $this->general_model->getRecords('*', 'shipping_address', array('delete_status' => 0,'branch_id'     => $this->session->userdata('SESS_BRANCH_ID') ));
+        ));
         $item_types = $this->general_model->getRecords('item_type,quotation_item_description', 'quotation_item', array(
             'quotation_id' => $id));
 
