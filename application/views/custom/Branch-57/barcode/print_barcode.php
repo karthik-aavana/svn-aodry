@@ -168,8 +168,8 @@
 				                            			</div>
 				                            			<div class="col-sm-12 f_left" style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 100%;text-align: left;">
 				                            				<div class="col-sm-6 p_0 fweight" style="position: relative;min-height: 1px;float: left;width: 50%;font-weight: bold;padding: 0px;"><?=$value['code'];?></div>
-				                            				<div class="col-sm-3 p_0 fweight" style="position: relative;min-height: 1px;float: left;width: 25%;font-weight: bold;padding: 0px;"><?=ucfirst($value['size']);?></div>
-				                            				<div class="col-sm-3 p_0 fweight" style="position: relative;min-height: 1px;float: left;width: 25%;font-weight: bold;padding: 0px;"><?=strtoupper($value['color']);?></div>
+				                            				<div class="col-sm-3 p_0 fweight" style="position: relative;min-height: 1px;float: left;width: 25%;font-weight: bold;padding: 0px;"><?=ucfirst($value['color']);?></div>
+				                            				<div class="col-sm-3 p_0 fweight" style="position: relative;min-height: 1px;float: left;width: 25%;font-weight: bold;padding: 0px;"><?=strtoupper($value['size']);?></div>
 				                            			</div>
 				                            			<div class="col-sm-12" style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 100%;">
 				                            				<div class="col-sm-6 p_0 f_left fweight" style="position: relative;min-height: 1px;float: left;width: 50%;text-align: left;font-weight: bold;padding: 0px;"> MRP: Rs.<span class="xlarge" style="font-size: medium;"><?=$value['mrp'];?></span></div>
