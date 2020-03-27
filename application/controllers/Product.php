@@ -4512,6 +4512,7 @@ class Product extends MY_Controller
                                                 $batch_num=$batch[0]->num;
                                                 $number = intval($batch_num)+1;
                                                 $product_batch = 'BATCH-0'.$number; 
+                                                $parent_id = $batch[0]->product_id;
                                             }else{
                                                 $product_batch = "BATCH-01";
                                             }
@@ -4523,6 +4524,7 @@ class Product extends MY_Controller
                                             $number = intval($batch_num)+1;
                                             $product_batch = 'BATCH-0'.$number; 
                                             $is_varients = 'N'; 
+                                            $parent_id = $batch[0]->product_id;
                                              $combination_id = NULL;
                                         }                                        
                                     } else {

@@ -277,7 +277,7 @@ class Barcode extends MY_Controller{
             $pro_data = $this->general_model->getJoinRecords($string, $table, $where, $join);
             if(!empty($pro_data)){
                 $pro_data = $pro_data[0];
-                $barcode_symbology = $pro_data->item_barcode_symbology;
+                $pro_data->item_barcode_symbology = str_replace('/', '', $pro_data->item_barcode_symbology);
                 $colour_val = $size_val = '';
                 if($pro_data->varient_value_id != ''){
                     $variant_val = $this->db->query('SELECT p.*,v.varient_key,vv.varients_value FROM `product_varients_value` p JOIN varients v ON p.varients_id=v.varients_id JOIN varients_value vv ON vv.varients_value_id = p.varients_value_id WHERE  p.varients_value_id IN('.$pro_data->varient_value_id.')');
@@ -301,7 +301,7 @@ class Barcode extends MY_Controller{
                             'code'          => (@$pro_data->item_code ? $pro_data->item_code : ''),
                             'product_unit' => (@$pro_data->product_unit ? $pro_data->product_unit : ''),
                             'mfg_date' => (@$pro_data->mfg_date ? $pro_data->mfg_date : ''),
-                            'mrp' => (@$pro_data->mrp ? $pro_data->mrp : '0'),
+                            'mrp' => (@$pro_data->mrp ? $this->precise_amount($pro_data->mrp,2) : '0'),
                             'color' => $colour_val,
                             'size' => $size_val,
                             'barcode_number' => ($pro_data->item_barcode_symbology != '' ? $pro_data->item_barcode_symbology : $pro_data->item_code ),
@@ -320,7 +320,7 @@ class Barcode extends MY_Controller{
             foreach ($js_data as $key => $value){
                 $pid      = $value->item_id;
                 $quantity = $value->item_quantity;
-                $barcode_symbology = $value->item_barcode_symbology;
+                $value->item_barcode_symbology = str_replace('/', '', $value->item_barcode_symbology);
                 $colour_val = $size_val = '';
                 if($value->varient_value_id != ''){
                     $variant_val = $this->db->query('SELECT p.*,v.varient_key,vv.varients_value FROM `product_varients_value` p JOIN varients v ON p.varients_id=v.varients_id JOIN varients_value vv ON vv.varients_value_id = p.varients_value_id WHERE  p.varients_value_id IN('.$value->varient_value_id.')');
@@ -348,7 +348,7 @@ class Barcode extends MY_Controller{
                         'code'          => (@$value->item_code ? $value->item_code : ''),
                         'product_unit' => (@$value->product_unit ? $value->product_unit : ''),
                         'mfg_date' => (@$value->mfg_date ? $value->mfg_date : ''),
-                        'mrp' => (@$value->mrp ? $value->mrp : '0'),
+                        'mrp' => (@$value->mrp ? $this->precise_amount($value->mrp,2) : '0'),
                         'color' => $colour_val,
                         'size' => $size_val,
                         'barcode_number' => ($value->item_barcode_symbology != '' ? $value->item_barcode_symbology : $value->item_code),
@@ -520,6 +520,7 @@ class Barcode extends MY_Controller{
         $branch_id = $this->session->userdata('SESS_BRANCH_ID');
         $code   = $pro_data->item_barcode_symbology;
         if(!$code) $code = $pro_data->item_code;
+        $code = str_replace('/', '', $code);
         $height = array(
                 '0' => '',
                 '1' => 30,
@@ -661,4 +662,3 @@ class Barcode extends MY_Controller{
     }
 
 }
-
