@@ -346,7 +346,7 @@
                 $("#err_company_type_edit").text("");
             }
             if (company_name == null || company_name == "") {
-                $("#err_company_name_edit").text("Please Enter Company Name.");
+                $("#err_company_name_edit").text("Please Enter Store Name.");
                 return false;
             } else {
                 $("#err_company_name_edit").text("");

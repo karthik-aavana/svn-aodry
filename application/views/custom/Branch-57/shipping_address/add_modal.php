@@ -317,7 +317,7 @@
             $("#err_company_type").text("");
         }
         if (company_name == null || company_name == "") {
-            $("#err_company_name").text("Please Select Company Name.");
+            $("#err_company_name").text("Please Select Store Name.");
             return false;
         } else {
             $("#err_company_name").text("");
