@@ -353,41 +353,49 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                         <table class="table table-striped table-bordered table-condensed table-hover sales_table table-responsive" id="sales_data">
                                             <thead>
                                                 <tr>
-                                                    <th width="2%"><img src="<?= base_url(); ?>assets/images/bin1.png" /></th>
-                                                    <th class="span2">Items</th>
-                                                    <?php
-                                                    if ($access_settings[0]->description_visible == 'yes') {
-                                                        ?>
-                                                        <th class="span2">Description</th>
+                                                    <th width="2%">
+                                                        <img src="<?= base_url(); ?>assets/images/bin1.png" />
+                                                    </th>
+                                                    <th class="span2" width="10%">Items</th>
+                                                    <?php if ($access_settings[0]->description_visible == 'yes') { ?>
+                                                        <th class="span2" width="10%">Description</th>
                                                     <?php } ?>
-                                                    <th class="span2" width="6%">Quantity</th>
-                                                    <th class="span2" width="10%">Rate</th>
+                                                    <th class="span2" width="3%">Quantity</th>
+                                                    <th class="span2" width="4%">Unit</th>
+                                                    <th class="span2" width="8%">Rate</th>
                                                     <?php
                                                     if ($access_settings[0]->discount_visible == 'yes') {
                                                         ?>
-                                                        <th class="span2" width="9%">Discount
-                                                            <?php if (in_array($discount_module_id, $active_add)) { ?>
-                                                                                          <!-- <a href="" data-toggle="modal" data-target="#discount_modal"><strong>+</strong></a> -->
-                                                                <?php
-                                                            }
-                                                            ?>
-                                                        </th>
+                                                    <th class="span2" width="6%">Markdown Discount</th>
                                                     <?php } ?>
+                                                    <th class="span2" width="8%">Selling Price</th>
+                                                    <?php
+                                                    if ($access_settings[0]->discount_visible == 'yes') {
+                                                        ?>
+                                                    <th class="span2" width="6%">Marginal Discount</th>
+                                                    <?php } ?>
+                                                    <th class="span2" width="6%">GST Output</th>
+                                                    <!-- <?php if ($access_settings[0]->discount_visible == 'yes') { ?>
+                                                        <th class="span2" width="8%">Discount
+                                                            <?php if (in_array($discount_module_id, $active_add)) { ?>  -->  <!-- <a href="" data-toggle="modal" data-target="#discount_modal"><strong>+</strong></a> -->
+                                                            <!-- <?php } ?>
+                                                        </th>
+                                                    <?php } ?> -->
                                                     <?php
                                                     if ($access_settings[0]->tax_type == 'gst' || $access_settings[0]->tax_type == 'single_tax') {
                                                         if ($access_settings[0]->discount_visible == 'yes') {
                                                             ?>
-                                                            <th class="span2" width="10%">Taxable Value</th>
+                                                            <th class="span2" width="8%">Taxable Value</th>
                                                             <?php
                                                         }
                                                     }
                                                     ?>
                                                     <?php if ($access_settings[0]->tds_visible == 'yes') { ?>
-                                                        <th class="span2" width="9%">TDS/TCS(%)</th>
+                                                        <th class="span2" width="7%">TDS/TCS(%)</th>
                                                     <?php } ?>
                                                     <?php if ($access_settings[0]->tax_type == 'gst' || $access_settings[0]->tax_type == 'single_tax') { ?>
-                                                        <th class="span2" width="9%">GST(%)</th>
-                                                        <th class="span2" width="9%">Cess(%) </th>
+                                                        <th class="span2" width="7%">GST(%)</th>
+                                                        <th class="span2" width="7%">Cess(%)</th>
                                                     <?php } ?>
                                                     <th class="span2" width="10%">Total</th>
                                                 </tr>
@@ -396,52 +404,162 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                 <?php
                                                 $i = 0;
                                                 $tot = 0;
-                                                foreach ($items as $key) {
-                                                    ?>
+                                                foreach ($items as $key) { ?>
                                                     <tr id="<?= $i ?>">
-                                                        <td><a class='deleteRow'> <img src='<?= base_url(); ?>assets/images/bin_close.png' /></a><input type='hidden' name='item_key_value'  value="<?= $i ?>"><input type='hidden' name='item_id' value="<?= $key->item_id; ?>"><input type='hidden' name='item_type' value="<?= $key->item_type; ?>"></td>
+                                                        <td><a class='deleteRow'> <img src='<?= base_url(); ?>assets/images/bin_close.png' /></a>
+                                                            <input type='hidden' name='item_key_value' value="<?= $i ?>">
+                                                            <input type='hidden' name='item_id' value="<?= $key->item_id; ?>">
+                                                            <input type='hidden' name='item_type' value="<?= $key->item_type; ?>">
+                                                        </td>
                                                         <?php if ($key->item_type == 'product' || $key->item_type == 'product_inventory') { ?>
                                                             <td>
-                                                                <input type='hidden' name='item_code' value='<?= $key->product_code; ?>'>
-                                                                <?php echo $key->product_name; ?><br>(P) (HSN/SAC: <?php echo $key->product_hsn_sac_code; ?>)<br><?php echo $key->product_batch; ?>
-                                                            </td>
-                                                            <?php
-                                                        } else {
-                                                            ?>
+                                                                <input type='hidden' name='item_code' value='<?php
+                                                                echo $key->product_code;
+                                                                ?>'>
+                                                                       <?php echo $key->product_name; ?>
+                                                                <br>(P) (HSN/SAC: 
+                                                                <?php echo $key->product_hsn_sac_code; ?>)
+                                                                <br>
+                                                                <?php echo $key->product_batch; ?></td>
+                                                        <?php } else { ?>
                                                             <td>
-                                                                <input type='hidden' name='item_code' value='<?php echo $key->service_code; ?>'>
-                                                                <?php echo $key->service_name; ?><br>(S) (HSN/SAC: <?php echo $key->service_hsn_sac_code; ?>)
-                                                            </td>
+                                                                <input type='hidden' name='item_code' value='<?php
+                                                                echo $key->service_code;
+                                                                ?>'>
+                                                                       <?php echo $key->service_name; ?>
+                                                                <br>(S)(HSN/SAC: 
+                                                                <?php echo $key->service_hsn_sac_code; ?>)</td>
                                                         <?php } ?>
-                                                        <?php
-                                                        if ($description_exist == 1) {
-                                                            ?>
-                                                            <td><input type='text' class='form-control form-fixer' name='item_description' value='<?php echo $key->quotation_item_description; ?>'></td>
-                                                        <?php } ?>
-                                                        <td><input type='text' class='form-control form-fixer text-center float_number' value='<?= ($key->quotation_item_quantity ? $key->quotation_item_quantity : 0); ?>' data-rule='quantity' name='item_quantity'></td>
-                                                        <td><input type='text' class='form-control form-fixer text-right float_number' name='item_price' value='<?= ($key->quotation_item_unit_price ? precise_amount($key->quotation_item_unit_price) : 0); ?>'><span id='item_sub_total_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?= ($key->quotation_item_sub_total ? precise_amount($key->quotation_item_sub_total) : 0); ?></span>
-                                                            <input type='hidden' class='form-control form-fixer text-right' style='' value='<?= ($key->quotation_item_sub_total ? precise_amount($key->quotation_item_sub_total) : 0); ?>' name='item_sub_total'></td>
-                                                        <td><input type='hidden' name='item_discount_id' value='<?php echo $key->quotation_item_discount_id ? $key->quotation_item_discount_id : 0; ?>'>
-                                                            <input type='hidden' name='item_discount_percentage' value='<?php echo $key->item_discount_percentage ? (float) ($key->item_discount_percentage) : 0; ?>'>
-                                                            <input type='hidden' name='item_discount_amount' value='<?php echo $key->quotation_item_discount_amount ? precise_amount($key->quotation_item_discount_amount) : 0; ?>'>
+                                                        <td>
+                                                            <input type='text' class='form-control form-fixer' name='item_description' value='<?= $key->quotation_item_description; ?>'>
+                                                        </td>
+                                                        <td>
+                                                            <input type='text' class='form-control form-fixer text-center float_number' value='<?php
+                                                            echo $key->quotation_item_quantity ? $key->quotation_item_quantity : 0;
+                                                            ?>' data-rule='quantity' name='item_quantity'>
+                                                        </td>
+                                                        <td style="text-align:center"><?php
+                                                            echo $key->product_unit ? $key->product_unit : '-'; ?>
+                                                        </td>
+                                                        <td>
+                                                            <input type='text' class='form-control form-fixer text-right float_number' name='item_price' value='<?php
+                                                            echo $key->quotation_item_unit_price ? precise_amount($key->quotation_item_unit_price) : 0;
+                                                            ?>'><span id='item_basic_total_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?php
+                                                                   echo $key->quotation_item_basic_total ? precise_amount($key->quotation_item_basic_total) : 0;
+                                                                   ?></span>
+                                                            <input type='hidden' class='form-control form-fixer text-right' style='' value='<?php
+                                                            echo $key->quotation_item_basic_total ? precise_amount($key->quotation_item_basic_total) : 0;
+                                                            ?>' name='item_basic_total'>
+                                                        </td>
+                                                        <!-- <td align='right'>
+                                                            <input type='hidden' name='item_selling_price' value='<?= ($key->quotation_item_selling_price ? $key->quotation_item_selling_price : 0); ?>'> <span id='item_selling_price_lbl_<?= $i ?>'><?= $key->quotation_item_selling_price ? precise_amount($key->quotation_item_selling_price) : 0; ?></span>
+                                                        </td> -->
+                                                        <!-- <td>
+                                                            <input type='hidden' name='item_discount_id' value='<?php
+                                                            echo $key->quotation_item_discount_id ? $key->quotation_item_discount_id : 0;
+                                                            ?>'>
+                                                            <input type='hidden' name='item_discount_percentage' value='<?php
+                                                            echo $key->item_discount_percentage ? precise_amount($key->item_discount_percentage) : 0;
+                                                            ?>'>
+                                                            <input type='hidden' name='item_discount_amount' value='<?= ($key->quotation_item_discount_amount ? precise_amount($key->quotation_item_discount_amount) : 0); ?>'>
                                                             <div class="form-group" style="margin-bottom:0px !important;">
                                                                 <select class="form-control open_discount form-fixer select2" name="item_discount">
                                                                     <option value="">Select</option>
                                                                     <?php
                                                                     foreach ($discount as $key3 => $value3) {
                                                                         if ($value3->discount_id == $key->quotation_item_discount_id) {
-                                                                            echo "<option value='" . $value3->discount_id . "-" . (float) ($value3->discount_value) . "' selected>" . (float) ($value3->discount_value) . "%</option>";
+                                                                            echo "
+                                                                <option value='" . $value3->discount_id . "-" . (float) ($value3->discount_value) . "' selected>" . (float) ($value3->discount_value) . "%</option>";
                                                                         } else {
-                                                                            echo "<option value='" . $value3->discount_id . "-" . (float) ($value3->discount_value) . "'>" . (float) ($value3->discount_value) . "%</option>";
+                                                                            echo "
+                                                                <option value='" . $value3->discount_id . "-" . (float) ($value3->discount_value) . "'>" . (float) ($value3->discount_value) . "%</option>";
                                                                         }
                                                                     }
-                                                                    ?>
-                                                                </select>
-                                                            </div>
-                                                            <span id='item_discount_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?php echo $key->quotation_item_discount_amount ? precise_amount($key->quotation_item_discount_amount) : 0; ?></span>
+                                                                    ?></select>
+                                                            </div> <span id='item_discount_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?php
+                                                                echo $key->quotation_item_discount_amount ? precise_amount($key->quotation_item_discount_amount) : 0;
+                                                                ?></span>
+                                                        </td> -->
+                                                        <td>
+                                                            <input type='hidden' name='item_mrkd_discount_id' value='<?php
+                                                            echo $key->quotation_item_mrkd_discount_id ? $key->quotation_item_mrkd_discount_id : 0;
+                                                            ?>'>
+                                                            <input type='hidden' name='item_mrkd_discount_percentage' value='<?php
+                                                            echo $key->quotation_item_mrkd_discount_percentage ? precise_amount($key->quotation_item_mrkd_discount_percentage) : 0;
+                                                            ?>'>
+                                                            <input type='hidden' name='item_mrkd_discount_amount' value='<?= ($key->quotation_item_mrkd_discount_amount ? precise_amount($key->quotation_item_mrkd_discount_amount) : 0); ?>'>
+                                                            <div class="form-group" style="margin-bottom:0px !important;">
+                                                                <select class="form-control open_discount form-fixer select2" name="item_mrkd_discount">
+                                                                    <option value="">Select</option>
+                                                                    <?php
+                                                                    foreach ($discount as $key3 => $value3) {
+                                                                        if ($value3->discount_id == $key->quotation_item_mrkd_discount_id) {
+                                                                            echo "
+                                                                <option value='" . $value3->discount_id . "-" . (float) ($value3->discount_value) . "' selected>" . (float) ($value3->discount_value) . "%</option>";
+                                                                        } else {
+                                                                            echo "
+                                                                <option value='" . $value3->discount_id . "-" . (float) ($value3->discount_value) . "'>" . (float) ($value3->discount_value) . "%</option>";
+                                                                        }
+                                                                    }
+                                                                    ?></select>
+                                                            </div> <span id='item_mrkd_discount_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?php
+                                                                echo $key->quotation_item_mrkd_discount_amount ? precise_amount($key->quotation_item_mrkd_discount_amount) : 0;
+                                                                ?></span>
+                                                        </td>
+                                                        <!-- tax area -->
+                                                        <td align='right'>
+                                                            <input type='hidden' name='item_selling_price' value='<?= ($key->quotation_item_selling_price ? $key->quotation_item_selling_price : 0); ?>'> <span id='item_selling_price_lbl_<?= $i ?>'><?= $key->quotation_item_selling_price ? precise_amount($key->quotation_item_selling_price) : 0; ?></span>
+                                                        </td>
+
+                                                        <td>
+                                                            <input type='hidden' name='item_mrgn_discount_id' value='<?php
+                                                            echo $key->quotation_item_mrgn_discount_id ? $key->quotation_item_mrgn_discount_id : 0;
+                                                            ?>'>
+                                                            <input type='hidden' name='item_mrgn_discount_percentage' value='<?php
+                                                            echo $key->quotation_item_mrgn_discount_percentage ? precise_amount($key->quotation_item_mrgn_discount_percentage) : 0;
+                                                            ?>'>
+                                                            <input type='hidden' name='item_mrgn_discount_amount' value='<?= ($key->quotation_item_mrgn_discount_amount ? precise_amount($key->quotation_item_mrgn_discount_amount) : 0); ?>'>
+                                                            <div class="form-group" style="margin-bottom:0px !important;">
+                                                                <select class="form-control open_discount form-fixer select2" name="item_mrgn_discount">
+                                                                    <option value="">Select</option>
+                                                                    <?php
+                                                                    foreach ($discount as $key3 => $value3) {
+                                                                        if ($value3->discount_id == $key->quotation_item_mrgn_discount_id) {
+                                                                            echo "
+                                                                <option value='" . $value3->discount_id . "-" . (float) ($value3->discount_value) . "' selected>" . (float) ($value3->discount_value) . "%</option>";
+                                                                        } else {
+                                                                            echo "
+                                                                <option value='" . $value3->discount_id . "-" . (float) ($value3->discount_value) . "'>" . (float) ($value3->discount_value) . "%</option>";
+                                                                        }
+                                                                    }
+                                                                    ?></select>
+                                                            </div> <span id='item_mrgn_discount_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?php
+                                                                echo $key->quotation_item_mrgn_discount_amount ? precise_amount($key->quotation_item_mrgn_discount_amount) : 0;
+                                                                ?></span>
                                                         </td>
                                                         <td>
-                                                            <input type='hidden' name='item_taxable_value' value='<?= ($key->quotation_item_taxable_value ? $key->quotation_item_taxable_value : 0); ?>' >
+                                                            <input type='hidden' name='item_out_tax_id' value='<?= $key->quotation_item_out_tax_id ? $key->quotation_item_out_tax_id : 0 ?>'>
+                                                            <input type='hidden' name='item_out_tax_percentage' value='<?= $key->quotation_item_out_tax_percentage ? precise_amount($key->quotation_item_out_tax_percentage) : 0 ?>'>
+                                                            <input type='hidden' name='item_out_tax_amount_cgst' value='0'>
+                                                            <input type='hidden' name='item_out_tax_amount_sgst' value='0'>
+                                                            <input type='hidden' name='item_out_tax_amount_igst' value='0'>
+                                                            <input type='hidden' name='item_out_tax_amount' value='<?= $key->quotation_item_out_tax_amount ? precise_amount($key->quotation_item_out_tax_amount) : 0 ?>'>
+                                                            <div class="form-group" style="margin-bottom:0px !important;">
+                                                                <select class="form-control open_tax form-fixer select2" name="item_out_tax">
+                                                                    <option value="">Select</option>
+                                                                    <?php
+                                                                    foreach ($tax as $key3 => $value3) {
+                                                                        if ($value3->tax_name == 'GST') {
+                                                                            echo "<option value='" . $value3->tax_id . "-" . ($value3->tax_value) . "' " . ($value3->tax_id == $key->quotation_item_out_tax_id ? 'selected' : '' ) . ">" . (float) ($value3->tax_value) . "%</option>";
+                                                                        }
+                                                                    }
+                                                                    ?></select>
+                                                            </div> <span id='item_out_tax_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?= $key->quotation_item_out_tax_amount ? precise_amount($key->quotation_item_out_tax_amount) : 0 ?></span>
+                                                        </td>
+                                                        <!-- tax area -->
+                                                        <td align='right'>
+                                                            <input type='hidden' name='item_taxable_value' value='<?= ($key->quotation_item_taxable_value ? $key->quotation_item_taxable_value : 0); ?>'>
+                                                            <input type="hidden" name="item_sub_total" value="<?= ($key->quotation_item_taxable_value ? $key->quotation_item_taxable_value : 0); ?>"> 
                                                             <span id='item_taxable_value_lbl_<?= $i ?>'><?= $key->quotation_item_taxable_value ? precise_amount($key->quotation_item_taxable_value) : 0; ?></span>
                                                         </td>
                                                         <td style='text-align:center'>
@@ -449,7 +567,6 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                             if ($key->tds_module_type == "" || $key->tds_module_type == null) {
                                                                 $input_type = "hidden";
                                                                 ?>
-                                                                                                  <!-- <span id='item_tds_percentage_hide_lbl_<?= $i ?>' class='text-center' ><?= $key->quotation_item_tds_percentage ? precise_amount($key->quotation_item_tds_percentage) : 0 ?></span> -->
                                                                 <?php
                                                                 /* echo "<br/>"; */
                                                             } else {
@@ -467,18 +584,20 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                                         $tds_per = 0;
                                                                         foreach ($tax as $key3 => $value3) {
                                                                             if (($key->item_type == 'service' && $value3->tax_name == 'TDS') || ($value3->tax_name == 'TCS' && $key->item_type == 'product')) {
-
                                                                                 if ($value3->tax_id == $key->quotation_item_tds_id) {
                                                                                     $tds_per = (float) ($value3->tax_value);
                                                                                 }
                                                                                 ?>
-                                                                                <tr>
-                                                                                    <td><?= $value3->tax_name . '(Sec ' . $value3->section_name . ') @ ' . (float) ($value3->tax_value); ?>%</td>
-                                                                                    <td><div class="radio">
-                                                                                            <label><input type="radio" name="tds_tax" value="<?= (float) ($value3->tax_value); ?> "<?= ($value3->tax_id == $key->quotation_item_tds_id ? 'selected' : '' ) ?> tds_id='<?= $value3->tax_id ?>' typ='<?= $value3->tax_name ?>'></label>
-                                                                                        </div>
-                                                                                    </td>
-                                                                                </tr>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <?= $value3->tax_name . '(Sec ' . $value3->section_name . ') @ ' . (float) ($value3->tax_value); ?>%</td>
+                                                                            <td>
+                                                                                <div class="radio">
+                                                                                    <label>
+                                                                                        <input type="radio" name="tds_tax" value="<?= (float) ($value3->tax_value); ?> " <?= ( $value3->tax_id == $key->quotation_item_tds_id ? 'selected' : '' ) ?> tds_id='<?= $value3->tax_id ?>' typ='<?= $value3->tax_name ?>'></label>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
                                                                                 <?php
                                                                             }
                                                                         }
@@ -486,35 +605,34 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                                     </tbody>
                                                                 </table>
                                                             </div>
-                                                            <!-- <?= ($key->item_type == 'product' || $key->item_type == 'product_inventory' ? 'open_tds_modal' : ''); ?> -->
-                                                            <input type="text" class="form-control open_tds_modal pointer" name="item_tds_percentage" value="<?= $tds_per; ?>%" readonly>
-                                                            <input type='hidden' name='item_tds_id' value='<?= $key->quotation_item_tds_id ? $key->quotation_item_tds_id : 0 ?>'><input type='hidden' name='item_tds_type' value='<?= $key->tds_module_type ? $key->tds_module_type : '' ?>'>
+                                                            <input type="text" class="form-control open_tds_modal pointer" name="item_tds_percentage" value="<?= $tds_per ?>%" readonly>
+                                                            <input type='hidden' name='item_tds_id' value='<?= $key->quotation_item_tds_id ? $key->quotation_item_tds_id : 0 ?>'>
+                                                            <input type='hidden' name='item_tds_type' value='<?= $key->tds_module_type ? $key->tds_module_type : ' ' ?>'>
                                                             <input type='hidden' name='item_tds_amount' value='<?= $key->quotation_item_tds_amount ? precise_amount($key->quotation_item_tds_amount) : 0 ?>'><span id='item_tds_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?= $key->quotation_item_tds_amount ? precise_amount($key->quotation_item_tds_amount) : 0 ?></span>
                                                         </td>
-                                                        <td><input type='hidden' name='item_tax_id' value='<?= $key->quotation_item_tax_id ? $key->quotation_item_tax_id : 0 ?>'>
-                                                            <input type='hidden' name='item_tax_percentage' value='<?= $key->quotation_item_tax_percentage ? (float) ($key->quotation_item_tax_percentage) : 0 ?>'>
-                                                            <input type='hidden' name='item_tax_amount' value='<?= $key->quotation_item_tax_amount ? precise_amount($key->quotation_item_tax_amount) : 0 ?>'>
+                                                        <!-- tds area -->
+                                                        <td>
+                                                            <input type='hidden' name='item_tax_id' value='<?= $key->quotation_item_tax_id ? $key->quotation_item_tax_id : 0 ?>'>
+                                                            <input type='hidden' name='item_tax_percentage' value='<?= $key->quotation_item_tax_percentage ? precise_amount($key->quotation_item_tax_percentage) : 0 ?>'>
                                                             <input type='hidden' name='item_tax_amount_cgst' value='0'>
                                                             <input type='hidden' name='item_tax_amount_sgst' value='0'>
                                                             <input type='hidden' name='item_tax_amount_igst' value='0'>
+                                                            <input type='hidden' name='item_tax_amount' value='<?= $key->quotation_item_tax_amount ? precise_amount($key->quotation_item_tax_amount) : 0 ?>'>
                                                             <div class="form-group" style="margin-bottom:0px !important;">
                                                                 <select class="form-control open_tax form-fixer select2" name="item_tax">
                                                                     <option value="">Select</option>
                                                                     <?php
                                                                     foreach ($tax as $key3 => $value3) {
-                                                                        if ($value3->tax_id == $key->quotation_item_tax_id) {
-                                                                            echo "<option value='" . $value3->tax_id . "-" . (float) ($value3->tax_value) . "' selected>" . (float) ($value3->tax_value) . "%</option>";
-                                                                        } else {
-                                                                            echo "<option value='" . $value3->tax_id . "-" . (float) ($value3->tax_value) . "'>" . (float) ($value3->tax_value) . "%</option>";
+                                                                        if ($value3->tax_name == 'GST') {
+                                                                            echo "
+                                                                <option value='" . $value3->tax_id . "-" . ($value3->tax_value) . "' " . ($value3->tax_id == $key->quotation_item_tax_id ? 'selected' : '' ) . ">" . (float) ($value3->tax_value) . "%</option>";
                                                                         }
                                                                     }
-                                                                    ?>
-                                                                </select>
-                                                            </div>
-                                                            <span id='item_tax_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?= $key->quotation_item_tax_amount ? precise_amount($key->quotation_item_tax_amount) : 0 ?></span>
+                                                                    ?></select>
+                                                            </div> <span id='item_tax_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?= $key->quotation_item_tax_amount ? precise_amount($key->quotation_item_tax_amount) : 0 ?></span>
                                                         </td>
-
-                                                        <td><input type='hidden' name='item_tax_cess_id' value='<?= ($key->quotation_item_tax_cess_id ? $key->quotation_item_tax_cess_id : 0); ?>'>
+                                                        <td>
+                                                            <input type='hidden' name='item_tax_cess_id' value='<?= ($key->quotation_item_tax_cess_id ? $key->quotation_item_tax_cess_id : 0); ?>'>
                                                             <input type='hidden' name='item_tax_cess_percentage' value='<?= $key->quotation_item_tax_cess_percentage ? (float) ($key->quotation_item_tax_cess_percentage) : 0; ?>'>
                                                             <input type='hidden' name='item_tax_cess_amount' value='<?= $key->quotation_item_tax_cess_amount ? precise_amount($key->quotation_item_tax_cess_amount) : 0 ?>'>
                                                             <div class="form-group" style="margin-bottom:0px !important;">
@@ -523,24 +641,39 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                                     <?php
                                                                     foreach ($tax as $key3 => $value3) {
                                                                         if ($value3->tax_name == 'CESS') {
-                                                                            echo "<option value='" . $value3->tax_id . "-" . (float) ($value3->tax_value) . "' " . ($value3->tax_id == $key->quotation_item_tax_cess_id ? 'selected' : '') . ">" . (float) ($value3->tax_value) . "%</option>";
+                                                                            echo "
+                                                                <option value='" . $value3->tax_id . "-" . ($value3->tax_value) . "' " . ($value3->tax_id == $key->quotation_item_tax_cess_id ? 'selected' : '' ) . ">" . (float) ($value3->tax_value) . "%</option>";
                                                                         }
                                                                     }
-                                                                    ?>
-                                                                </select>
-                                                            </div>
-                                                            <span id='item_tax_cess_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?= $key->quotation_item_tax_cess_amount ? precise_amount($key->quotation_item_tax_cess_amount) : 0 ?></span>
+                                                                    ?></select>
+                                                            </div> <span id='item_tax_cess_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?= $key->quotation_item_tax_cess_amount ? precise_amount($key->quotation_item_tax_cess_amount) : 0 ?></span>
                                                         </td>
-                                                        <td><input type='text' class='float_number form-control form-fixer text-right' name='item_grand_total' value='<?= $key->quotation_item_grand_total ? precise_amount($key->quotation_item_grand_total) : 0; ?>'></td>
+                                                        <!-- tax area  -->
+                                                        <td>
+                                                            <input type='text' class='float_number form-control form-fixer text-right' name='item_grand_total' value='<?php
+                                                            echo $key->quotation_item_grand_total ? precise_amount($key->quotation_item_grand_total) : 0;
+                                                            ?>'>
+                                                        </td>
                                                         <?php
-                                                        $quotation_temp = array("item_key_value" => $i, "item_id" => $key->item_id, "item_type" => $key->item_type, "item_quantity" => $key->quotation_item_quantity, "item_price" => $key->quotation_item_unit_price ? precise_amount($key->quotation_item_unit_price) : 0, "item_description" => $key->quotation_item_description, "item_sub_total" => $key->quotation_item_sub_total ? precise_amount($key->quotation_item_sub_total) : 0, "item_discount_amount" => $key->quotation_item_discount_amount ? precise_amount($key->quotation_item_discount_amount) : 0, "item_discount_id" => $key->quotation_item_discount_id ? $key->quotation_item_discount_id : 0, "item_discount_percentage" => $key->item_discount_percentage ? precise_amount($key->item_discount_percentage) : 0, "item_tax_amount" => $key->quotation_item_tax_amount ? precise_amount($key->quotation_item_tax_amount) : 0, "item_tax_id" => $key->quotation_item_tax_id ? $key->quotation_item_tax_id : 0, "item_tax_cess_amount" => $key->quotation_item_tax_cess_amount ? precise_amount($key->quotation_item_tax_cess_amount) : 0, "item_tax_cess_id" => $key->quotation_item_tax_cess_id ? $key->quotation_item_tax_cess_id : 0, "item_tax_cess_percentage" => $key->quotation_item_tax_cess_percentage ? precise_amount($key->quotation_item_tax_cess_percentage) : 0, "item_tax_percentage" => $key->quotation_item_tax_percentage ? precise_amount($key->quotation_item_tax_percentage) : 0, "item_tds_amount" => $key->quotation_item_tds_amount ? precise_amount($key->quotation_item_tds_amount) : 0, "item_tds_id" => $key->quotation_item_tds_id ? $key->quotation_item_tds_id : 0, "item_tds_percentage" => $key->quotation_item_tds_percentage ? precise_amount($key->quotation_item_tds_percentage) : 0, "item_taxable_value" => $key->quotation_item_taxable_value ? precise_amount($key->quotation_item_taxable_value) : 0, "item_grand_total" => $key->quotation_item_grand_total ? precise_amount($key->quotation_item_grand_total) : 0);
+                                                        $quotation_temp = array("item_key_value" => $i, "item_id" => $key->item_id, "item_type" => $key->item_type, "item_quantity" => $key->quotation_item_quantity, "item_price" => $key->quotation_item_unit_price ? precise_amount($key->quotation_item_unit_price) : 0, "item_description" => $key->quotation_item_description, "item_sub_total" => $key->quotation_item_sub_total ? precise_amount($key->quotation_item_sub_total) : 0, "item_discount_amount" => $key->quotation_item_discount_amount ? precise_amount($key->quotation_item_discount_amount) : 0, "item_discount_id" => $key->quotation_item_discount_id ? $key->quotation_item_discount_id : 0, "item_discount_percentage" => $key->item_discount_percentage ? precise_amount($key->item_discount_percentage) : 0,
+                                                            'item_basic_total' => $key->quotation_item_basic_total ? precise_amount($key->quotation_item_basic_total) : 0,
+                                                            'item_selling_price' => $key->quotation_item_selling_price ? precise_amount($key->quotation_item_selling_price) : 0,
+                                                            'item_mrkd_discount_amount' => $key->quotation_item_mrkd_discount_amount ? precise_amount($key->quotation_item_mrkd_discount_amount) : 0,
+                                                            'item_mrkd_discount_id' => $key->quotation_item_mrkd_discount_id ? precise_amount($key->quotation_item_mrkd_discount_id) : 0,
+                                                            'item_mrkd_discount_percentage'=> $key->quotation_item_mrkd_discount_percentage ? precise_amount($key->quotation_item_mrkd_discount_percentage) : 0,
+                                                            'item_mrgn_discount_amount' => $key->quotation_item_mrgn_discount_amount ? precise_amount($key->quotation_item_mrgn_discount_amount) : 0,
+                                                            'item_mrgn_discount_id'=> $key->quotation_item_mrgn_discount_id ? precise_amount($key->quotation_item_mrgn_discount_id) : 0,
+                                                            'item_mrgn_discount_percentage'=> $key->quotation_item_mrgn_discount_percentage ? precise_amount($key->quotation_item_mrgn_discount_percentage) : 0,
+                                                            'item_out_tax_percentage'=> $key->quotation_item_out_tax_percentage ? precise_amount($key->quotation_item_out_tax_percentage) : 0,
+                                                            'item_out_tax_amount'=> $key->quotation_item_out_tax_amount ? precise_amount($key->quotation_item_out_tax_amount) : 0,
+                                                            'item_out_tax_id' => $key->quotation_item_out_tax_id ? precise_amount($key->quotation_item_out_tax_id) : 0,
+                                                            "item_tax_amount" => $key->quotation_item_tax_amount ? precise_amount($key->quotation_item_tax_amount) : 0, "item_tax_id" => $key->quotation_item_tax_id ? $key->quotation_item_tax_id : 0, "item_tax_cess_amount" => $key->quotation_item_tax_cess_amount ? precise_amount($key->quotation_item_tax_cess_amount) : 0, "item_tax_cess_id" => $key->quotation_item_tax_cess_id ? $key->quotation_item_tax_cess_id : 0, "item_tax_cess_percentage" => $key->quotation_item_tax_cess_percentage ? precise_amount($key->quotation_item_tax_cess_percentage) : 0, "item_tax_percentage" => $key->quotation_item_tax_percentage ? precise_amount($key->quotation_item_tax_percentage) : 0, "item_tds_amount" => $key->quotation_item_tds_amount ? precise_amount($key->quotation_item_tds_amount) : 0, "item_tds_id" => $key->quotation_item_tds_id ? $key->quotation_item_tds_id : 0, "item_tds_percentage" => $key->quotation_item_tds_percentage ? precise_amount($key->quotation_item_tds_percentage) : 0, "item_taxable_value" => $key->quotation_item_taxable_value ? precise_amount($key->quotation_item_taxable_value) : 0, "item_grand_total" => $key->quotation_item_grand_total ? precise_amount($key->quotation_item_grand_total) : 0);
                                                         if ($key->item_type == 'product' || $key->item_type == 'product_inventory') {
                                                             $quotation_temp['item_code'] = $key->product_code;
                                                         } else {
                                                             $quotation_temp['item_code'] = $key->service_code;
                                                         }
-                                                        ?>
-                                                    </tr>
+                                                        ?></tr>
                                                     <?php
                                                     $quotation_data[$i] = $quotation_temp;
                                                     $i++;

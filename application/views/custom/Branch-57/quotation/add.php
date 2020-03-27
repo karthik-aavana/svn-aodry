@@ -311,46 +311,54 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                             <thead>
                                                 <tr>
                                                     <th width="2%"><img src="<?php echo base_url(); ?>assets/images/bin1.png" /></th>
-                                                    <th class="span2">Items</th>
+                                                    <th class="span2"  width="8%">Items</th>
                                                     <?php
                                                     if ($access_settings[0]->description_visible == 'yes') {
                                                         ?>
-                                                        <th class="span2">Description</th>
+                                                        <th class="span2" width="9%">Description</th>
                                                     <?php } ?>
-                                                    <th class="span2" width="6%">Quantity</th>
-                                                    <th class="span2" width="10%">Rate</th>
+                                                    <th class="span2" width="5%">Quantity</th>
+                                                    <th class="span2" width="5%">Unit</th>
+                                                    <th class="span2" width="5%">Rate</th>
                                                     <?php
                                                     if ($access_settings[0]->discount_visible == 'yes') {
                                                         ?>
-                                                        <th class="span2" width="9%" >Discount
+                                                    <th class="span2" width="9%">Markdown Discount</th>
+                                                    <?php } ?>
+                                                    <th class="span2" width="8%">Selling Price</th>
+                                                    <?php
+                                                    if ($access_settings[0]->discount_visible == 'yes') {
+                                                        ?>
+                                                    <th class="span2" width="9%">Marginal Discount</th>
+                                                    <?php } ?>
+                                                    <th class="span2" width="9%">GST Output</th>
+                                                    <!-- <?php
+                                                    if ($access_settings[0]->discount_visible == 'yes') {
+                                                        ?>
+                                                        <th class="span2" width="9%">Discount
                                                             <?php
                                                             if (in_array($discount_module_id, $active_add)) {
                                                                 ?>
-                                                                      <!-- <a href="" data-toggle="modal" data-target="#discount_modal"><strong>+</strong></a> -->
                                                             <?php } ?>
                                                         </th>
-                                                    <?php } ?>
+                                                    <?php } ?> -->
                                                     <?php
                                                     if ($access_settings[0]->tax_type == 'gst' || $access_settings[0]->tax_type == 'single_tax') {
                                                         if ($access_settings[0]->discount_visible == 'yes') {
                                                             ?>
-                                                            <th class="span2" width="10%">Taxable Value</th>
+                                                            <th class="span2" width="5%">Taxable Value</th>
                                                             <?php
                                                         }
                                                     }
                                                     ?>
-                                                    <?php
-                                                    if ($access_settings[0]->tds_visible == 'yes') {
-                                                        ?>
-                                                        <th class="span2" width="9%">TDS/TCS(%)</th>
+                                                    <?php if ($access_settings[0]->tds_visible == 'yes') { ?>
+                                                        <th class="span2" width="5%">TDS/<br>TCS(%)</th>
                                                     <?php } ?>
-                                                    <?php
-                                                    if ($access_settings[0]->tax_type == 'gst' || $access_settings[0]->tax_type == 'single_tax') {
-                                                        ?>
-                                                        <th class="span2" width="9%">GST(%)</th>
-                                                        <th class="span2" width="9%">Cess(%)</th>
+                                                    <?php if ($access_settings[0]->tax_type == 'gst' || $access_settings[0]->tax_type == 'single_tax') { ?>
+                                                        <th class="span2" width="7%">GST(%)</th>
+                                                        <th class="span2" width="7%">Cess(%)</th>
                                                     <?php } ?>
-                                                    <th class="span2" width="10%" >Total</th>
+                                                    <th class="span2" width="7%">Total</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="sales_table_body">
