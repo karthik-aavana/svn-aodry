@@ -5078,25 +5078,25 @@ class Purchase extends MY_Controller {
             $barcode = $vendor_code.$grn_number.$article_code. $colour_code.$size_val;
             $product_name = $data[0]->product_name;
             $branch_id = $this->session->userdata("SESS_BRANCH_ID");
-
                                
                  
 
-        /*$this->db->select('item_id');
+        $this->db->select('item_id');
         $this->db->from('purchase_item');
         $this->db->where('item_id',$item_id);
         $this->db->where('delete_status',0);
         $this->db->where('item_type','product');
         $get_pi_qry = $this->db->get();
-        $ref_item_id = $get_pi_qry->result();*/
-        $product_data = array();
-        $sql_purc = "SELECT COUNT(item_id) as num FROM  purchase_item
+        $ref_item_id = $get_pi_qry->result();
+        $product_data = array();        
+        if(!empty($ref_item_id)){ 
+
+            $sql_purc = "SELECT COUNT(item_id) as num FROM  purchase_item
              WHERE item_id IN (SELECT product_id FROM products WHERE product_name = '".$product_name."' AND delete_status = 0 AND branch_id = '".$branch_id."') AND item_type = 'product'";
              $qry_pur = $this->db->query($sql_purc);
-              
-        if($qry->num_rows() > 0){
-            $num_pur = $qry_pur->result_array();
-            $num = $num_pur[0]['num'];
+              $num_pur = $qry_pur->result_array();
+            $num = $num_pur[0]['num'];        
+            $num = (int) $num + 1;
             $batch = 'BATCH-0'.$num;
             $product_data["product_code"] = $data[0]->product_code;
             $product_data["product_name"] = $data[0]->product_name;
