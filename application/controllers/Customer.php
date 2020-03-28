@@ -1705,7 +1705,7 @@ class Customer extends MY_Controller {
         require_once APPPATH . "/third_party/PHPExcel.php";
         $object = new PHPExcel();
 
-        $table_columns = array("Customer Code", "Customer Type", "Store Name", "PIN Code", "Country", "State", "City", "Address", "GST Number", "PAN Number","Contact Person Name","Contact Number", "Email", "Due Days", "TAN Number","Store Location");
+        $table_columns = array("Customer Code", "Customer Type", "Store Name", "PIN Code", "Country", "State", "City", "Address", "GST Number", "PAN Number","Contact Person Name","Contact Number", "Email", "Due Days", "TAN Number","Department", "Store Location");
 
         $column = 0;
 
@@ -1736,7 +1736,8 @@ class Customer extends MY_Controller {
                 $object->getActiveSheet()->setCellValueByColumnAndRow(12, $excel_row, $value->customer_email);
                 $object->getActiveSheet()->setCellValueByColumnAndRow(13, $excel_row, $value->due_days);
                 $object->getActiveSheet()->setCellValueByColumnAndRow(14, $excel_row, $value->customer_tan_number);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(15, $excel_row, $value->store_location);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(15, $excel_row, $value->department);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(16, $excel_row, $value->store_location);
                 $excel_row++;
             }
         }

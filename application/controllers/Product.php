@@ -205,12 +205,29 @@ class Product extends MY_Controller
                     if (in_array($data['product_module_id'], $data['active_delete'])){
 
                         $item_type  = "product";
-                        $exist_data = $this->common->database_product_exist($post->product_id, $item_type);
+
+                        $sql = "SELECT product_id FROM products WHERE `product_combination_id` IN (SELECT combination_id FROM product_combinations WHERE product_id = " . $post->product_id . " AND status = 'Y')";
+                        $qry = $this->db->query($sql);
+                        if($qry->num_rows() > 0){
+                            $var_lal = $qry->result_array();
+                            $product_id_array = array();
+                            $all_product_id = array();
+                            foreach ($var_lal as $key => $value) {
+                                $product_id_array[] = $value['product_id'];
+                            }
+                           
+                            $all_product_id = implode(',', $product_id_array);
+                        }else{
+                           $all_product_id =  $post->product_id;
+                        }
+                        
+                       
+                        $exist_data = $this->common->database_product_exist_leathere($all_product_id, $item_type);
 
                         $exist_data_result = $this->general_model->getQueryRecords($exist_data);
 
                         if ($exist_data_result){
-                            $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#false_delete_modal" data-path="sales/delete" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-toggle="tooltip" data-placement="bottom" title="Delete"> <i class="fa fa-trash-o"></i> </a></span>';
+                            $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#false_delete_modal" data-path="product/delete" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-toggle="tooltip" data-placement="bottom" title="Delete"> <i class="fa fa-trash-o"></i> </a></span>';
                         }else{                            
                             $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-id="' . $product_id . '" data-path="product/delete" data-toggle="tooltip" data-placement="bottom" title="Delete"> <i class="fa fa-trash-o"></i> </a></span>';
                         }
@@ -2415,8 +2432,7 @@ class Product extends MY_Controller
         }
     }
 
-    public function delete()
-    {
+    public function delete(){
         $id                = $this->input->post('delete_id');
         $product_id                = $this->encryption_url->decode($id);
         $product_module_id = $this->config->item('product_module');
@@ -2428,11 +2444,31 @@ class Product extends MY_Controller
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
-
-        if ($this->general_model->updateData('products', array(
+         $LeatherCraft_id = $this->config->item('LeatherCraft');
+        if($LeatherCraft_id == $this->session->userdata("SESS_BRANCH_ID") ){
+            $sql = "SELECT product_id FROM products WHERE `product_combination_id` IN (SELECT combination_id FROM product_combinations WHERE product_id = " . $product_id . " AND status = 'Y')";
+                        $qry = $this->db->query($sql);
+                        if($qry->num_rows() > 0){
+                            $var_lal = $qry->result_array();
+                            $product_id_array = array();
+                            $all_product_id = array();
+                            foreach ($var_lal as $key => $value) {
+                                $product_id_array[] = $value['product_id'];
+                            }
+                           
+                            $all_product_id = implode(',', $product_id_array);
+                        }else{
+                           $all_product_id =  $product_id;
+                        }
+            $sql_update = "UPDATE products SET delete_status = 1  WHERE product_id IN (" . $all_product_id . ")";
+            $delete_id = $this->db->query($sql_update);
+        }else{
+           $delete_id = $this->general_model->updateData('products', array(
             'delete_status' => 1), array(
-            'product_id' => $product_id)))
-        {
+            'product_id' => $product_id));
+        }
+
+        if ($delete_id){
             //update stock history
             $where = array(
                 'item_id'        => $product_id,
