@@ -354,52 +354,6 @@ $(document).ready(function () {
             $("#err_product_code").text("");
         }
     });
-    
-    /*$("[name=product_name_edit],.product_code_edit").on("blur", function (event) {
-        var product_code = $('[name=product_code]').val();
-        var product_name = $('[name=product_name_edit]').val();
-        var product_id = $('#product_id').val();
-        
-        if (product_code == null || product_code == "") {
-            $("#err_product_code").text("Please Enter Product Name.");
-            return false;
-        } else {
-            $("#err_product_code").text("");
-        }
-        if (!product_code.match(name_regex)) {
-            $('#err_product_code').text("Please Enter Valid Product Name ");
-            return false;
-        } else {
-            $("#err_product_code").text("");
-        }
-
-        $.ajax({
-            url: base_url + 'product/get_check_product_code',
-            dataType: 'JSON',
-            method: 'POST',
-            data: {
-                'product_code' :product_code,
-                'product_name': product_name,
-                'product_id': product_id
-            },
-            success: function (result) {
-                if (result.length > 0) {
-                    $('#product_modal_edit').attr('disabled',true);
-                    $("#err_product_code").text(product_code + " article already exists with this product name! Changed Batch!");
-                    flag_exit = 1;
-                } else if(flag_exit == 1) {
-                    $('#product_modal_edit').attr('disabled',false);
-                    $("#err_product_code").text("");
-                    flag_exit = 0;
-                }
-                if (result.length > 0) {
-                    var num = result[0].num;
-                    num = parseInt(num) + 1;
-                    $('#product_batch').val("BATCH-0" + num);
-                } 
-            }
-        });
-    });*/
 
     $("#product_category").on("change", function (event) {
          var product_code = $('#product_code').val();
@@ -417,12 +371,35 @@ $(document).ready(function () {
             }
         });
     })
-    /*var flag_exit = 0;
+    var flag_exit = 0;
     var proXhr = null;
-    $("[name=product_name],[name=product_code]").on("blur", function (event) {
+
+    $(".product_code_edit").on("blur", function (event) {
+        checkValidArticle(1);
+    });
+
+    $("[name=product_name_edit]").on("change", function (event) {
+        checkValidArticle(1);
+    });
+
+    $("[name=product_code]").on("blur", function (event) {
+        var product_id = $('#product_id').val();
+        if(!product_id)
+        checkValidArticle();
+    });
+
+    $("[name=product_name]").on("change", function (event) {
+        checkValidArticle();
+    });
+    
+    function checkValidArticle(is_edit = 0){
         var product_code = $('[name=product_code]').val();
         var product_name = $('[name=product_name]').val();
         var product_id = $('#product_id').val();
+        if(is_edit){
+            var product_code = $('[name=product_code]').val();
+            var product_name = $('[name=product_name_edit]').val();
+        }
         
         if (product_code == null || product_code == "") {
             $("#err_product_code").text("Please Enter Product Name.");
@@ -455,15 +432,20 @@ $(document).ready(function () {
                 if (result.length > 0) {
                     $('#product_modal_submit').attr('disabled',true);
                     $("#err_product_code").text(product_code + " article already exists with this product name! Changed Batch!");
+                    $('#product_modal_edit').attr('disabled',true);
+                    $("#err_product_code").text(product_code + " article already exists with this product name! Changed Batch!");
+                    
                     flag_exit = 1;
                 } else if(flag_exit == 1) {
                     $('#product_modal_submit').attr('disabled',false);
+                    $("#err_product_code").text("");
+                    $('#product_modal_edit').attr('disabled',false);
                     $("#err_product_code").text("");
                     flag_exit = 0;
                 }
             }
         });
-    });*/
+    }
 
     $("#hsn_sac_code").on("blur", function (event) {
         if ($('#hsn_sac_code').val() != "") {
