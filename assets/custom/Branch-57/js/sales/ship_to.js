@@ -62,9 +62,10 @@ $(document).ready(function () {
         });
         
         $(document).on("change", "#customer", function () {
+            $("#shipping_address").val('');
             var billing_state = $('#billing_state').val();
             var party_id = $("#customer").val();
-            var shipping_id = $("select").find("option:selected").attr("data-id");
+            var shipping_id = $("#customer").find("option:selected").attr("data-id");
            $("#shipping_address").val(shipping_id);
            $("#billing_address").val(shipping_id);
            var customer_name = $("#customer :selected").val();
