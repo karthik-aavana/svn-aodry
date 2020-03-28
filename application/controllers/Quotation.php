@@ -464,8 +464,8 @@ class Quotation extends MY_Controller {
                             "quotation_item_unit_price" => $value->item_price ? (float) $value->item_price : 0,
                             "quotation_item_sub_total" => $value->item_sub_total ? (float) $value->item_sub_total : 0,
                             "quotation_item_taxable_value" => $value->item_taxable_value ? (float) $value->item_taxable_value : 0,
-                            "quotation_item_discount_amount" => $value->item_discount_amount ? (float) $value->item_discount_amount : 0,
-                            "quotation_item_discount_id" => $value->item_discount_id ? (float) $value->item_discount_id : 0,
+                            "quotation_item_discount_amount" => (@$value->item_discount_amount ? (float) $value->item_discount_amount : 0),
+                            "quotation_item_discount_id" => (@$value->item_discount_id ? (float) $value->item_discount_id : 0),
                             "quotation_item_tds_id" => $value->item_tds_id ? (float) $value->item_tds_id : 0,
                             "quotation_item_tds_percentage" => $value->item_tds_percentage ? (float) $value->item_tds_percentage : 0,
                             "quotation_item_tds_amount" => $value->item_tds_amount ? (float) $value->item_tds_amount : 0,
@@ -488,6 +488,53 @@ class Quotation extends MY_Controller {
 
                         $quotation_item_tax_amount = $item_data['quotation_item_tax_amount'];
                         $quotation_item_tax_percentage = $item_data['quotation_item_tax_percentage'];
+                        /* Customization leather craft fields */
+                        if(@$value->item_basic_total){
+                            $item_data['quotation_item_basic_total'] = $value->item_basic_total;
+                        }
+                        if(@$value->item_selling_price){
+                            $item_data['quotation_item_selling_price'] = $value->item_selling_price;
+                        }
+                        if(@$value->item_mrkd_discount_amount){
+                            $item_data['quotation_item_mrkd_discount_amount'] = $value->item_mrkd_discount_amount;
+                        }
+                        if(@$value->item_mrkd_discount_id){
+                            $item_data['quotation_item_mrkd_discount_id'] = $value->item_mrkd_discount_id;
+                        }
+                        if(@$value->item_mrkd_discount_percentage){
+                            $item_data['quotation_item_mrkd_discount_percentage'] = $value->item_mrkd_discount_percentage;
+                        }
+                        if(@$value->item_mrgn_discount_amount){
+                            $item_data['quotation_item_mrgn_discount_amount'] = $value->item_mrgn_discount_amount;
+                        }
+                        if(@$value->item_mrgn_discount_id){
+                            $item_data['quotation_item_mrgn_discount_id'] = $value->item_mrgn_discount_id;
+                        }
+                        if(@$value->item_mrgn_discount_percentage){
+                            $item_data['quotation_item_mrgn_discount_percentage'] = $value->item_mrgn_discount_percentage;
+                        }
+
+                        if(@$value->item_scheme_discount_amount){
+                            $item_data['quotation_item_scheme_discount_amount'] = $value->item_scheme_discount_amount;
+                        }
+                        if(@$value->item_scheme_discount_id){
+                            $item_data['quotation_item_scheme_discount_id'] = $value->item_scheme_discount_id;
+                        }
+                        if(@$value->item_scheme_discount_percentage){
+                            $item_data['quotation_item_scheme_discount_percentage'] = $value->item_scheme_discount_percentage;
+                        }
+
+                        if(@$value->item_out_tax_percentage){
+                            $item_data['quotation_item_out_tax_percentage'] = $value->item_out_tax_percentage;
+                        }
+                        if(@$value->item_out_tax_amount){
+                            $item_data['quotation_item_out_tax_amount'] = $value->item_out_tax_amount;
+                        }
+                        if(@$value->item_out_tax_id){
+                            $item_data['quotation_item_out_tax_id'] = $value->item_out_tax_id;
+                        }
+                       
+                        /* End leather Craft */
 
                         if ($section_modules['access_settings'][0]->tax_type == "gst") {
                             $tax_split_percentage = $section_modules['access_common_settings'][0]->tax_split_percentage;
@@ -1204,7 +1251,53 @@ class Quotation extends MY_Controller {
 
                         $quotation_item_tax_amount = $item_data['quotation_item_tax_amount'];
                         $quotation_item_tax_percentage = $item_data['quotation_item_tax_percentage'];
+                        /* Customization leather craft fields */
+                        if(@$value->item_basic_total){
+                            $item_data['quotation_item_basic_total'] = $value->item_basic_total;
+                        }
+                        if(@$value->item_selling_price){
+                            $item_data['quotation_item_selling_price'] = $value->item_selling_price;
+                        }
+                        if(@$value->item_mrkd_discount_amount){
+                            $item_data['quotation_item_mrkd_discount_amount'] = $value->item_mrkd_discount_amount;
+                        }
+                        if(@$value->item_mrkd_discount_id){
+                            $item_data['quotation_item_mrkd_discount_id'] = $value->item_mrkd_discount_id;
+                        }
+                        if(@$value->item_mrkd_discount_percentage){
+                            $item_data['quotation_item_mrkd_discount_percentage'] = $value->item_mrkd_discount_percentage;
+                        }
+                        if(@$value->item_mrgn_discount_amount){
+                            $item_data['quotation_item_mrgn_discount_amount'] = $value->item_mrgn_discount_amount;
+                        }
+                        if(@$value->item_mrgn_discount_id){
+                            $item_data['quotation_item_mrgn_discount_id'] = $value->item_mrgn_discount_id;
+                        }
+                        if(@$value->item_mrgn_discount_percentage){
+                            $item_data['quotation_item_mrgn_discount_percentage'] = $value->item_mrgn_discount_percentage;
+                        }
 
+                        if(@$value->item_scheme_discount_amount){
+                            $item_data['quotation_item_scheme_discount_amount'] = $value->item_scheme_discount_amount;
+                        }
+                        if(@$value->item_scheme_discount_id){
+                            $item_data['quotation_item_scheme_discount_id'] = $value->item_scheme_discount_id;
+                        }
+                        if(@$value->item_scheme_discount_percentage){
+                            $item_data['quotation_item_scheme_discount_percentage'] = $value->item_scheme_discount_percentage;
+                        }
+
+                        if(@$value->item_out_tax_percentage){
+                            $item_data['quotation_item_out_tax_percentage'] = $value->item_out_tax_percentage;
+                        }
+                        if(@$value->item_out_tax_amount){
+                            $item_data['quotation_item_out_tax_amount'] = $value->item_out_tax_amount;
+                        }
+                        if(@$value->item_out_tax_id){
+                            $item_data['quotation_item_out_tax_id'] = $value->item_out_tax_id;
+                        }
+                       
+                        /* End leather Craft */
                         if ($tax_type == "gst") {
                             $tax_split_percentage = $section_modules['access_common_settings'][0]->tax_split_percentage;
                             $cgst_amount_percentage = $tax_split_percentage;
