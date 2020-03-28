@@ -6468,6 +6468,32 @@ class Common
                      ) tab";
         return $sql;
     }
+
+    public function database_product_exist_leathere($product_id, $product_type)
+    {
+        $sql = "SELECT distinct item_id FROM (
+                    (SELECT item_id FROM advance_voucher_item inner join advance_voucher on advance_voucher.advance_voucher_id=advance_voucher_item.advance_voucher_id WHERE item_id IN (" . $product_id . ") and item_type='" . $product_type . "' and branch_id=" . $this->ci->session->userdata('SESS_BRANCH_ID') . " LIMIT 1)
+                    UNION
+                    (SELECT item_id FROM purchase_order_item inner join purchase_order on purchase_order.purchase_order_id=purchase_order_item.purchase_order_id WHERE  item_id IN (" . $product_id . ") and item_type='" . $product_type . "' and branch_id=" . $this->ci->session->userdata('SESS_BRANCH_ID') . " LIMIT 1)
+                    UNION
+                    (SELECT item_id FROM purchase_item inner join purchase on purchase.purchase_id=purchase_item.purchase_id WHERE  item_id IN (" . $product_id . " ) and item_type='" . $product_type . "' and branch_id=" . $this->ci->session->userdata('SESS_BRANCH_ID') . " LIMIT 1)
+                    UNION
+                    (SELECT item_id FROM purchase_return_item inner join purchase_return on purchase_return.purchase_return_id=purchase_return_item.purchase_return_id WHERE  item_id IN (" . $product_id . ") and item_type='" . $product_type . "' and branch_id=" . $this->ci->session->userdata('SESS_BRANCH_ID') . " LIMIT 1)
+                    UNION
+                    (SELECT item_id FROM purchase_credit_note_item inner join purchase_credit_note on purchase_credit_note.purchase_credit_note_id=purchase_credit_note_item.purchase_credit_note_id WHERE  item_id IN (" . $product_id . ") and item_type='" . $product_type . "' and branch_id=" . $this->ci->session->userdata('SESS_BRANCH_ID') . " LIMIT 1)
+                    UNION
+                    (SELECT item_id FROM purchase_debit_note_item inner join purchase_debit_note on purchase_debit_note.purchase_debit_note_id=purchase_debit_note_item.purchase_debit_note_id WHERE  item_id IN (" . $product_id . ") and item_type='" . $product_type . "' and branch_id=" . $this->ci->session->userdata('SESS_BRANCH_ID') . " LIMIT 1)
+                    UNION
+                    (SELECT item_id FROM quotation_item inner join quotation on quotation.quotation_id=quotation_item.quotation_id WHERE  item_id IN (" . $product_id . ") and item_type='" . $product_type . "' and branch_id=" . $this->ci->session->userdata('SESS_BRANCH_ID') . " LIMIT 1)
+                    UNION
+                    (SELECT item_id FROM sales_item inner join sales on sales.sales_id=sales_item.sales_id WHERE  item_id IN (" . $product_id . ") and item_type='" . $product_type . "' and branch_id=" . $this->ci->session->userdata('SESS_BRANCH_ID') . " LIMIT 1)
+                    UNION
+                    (SELECT item_id FROM sales_credit_note_item inner join sales_credit_note on sales_credit_note.sales_credit_note_id=sales_credit_note_item.sales_credit_note_id WHERE  item_id IN (" . $product_id . ") and item_type='" . $product_type . "' and branch_id=" . $this->ci->session->userdata('SESS_BRANCH_ID') . " LIMIT 1)
+                    UNION
+                    (SELECT item_id FROM sales_debit_note_item inner join sales_debit_note on sales_debit_note.sales_debit_note_id=sales_debit_note_item.sales_debit_note_id WHERE  item_id IN (" . $product_id . ") and item_type='" . $product_type . "' and branch_id=" . $this->ci->session->userdata('SESS_BRANCH_ID') . " LIMIT 1)
+                     ) tab";
+        return $sql;
+    }
         public function database_service_exist($service_id, $service_type)
     {
         $sql = "SELECT distinct item_id FROM (
