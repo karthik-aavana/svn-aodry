@@ -70,7 +70,7 @@ class Customer extends MY_Controller {
                     $customer_id = $this->encryption_url->encode($post->customer_id);
                     $nestedData['customer_code'] = $post->customer_code;
                     //$nestedData['reference_number'] = $post->reference_number;
-                    $nestedData['customer_name'] = $post->customer_name . ' - ' .$post->store_location;
+                    $nestedData['customer_name'] = $post->customer_name;
                     // $nestedData['contact_person'] = $post->contact_person_name;
                     //$nestedData['phone']            = $post->customer_mobile;
                     //$nestedData['email']            = $post->customer_email;

@@ -221,7 +221,6 @@ $(document).ready(function () {
                 dataType: "json",
                 success: function (data) {
                     var suggestions = [];
-                    var data = data.reverse();
                     for (var i = 0; i < data.length; ++i) {
                         if(data[i].product_quantity > 0){
                             var kv = data[i].item_code + " " + data[i].item_name+ ' ' + data[i].product_batch

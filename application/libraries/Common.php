@@ -3522,7 +3522,7 @@ class Common
         return $sql;
     }
 
-    public function item_suggestions_field_leathercrafr($item_access, $term , $brand_id = '')
+    public function item_suggestions_field_leathercraft($item_access, $term , $brand_id = '')
     {
         $brand_where = '';
         if($brand_id != '' && $brand_id != 0) $brand_where = ' and brand_id ='.$brand_id; 
@@ -3545,7 +3545,7 @@ class Common
         }
         elseif ($item_access == "product")
         {
-            $sql = 'SELECT * FROM ((SELECT product_id as item_id,product_code as item_code,product_hsn_sac_code as hsn_sac_code,product_name as item_name,"product" as item_type,delete_status,branch_id,product_batch,product_quantity,product_opening_quantity FROM products where delete_status=0 and product_combination_id IS NOT NULL AND batch_parent_product_id = 0 AND is_varients="N" '.$brand_where.' AND branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . ' '.$pro_where.' order by product_id desc)) AS u where u.delete_status=0 && u.branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . '';
+            $sql = 'SELECT * FROM ((SELECT product_id as item_id,product_code as item_code,product_hsn_sac_code as hsn_sac_code,product_name as item_name,"product" as item_type,delete_status,branch_id,product_batch,product_quantity,product_opening_quantity FROM products where delete_status=0 and product_combination_id IS NOT NULL AND batch_parent_product_id = 0 AND is_varients="N" '.$brand_where.' AND branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . ' '.$pro_where.' order by product_id asc)) AS u where u.delete_status=0 && u.branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . '';
             // $data=$this->db->query($sql)->result();
         }
         else
@@ -5804,7 +5804,7 @@ class Common
     }
     public function customer_list_field()
     {
-        $string = 'cust.*,c.city_name,co.country_name,st.state_name,u.first_name,u.last_name,s.store_location';
+        $string = 'cust.*,c.city_name,co.country_name,st.state_name,u.first_name,u.last_name,s.store_location,s.department';
         $table  = 'customer cust';
         // $join['contact_person cp']='cp.contact_person_id=cust.customer_contact_person_id';
         $join['cities c']     = 'cust.customer_city_id=c.city_id' . '#' . 'left';

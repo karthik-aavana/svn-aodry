@@ -776,7 +776,7 @@ class Sales extends MY_Controller{
         else
         {
         }*/
-        $suggestions_query = $this->common->item_suggestions_field($item_access , $term , $brand_id);
+        $suggestions_query = $this->common->item_suggestions_field_leathercraft($item_access , $term , $brand_id);
 
         $data              = $this->general_model->getQueryRecords($suggestions_query);
         // $data["product_inventoery"]=$inventory_access[0]->inventory_advanced;
