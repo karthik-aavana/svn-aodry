@@ -1202,27 +1202,15 @@ class Sales extends MY_Controller{
                                 }else{
                                     $product_selling_price = $product_result[0]->product_selling_price;
                                 }
-                                echo $value->item_quantity;
                                 if(@$value->free_item_quantity){
                                     if($value->free_item_quantity > 0) $value->item_quantity = $value->item_quantity + $value->free_item_quantity;
                                 }
-                                echo "<br>";
-                                echo "free -- ";
-                                echo $value->item_quantity;
                                 if($product_result[0]->equal_uom_id){
-                                    echo "<pre>";
-                                    print_r($product_result[0]);
-                                    print_r($value->item_uom);
                                     if($product_result[0]->equal_uom_id == $value->item_uom){
                                         $value->item_quantity = $value->item_quantity/$product_result[0]->equal_unit_number;
                                     }
                                 }
-                                echo "<br>";
-                                echo "uom -- ";
-                                echo $value->item_quantity;
                                 $product_quantity = ($product_result[0]->product_quantity - $value->item_quantity);
-                                echo "<br>";
-                                echo $product_quantity;
                                 $stockData        = array('product_quantity' => $product_quantity,'product_selling_price' => $product_selling_price);  
                                
                                 $where            = array('product_id' => $value->item_id );
@@ -1288,7 +1276,7 @@ class Sales extends MY_Controller{
             $sales_id = $this->encryption_url->encode($sales_id);
             redirect('receipt_voucher/add_sales_receipt/' . $sales_id , 'refresh');
         }else{
-           // redirect('sales' , 'refresh');
+            redirect('sales' , 'refresh');
         }
     }
     public function sales_vouchers($section_modules , $data_main , $js_data , $branch){
