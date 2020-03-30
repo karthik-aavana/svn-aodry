@@ -456,6 +456,7 @@ class Stock extends MY_Controller {
             $dir = $this->input->post('order')[0]['dir'];
             $list_data = $this->common->get_brandwise_sales_stock_report();
             $list_data['search'] = 'all';
+             $list_data['section'] = 'sales_stock';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
             if (empty($this->input->post('search')['value'])) {
@@ -471,8 +472,18 @@ class Stock extends MY_Controller {
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
             } 
+            if ($this->input->post('filter_brand') != "" ) {
+
+                $filter_search['filter_brand'] = ($this->input->post('filter_brand') == '' ? '' : implode(",", $this->input->post('filter_brand')));
+                $list_data['limit'] = $limit;
+                $list_data['start'] = $start;
+                $list_data['filter_search'] = $filter_search;
+                $posts = $this->general_model->getPageJoinRecords($list_data);
+                $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
+            }
 
             $send_data = array();
+
 
             if (!empty($posts)) {
                 foreach ($posts as $post) {
@@ -512,6 +523,8 @@ class Stock extends MY_Controller {
             echo json_encode($json_data);
            
         } else {
+            $list_data = $this->common->distinct_brand_sales();
+            $data['brand'] = $this->general_model->getJoinRecords($list_data['string'], $list_data['table'], $list_data['where'], $list_data['join'], $list_data['order'] = "", $list_data['group']);
             $this->load->view('stock/brand_sales_stock_list', $data);
         }
     }
@@ -553,6 +566,7 @@ class Stock extends MY_Controller {
             $dir = $this->input->post('order')[0]['dir'];
             $list_data = $this->common->get_brandwise_purchase_stock_report();
             $list_data['search'] = 'all';
+            $list_data['section'] = 'purchase_stock';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
             if (empty($this->input->post('search')['value'])) {
@@ -567,7 +581,16 @@ class Stock extends MY_Controller {
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
-            } $send_data = array();
+            } 
+            if ($this->input->post('filter_brand') != "" ) {
+
+                $filter_search['filter_brand'] = ($this->input->post('filter_brand') == '' ? '' : implode(",", $this->input->post('filter_brand')));
+                $list_data['limit'] = $limit;
+                $list_data['start'] = $start;
+                $list_data['filter_search'] = $filter_search;
+                $posts = $this->general_model->getPageJoinRecords($list_data);
+                $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
+            }$send_data = array();
             if (!empty($posts)) {
                
                 foreach ($posts as $post) {
@@ -604,6 +627,8 @@ class Stock extends MY_Controller {
                 "data" => $send_data);
             echo json_encode($json_data);
         } else {
+            $list_data = $this->common->distinct_brand_purchase();
+            $data['brand'] = $this->general_model->getJoinRecords($list_data['string'], $list_data['table'], $list_data['where'], $list_data['join'], $list_data['order'] = "", $list_data['group']);
             $this->load->view('stock/brand_purchase_stock_list', $data);
         }
     }
@@ -641,6 +666,7 @@ class Stock extends MY_Controller {
             $dir = $this->input->post('order')[0]['dir'];
             $list_data = $this->common->get_brandwise_closing_stock_report();
             $list_data['search'] = 'all';
+            $list_data['section'] = 'close_stock';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
             if (empty($this->input->post('search')['value'])) {
@@ -656,6 +682,16 @@ class Stock extends MY_Controller {
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
             } 
+
+            if ($this->input->post('filter_brand') != "" ) {
+
+                $filter_search['filter_brand'] = ($this->input->post('filter_brand') == '' ? '' : implode(",", $this->input->post('filter_brand')));
+                $list_data['limit'] = $limit;
+                $list_data['start'] = $start;
+                $list_data['filter_search'] = $filter_search;
+                $posts = $this->general_model->getPageJoinRecords($list_data);
+                $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
+            }
 
             $send_data = array();
 
@@ -693,6 +729,8 @@ class Stock extends MY_Controller {
             echo json_encode($json_data);
            
         } else {
+             $list_data = $this->common->distinct_brand_closing();
+            $data['brand'] = $this->general_model->getJoinRecords($list_data['string'], $list_data['table'], $list_data['where'], $list_data['join'], $list_data['order'] = "", $list_data['group']);
             $this->load->view('stock/brand_closing_stock_list', $data);
         }
     }

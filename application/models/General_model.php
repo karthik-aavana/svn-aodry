@@ -8736,8 +8736,72 @@ class General_model extends CI_Model{
                 } 
               
             }
-            if ($list_data['section'] == "leads")
-            {
+
+            
+
+             if ($list_data['section'] == "sales_stock"){
+                if ($list_data['filter_search']['filter_brand'] != "" && !empty($list_data['filter_search']['filter_brand'])){
+                    $dat_arr = explode(",", $list_data['filter_search']['filter_brand']);
+                    $j       = 0;
+                    foreach ($dat_arr as $key => $value)
+                    {
+                        if ($i == 0 || $j == 0)
+                        {
+                            $this->db->group_start();
+                            $this->db->where('t.brand_name', $value);
+                        }
+                        else
+                        {
+                            $this->db->or_where('t.brand_name', $value);
+                        } $i++;
+                        $j++;
+                    } $this->db->group_end();
+                }
+            }
+            // Sales stock
+
+            if ($list_data['section'] == "purchase_stock"){
+                if ($list_data['filter_search']['filter_brand'] != "" && !empty($list_data['filter_search']['filter_brand'])){
+                    $dat_arr = explode(",", $list_data['filter_search']['filter_brand']);
+                    $j       = 0;
+                    foreach ($dat_arr as $key => $value)
+                    {
+                        if ($i == 0 || $j == 0)
+                        {
+                            $this->db->group_start();
+                            $this->db->where('t.brand_name', $value);
+                        }
+                        else
+                        {
+                            $this->db->or_where('t.brand_name', $value);
+                        } $i++;
+                        $j++;
+                    } $this->db->group_end();
+                }
+            }
+            // Purchase stock
+
+            if ($list_data['section'] == "close_stock"){
+                if ($list_data['filter_search']['filter_brand'] != "" && !empty($list_data['filter_search']['filter_brand'])){
+                    $dat_arr = explode(",", $list_data['filter_search']['filter_brand']);
+                    $j       = 0;
+                    foreach ($dat_arr as $key => $value)
+                    {
+                        if ($i == 0 || $j == 0)
+                        {
+                            $this->db->group_start();
+                            $this->db->where('t.brand_name', $value);
+                        }
+                        else
+                        {
+                            $this->db->or_where('t.brand_name', $value);
+                        } $i++;
+                        $j++;
+                    } $this->db->group_end();
+                }
+            }
+            // Closing Stock
+            if ($list_data['section'] == "leads"){
                 if ($list_data['filter_search']['filter_asr_no'] != "" && !empty($list_data['filter_search']['filter_asr_no']))
                 {
                     $dat_arr = explode(",", $list_data['filter_search']['filter_asr_no']);
@@ -26315,6 +26379,69 @@ class General_model extends CI_Model{
                 
                 
             }
+
+            if ($list_data['section'] == "sales_stock"){
+                if ($list_data['filter_search']['filter_brand'] != "" && !empty($list_data['filter_search']['filter_brand'])){
+                    $dat_arr = explode(",", $list_data['filter_search']['filter_brand']);
+                    $j       = 0;
+                    foreach ($dat_arr as $key => $value)
+                    {
+                        if ($i == 0 || $j == 0)
+                        {
+                            $this->db->group_start();
+                            $this->db->where('t.brand_name', $value);
+                        }
+                        else
+                        {
+                            $this->db->or_where('t.brand_name', $value);
+                        } $i++;
+                        $j++;
+                    } $this->db->group_end();
+                }
+            }
+            // Sales stock
+
+            if ($list_data['section'] == "purchase_stock"){
+                if ($list_data['filter_search']['filter_brand'] != "" && !empty($list_data['filter_search']['filter_brand'])){
+                    $dat_arr = explode(",", $list_data['filter_search']['filter_brand']);
+                    $j       = 0;
+                    foreach ($dat_arr as $key => $value)
+                    {
+                        if ($i == 0 || $j == 0)
+                        {
+                            $this->db->group_start();
+                            $this->db->where('t.brand_name', $value);
+                        }
+                        else
+                        {
+                            $this->db->or_where('t.brand_name', $value);
+                        } $i++;
+                        $j++;
+                    } $this->db->group_end();
+                }
+            }
+            // Purchase stock
+
+            if ($list_data['section'] == "close_stock"){
+                if ($list_data['filter_search']['filter_brand'] != "" && !empty($list_data['filter_search']['filter_brand'])){
+                    $dat_arr = explode(",", $list_data['filter_search']['filter_brand']);
+                    $j       = 0;
+                    foreach ($dat_arr as $key => $value)
+                    {
+                        if ($i == 0 || $j == 0)
+                        {
+                            $this->db->group_start();
+                            $this->db->where('t.brand_name', $value);
+                        }
+                        else
+                        {
+                            $this->db->or_where('t.brand_name', $value);
+                        } $i++;
+                        $j++;
+                    } $this->db->group_end();
+                }
+            }
+            // closing stock
             if ($list_data['section'] == "leads")
             {
                 if ($list_data['filter_search']['filter_asr_no'] != "" && !empty($list_data['filter_search']['filter_asr_no']))

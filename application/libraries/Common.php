@@ -3501,7 +3501,7 @@ class Common
         if ($item_access == "both")
         {
 
-            $sql = 'SELECT * FROM ((SELECT product_id as item_id,product_code as item_code, product_hsn_sac_code as hsn_sac_code, product_name as item_name,"product" as item_type, delete_status, branch_id, product_batch,product_quantity,product_opening_quantity FROM products where delete_status=0 and branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . ' and  is_varients="N" '.$brand_where.' '.$pro_where.' order by product_id desc)' .
+            $sql = 'SELECT * FROM ((SELECT product_id as item_id,product_code as item_code, product_hsn_sac_code as hsn_sac_code, product_name as item_name,"product" as item_type, delete_status, branch_id, product_batch,product_quantity,product_opening_quantity FROM products where delete_status=0 and branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . ' and  is_varients="N" '.$brand_where.' '.$pro_where.' order by product_id asc)' .
             'UNION ALL' .
             '(SELECT service_id as item_id,service_code as item_code,service_hsn_sac_code as hsn_sac_code,service_name as item_name,"service" as item_type,delete_status,branch_id, "" as product_batch, 0 as product_quantity,0 as product_opening_quantity FROM services where delete_status=0 and branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . ' '.$ser_where.' order by service_id desc)
                 ) AS u where u.delete_status=0 && u.branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . '';
@@ -3510,7 +3510,7 @@ class Common
         }
         elseif ($item_access == "product")
         {
-            $sql = 'SELECT * FROM ((SELECT product_id as item_id,product_code as item_code,product_hsn_sac_code as hsn_sac_code,product_name as item_name,"product" as item_type,delete_status,branch_id,product_batch,product_quantity,product_opening_quantity FROM products where delete_status=0 and is_varients="N" '.$brand_where.' AND branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . ' '.$pro_where.' order by product_id desc)) AS u where u.delete_status=0 && u.branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . '';
+            $sql = 'SELECT * FROM ((SELECT product_id as item_id,product_code as item_code,product_hsn_sac_code as hsn_sac_code,product_name as item_name,"product" as item_type,delete_status,branch_id,product_batch,product_quantity,product_opening_quantity FROM products where delete_status=0 and is_varients="N" '.$brand_where.' AND branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . ' '.$pro_where.' order by product_id asc)) AS u where u.delete_status=0 && u.branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . '';
             // $data=$this->db->query($sql)->result();
         }
         else
@@ -3522,7 +3522,7 @@ class Common
         return $sql;
     }
 
-    public function item_suggestions_field_leathercraft($item_access, $term , $brand_id = '')
+    public function item_suggestions_field_leathercrafr($item_access, $term , $brand_id = '')
     {
         $brand_where = '';
         if($brand_id != '' && $brand_id != 0) $brand_where = ' and brand_id ='.$brand_id; 
@@ -14577,7 +14577,8 @@ public function tds_report_sales_list(){
             "sub_category SC" => "SC.sub_category_id=P.product_subcategory_id". "#" . "left",
              ];
         $group = array('S.sales_id,BR.brand_id,P.product_id');
-        $filter = array('P.product_name');
+        $filter = array('BR.brand_name','P.product_name','CT.category_name','SC.sub_category_name','P.product_code','P.product_hsn_sac_code','U.uom','DATE_FORMAT(S.sales_date, "%d-%m-%Y")',
+            'C.customer_name','S.sales_invoice_number', 'SI.sales_item_quantity','SI.sales_item_scheme_discount_amount', 'SI.sales_item_scheme_discount_percentage', 'dt.discount_value','SI.sales_item_discount_amount');
         $data = array(
             'string' => $string,
             'table'  => $table,
@@ -14608,7 +14609,8 @@ public function tds_report_sales_list(){
             "sub_category SC" => "SC.sub_category_id=P.product_subcategory_id". "#" . "left",
              ];
         $group = array('PS.purchase_id,BR.brand_id,P.product_id');
-       $filter = array('P.product_name');
+       $filter = array('BR.brand_name','P.product_name','CT.category_name','SC.sub_category_name','P.product_code','P.product_hsn_sac_code','U.uom','DATE_FORMAT(PS.purchase_date, "%d-%m-%Y")',
+            'C.supplier_name','PS.purchase_invoice_number', 'PI.purchase_item_quantity');
         $data = array(
             'string' => $string,
             'table'  => $table,
@@ -14621,7 +14623,7 @@ public function tds_report_sales_list(){
     }
 
     public function get_brandwise_closing_stock_report(){
-        $string = "P.product_name, P.product_code, P.product_hsn_sac_code, P.product_id, P.product_basic_price, P.product_quantity, P.product_combination_id, SI.sales_item_quantity, AVG(SI.sales_item_unit_price) as price, SUM(SI.sales_item_igst_amount) as igst, SUM(SI.sales_item_sgst_amount) as sgst, SUM(SI.sales_item_cgst_amount) as cgst, U.uom, CT.category_name, CASE P.brand_id when '0' then 'General' ELSE BR.brand_name END as brand_name,  SC.sub_category_name,P.product_opening_quantity";
+        $string = "P.product_name, P.product_code, P.product_hsn_sac_code, P.product_id, P.product_basic_price, P.product_quantity, P.product_combination_id, SI.sales_item_quantity, AVG(SI.sales_item_unit_price) as price, SUM(SI.sales_item_igst_amount) as igst, SUM(SI.sales_item_sgst_amount) as sgst, SUM(SI.sales_item_cgst_amount) as cgst, U.uom, CT.category_name, CASE P.brand_id when '0' then 'General' ELSE BR.brand_name END as brand_name,  SC.sub_category_name,P.product_opening_quantity,P.brand_id";
         $table  = "products P";
         $where = array(
             'P.branch_id'         => $this->ci->session->userdata('SESS_BRANCH_ID'),
@@ -14636,7 +14638,7 @@ public function tds_report_sales_list(){
             "sub_category SC" => "SC.sub_category_id=P.product_subcategory_id". "#" . "left",
              ];
         $group = array('BR.brand_id,P.product_id');
-        $filter = array('BR.brand_name');
+        $filter = array('BR.brand_name','P.product_name','CT.category_name','SC.sub_category_name','P.product_code','P.product_hsn_sac_code','U.uom');
         $data = array(
             'string' => $string,
             'table'  => $table,
@@ -14720,6 +14722,66 @@ public function tds_report_sales_list(){
             'join'   => $join,
             'filter' => $filter,
             'order'  => $order
+        );
+        return $data;
+    }
+
+    public function distinct_brand_closing(){
+        $string = "CASE P.brand_id when '0' then 'General' ELSE BR.brand_name END as brand_name,P.brand_id";
+        $table  = "products P";
+        $join   = [
+            "brand BR"   => "BR.brand_id = P.brand_id". "#" . "left",         
+            "sales_item SI"  => "P.product_id = SI.item_id and SI.item_type = 'product'" ,
+             "sales S"   => "S.sales_id = SI.sales_id"];
+        $where = array('P.branch_id' => $this->ci->session->userdata('SESS_BRANCH_ID'),
+            'P.delete_status'     => 0);
+        $group = array('P.brand_id');
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'join'   => $join,
+            'group'  => $group
+        );
+        return $data;
+    }
+
+    public function distinct_brand_sales(){
+        $string = "CASE P.brand_id when '0' then 'General' ELSE BR.brand_name END as brand_name,P.brand_id";
+        $table  = "products P";
+        $join   = [
+            "brand BR"   => "BR.brand_id = P.brand_id". "#" . "left",         
+            "sales_item SI"  => "P.product_id = SI.item_id and SI.item_type = 'product'" ,
+             "sales S"   => "S.sales_id = SI.sales_id"];
+        $where = array('P.branch_id' => $this->ci->session->userdata('SESS_BRANCH_ID'),
+            'P.delete_status'     => 0);
+        $group = array('P.brand_id');
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'join'   => $join,
+            'group'  => $group
+        );
+        return $data;
+    }
+
+      public function distinct_brand_purchase(){
+        $string = "CASE P.brand_id when '0' then 'General' ELSE BR.brand_name END as brand_name,P.brand_id";
+        $table  = "products P";
+        $join   = [
+            "brand BR"   => "BR.brand_id = P.brand_id". "#" . "left",         
+            "purchase_item PI"  => "P.product_id = PI.item_id and PI.item_type = 'product'",
+             "purchase PS"   => "PS.purchase_id = PI.purchase_id",];
+        $where = array('P.branch_id' => $this->ci->session->userdata('SESS_BRANCH_ID'),
+            'P.delete_status'     => 0);
+        $group = array('P.brand_id');
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'join'   => $join,
+            'group'  => $group
         );
         return $data;
     }
