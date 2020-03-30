@@ -2232,6 +2232,31 @@ Class General_voucher extends MY_Controller
                  $deposits = $this->general_model->getRecords('*', $table, $where);
                 $deposit_ledger_id = $deposits[0]->ledger_id;
                 $deposit_type = $deposits[0]->deposit_type;
+
+                $tds_subgroup = "TDS Recieveable U/S 194I";
+                        $default_tds_id = $general_ledger['TDS_REV'];
+                        $tds_ledger_name = $this->ledger_model->getDefaultLedgerId($default_tds_id);
+                            
+                        $tds_ary = array(
+                                        'ledger_name' => 'TDS Recieveable U/S 194I',
+                                        'second_grp' => '',
+                                        'primary_grp' => '',
+                                        'main_grp' => 'Current Assets',
+                                        'default_ledger_id' => 0,
+                                        'default_value' => 0,
+                                        'amount' => 0
+                                    );
+                        if(!empty($tds_ledger_name)){
+                            $tds_ledger = $tds_ledger_name->ledger_name;
+                            //$tds_ledger = str_ireplace('{{SECTION}}',$section_name, $tds_ledger);
+                            $tds_ledger = 'TDS Recieveable U/S 194I';
+                            $tds_ary['ledger_name'] = $tds_ledger;
+                            $tds_ary['primary_grp'] = $tds_ledger_name->sub_group_1;
+                            $tds_ary['second_grp'] = $tds_ledger_name->sub_group_2;
+                            $tds_ary['main_grp'] = $tds_ledger_name->main_group;
+                            $tds_ary['default_ledger_id'] = $tds_ledger_name->ledger_id;
+                        }
+                $tds_ledger = $this->ledger_model->getGroupLedgerId($tds_ary);
             }else{
                 if($input_type == 'interest liability'){
                     $default_intrest_it_id = $general_ledger['Interest'];
@@ -2311,7 +2336,35 @@ Class General_voucher extends MY_Controller
                 
                 $to_ledger = $deposit_name = 'Fixed Deposit@'.$deposits[0]->deposit_bank;
                 $to_acc = 'interest-' . $deposits[0]->deposit_bank;
-                $to_ledger_id = $supplier_ledger_id = $deposits[0]->ledger_id;
+
+                $default_intrest_id = $general_ledger['Interest_Income'];
+                $intrest_ledger_name = $this->ledger_model->getDefaultLedgerId($default_intrest_id);
+                   
+                $intrest_ary = array(
+                                'ledger_name' => 'Interest Income',
+                                'second_grp' => '',
+                                'primary_grp' => '',
+                                'main_grp' => 'Indirect Incomes',
+                                'default_ledger_id' => $default_intrest_id,
+                                'default_value' => 0,
+                                'amount' => 0
+                            );
+                    if(!empty($intrest_ledger_name)){
+                        $intrest_ledger = $intrest_ledger_name->ledger_name;
+                        $intrest_ary['ledger_name'] = $intrest_ledger;
+                        $intrest_ary['primary_grp'] = $intrest_ledger_name->sub_group_1;
+                        $intrest_ary['second_grp'] = $intrest_ledger_name->sub_group_2;
+                        $intrest_ary['main_grp'] = $intrest_ledger_name->main_group;
+                        $intrest_ary['default_ledger_id'] = $intrest_ledger_name->ledger_id;
+                    }
+                    $to_ledger_id = $this->ledger_model->getGroupLedgerId($intrest_ary);
+
+
+
+
+
+
+               /* $to_ledger_id = $supplier_ledger_id = $deposits[0]->ledger_id;
 
                 if(!$to_ledger_id){
                     $supplier_ledger_id = $general_ledger['Fixed_Deposit'];
@@ -2328,7 +2381,7 @@ Class General_voucher extends MY_Controller
                             );
                         if(!empty($supplier_ledger_name)){
                             $supplier_ledger = $supplier_ledger_name->ledger_name;
-                            /*$supplier_ledger = str_ireplace('{{SECTION}}',$section_name , $supplier_ledger);*/
+                            
                             $supplier_ledger = str_ireplace('{{X}}',$deposits[0]->deposit_bank, $supplier_ledger);
                             $supplier_ary['ledger_name'] = $supplier_ledger;
                             $supplier_ary['primary_grp'] = $supplier_ledger_name->sub_group_1;
@@ -2339,15 +2392,35 @@ Class General_voucher extends MY_Controller
                     $supplier_ledger_id = $this->ledger_model->getGroupLedgerId($supplier_ary);
                 }
                 $to_ledger_id = $supplier_ledger_id;
-                $to_acc = $transaction_ledger;
+                $to_acc = $transaction_ledger;*/
 
             }elseif($deposit_type == 'recurring deposit'){
 
                 $to_ledger = $deposit_name = 'Recurring Deposit@'.$deposits[0]->deposit_bank;
                 $to_acc = 'interest-' . $deposits[0]->deposit_bank;
-                $to_ledger_id = $supplier_ledger_id = $deposits[0]->ledger_id;
+                 $default_intrest_id = $general_ledger['Interest_Income'];
+                $intrest_ledger_name = $this->ledger_model->getDefaultLedgerId($default_intrest_id);
+                   
+                $intrest_ary = array(
+                                'ledger_name' => 'Interest Income',
+                                'second_grp' => '',
+                                'primary_grp' => '',
+                                'main_grp' => 'Indirect Incomes',
+                                'default_ledger_id' => $default_intrest_id,
+                                'default_value' => 0,
+                                'amount' => 0
+                            );
+                    if(!empty($intrest_ledger_name)){
+                        $intrest_ledger = $intrest_ledger_name->ledger_name;
+                        $intrest_ary['ledger_name'] = $intrest_ledger;
+                        $intrest_ary['primary_grp'] = $intrest_ledger_name->sub_group_1;
+                        $intrest_ary['second_grp'] = $intrest_ledger_name->sub_group_2;
+                        $intrest_ary['main_grp'] = $intrest_ledger_name->main_group;
+                        $intrest_ary['default_ledger_id'] = $intrest_ledger_name->ledger_id;
+                    }
+                    $to_ledger_id = $this->ledger_model->getGroupLedgerId($intrest_ary);
 
-                if(!$to_ledger_id){
+                /*if(!$to_ledger_id){
                     $supplier_ledger_id = $general_ledger['Recurring_Deposit'];
                     $supplier_ledger_name = $this->ledger_model->getDefaultLedgerId($supplier_ledger_id);
                         
@@ -2362,7 +2435,7 @@ Class General_voucher extends MY_Controller
                             );
                         if(!empty($supplier_ledger_name)){
                             $supplier_ledger = $supplier_ledger_name->ledger_name;
-                            /*$supplier_ledger = str_ireplace('{{SECTION}}',$section_name , $supplier_ledger);*/
+                           
                             $supplier_ledger = str_ireplace('{{X}}',$deposits[0]->deposit_bank, $supplier_ledger);
                             $supplier_ary['ledger_name'] = $supplier_ledger;
                             $supplier_ary['primary_grp'] = $supplier_ledger_name->sub_group_1;
@@ -2373,15 +2446,35 @@ Class General_voucher extends MY_Controller
                     $supplier_ledger_id = $this->ledger_model->getGroupLedgerId($supplier_ary);
                 }
                 $to_ledger_id = $supplier_ledger_id;
-                $to_acc = $transaction_ledger;
+                $to_acc = $transaction_ledger;*/
 
             }elseif($deposit_type == 'others'){
 
                 $to_ledger = $deposit_name = $deposits[0]->others_name;
                 $to_acc = 'interest-' . $deposits[0]->others_name;
-                $to_ledger_id = $supplier_ledger_id =  $deposits[0]->ledger_id;
+                $default_intrest_id = $general_ledger['Interest_Income'];
+                $intrest_ledger_name = $this->ledger_model->getDefaultLedgerId($default_intrest_id);
+                   
+                $intrest_ary = array(
+                                'ledger_name' => 'Interest Income',
+                                'second_grp' => '',
+                                'primary_grp' => '',
+                                'main_grp' => 'Indirect Incomes',
+                                'default_ledger_id' => $default_intrest_id,
+                                'default_value' => 0,
+                                'amount' => 0
+                            );
+                    if(!empty($intrest_ledger_name)){
+                        $intrest_ledger = $intrest_ledger_name->ledger_name;
+                        $intrest_ary['ledger_name'] = $intrest_ledger;
+                        $intrest_ary['primary_grp'] = $intrest_ledger_name->sub_group_1;
+                        $intrest_ary['second_grp'] = $intrest_ledger_name->sub_group_2;
+                        $intrest_ary['main_grp'] = $intrest_ledger_name->main_group;
+                        $intrest_ary['default_ledger_id'] = $intrest_ledger_name->ledger_id;
+                    }
+                    $to_ledger_id = $this->ledger_model->getGroupLedgerId($intrest_ary);
 
-                if(!$to_ledger_id){
+                /*if(!$to_ledger_id){
                     $supplier_ledger_id = $general_ledger['Other_Deposits'];
                     $supplier_ledger_name = $this->ledger_model->getDefaultLedgerId($supplier_ledger_id);
                         
@@ -2396,7 +2489,7 @@ Class General_voucher extends MY_Controller
                             );
                         if(!empty($supplier_ledger_name)){
                             $supplier_ledger = $supplier_ledger_name->ledger_name;
-                            /*$supplier_ledger = str_ireplace('{{SECTION}}',$section_name , $supplier_ledger);*/
+                            
                             $supplier_ledger = str_ireplace('{{X}}',$deposits[0]->deposit_bank, $supplier_ledger);
                             $supplier_ary['ledger_name'] = $supplier_ledger;
                             $supplier_ary['primary_grp'] = $supplier_ledger_name->sub_group_1;
@@ -2407,7 +2500,7 @@ Class General_voucher extends MY_Controller
                     $supplier_ledger_id = $this->ledger_model->getGroupLedgerId($supplier_ary);
                 }
                 $to_ledger_id = $supplier_ledger_id;
-                $to_acc = $transaction_ledger;
+                $to_acc = $transaction_ledger;*/
             }
 
         }elseif($transaction_purpose == 'Investments'){            
@@ -3498,7 +3591,7 @@ Class General_voucher extends MY_Controller
                 }
         }elseif($transaction_purpose == 'Interest'){  
                if($transaction_category == 'Interest Income earned'){             
-                   $voucher_amount = $voucher_amount - $tds_amount; 
+                  
                     $ledger_entry[$from_ledger_id]["ledger_from"] = $from_ledger_id;
                     $ledger_entry[$from_ledger_id]["ledger_to"] = $to_ledger_id;
                     $ledger_entry[$from_ledger_id]["journal_voucher_id"] = $general_voucher_id;
@@ -3507,15 +3600,29 @@ Class General_voucher extends MY_Controller
                     $ledger_entry[$from_ledger_id]["dr_amount"] = $voucher_amount;
                     $ledger_entry[$from_ledger_id]["cr_amount"] =  0;
                     $ledger_entry[$from_ledger_id]['ledger_id'] = $from_ledger_id;
+                  
+
+                    $total_cr = $voucher_amount + $tds_amount;
 
                     $ledger_entry[$to_ledger_id]["ledger_from"] = $from_ledger_id;
                     $ledger_entry[$to_ledger_id]["ledger_to"] = $to_ledger_id;
                     $ledger_entry[$to_ledger_id]["journal_voucher_id"] = $general_voucher_id;
-                    $ledger_entry[$to_ledger_id]["voucher_amount"] = $voucher_amount;
+                    $ledger_entry[$to_ledger_id]["voucher_amount"] = $total_cr;
                     $ledger_entry[$to_ledger_id]["converted_voucher_amount"] = 0;
                     $ledger_entry[$to_ledger_id]["dr_amount"] = 0;
-                    $ledger_entry[$to_ledger_id]["cr_amount"] = $voucher_amount;
+                    $ledger_entry[$to_ledger_id]["cr_amount"] = $total_cr;
                     $ledger_entry[$to_ledger_id]['ledger_id'] = $to_ledger_id;
+                    
+                    if($tds_amount > 0){
+                        $ledger_entry[$tds_ledger]["ledger_from"] = $from_ledger_id;
+                        $ledger_entry[$tds_ledger]["ledger_to"] = $tds_ledger;
+                        $ledger_entry[$tds_ledger]["journal_voucher_id"] = $general_voucher_id;
+                        $ledger_entry[$tds_ledger]["voucher_amount"] = $tds_amount;
+                        $ledger_entry[$tds_ledger]["converted_voucher_amount"] = 0;
+                        $ledger_entry[$tds_ledger]["dr_amount"] = $tds_amount;
+                        $ledger_entry[$tds_ledger]["cr_amount"] = 0;
+                        $ledger_entry[$tds_ledger]['ledger_id'] = $tds_ledger;
+                    }
                 }else{
                     if($input_type == 'interest liability'){
                         $interest_amount = $voucher_amount + $tds_amount; 
@@ -5225,6 +5332,31 @@ Class General_voucher extends MY_Controller
                  $deposits = $this->general_model->getRecords('*', $table, $where);
                 $deposit_ledger_id = $deposits[0]->ledger_id;
                 $deposit_type = $deposits[0]->deposit_type;
+
+                $tds_subgroup = "TDS Recieveable U/S 194I";
+                        $default_tds_id = $general_ledger['TDS_REV'];
+                        $tds_ledger_name = $this->ledger_model->getDefaultLedgerId($default_tds_id);
+                            
+                        $tds_ary = array(
+                                        'ledger_name' => 'TDS Recieveable U/S 194I',
+                                        'second_grp' => '',
+                                        'primary_grp' => '',
+                                        'main_grp' => 'Current Assets',
+                                        'default_ledger_id' => 0,
+                                        'default_value' => 0,
+                                        'amount' => 0
+                                    );
+                        if(!empty($tds_ledger_name)){
+                            $tds_ledger = $tds_ledger_name->ledger_name;
+                            //$tds_ledger = str_ireplace('{{SECTION}}',$section_name, $tds_ledger);
+                            $tds_ledger = 'TDS Recieveable U/S 194I';
+                            $tds_ary['ledger_name'] = $tds_ledger;
+                            $tds_ary['primary_grp'] = $tds_ledger_name->sub_group_1;
+                            $tds_ary['second_grp'] = $tds_ledger_name->sub_group_2;
+                            $tds_ary['main_grp'] = $tds_ledger_name->main_group;
+                            $tds_ary['default_ledger_id'] = $tds_ledger_name->ledger_id;
+                        }
+                $tds_ledger = $this->ledger_model->getGroupLedgerId($tds_ary);
                 
                 }else{
                     if($input_type == 'interest liability'){
@@ -5300,11 +5432,39 @@ Class General_voucher extends MY_Controller
                         $deposit_type = '';
             }
                
-                if($deposit_type == 'fixed deposit'){
+             if($deposit_type == 'fixed deposit'){
                 
                 $to_ledger = $deposit_name = 'Fixed Deposit@'.$deposits[0]->deposit_bank;
                 $to_acc = 'interest-' . $deposits[0]->deposit_bank;
-                $to_ledger_id = $supplier_ledger_id = $deposits[0]->ledger_id;
+
+                $default_intrest_id = $general_ledger['Interest_Income'];
+                $intrest_ledger_name = $this->ledger_model->getDefaultLedgerId($default_intrest_id);
+                   
+                $intrest_ary = array(
+                                'ledger_name' => 'Interest Income',
+                                'second_grp' => '',
+                                'primary_grp' => '',
+                                'main_grp' => 'Indirect Incomes',
+                                'default_ledger_id' => $default_intrest_id,
+                                'default_value' => 0,
+                                'amount' => 0
+                            );
+                    if(!empty($intrest_ledger_name)){
+                        $intrest_ledger = $intrest_ledger_name->ledger_name;
+                        $intrest_ary['ledger_name'] = $intrest_ledger;
+                        $intrest_ary['primary_grp'] = $intrest_ledger_name->sub_group_1;
+                        $intrest_ary['second_grp'] = $intrest_ledger_name->sub_group_2;
+                        $intrest_ary['main_grp'] = $intrest_ledger_name->main_group;
+                        $intrest_ary['default_ledger_id'] = $intrest_ledger_name->ledger_id;
+                    }
+                    $to_ledger_id = $this->ledger_model->getGroupLedgerId($intrest_ary);
+
+
+
+
+
+
+               /* $to_ledger_id = $supplier_ledger_id = $deposits[0]->ledger_id;
 
                 if(!$to_ledger_id){
                     $supplier_ledger_id = $general_ledger['Fixed_Deposit'];
@@ -5313,7 +5473,7 @@ Class General_voucher extends MY_Controller
                     $supplier_ary = array(
                                 'ledger_name' => $deposit_name,
                                 'second_grp' => '',
-                                'primary_grp' => 'NA',
+                                'primary_grp' => '',
                                 'main_grp' => 'Current Assets',
                                 'default_ledger_id' => $default_fixed_id,
                                 'default_value' => 0,
@@ -5321,7 +5481,7 @@ Class General_voucher extends MY_Controller
                             );
                         if(!empty($supplier_ledger_name)){
                             $supplier_ledger = $supplier_ledger_name->ledger_name;
-                            /*$supplier_ledger = str_ireplace('{{SECTION}}',$section_name , $supplier_ledger);*/
+                            
                             $supplier_ledger = str_ireplace('{{X}}',$deposits[0]->deposit_bank, $supplier_ledger);
                             $supplier_ary['ledger_name'] = $supplier_ledger;
                             $supplier_ary['primary_grp'] = $supplier_ledger_name->sub_group_1;
@@ -5332,15 +5492,35 @@ Class General_voucher extends MY_Controller
                     $supplier_ledger_id = $this->ledger_model->getGroupLedgerId($supplier_ary);
                 }
                 $to_ledger_id = $supplier_ledger_id;
-                $to_acc = $transaction_ledger;
+                $to_acc = $transaction_ledger;*/
 
             }elseif($deposit_type == 'recurring deposit'){
 
                 $to_ledger = $deposit_name = 'Recurring Deposit@'.$deposits[0]->deposit_bank;
                 $to_acc = 'interest-' . $deposits[0]->deposit_bank;
-                $to_ledger_id = $supplier_ledger_id = $deposits[0]->ledger_id;
+                 $default_intrest_id = $general_ledger['Interest_Income'];
+                $intrest_ledger_name = $this->ledger_model->getDefaultLedgerId($default_intrest_id);
+                   
+                $intrest_ary = array(
+                                'ledger_name' => 'Interest Income',
+                                'second_grp' => '',
+                                'primary_grp' => '',
+                                'main_grp' => 'Indirect Incomes',
+                                'default_ledger_id' => $default_intrest_id,
+                                'default_value' => 0,
+                                'amount' => 0
+                            );
+                    if(!empty($intrest_ledger_name)){
+                        $intrest_ledger = $intrest_ledger_name->ledger_name;
+                        $intrest_ary['ledger_name'] = $intrest_ledger;
+                        $intrest_ary['primary_grp'] = $intrest_ledger_name->sub_group_1;
+                        $intrest_ary['second_grp'] = $intrest_ledger_name->sub_group_2;
+                        $intrest_ary['main_grp'] = $intrest_ledger_name->main_group;
+                        $intrest_ary['default_ledger_id'] = $intrest_ledger_name->ledger_id;
+                    }
+                    $to_ledger_id = $this->ledger_model->getGroupLedgerId($intrest_ary);
 
-                if(!$to_ledger_id){
+                /*if(!$to_ledger_id){
                     $supplier_ledger_id = $general_ledger['Recurring_Deposit'];
                     $supplier_ledger_name = $this->ledger_model->getDefaultLedgerId($supplier_ledger_id);
                         
@@ -5355,7 +5535,7 @@ Class General_voucher extends MY_Controller
                             );
                         if(!empty($supplier_ledger_name)){
                             $supplier_ledger = $supplier_ledger_name->ledger_name;
-                            /*$supplier_ledger = str_ireplace('{{SECTION}}',$section_name , $supplier_ledger);*/
+                           
                             $supplier_ledger = str_ireplace('{{X}}',$deposits[0]->deposit_bank, $supplier_ledger);
                             $supplier_ary['ledger_name'] = $supplier_ledger;
                             $supplier_ary['primary_grp'] = $supplier_ledger_name->sub_group_1;
@@ -5366,15 +5546,35 @@ Class General_voucher extends MY_Controller
                     $supplier_ledger_id = $this->ledger_model->getGroupLedgerId($supplier_ary);
                 }
                 $to_ledger_id = $supplier_ledger_id;
-                $to_acc = $transaction_ledger;
+                $to_acc = $transaction_ledger;*/
 
             }elseif($deposit_type == 'others'){
 
                 $to_ledger = $deposit_name = $deposits[0]->others_name;
                 $to_acc = 'interest-' . $deposits[0]->others_name;
-                $to_ledger_id = $supplier_ledger_id =  $deposits[0]->ledger_id;
+                $default_intrest_id = $general_ledger['Interest_Income'];
+                $intrest_ledger_name = $this->ledger_model->getDefaultLedgerId($default_intrest_id);
+                   
+                $intrest_ary = array(
+                                'ledger_name' => 'Interest Income',
+                                'second_grp' => '',
+                                'primary_grp' => '',
+                                'main_grp' => 'Indirect Incomes',
+                                'default_ledger_id' => $default_intrest_id,
+                                'default_value' => 0,
+                                'amount' => 0
+                            );
+                    if(!empty($intrest_ledger_name)){
+                        $intrest_ledger = $intrest_ledger_name->ledger_name;
+                        $intrest_ary['ledger_name'] = $intrest_ledger;
+                        $intrest_ary['primary_grp'] = $intrest_ledger_name->sub_group_1;
+                        $intrest_ary['second_grp'] = $intrest_ledger_name->sub_group_2;
+                        $intrest_ary['main_grp'] = $intrest_ledger_name->main_group;
+                        $intrest_ary['default_ledger_id'] = $intrest_ledger_name->ledger_id;
+                    }
+                    $to_ledger_id = $this->ledger_model->getGroupLedgerId($intrest_ary);
 
-                if(!$to_ledger_id){
+                /*if(!$to_ledger_id){
                     $supplier_ledger_id = $general_ledger['Other_Deposits'];
                     $supplier_ledger_name = $this->ledger_model->getDefaultLedgerId($supplier_ledger_id);
                         
@@ -5389,7 +5589,7 @@ Class General_voucher extends MY_Controller
                             );
                         if(!empty($supplier_ledger_name)){
                             $supplier_ledger = $supplier_ledger_name->ledger_name;
-                            /*$supplier_ledger = str_ireplace('{{SECTION}}',$section_name , $supplier_ledger);*/
+                            
                             $supplier_ledger = str_ireplace('{{X}}',$deposits[0]->deposit_bank, $supplier_ledger);
                             $supplier_ary['ledger_name'] = $supplier_ledger;
                             $supplier_ary['primary_grp'] = $supplier_ledger_name->sub_group_1;
@@ -5400,7 +5600,7 @@ Class General_voucher extends MY_Controller
                     $supplier_ledger_id = $this->ledger_model->getGroupLedgerId($supplier_ary);
                 }
                 $to_ledger_id = $supplier_ledger_id;
-                $to_acc = $transaction_ledger;
+                $to_acc = $transaction_ledger;*/
             }
 
         }elseif($transaction_purpose == 'Investments'){            
@@ -6492,7 +6692,7 @@ Class General_voucher extends MY_Controller
                 }
         }elseif($transaction_purpose == 'Interest'){  
                 if($transaction_category == 'Interest Income earned'){             
-                    $voucher_amount = $voucher_amount - $tds_amount;
+                   
                     $ledger_entry[$from_ledger_id]["ledger_from"] = $from_ledger_id;
                     $ledger_entry[$from_ledger_id]["ledger_to"] = $to_ledger_id;
                     $ledger_entry[$from_ledger_id]["journal_voucher_id"] = $general_voucher_id;
@@ -6502,14 +6702,26 @@ Class General_voucher extends MY_Controller
                     $ledger_entry[$from_ledger_id]["cr_amount"] =  0;
                     $ledger_entry[$from_ledger_id]['ledger_id'] = $from_ledger_id;
 
+                    $total_cr = $voucher_amount + $tds_amount;
+
                     $ledger_entry[$to_ledger_id]["ledger_from"] = $from_ledger_id;
                     $ledger_entry[$to_ledger_id]["ledger_to"] = $to_ledger_id;
                     $ledger_entry[$to_ledger_id]["journal_voucher_id"] = $general_voucher_id;
-                    $ledger_entry[$to_ledger_id]["voucher_amount"] = $voucher_amount;
+                    $ledger_entry[$to_ledger_id]["voucher_amount"] = $total_cr;
                     $ledger_entry[$to_ledger_id]["converted_voucher_amount"] = 0;
                     $ledger_entry[$to_ledger_id]["dr_amount"] = 0;
-                    $ledger_entry[$to_ledger_id]["cr_amount"] = $voucher_amount;
+                    $ledger_entry[$to_ledger_id]["cr_amount"] = $total_cr;
                     $ledger_entry[$to_ledger_id]['ledger_id'] = $to_ledger_id;
+                    if($tds_amount > 0){
+                        $ledger_entry[$tds_ledger]["ledger_from"] = $from_ledger_id;
+                        $ledger_entry[$tds_ledger]["ledger_to"] = $tds_ledger;
+                        $ledger_entry[$tds_ledger]["journal_voucher_id"] = $general_voucher_id;
+                        $ledger_entry[$tds_ledger]["voucher_amount"] = $tds_amount;
+                        $ledger_entry[$tds_ledger]["converted_voucher_amount"] = 0;
+                        $ledger_entry[$tds_ledger]["dr_amount"] = $tds_amount;
+                        $ledger_entry[$tds_ledger]["cr_amount"] = 0;
+                        $ledger_entry[$tds_ledger]['ledger_id'] = $tds_ledger;
+                    }
                 }else{
 
                     if($input_type == 'interest liability'){

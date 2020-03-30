@@ -82,7 +82,18 @@ $(document).ready(function (){
                     $("#div_igst").hide();
                     $("#div_receipt").show();
                     $("#div_tds").hide();
-                }else if(trans_category == 'Advance repaid by vendor' || trans_category == 'Deposit Amount Withdrawal from RENT' || trans_category == 'Deposit Amount Withdrawal from ELECTRICITY' || trans_category == 'Deposit Amount Withdrawal from WATER' || trans_category == 'Deposit Amount Withdrawal from (other)'){
+                }else if(trans_category == 'Cash withdrawal from bank'){
+                    $("#div_interest").show();
+                    $("#lbl_interest").text('Charges');
+                    $("#div_others").hide();
+                    $("#div_cess").hide();
+                    $("#div_sgst").hide();
+                    $("#div_utgst").hide();
+                    $("#div_cgst").hide();
+                    $("#div_igst").hide();
+                    $("#div_receipt").show();
+                    $("#div_tds").hide();
+                } else if(trans_category == 'Advance repaid by vendor' || trans_category == 'Deposit Amount Withdrawal from RENT' || trans_category == 'Deposit Amount Withdrawal from ELECTRICITY' || trans_category == 'Deposit Amount Withdrawal from WATER' || trans_category == 'Deposit Amount Withdrawal from (other)'){
                     $("#div_interest").show();
                     $("#lbl_interest").text('Other Charges');
                     $("#div_others").hide();

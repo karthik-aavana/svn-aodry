@@ -203,4 +203,5 @@ $config['general_ledger']['Tds_payable'] = 112;
 $config['general_ledger']['Drawing_AC'] = 65;
 $config['general_ledger']['Security_Premium'] = 113;
 $config['general_ledger']['Bank_Charges'] = 114;
+$config['general_ledger']['TDS_REV'] = 12;
 ?>
