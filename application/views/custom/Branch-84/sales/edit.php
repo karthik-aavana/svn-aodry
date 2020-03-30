@@ -488,7 +488,7 @@ $this->load->view('layout/header');
                                                             ?>' data-rule='quantity' name='free_item_quantity'>
                                                         </td>
                                                         <td>
-                                                            <select class="form-control form-fixer select2" name="item_uom">
+                                                            <select class="form-control form-fixer select2" name="item_uom" disabled="disabled">
                                                                 <?php
                                                                 if(!empty($uqc_product)){
                                                                     foreach ($uqc_product as $k => $uom) { ?>

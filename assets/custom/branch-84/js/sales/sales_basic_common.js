@@ -19,16 +19,20 @@ $(document).ready(function () {
         }
     });
 
+    $('.discount_plus').click(function(){
+        $('#add_discount_product').modal('show');
+    })
+
+    $('.gst_plus').click(function(){
+        $('#tax_gst_modal').modal('show');
+    })
+
     $("[name=input_sales_code]").on('change focus', function () {
         $("[name=input_sales_code]").trigger("click");
     });
 
     $("#customer").change(function () {
-        if (
-            $(this)
-            .find("option:selected")
-            .text() != "Select Shipping Address"
-        ) {
+        if ($(this).find("option:selected").text() != "Select Shipping Address") {
             $("[name=input_sales_code]").prop("disabled", false);
             $(".search_sales_code").show();
             $("#err_sales_code").text("");
@@ -158,8 +162,6 @@ $(document).ready(function () {
         }
         ChangeTypeOfSupply();
     });
-    
-    
     //date change
     $("#invoice_date").on("changeDate", function () {
         var selected = $(this).val();
@@ -216,16 +218,18 @@ $(document).ready(function () {
                 }
             })
         }else{
-            $('#brand_invoice_number').val('').attr('readonly',false);
+
+            $('#brand_invoice_number').val($('#invoice_number').val()).attr('readonly',false);
         }
     })
-   
+    var ProXHR;
     // get items to table starts
     $("[name=input_sales_code]").autoComplete({
-        minChars: 1,
+        minChars: 0,
         cache: false,
         source: function (term, suggest) {
             term = term.toLowerCase();
+            if(term == '') term = '-';
             if (common_settings_inventory_advanced == "") {
                 var inventory_advanced = "no";
             } else {
@@ -237,7 +241,10 @@ $(document).ready(function () {
             }
             brand_id = $('#brand_id').val();
             var isnum = /^\d+$/.test(term);
-            $.ajax({
+            if(ProXHR && ProXHR.readyState != 4){
+                ProXHR.abort();
+            }
+            ProXHR = $.ajax({
                 url: base_url +
                     "sales/get_sales_suggestions/" +
                     term +
@@ -250,7 +257,7 @@ $(document).ready(function () {
                 success: function (data) {
                     var suggestions = [];
                     for (var i = 0; i < data.length; ++i) {
-                        suggestions.push(data[i].item_code + " " + data[i].item_name+ ' ' + data[i].product_batch);
+                        suggestions.push(data[i].item_code + " " + data[i].item_name+ ' ' + data[i].product_batch+ ' <span class="stock_span">' + (parseInt(data[i].product_quantity) + parseInt(data[i].product_opening_quantity))+'</span>');
                         var item_code = data[i].item_code+'-'+data[i].product_batch;
                         var code = item_code.toString().split(' ');
                         mapping[code[0]] =
@@ -285,8 +292,10 @@ $(document).ready(function () {
             });
         },
         onSelect: function (event, ui) {
+            ui = $.trim(ui);
             var code = ui.toString().split(" ");
             k = code[0]+'-'+(code[code.length-1]);
+            
             $.ajax({
                 url: base_url + "sales/get_table_items/" + mapping[k],
                 type: "GET",
@@ -295,7 +304,7 @@ $(document).ready(function () {
                     $('#table-total').show();
                     add_row(data);
                     call_css();
-                    $("[name=input_sales_code]").val("");
+                    $("[name=input_sales_code]").val("").focusout(function(){console.log(11,'yes');});
                 }
             });
         }
@@ -313,12 +322,28 @@ $(document).ready(function () {
     // changes in rows
     $("#sales_table_body").on(
         "change blur",
-        'input[name="item_price"],input[name="item_description"],input[name="item_quantity"],input[name="free_item_quantity"],select[name="item_discount"],select[name="item_scheme_discount"],select[name="item_tax"]','select[name="item_tax_cess"]',
+        'input[name="item_price"],input[name="item_description"],input[name="item_quantity"],input[name="free_item_quantity"],select[name="item_discount"],select[name="item_scheme_discount"],select[name="item_tax"],select[name="item_tax_cess"],input[name="item_cash_discount"]',
         function (event) {
             var newRow = $(this).closest("tr");
             calculateTable(newRow);
         }
     );
+
+    $(document).on('change','[name=item_uom]',function(){
+        var unit_number = $(this).find('option:selected').attr('number');
+        var is_main = $(this).find('option:selected').attr('is_main');
+        var tr = $(this).parents('tr:first');
+        var item_price = tr.find('[name=item_price]').val();
+        if(is_main > 0){
+            var unit_number = $(this).find('option[is_main=0]').attr('number');
+            unit_price = item_price * unit_number;
+        }else{
+            unit_price = item_price/unit_number;
+        }
+        tr.find('[name=item_price]').val(unit_price);
+        calculateTable(tr);
+        
+    })
 
     /*$("#sales_table_body").on(
         "change",
@@ -562,6 +587,8 @@ function add_row(data) {
     var branch_state_id = data.branch_state_id;
     var branch_id = data.branch_id;
     var uom_id = data[0].product_unit;
+    var equal_unit_number = 0;
+    var equal_uom_id = 0;
     if (item_type == "service") {
         var item_code = data[0].service_code;
         var item_name = data[0].service_name;
@@ -593,6 +620,8 @@ function add_row(data) {
         /*var item_tds_type = data[0].module_type;*/
         var item_tds_type = 'TCS';
         var product_quantity = data[0]. product_quantity;
+        var equal_unit_number = data[0].equal_unit_number;
+        var equal_uom_id = data[0].equal_uom_id;
     }
 
     if (item_tds_id == "") {
@@ -805,8 +834,15 @@ function add_row(data) {
     if(uom != ''){
         $.each(uom,function(k,v){
             var select = '';
-            if(v.id == uom_id) select = 'selected';
-            uom_select +='<option value="'+ v.id +'" '+select+'>' + v.uom +"</option>";
+            if(v.id == uom_id || v.id == equal_uom_id){
+                var unit_number = equal_unit_number;
+                var is_main = 0;
+                if(v.id == uom_id){
+                    unit_number = is_main = 1;
+                    select = 'selected';
+                } 
+                uom_select +='<option value="'+ v.id +'" '+select+' number="'+unit_number+'" is_main="'+is_main+'">' + v.uom +"</option>";
+            }
         })
     }
     cols += "<td style='text-align:center'><input type='text' class='form-control form-fixer text-center float_number' value='1' data-rule='quantity' name='item_quantity'></td>";
@@ -976,7 +1012,9 @@ function add_row(data) {
             "' class='pull-right' style='color:red;'>0.00</span>" +
             "</td>";
     }
-
+    if (discount_exist == 1) {
+        cols +="<td><input type='text' class='float_number form-control form-fixer text-right' value='0.00' name='item_cash_discount'></td>";
+    }
     //tax area
     if (input_type == "hidden") {
         cols +=
@@ -992,6 +1030,7 @@ function add_row(data) {
         input_type +
         "' class='float_number form-control form-fixer text-right' name='item_grand_total'></td>";
     cols += "</tr>";
+
 
     newRow.append(cols);
     $("#sales_table_body").prepend(newRow);
@@ -1243,6 +1282,9 @@ function calculateRowTotal(row) {
     var item_discount_amount = +parseFloat(
         row.find('input[name^="item_discount_amount"]').val()
     );
+    var item_cash_discount_amount = +parseFloat(
+        row.find('input[name^="item_cash_discount"]').val()
+    );
     var item_tax_amount = +parseFloat(
         row.find('input[name="item_tax_amount"]').val()
     );
@@ -1277,7 +1319,11 @@ function calculateRowTotal(row) {
         item_tax_cess_amount = 0;
     }
 
-    var item_grand_total = (item_taxable_value) + (item_tax_amount) + (item_tax_cess_amount);
+    if (typeof item_cash_discount_amount === "undefined" || isNaN(item_cash_discount_amount)) {
+        item_cash_discount_amount = 0;
+    }
+
+    var item_grand_total = (item_taxable_value) + (item_tax_amount) + (item_tax_cess_amount) - (item_cash_discount_amount);
     
     item_grand_total = autoRoundOffTotal(item_grand_total);
     row.find('input[name^="item_grand_total"]').val(precise_amount(item_grand_total));
@@ -1432,13 +1478,17 @@ function generateJson(row) {
     var item_quantity = +row.find('input[name^="item_quantity"]').val();
     var free_item_quantity = +row.find('input[name^="free_item_quantity"]').val();
     var item_uom = +row.find('select[name^="item_uom"]').val();
+    var unit_number = +row.find('select[name^="item_uom"]').find('option:selected').attr('number');
+    var is_main = +row.find('select[name^="item_uom"]').find('option:selected').attr('is_main');
     var item_id = +row.find('input[name^="item_id"]').val();
     var item_type = row.find('input[name^="item_type"]').val();
     var item_code = row.find('input[name^="item_code"]').val();
     var item_sub_total = +parseFloat(
         row.find('input[name^="item_sub_total"]').val()
     );
-    
+    var item_cash_discount_amount = +parseFloat(
+        row.find('input[name^="item_cash_discount"]').val()
+    );
     var item_discount_amount = +parseFloat(
         row.find('input[name^="item_discount_amount"]').val()
     );
@@ -1525,10 +1575,13 @@ function generateJson(row) {
         item_quantity: +item_quantity,
         free_item_quantity: +free_item_quantity,
         item_uom : item_uom,
+        unit_number:unit_number,
+        is_main:is_main,
         item_price: +item_price,
         item_mrp_price : +item_mrp_price,
         item_description: item_description,
         item_sub_total: +item_sub_total,
+        item_cash_discount: +item_cash_discount_amount,
         item_discount_amount: +item_discount_amount,
         item_discount_id: +item_discount_id,
         item_discount_percentage: +item_discount_percentage,
@@ -1597,7 +1650,7 @@ function calculateTable(row) {
 function calculateGrandTotal() {
     var sub_total = 0;
     var discount = 0;
-    var scheme_discount = 0;
+    var scheme_discount = cash_discount = 0;
     var tax = 0;
     var tax_cess = 0;
     var tax_cgst = 0;
@@ -1635,6 +1688,16 @@ function calculateGrandTotal() {
             dflag = 1;
             scheme_discount += +$(this).val();
         });
+
+    $("#sales_table_body")
+        .find('input[name^="item_cash_discount"]')
+        .each(function () {
+            cflag = 1;
+            cash_discount += +$(this).val();
+        });
+
+    $('[name=cash_discount]').val(cash_discount);
+
     $("#sales_table_body")
         .find('input[name="item_tax_amount"]')
         .each(function () {
@@ -1732,12 +1795,13 @@ function calculateGrandTotal() {
         $('#round_off_option').hide();
         $("input[name=round_off_key][value=no]").prop('checked',true).trigger('change');
     }
-    var cash_discount = +$('[name=cash_discount]').val();
-    final_grand_total = final_grand_total - +cash_discount;
+    /*var cash_discount = +$('[name=cash_discount]').val();
+    final_grand_total = final_grand_total - +cash_discount;*/
 
     discount = discount + scheme_discount;
     $('#without_reound_off_grand_total').val(final_grand_total);
     $("#total_sub_total").val(precise_amount(sub_total));
+    
     $("#total_taxable_amount").val(precise_amount(taxable));
     $("#total_discount_amount").val(precise_amount(discount));
     $("#total_scheme_discount_amount").val(precise_amount(scheme_discount));
@@ -1755,6 +1819,13 @@ function calculateGrandTotal() {
         $("#totalDiscountAmount").text(precise_amount(discount));
     }else{
         $('.totalDiscountAmount_tr').hide();
+    }
+
+    if (settings_discount_visible == "yes" && cash_discount > 0) {
+        $('.totalCashDiscount_tr').show();
+        $("#totalCashDiscount").text(precise_amount(cash_discount));
+    }else{
+        $('.totalCashDiscount_tr').hide();
     }
 
     if (settings_tax_type != "no_tax") {
