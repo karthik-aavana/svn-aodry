@@ -675,7 +675,10 @@ class Sales extends MY_Controller{
             {
                 $product_items       = $this->common->sales_items_product_list_field($id);
                 $sales_product_items = $this->general_model->getJoinRecords($product_items['string'] , $product_items['table'] , $product_items['where'] , $product_items['join']);
-                
+                if($data['data'][0]->brand_id != 0){
+                    $brand_data = $this->db->query('SELECT invoice_readonly FROM brand WHERE brand_id='.$data['data'][0]->brand_id);
+                    $data['brand_data'] = $brand_data->result();
+                }
             }
         }
         $data['items'] = array_merge($sales_product_items , $sales_service_items);
@@ -776,7 +779,8 @@ class Sales extends MY_Controller{
         else
         {
         }*/
-        $suggestions_query = $this->common->item_suggestions_field_leathercraft($item_access , $term , $brand_id);
+        if($term == '-') $term ='';
+        $suggestions_query = $this->common->item_suggestions_field($item_access , $term , $brand_id);
 
         $data              = $this->general_model->getQueryRecords($suggestions_query);
         // $data["product_inventoery"]=$inventory_access[0]->inventory_advanced;
@@ -1066,6 +1070,7 @@ class Sales extends MY_Controller{
                             "sales_item_mrp_price"      => (@$value->item_mrp_price ? (float) $value->item_mrp_price : 0),
                             "sales_item_sub_total"       => $value->item_sub_total ? (float) $value->item_sub_total : 0 ,
                             "sales_item_taxable_value"   => $value->item_taxable_value ? (float) $value->item_taxable_value : 0 ,
+                            "sales_item_cash_discount_amount" => (@$value->item_cash_discount ? (float) $value->item_cash_discount : 0) ,
                             "sales_item_discount_amount" => (@$value->item_discount_amount ? (float) $value->item_discount_amount : 0) ,
                             "sales_item_discount_id"     => (@$value->item_discount_id ? (float) $value->item_discount_id : 0 ),
                             "sales_item_tds_id"          => $value->item_tds_id ? (float) $value->item_tds_id : 0 ,
@@ -1197,10 +1202,27 @@ class Sales extends MY_Controller{
                                 }else{
                                     $product_selling_price = $product_result[0]->product_selling_price;
                                 }
+                                echo $value->item_quantity;
                                 if(@$value->free_item_quantity){
                                     if($value->free_item_quantity > 0) $value->item_quantity = $value->item_quantity + $value->free_item_quantity;
                                 }
+                                echo "<br>";
+                                echo "free -- ";
+                                echo $value->item_quantity;
+                                if($product_result[0]->equal_uom_id){
+                                    echo "<pre>";
+                                    print_r($product_result[0]);
+                                    print_r($value->item_uom);
+                                    if($product_result[0]->equal_uom_id == $value->item_uom){
+                                        $value->item_quantity = $value->item_quantity/$product_result[0]->equal_unit_number;
+                                    }
+                                }
+                                echo "<br>";
+                                echo "uom -- ";
+                                echo $value->item_quantity;
                                 $product_quantity = ($product_result[0]->product_quantity - $value->item_quantity);
+                                echo "<br>";
+                                echo $product_quantity;
                                 $stockData        = array('product_quantity' => $product_quantity,'product_selling_price' => $product_selling_price);  
                                
                                 $where            = array('product_id' => $value->item_id );
@@ -1266,7 +1288,7 @@ class Sales extends MY_Controller{
             $sales_id = $this->encryption_url->encode($sales_id);
             redirect('receipt_voucher/add_sales_receipt/' . $sales_id , 'refresh');
         }else{
-            redirect('sales' , 'refresh');
+           // redirect('sales' , 'refresh');
         }
     }
     public function sales_vouchers($section_modules , $data_main , $js_data , $branch){
@@ -3498,6 +3520,7 @@ class Sales extends MY_Controller{
                             "sales_item_sub_total"       => $value->item_sub_total ? (float) $value->item_sub_total : 0 ,
                             "sales_item_taxable_value"   => $value->item_taxable_value ? (float) $value->item_taxable_value : 0 ,
                             "sales_item_discount_amount" => (@$value->item_discount_amount ? (float) $value->item_discount_amount : 0) ,
+                            "sales_item_cash_discount_amount" => (@$value->item_cash_discount ? (float) $value->item_cash_discount : 0) ,
                             "sales_item_discount_id"     => (@$value->item_discount_id ? (float) $value->item_discount_id : 0) ,
                             "sales_item_tds_id"          => $value->item_tds_id ? (float) $value->item_tds_id : 0 ,
                             "sales_item_tds_percentage"  => $value->item_tds_percentage ? (float) $value->item_tds_percentage : 0 ,
