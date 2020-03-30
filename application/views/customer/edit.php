@@ -88,7 +88,7 @@ $this->load->view('layout/header');
                                     <input type="hidden" name="customer_id" id="customer_id" value="<?php echo $data[0]->customer_id; ?>">
                                     <input type="hidden" name="ledger_id" id="customer_ledger_id" value="<?php echo $data[0]->ledger_id; ?>">
                                     <input type="hidden"  class="form-control" id="customer_name_used" name="customer_name_used" maxlength="90" value="0">
-                                    <input type="text" class="form-control" id="customer_name" name="customer_name" maxlength="15" value="<?php echo $data[0]->customer_name; ?>"> <span class="validation-color" id="err_customer_name"><?php echo form_error('customer_name'); ?></span>
+                                    <input type="text" class="form-control" id="customer_name" name="customer_name" maxlength="100" value="<?php echo $data[0]->customer_name; ?>"> <span class="validation-color" id="err_customer_name"><?php echo form_error('customer_name'); ?></span>
                                 </div>
                             </div>
                             <div class="row">

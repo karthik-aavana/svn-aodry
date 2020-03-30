@@ -4719,6 +4719,7 @@ class Product extends MY_Controller
                                         }
                                     }
                                     $markdown_discount_product_id = '';
+                                    $marginal_discount_product_id = '';
                                     if($is_add){
                                         if($marginal_discount_product != '' && !empty($marginal_discount_product)){
                                             $marginal_discount_product = $this->precise_amount($marginal_discount_product, 2);

@@ -129,12 +129,12 @@ $(document).ready(function () {
             $("#err_product_hsn_sac_code").text("");
         }
 
-        if (product_brand == "" || product_brand==null) {
+        /*if (product_brand == "" || product_brand==null) {
             $("#err_product_brand").text("Select the Brand.");
             return false;
         } else {
             $("#err_product_brand").text("");
-        }
+        }*/
         
     });
     
