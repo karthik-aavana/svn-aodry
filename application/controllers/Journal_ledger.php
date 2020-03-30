@@ -110,13 +110,14 @@ class Journal_ledger extends MY_Controller
         $response= array();
         
         if(!empty($vids_ary)){
-            $this->db->select('ts.voucher_number,ts.reference_id,ts.journal_voucher_id,ts.voucher_date,ts.receipt_amount,ts.voucher_type,ts.reference_number,ts.delete_status,ts.description,tsa.ledger_id,tsa.voucher_amount,tsa.dr_amount,tsa.cr_amount,tsa.accounts_general_id');
+            $this->db->select('ts.voucher_number,ts.reference_id,ts.journal_voucher_id,ts.voucher_date,ts.receipt_amount,ts.voucher_type,ts.reference_number,ts.delete_status,ts.description,tsa.ledger_id,tsa.voucher_amount,tsa.dr_amount,tsa.cr_amount,tsa.accounts_general_id,tp.purpose_option');
             $this->db->where_in('ts.journal_voucher_id',$vids_ary);
             $this->db->where('ledger_id != ','');
             $this->db->where('tsa.delete_status',0);
             $this->db->order_by('ts.journal_voucher_id', 'DESC');
             $this->db->join('accounts_journal_voucher tsa',
                 'ts.journal_voucher_id=tsa.journal_voucher_id','left');
+             $this->db->join('tbl_transaction_purpose_option tp','ts.transaction_purpose_id = tp.id');
             $getAll = $this->db->get('tbl_journal_voucher ts');
             $response = $getAll->result_array();
 
@@ -158,10 +159,10 @@ class Journal_ledger extends MY_Controller
                 }elseif($value['cr_amount'] > 0){
                     $amount_type = 'CR';
                 }
-                $Cr_html = '<select class="form-control js-example-basic-single disable_in" name="amount_type" data-id="'.$vid.'"><option value="" '.($amount_type == '' ? 'selected' : '').'>Select CR/DR</option>
+                /*$Cr_html = '<select class="form-control js-example-basic-single disable_in" name="amount_type" data-id="'.$vid.'"><option value="" '.($amount_type == '' ? 'selected' : '').'>Select CR/DR</option>
                         <option value="CR" '.($amount_type == 'CR' ? 'selected' : '').'>CR</option>
                         <option value="DR" '.($amount_type == 'DR' ? 'selected' : '').'>DR</option>
-                    </select>';
+                    </select>';*/
                 /**/
 
                 if(@$resp['voucher_'.$vid]){
@@ -188,11 +189,18 @@ class Journal_ledger extends MY_Controller
                     }
                     $colspan = 2;
                     /*if($this->voucher_type == 'purchase' || $this->voucher_type == 'sales')*/ 
-                    $colspan = 4;
+                    $colspan = 5;
                     $tr .= "<td colspan='{$colspan}'></td>";
-                    $tr .= "<td>{$ledger_html}</td>";
-                    $tr .= "<td><input data-id='{$vid}' type='text' value='".number_format((float)$value['voucher_amount'], 2, '.', '')."' class='disable_in form-control' name='voucher_amount'></td>";
-                    $tr .= "<td>{$Cr_html}</td>";
+                    $tr .= "<td>{$ledger_html}</td>";                  
+                    //$tr .= "<td>{$Cr_html}</td>";
+
+                    if($amount_type == 'CR'){
+                        $tr .= "<td><input data-id='{$vid}' type='text' value='0.00' class='disable_in form-control' name='voucher_amount'></td>";
+                        $tr .= "<td><input data-id='{$vid}' type='text' value='".number_format((float)$value['voucher_amount'], 2, '.', '')."' class='disable_in form-control' name='voucher_amount'></td>";
+                    }else{
+                        $tr .= "<td><input data-id='{$vid}' type='text' value='".number_format((float)$value['voucher_amount'], 2, '.', '')."' class='disable_in form-control' name='voucher_amount'></td>";
+                         $tr .= "<td><input data-id='{$vid}' type='text' value='0.00' class='disable_in form-control' name='voucher_amount'></td>";
+                    }
                     /*if($this->access['m_update']){*/
                       //  $tr .= "<td>{$action}</td>";
                     /*}else{
@@ -212,7 +220,8 @@ class Journal_ledger extends MY_Controller
                   //  $tr .= "<td><input data-id='{$vid}' type='text' value='' class='disable_in form-control' name='invoice_narration'></td>";
 
                     /*if($this->voucher_type == 'purchase' || $this->voucher_type == 'sales')*/
-                        $tr .= "<td><input data-id='{$vid}' type='text' value='".$value['voucher_type']."' class='disable_in form-control' name='invoice_total'></td>";
+                    $tr .= "<td>".$value['purpose_option']."</td>";
+                    $tr .= "<td><input data-id='{$vid}' type='text' value='".$value['voucher_type']."' class='disable_in form-control' name='invoice_total'></td>";
                     if($total_voucher['v_'.$vid] > 2){
                         $tr .= "<td><span class='details-control expand'></span></td>";
                     }else{
@@ -220,8 +229,15 @@ class Journal_ledger extends MY_Controller
                     }
                     
                     $tr .= "<td>{$ledger_html}</td>";
-                    $tr .= "<td><input data-id='{$vid}' type='text' value='".number_format((float)$value['voucher_amount'], 2, '.', '')."' class='disable_in form-control' name='voucher_amount'></td>";
-                    $tr .= "<td>{$Cr_html}</td>";
+                    if($amount_type == 'CR'){
+                        $tr .= "<td><input data-id='{$vid}' type='text' value='0.00' class='disable_in form-control' name='voucher_amount'></td>";
+                        $tr .= "<td><input data-id='{$vid}' type='text' value='".number_format((float)$value['voucher_amount'], 2, '.', '')."' class='disable_in form-control' name='voucher_amount'></td>";
+                    }else{
+                        $tr .= "<td><input data-id='{$vid}' type='text' value='".number_format((float)$value['voucher_amount'], 2, '.', '')."' class='disable_in form-control' name='voucher_amount'></td>";
+                         $tr .= "<td><input data-id='{$vid}' type='text' value='0.00' class='disable_in form-control' name='voucher_amount'></td>";
+                    }
+                    
+                    //$tr .= "<td>{$Cr_html}</td>";
                     /*if($this->access['m_update']){*/
                      /*   $reference_id = $sales_id = $this->encryption_url->encode($value['reference_id']);
                         if($value['delete_status'] == '0'){
