@@ -666,7 +666,7 @@ class Stock extends MY_Controller {
                     //$basic_price = $post->product_basic_price;
                     $basic_price = $post->price;
 
-                    $closing = (int) $post->product_quantity + (int) $post->product_opening_quantity;
+                    $closing = (float) $post->product_quantity + (float) $post->product_opening_quantity;
                     $map = $basic_price * $closing;
 
                     $nestedData['brand_name'] = $post->brand_name;
@@ -676,7 +676,7 @@ class Stock extends MY_Controller {
                     $nestedData['product_code'] = $post->product_code;
                     $nestedData['product_hsn_sac_code'] = $post->product_hsn_sac_code;
                     $nestedData['uom'] = $post->uom;
-                    $nestedData['product_quantity'] = $closing;
+                    $nestedData['product_quantity'] = $this->precise_amount($closing,$access_common_settings[0]->amount_precision);
                     $nestedData['map'] = $this->precise_amount($map,$access_common_settings[0]->amount_precision);
                     $nestedData['gst'] = $this->precise_amount($tax,$access_common_settings[0]->amount_precision);
                     $nestedData['selling_price'] = $this->precise_amount($price,$access_common_settings[0]->amount_precision);
