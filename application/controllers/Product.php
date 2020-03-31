@@ -2260,11 +2260,12 @@ class Product extends MY_Controller
         exit();*/
         $LeatherCraft_id = $this->config->item('LeatherCraft');
         $ecomm_variant_product = array();
-        if($LeatherCraft_id == $this->session->userdata("SESS_BRANCH_ID") ){
+        /*if($LeatherCraft_id == $this->session->userdata("SESS_BRANCH_ID") ){
             $where_array = array( 'product_code' => $product_code);
         }else{
-             $where_array = array( 'product_id' => $product_id);
-        }
+             
+        }*/
+        $where_array = array( 'product_id' => $product_id);
         if ($this->general_model->updateData('products', $product_data, $where_array)){
             if($LeatherCraft_id == $this->session->userdata("SESS_BRANCH_ID") ){
                 $data_update_com = $this->general_model->getRecords('*', 'product_combinations', array(
@@ -2272,7 +2273,9 @@ class Product extends MY_Controller
                     'status' => 'Y',
                     'branch_id' => $this->session->userdata("SESS_BRANCH_ID") ));
                
-                foreach ($data_update_com as  $value) {                    
+                foreach ($data_update_com as  $value) {       
+                    unset($product_data['product_name']); 
+                    unset($product_data['product_code']);
                    $this->general_model->updateData('products', $product_data, array('product_combination_id' => $value->combination_id));
                 }
             }
