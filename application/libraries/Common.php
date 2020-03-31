@@ -4367,16 +4367,19 @@ class Common
                    c.food_licence_number,
                    st2.state_code as customer_state_code,
                    st1.state_name as customer_state_name,
-                   st1.state_short_code
+                   st1.state_short_code,
+                   ct.city_name as customer_city
                    ";
         $table = "sales s";
         $join  = [
             'currency cur'        => 's.currency_id = cur.currency_id',
             'customer c'          => 's.sales_party_id = c.customer_id',
+            'cities ct'    => 'c.customer_city_id = ct.city_id' . '#' . 'left',
             'states st1'          => 's.sales_billing_state_id = st1.state_id' . '#' . 'left',
             'countries co'        => 's.sales_billing_country_id = co.country_id' . '#' . 'left',
             'shipping_address sa' => 'sa.shipping_address_id = s.shipping_address_id' . '#' . 'left',
-            'states st2'          => 'c.customer_state_id = st2.state_id' . '#' . 'left'];
+            'states st2'          => 'c.customer_state_id = st2.state_id' . '#' . 'left',
+        ];
         $where['s.sales_id'] = $sales_id;
         $data = array(
             'string' => $string,
