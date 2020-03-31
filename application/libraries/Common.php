@@ -6062,13 +6062,15 @@ class Common
             'p.product_name',
             'p.product_model_no'
         );
+        $group=array('p.product_name','p.product_code');
         $data = array(
             'string' => $string,
             'table'  => $table,
             'where'  => $where,
             'join'   => $join,
             'filter' => $filter,
-            'order'  => $order
+            'order'  => $order,
+            'group'  => $group
         );
         return $data;
     }
@@ -14471,8 +14473,8 @@ public function tds_report_sales_list(){
              "purchase_item PI"  => "P.product_id = PI.item_id and PI.item_type = 'product'". "#" . "left" ,
              "purchase PU"   => "PU.purchase_id = PI.purchase_id". "#" . "left",
              "sales_item SI"  => "P.product_id = SI.item_id and SI.item_type = 'product'". "#" . "left" ,
-             "supplier C" => "C.supplier_id = PU.purchase_party_id",
-             "shipping_address sa" => "sa.shipping_party_id = C.supplier_id",
+             "supplier C" => "C.supplier_id = PU.purchase_party_id". "#" . "left" ,
+             "shipping_address sa" => "sa.shipping_party_id = C.supplier_id". "#" . "left" ,
              "department D"   => "D.department_id = PU.department_id". "#" . "left",
         "sub_department SD" => "PU.sub_department_id = SD.sub_department_id". "#" . "left",            
              "branch B" => "B.branch_id = P.branch_id",
