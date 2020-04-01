@@ -4367,16 +4367,19 @@ class Common
                    c.food_licence_number,
                    st2.state_code as customer_state_code,
                    st1.state_name as customer_state_name,
-                   st1.state_short_code
+                   st1.state_short_code,
+                   ct.city_name as customer_city
                    ";
         $table = "sales s";
         $join  = [
             'currency cur'        => 's.currency_id = cur.currency_id',
             'customer c'          => 's.sales_party_id = c.customer_id',
+            'cities ct'    => 'c.customer_city_id = ct.city_id' . '#' . 'left',
             'states st1'          => 's.sales_billing_state_id = st1.state_id' . '#' . 'left',
             'countries co'        => 's.sales_billing_country_id = co.country_id' . '#' . 'left',
             'shipping_address sa' => 'sa.shipping_address_id = s.shipping_address_id' . '#' . 'left',
-            'states st2'          => 'c.customer_state_id = st2.state_id' . '#' . 'left'];
+            'states st2'          => 'c.customer_state_id = st2.state_id' . '#' . 'left',
+        ];
         $where['s.sales_id'] = $sales_id;
         $data = array(
             'string' => $string,
@@ -6059,13 +6062,15 @@ class Common
             'p.product_name',
             'p.product_model_no'
         );
+        $group=array('p.product_name','p.product_code');
         $data = array(
             'string' => $string,
             'table'  => $table,
             'where'  => $where,
             'join'   => $join,
             'filter' => $filter,
-            'order'  => $order
+            'order'  => $order,
+            'group'  => $group
         );
         return $data;
     }
@@ -14468,8 +14473,8 @@ public function tds_report_sales_list(){
              "purchase_item PI"  => "P.product_id = PI.item_id and PI.item_type = 'product'". "#" . "left" ,
              "purchase PU"   => "PU.purchase_id = PI.purchase_id". "#" . "left",
              "sales_item SI"  => "P.product_id = SI.item_id and SI.item_type = 'product'". "#" . "left" ,
-             "supplier C" => "C.supplier_id = PU.purchase_party_id",
-             "shipping_address sa" => "sa.shipping_party_id = C.supplier_id",
+             "supplier C" => "C.supplier_id = PU.purchase_party_id". "#" . "left" ,
+             "shipping_address sa" => "sa.shipping_party_id = C.supplier_id". "#" . "left" ,
              "department D"   => "D.department_id = PU.department_id". "#" . "left",
         "sub_department SD" => "PU.sub_department_id = SD.sub_department_id". "#" . "left",            
              "branch B" => "B.branch_id = P.branch_id",

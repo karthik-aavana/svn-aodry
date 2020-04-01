@@ -71,7 +71,7 @@
                         <div class="col-sm-6">  
                             <div class="form-group">
                                 <label for="party_address_edit">Customer/Vendor Shipping Address<span class="validation-color">*</span> </label>
-                                <input type="text" class="form-control" id="party_address_edit" name="party_address_edit" value=""  maxlength="120">
+                                <input type="text" class="form-control" id="party_address_edit" name="party_address_edit" value=""  maxlength="250">
                                 <span class="validation-color" id="err_party_address_edit"><?php echo form_error('party_address_edit'); ?></span>
                             </div>  
                         </div>

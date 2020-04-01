@@ -2260,11 +2260,12 @@ class Product extends MY_Controller
         exit();*/
         $LeatherCraft_id = $this->config->item('LeatherCraft');
         $ecomm_variant_product = array();
-        if($LeatherCraft_id == $this->session->userdata("SESS_BRANCH_ID") ){
+        /*if($LeatherCraft_id == $this->session->userdata("SESS_BRANCH_ID") ){
             $where_array = array( 'product_code' => $product_code);
         }else{
-             $where_array = array( 'product_id' => $product_id);
-        }
+             
+        }*/
+        $where_array = array( 'product_id' => $product_id);
         if ($this->general_model->updateData('products', $product_data, $where_array)){
             if($LeatherCraft_id == $this->session->userdata("SESS_BRANCH_ID") ){
                 $data_update_com = $this->general_model->getRecords('*', 'product_combinations', array(
@@ -2272,7 +2273,11 @@ class Product extends MY_Controller
                     'status' => 'Y',
                     'branch_id' => $this->session->userdata("SESS_BRANCH_ID") ));
                
-                foreach ($data_update_com as  $value) {                    
+                foreach ($data_update_com as  $value) {       
+                    unset($product_data['product_name']); 
+                    unset($product_data['product_code']);
+                    unset($product_data['is_assets']); 
+                    unset($product_data['is_varients']);
                    $this->general_model->updateData('products', $product_data, array('product_combination_id' => $value->combination_id));
                 }
             }
@@ -4510,7 +4515,7 @@ class Product extends MY_Controller
                                     $product_barcode = trim($row['V']);
                                     $parent_id = 0;
                                     /*$product_code   = $this->generate_invoice_number($access_settings, $primary_id, $table_name, $date_field_name, $current_date);*/
-                                    $batch = $this->get_bulk_check_product($product_name,0);
+                                    $batch = $this->get_bulk_check_product_leathercraft($product_name,$product_code,0);
                                     $combination_id = NULL;
                                     if(count($batch) > 0){
 
@@ -4558,7 +4563,7 @@ class Product extends MY_Controller
                                           $this->db->insert_batch('product_varients_value', $data_product_var_val);
                                           $is_varients = 'N';
                                           $product_name = $product_name.' / '.$value;
-                                          $batch = $this->get_bulk_check_product($product_name,0);
+                                          $batch = $this->get_bulk_check_product_leathercraft($product_name,$product_code,0);
 
                                             if(count($batch) > 0){
                                                 $batch_num=$batch[0]->num;
@@ -4801,7 +4806,6 @@ class Product extends MY_Controller
                                             "added_date" => date('Y-m-d'),
                                             "added_user_id" => $this->session->userdata('SESS_USER_ID'),
                                             "branch_id" => $this->session->userdata('SESS_BRANCH_ID'),
-                                            "exp_date" => $expiry_date,
                                             "batch_serial" => '',
                                             "batch_parent_product_id" => $parent_id,
                                             "product_basic_price" => $this->precise_amount($basic_price, 2),
@@ -4810,6 +4814,10 @@ class Product extends MY_Controller
                                             "brand_id" => $brand_id,
                                             "product_barcode" => $product_barcode
                                         );
+                                        if($expiry_date != '1970-01-01'){
+                                            $headers["exp_date"] = $expiry_date;
+                                        }
+                                        
 
                                         if($is_varients == 'N'){
                                             $headers["product_combination_id"] = $combination_id;
@@ -4900,7 +4908,6 @@ class Product extends MY_Controller
                                                         "added_date" => date('Y-m-d'),
                                                         "added_user_id" => $this->session->userdata('SESS_USER_ID'),
                                                         "branch_id" => $this->session->userdata('SESS_BRANCH_ID'),
-                                                        "exp_date" => $expiry_date,
                                                         "product_basic_price" => $this->precise_amount($basic_price, 2),
                                                         "margin_discount_value" => $marginal_discount_product,
                                                         "margin_discount_id" => $marginal_discount_product_id,
@@ -4908,6 +4915,10 @@ class Product extends MY_Controller
                                                         "product_barcode" => $product_barcode,
                                                         "product_combination_id" => $combination_id
                                                     );
+
+                                                    if($expiry_date != '1970-01-01'){
+                                                        $headers_var["exp_date"] = $expiry_date;
+                                                    }
 
                                                     $product_id = $this->general_model->insertData($table_name, $headers_var);
                                           
@@ -5125,6 +5136,17 @@ class Product extends MY_Controller
                 $this->general_model->insertData($log_table , $log_data);
         }
        return $id;
+    }
+
+    public function get_bulk_check_product_leathercraft($product_name,$product_code,$product_id = 0){
+        $product_name = strtoupper($product_name);
+        $data         = $this->general_model->getRecords('*,count(*) num ', 'products', array(
+            'branch_id'     => $this->session->userdata('SESS_BRANCH_ID'),
+            'delete_status' => 0,
+            'product_code'  => $product_code,
+            'product_name'  => $product_name,
+            'product_id!='  => $product_id),"","product_name");
+        return $data;
     }
 
 }
