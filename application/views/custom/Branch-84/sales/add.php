@@ -311,8 +311,8 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                     <th class="span2" width="4%">Quantity</th>
                                                     <th class="span2" width="4%">Free<br>Quantity</th>
                                                     <th class="span2" width="4%">Unit</th>
-                                                    <th class="span2" width="4%">MRP</th>
-                                                    <th class="span2" width="10%">Rate</th>
+                                                    <th class="span2" width="7%">MRP</th>
+                                                    <th class="span2" width="7%">Rate</th>
                                                     <?php
                                                     if ($access_settings[0]->discount_visible == 'yes') {
                                                         ?>
