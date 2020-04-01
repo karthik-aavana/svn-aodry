@@ -4806,7 +4806,6 @@ class Product extends MY_Controller
                                             "added_date" => date('Y-m-d'),
                                             "added_user_id" => $this->session->userdata('SESS_USER_ID'),
                                             "branch_id" => $this->session->userdata('SESS_BRANCH_ID'),
-                                            "exp_date" => $expiry_date,
                                             "batch_serial" => '',
                                             "batch_parent_product_id" => $parent_id,
                                             "product_basic_price" => $this->precise_amount($basic_price, 2),
@@ -4815,6 +4814,10 @@ class Product extends MY_Controller
                                             "brand_id" => $brand_id,
                                             "product_barcode" => $product_barcode
                                         );
+                                        if($expiry_date != '1970-01-01'){
+                                            $headers["exp_date"] = $expiry_date;
+                                        }
+                                        
 
                                         if($is_varients == 'N'){
                                             $headers["product_combination_id"] = $combination_id;
@@ -4905,7 +4908,6 @@ class Product extends MY_Controller
                                                         "added_date" => date('Y-m-d'),
                                                         "added_user_id" => $this->session->userdata('SESS_USER_ID'),
                                                         "branch_id" => $this->session->userdata('SESS_BRANCH_ID'),
-                                                        "exp_date" => $expiry_date,
                                                         "product_basic_price" => $this->precise_amount($basic_price, 2),
                                                         "margin_discount_value" => $marginal_discount_product,
                                                         "margin_discount_id" => $marginal_discount_product_id,
@@ -4913,6 +4915,10 @@ class Product extends MY_Controller
                                                         "product_barcode" => $product_barcode,
                                                         "product_combination_id" => $combination_id
                                                     );
+
+                                                    if($expiry_date != '1970-01-01'){
+                                                        $headers_var["exp_date"] = $expiry_date;
+                                                    }
 
                                                     $product_id = $this->general_model->insertData($table_name, $headers_var);
                                           
