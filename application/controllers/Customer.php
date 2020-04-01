@@ -428,7 +428,7 @@ class Customer extends MY_Controller {
                                         "customer_mobile" => trim($row['K']),
                                         "customer_postal_code" => trim($row['H']),
                                         "due_days" => trim($row['M']),
-                                        "tan_number" => trim($row['N']),
+                                        "customer_tan_number" => trim($row['N']),
                                         "delete_status" => 0,
                                         "added_date" => date('Y-m-d'),
                                         "updated_date" => "",
@@ -1083,6 +1083,10 @@ class Customer extends MY_Controller {
             $customer_data['drug_licence_no'] = $this->input->post('dl_no');
         }
 
+        if($this->input->post('food_ln')){
+            $customer_data['food_licence_number'] = $this->input->post('food_ln');
+        }
+
         $table = "customer";
         $where = array("customer_id" => $id);
         
@@ -1281,6 +1285,9 @@ class Customer extends MY_Controller {
         if($this->input->post('dl_no')){
             $customer_data['drug_licence_no'] = $this->input->post('dl_no');
         }
+        if($this->input->post('food_ln')){
+            $customer_data['food_licence_number'] = $this->input->post('food_ln');
+        }
         $table = "customer";
         if ($id = $this->general_model->insertData($table, $customer_data)) {
             //$reference_number = $this->input->post('reference_number');
@@ -1473,6 +1480,9 @@ class Customer extends MY_Controller {
         }
         if($this->input->post('dl_no')){
             $customer_data['drug_licence_no'] = $this->input->post('dl_no');
+        }
+        if($this->input->post('food_ln')){
+            $customer_data['food_licence_number'] = $this->input->post('food_ln');
         }
         $table = "customer";
         $customer_id = $this->general_model->insertData($table, $customer_data);
@@ -1705,7 +1715,7 @@ class Customer extends MY_Controller {
         require_once APPPATH . "/third_party/PHPExcel.php";
         $object = new PHPExcel();
 
-        $table_columns = array("Customer Code", "Customer Type", "Store Name", "PIN Code", "Country", "State", "City", "Address", "GST Number", "PAN Number","Contact Person Name","Contact Number", "Email", "Due Days", "TAN Number","Department", "Store Location");
+        $table_columns = array("Customer Code", "Customer Type", "Store Name", "PIN Code", "Country", "State", "City", "Address", "GST Number", "PAN Number","Contact Person Name","Contact Number", "Email", "Due Days", "TAN Number","Store Location");
 
         $column = 0;
 
@@ -1736,8 +1746,7 @@ class Customer extends MY_Controller {
                 $object->getActiveSheet()->setCellValueByColumnAndRow(12, $excel_row, $value->customer_email);
                 $object->getActiveSheet()->setCellValueByColumnAndRow(13, $excel_row, $value->due_days);
                 $object->getActiveSheet()->setCellValueByColumnAndRow(14, $excel_row, $value->customer_tan_number);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(15, $excel_row, $value->department);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(16, $excel_row, $value->store_location);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(15, $excel_row, $value->store_location);
                 $excel_row++;
             }
         }
