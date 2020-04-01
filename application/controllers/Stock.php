@@ -150,7 +150,7 @@ class Stock extends MY_Controller {
 
 
     public function purchase_stock() {
-         $stock_module_id = $this->config->item('stock_module');
+        $stock_module_id = $this->config->item('stock_module');
         $data['stock_module_id'] = $stock_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
@@ -666,7 +666,6 @@ class Stock extends MY_Controller {
             $dir = $this->input->post('order')[0]['dir'];
             $list_data = $this->common->get_brandwise_closing_stock_report();
             $list_data['search'] = 'all';
-            $list_data['section'] = 'close_stock';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
             if (empty($this->input->post('search')['value'])) {
@@ -682,28 +681,20 @@ class Stock extends MY_Controller {
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
             } 
-
-            if ($this->input->post('filter_brand') != "" ) {
-
-                $filter_search['filter_brand'] = ($this->input->post('filter_brand') == '' ? '' : implode(",", $this->input->post('filter_brand')));
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
-                $list_data['filter_search'] = $filter_search;
-                $posts = $this->general_model->getPageJoinRecords($list_data);
-                $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
-            }
-
+            /*print_r($this->db->last_query());*/
             $send_data = array();
 
             if (!empty($posts)) {
+                
                 foreach ($posts as $post) {
-                    $price = $post->price;
-                    $tax = $post->igst + $post->sgst + $post->cgst;
+                    /*$price = $post->price;*/
+                    /*$tax = $post->igst + $post->sgst + $post->cgst;*/
                     //$basic_price = $post->product_basic_price;
-                    $basic_price = $post->price;
+                    /*$basic_price = (@$post->price != '' ? $post->price : 0);*/
 
-                    $closing = (float) $post->product_quantity + (float) $post->product_opening_quantity;
-                    $map = $basic_price * $closing;
+                    $closing = (int) $post->product_quantity + (int) $post->product_opening_quantity;
+                    /*$map = $basic_price * $closing;*/
+                    $value_of_stock = $post->product_price * $closing;
 
                     $nestedData['brand_name'] = $post->brand_name;
                     $nestedData['category_name'] = $post->category_name;
@@ -712,10 +703,12 @@ class Stock extends MY_Controller {
                     $nestedData['product_code'] = $post->product_code;
                     $nestedData['product_hsn_sac_code'] = $post->product_hsn_sac_code;
                     $nestedData['uom'] = $post->uom;
-                    $nestedData['product_quantity'] = $this->precise_amount($closing,$access_common_settings[0]->amount_precision);
-                    $nestedData['map'] = $this->precise_amount($map,$access_common_settings[0]->amount_precision);
+                    $nestedData['product_batch'] = $post->product_batch;
+                    $nestedData['product_quantity'] = $closing;
+                    $nestedData['value_of_stock'] = $this->precise_amount($value_of_stock,$access_common_settings[0]->amount_precision);
+                    /*$nestedData['map'] = $this->precise_amount($map,$access_common_settings[0]->amount_precision);
                     $nestedData['gst'] = $this->precise_amount($tax,$access_common_settings[0]->amount_precision);
-                    $nestedData['selling_price'] = $this->precise_amount($price,$access_common_settings[0]->amount_precision);
+                    $nestedData['selling_price'] = $this->precise_amount($price,$access_common_settings[0]->amount_precision);*/
                     $send_data[] = $nestedData;
                     
                 }
@@ -729,11 +722,7 @@ class Stock extends MY_Controller {
             echo json_encode($json_data);
            
         } else {
-             $list_data = $this->common->distinct_brand_closing();
-            $data['brand'] = $this->general_model->getJoinRecords($list_data['string'], $list_data['table'], $list_data['where'], $list_data['join'], $list_data['order'] = "", $list_data['group']);
             $this->load->view('stock/brand_closing_stock_list', $data);
         }
     }
-
-
 }

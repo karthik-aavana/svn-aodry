@@ -31,9 +31,16 @@ $this->load->view('layout/header');
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="product_mrp">MRP</label>
-                                    <input type="number" class="form-control" id="product_mrp" name="product_mrp" value="" >
-                                    <span class="validation-color" id="err_product_mrp"></span>
+                                    <label for="product_price">Purchase Price</label>
+                                    <input type="number" class="form-control" id="product_price" name="product_price" value="" >
+                                    <span class="validation-color" id="product_price"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="profit_margin">Profit Margin(%)</label>
+                                    <input type="text" class="form-control" id="profit_margin" name="profit_margin" value="" pattern="\d*" maxlength="5">
+                                    <span class="validation-color" id="profit_margin"></span>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -41,6 +48,16 @@ $this->load->view('layout/header');
                                     <label for="product_selling_price">Selling Price</label>
                                     <input type="number" class="form-control" id="product_selling_price" name="product_selling_price" value="">
                                     <span class="validation-color" id="product_selling"></span>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="product_mrp">MRP</label>
+                                    <input type="number" class="form-control" id="product_mrp" name="product_mrp" value="" >
+                                    <span class="validation-color" id="err_product_mrp"></span>
                                 </div>
                             </div>
                             <div class="col-md-3 product_discount">
@@ -63,8 +80,6 @@ $this->load->view('layout/header');
                                     <span class="validation-color" id="err_product_discount"></span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-3 product_gst">
                                 <div class="form-group">
                                     <label for="gst_tax_product">Tax (GST Output)</label>
@@ -94,6 +109,8 @@ $this->load->view('layout/header');
                                     <span class="validation-color" id="product_gst_code"></span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="product_batch">Product Batch</label>
@@ -135,6 +152,20 @@ $this->load->view('layout/footer');
 <script src="<?php echo base_url('assets/custom/branch-'.$this->session->userdata('SESS_BRANCH_ID').'/js/product/') ?>product.js"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
+        $(document).on('change','[name=profit_margin],[name=product_price]',function(){
+            var profit_margin = $('[name=profit_margin]').val();
+            var pro_pr = $('[name=product_price]').val();
+            var basic_pr = pro_pr;
+            if(pro_pr > 0){
+                if(profit_margin > 99){
+                    $(this).val(0);
+                }else{
+                    var profit_amnt = (pro_pr * profit_margin)/100;
+                    basic_pr = +pro_pr + +profit_amnt;
+                }
+            }
+            $('[name=product_selling_price]').val(precise_amount(basic_pr));
+        })
 		$('#submit_product_batch').click(function(){
 			var id= $('#product_option').val();
 
@@ -144,6 +175,7 @@ $this->load->view('layout/footer');
 	        } else {
 	            $("#err_product_option").text("");
 	        }
+
 	        
 	        /*var product_mrp = $('#product_mrp').val();
 

@@ -26,9 +26,16 @@ $this->load->view('layout/header');
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="product_mrp">MRP <span class="validation-color">*</span></label>
-                                    <input type="number" class="form-control" id="product_mrp" name="product_mrp" value="<?=precise_amount($products_detail->product_mrp_price,2);?>" >
-                                    <span class="validation-color" id="err_product_mrp"></span>
+                                    <label for="product_price">Purchase Price</label>
+                                    <input type="number" class="form-control" id="product_price" name="product_price" value="<?php echo precise_amount($products_detail->product_price); ?>" >
+                                    <span class="validation-color" id="product_price"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="profit_margin">Profit Margin(%)</label>
+                                    <input type="text" class="form-control" id="profit_margin" name="profit_margin" value="<?php echo (float)($products_detail->product_profit_margin); ?>" pattern="\d*" maxlength="5">
+                                    <span class="validation-color" id="profit_margin"></span>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -36,6 +43,16 @@ $this->load->view('layout/header');
                                     <label for="product_selling_price">Selling Price</label>
                                     <input type="number" class="form-control" id="product_selling_price" name="product_selling_price" value="<?=precise_amount($products_detail->product_selling_price,2);?>">
                                     <span class="validation-color" id="product_selling"></span>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="product_mrp">MRP <span class="validation-color">*</span></label>
+                                    <input type="number" class="form-control" id="product_mrp" name="product_mrp" value="<?=precise_amount($products_detail->product_mrp_price,2);?>" >
+                                    <span class="validation-color" id="err_product_mrp"></span>
                                 </div>
                             </div>
                             <div class="col-md-3 product_discount">
@@ -61,8 +78,6 @@ $this->load->view('layout/header');
                                     <span class="validation-color" id="err_product_discount"></span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-3 product_gst">
                                 <div class="form-group">
                                     <label for="gst_tax_product">Tax (GST Output)</label>
@@ -92,6 +107,8 @@ $this->load->view('layout/header');
                                     <span class="validation-color" id="product_gst_code"></span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="product_batch">Product Batch</label>
@@ -106,7 +123,7 @@ $this->load->view('layout/header');
                                     <input type="number" class="form-control" id="product_scheme_no" name="product_scheme_no" value="<?=(float)($products_detail->batch_serial);?>" readonly>
                                 </div>
                             </div>
-                        </div>
+                        </div>      
                         <div class="box-footer">
                             <button type="submit" id="submit_product_batch" class="btn btn-info">
                                 Update
@@ -134,6 +151,20 @@ $this->load->view('layout/footer');
 <script src="<?php echo base_url('assets/js/product/') ?>product_mrp.js"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
+        $(document).on('change','[name=profit_margin],[name=product_price]',function(){
+            var profit_margin = $('[name=profit_margin]').val();
+            var pro_pr = $('[name=product_price]').val();
+            var basic_pr = pro_pr;
+            if(pro_pr > 0){
+                if(profit_margin > 99){
+                    $(this).val(0);
+                }else{
+                    var profit_amnt = (pro_pr * profit_margin)/100;
+                    basic_pr = +pro_pr + +profit_amnt;
+                }
+            }
+            $('[name=product_selling_price]').val(precise_amount(basic_pr));
+        })
 		$('#submit_product_batch').click(function(){
 			var id= $('#product_option').val();
 

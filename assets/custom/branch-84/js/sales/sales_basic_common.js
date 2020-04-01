@@ -333,16 +333,22 @@ $(document).ready(function () {
         var unit_number = $(this).find('option:selected').attr('number');
         var is_main = $(this).find('option:selected').attr('is_main');
         var tr = $(this).parents('tr:first');
-        var item_price = tr.find('[name=item_price]').val();
+        var item_price = tr.find('[name=item_price]').attr('p');
+        if(!item_price) item_price = tr.find('[name=item_price]').val();
+        var item_mrp_price = tr.find('[name=item_mrp_price]').attr('p');
+        if(!item_mrp_price) item_mrp_price = tr.find('[name=item_mrp_price]').val();
+
         if(is_main > 0){
             var unit_number = $(this).find('option[is_main=0]').attr('number');
             unit_price = item_price * unit_number;
+            unit_mrp = item_mrp_price * unit_number;
         }else{
             unit_price = item_price/unit_number;
+            unit_mrp = item_mrp_price/unit_number;
         }
-        tr.find('[name=item_price]').val(unit_price);
+        tr.find('[name=item_price]').val(unit_price).attr('p',unit_price);
+        tr.find('[name=item_mrp_price]').val(unit_mrp).attr('p',unit_mrp);
         calculateTable(tr);
-        
     })
 
     /*$("#sales_table_body").on(
@@ -1460,6 +1466,7 @@ function preciseRowAmount(row) {
     }
 
     row.find('input[name^="item_price"]').val(precise_amount(item_price));
+    row.find('input[name^="item_mrp_price"]').val(precise_amount(row.find('input[name^="item_mrp_price"]').val()));
     row.find('input[name^="item_sub_total"]').val(precise_amount(item_sub_total));
     row.find("#item_sub_total_lbl_" + table_index).text(precise_amount(item_sub_total));
     row.find('input[name^="item_grand_total"]').val(precise_amount(item_grand_total));

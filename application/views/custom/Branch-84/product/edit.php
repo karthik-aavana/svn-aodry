@@ -217,7 +217,7 @@ $this->load->view('layout/header');
                                                     <?php
                                                     $uom_text = '';
                                                     foreach ($uqc as $value) {
-                                                        if($value->id == $data[0]->equal_uom_id){
+                                                        if($value->id == $data[0]->product_unit_id){
                                                             $uom_text = $value->uom;
                                                         }
                                                         if ($value->id == $data[0]->product_unit_id) {

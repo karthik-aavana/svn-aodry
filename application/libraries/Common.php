@@ -6062,7 +6062,10 @@ class Common
             'p.product_name',
             'p.product_model_no'
         );
-        $group=array('p.product_name','p.product_code');
+        $group = array();
+        if($LeatherCraft_id == $this->ci->session->userdata('SESS_BRANCH_ID'))
+            $group=array('p.product_name','p.product_code');
+
         $data = array(
             'string' => $string,
             'table'  => $table,
@@ -14576,7 +14579,7 @@ public function tds_report_sales_list(){
              "sales S"  => "S.sales_id = SI.sales_id",             
              "customer C" => "C.customer_id = S.sales_party_id",
              "branch B" => "B.branch_id = P.branch_id",
-            'uqc U'     => 'U.id = P.product_unit_id  and SI.item_type = "product"' . '#' . 'left',
+            'uqc U'     => 'U.id = SI.sales_item_uom_id  and SI.item_type = "product"' . '#' . 'left',
             "category CT" => "CT.category_id=P.product_category_id",
             'discount dt' => 'dt.discount_id = SI.sales_item_discount_id' . '#' . 'left',
             "sub_category SC" => "SC.sub_category_id=P.product_subcategory_id". "#" . "left",
@@ -14628,21 +14631,22 @@ public function tds_report_sales_list(){
     }
 
     public function get_brandwise_closing_stock_report(){
-        $string = "P.product_name, P.product_code, P.product_hsn_sac_code, P.product_id, P.product_basic_price, P.product_quantity, P.product_combination_id, SI.sales_item_quantity, AVG(SI.sales_item_unit_price) as price, SUM(SI.sales_item_igst_amount) as igst, SUM(SI.sales_item_sgst_amount) as sgst, SUM(SI.sales_item_cgst_amount) as cgst, U.uom, CT.category_name, CASE P.brand_id when '0' then 'General' ELSE BR.brand_name END as brand_name,  SC.sub_category_name,P.product_opening_quantity,P.brand_id";
+        $string = "P.product_name, P.product_code, P.product_hsn_sac_code, P.product_id,P.product_price,P.product_batch, P.product_basic_price, P.product_quantity, P.product_combination_id, U.uom, CT.category_name, CASE P.brand_id when '0' then 'General' ELSE BR.brand_name END as brand_name,  SC.sub_category_name,P.product_opening_quantity,P.brand_id";
+        //SI.sales_item_quantity, AVG(SI.sales_item_unit_price) as price, SUM(SI.sales_item_igst_amount) as igst, SUM(SI.sales_item_sgst_amount) as sgst, SUM(SI.sales_item_cgst_amount) as cgst,
         $table  = "products P";
         $where = array(
             'P.branch_id'         => $this->ci->session->userdata('SESS_BRANCH_ID'),
             'P.delete_status'     => 0 );
         $join = [
-             "sales_item SI"  => "P.product_id = SI.item_id and SI.item_type = 'product'" ,
-             "sales S"   => "S.sales_id = SI.sales_id",           
+             /*"sales_item SI"  => "P.product_id = SI.item_id and SI.item_type = 'product'" . "#" . "left",
+             "sales S"   => "S.sales_id = SI.sales_id". "#" . "left",*/           
              "brand BR"   => "BR.brand_id = P.brand_id". "#" . "left",         
              "branch B" => "B.branch_id = P.branch_id",
-            'uqc U' => 'U.id = P.product_unit_id  and SI.item_type = "product"' . '#' . 'left',
+            'uqc U' => 'U.id = P.product_unit_id' . '#' . 'left',// and SI.item_type = "product"
             "category CT" => "CT.category_id=P.product_category_id",
             "sub_category SC" => "SC.sub_category_id=P.product_subcategory_id". "#" . "left",
              ];
-        $group = array('BR.brand_id,P.product_id');
+        $group = array('P.product_id');//BR.brand_id,
         $filter = array('BR.brand_name','P.product_name','CT.category_name','SC.sub_category_name','P.product_code','P.product_hsn_sac_code','U.uom');
         $data = array(
             'string' => $string,
