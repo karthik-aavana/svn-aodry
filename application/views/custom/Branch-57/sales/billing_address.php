@@ -1,3 +1,6 @@
+<?php
+$branch_id = $this->session->userdata('SESS_BRANCH_ID');
+?>
 <div id="billing_addr" class="modal fade z_index_modal" role="dialog" data-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
