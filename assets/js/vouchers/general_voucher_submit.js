@@ -5,11 +5,11 @@ $(document).ready(function (){
         var transaction_purpose = $('#transaction_purpose').val();
         var voucher_type = $('#voucher_type').val();
         var trans_category = $('#transaction_cat').val() ? $('#transaction_cat').val() : "";
-        var interest = $('#interest_amount').val();
-        var loss = $('#others_amount').val();
+        var interest = $('#interest_amount').val() ? $('#interest_amount').val() : 0;
+        var loss = $('#others_amount').val() ? $('#others_amount').val() : 0;
 
         if((transaction_purpose == 'Investments' && voucher_type == 'RECEIPTS') || trans_category == 'Sales/Disposal of Fixed Asset'){
-            if(interest != '' && loss != ''){
+            if(parseInt(interest) > 0 && parseInt(loss) > 0){
                 $("#err_interest_amount").text("Please Enter any one Profit or Loss.");
             }else{
                 $("#err_interest_amount").text("");
@@ -23,10 +23,10 @@ $(document).ready(function (){
         var transaction_purpose = $('#transaction_purpose').val();
         var voucher_type = $('#voucher_type').val();
         var trans_category = $('#transaction_cat').val() ? $('#transaction_cat').val() : "";
-        var interest = $('#interest_amount').val();
-        var loss = $('#others_amount').val();
+        var interest = $('#interest_amount').val() ? $('#interest_amount').val() : 0;
+        var loss = $('#others_amount').val() ? $('#others_amount').val() : 0;
         if((transaction_purpose == 'Investments' && voucher_type == 'RECEIPTS') || trans_category == 'Sales/Disposal of Fixed Asset'){
-            if(interest != '' && loss != ''){
+            if(parseInt(interest) > 0 && parseInt(loss) > 0){
                 $("#err_others_amount").text("Please Enter any one Profit or Loss.");
             }else{
                 $("#err_others_amount").text("");
@@ -40,12 +40,12 @@ $(document).ready(function (){
 
         $('#txt_igst').on('blur', function () {
             var trans_category = $('#transaction_cat').val() ? $('#transaction_cat').val() : "";
-            var igst = $('#txt_igst').val();
-            var cgst = $('#txt_cgst').val();
-            var sgst = $('#txt_sgst').val();
-            var utgst = $('#txt_utgst').val();
-            if(trans_category == 'Purchase of Fixed Asset' || trans_category == 'Sales/Disposal of Fixed Asset' || trans_category == 'GST Payable' || trans_category == 'Tax received from GST'){
-                if((cgst != '' || sgst != '' || utgst != '') && igst != ''){
+            var igst = $('#txt_igst').val() ? $('#txt_igst').val() : 0;
+            var cgst = $('#txt_cgst').val() ? $('#txt_cgst').val() : 0;
+            var sgst = $('#txt_sgst').val() ? $('#txt_sgst').val() : 0;
+            var utgst = $('#txt_utgst').val() ? $('#txt_utgst').val() : 0;
+            if(trans_category == 'Purchase of Fixed Asset' || trans_category == 'Sales/Disposal of Fixed Asset' || trans_category == 'GST Payable' || trans_category == 'Tax received from GST'){                
+            if(parseInt(igst) > 0 || parseInt(cgst) > 0 || parseInt(utgst) > 0 || parseInt(sgst) > 0){
                     $("#err_txt_igst").text("If you want enter IGST. Clear CGST, SGST & UTGST ");
                 }else{
                     $("#err_txt_igst").text("");
@@ -57,12 +57,13 @@ $(document).ready(function (){
 
         $('#txt_cgst').on('blur', function () {
             var trans_category = $('#transaction_cat').val() ? $('#transaction_cat').val() : "";
-            var igst = $('#txt_igst').val();
-            var cgst = $('#txt_cgst').val();
-            var sgst = $('#txt_sgst').val();
-            var utgst = $('#txt_utgst').val();
+             var igst = $('#txt_igst').val() ? $('#txt_igst').val() : 0;
+            var cgst = $('#txt_cgst').val() ? $('#txt_cgst').val() : 0;
+            var sgst = $('#txt_sgst').val() ? $('#txt_sgst').val() : 0;
+            var utgst = $('#txt_utgst').val() ? $('#txt_utgst').val() : 0;
             if(trans_category == 'Purchase of Fixed Asset' || trans_category == 'Sales/Disposal of Fixed Asset' || trans_category == 'GST Payable' || trans_category == 'Tax received from GST'){
-                if(igst != '' && cgst != ''){
+                
+               if(parseInt(igst) > 0 || parseInt(cgst) > 0){
                     $("#err_txt_cgst").text("If you want to enter CGST. Clear IGST");
                 }else{
                     $("#err_txt_cgst").text("");
@@ -73,12 +74,13 @@ $(document).ready(function (){
 
         $('#txt_sgst').on('blur', function () {
            var trans_category = $('#transaction_cat').val() ? $('#transaction_cat').val() : "";
-            var igst = $('#txt_igst').val();
-            var cgst = $('#txt_cgst').val();
-            var sgst = $('#txt_sgst').val();
-            var utgst = $('#txt_utgst').val();
+             var igst = $('#txt_igst').val() ? $('#txt_igst').val() : 0;
+            var cgst = $('#txt_cgst').val() ? $('#txt_cgst').val() : 0;
+            var sgst = $('#txt_sgst').val() ? $('#txt_sgst').val() : 0;
+            var utgst = $('#txt_utgst').val() ? $('#txt_utgst').val() : 0;
             if(trans_category == 'Purchase of Fixed Asset' || trans_category == 'Sales/Disposal of Fixed Asset'  || trans_category == 'GST Payable' || trans_category == 'Tax received from GST'){
-                if((igst != '' || utgst != '') && sgst != '') {
+                
+                if((parseInt(igst) > 0 || parseInt(sgst) > 0) && parseInt(utgst) > 0){
                     $("#err_txt_sgst").text("If you want to enter SGST. Clear IGST & UTGST ");
                 }else{
                     $("#err_txt_sgst").text("");
@@ -90,13 +92,13 @@ $(document).ready(function (){
 
         $('#txt_utgst').on('blur', function () {
            var trans_category = $('#transaction_cat').val() ? $('#transaction_cat').val() : "";
-            var igst = $('#txt_igst').val();
-            var cgst = $('#txt_cgst').val();
-            var sgst = $('#txt_sgst').val();
-            var utgst = $('#txt_utgst').val();
+            var igst = $('#txt_igst').val() ? $('#txt_igst').val() : 0;
+            var cgst = $('#txt_cgst').val() ? $('#txt_cgst').val() : 0;
+            var sgst = $('#txt_sgst').val() ? $('#txt_sgst').val() : 0;
+            var utgst = $('#txt_utgst').val() ? $('#txt_utgst').val() : 0;
             if(trans_category == 'Purchase of Fixed Asset' || trans_category == 'Sales/Disposal of Fixed Asset' || trans_category == 'GST Payable' || trans_category == 'Tax received from GST'){
-                if((igst != '' || sgst != '') && utgst != ''){
-                    $("#err_txt_utgst").text("If you want to enter SGST. Clear IGST & STGST ");
+                if((parseInt(igst) > 0 || parseInt(sgst) > 0) && parseInt(utgst) > 0){
+                    $("#err_txt_utgst").text("If you want to enter UTGST. Clear IGST & STGST ");
                 }else{
                     $("#err_txt_utgst").text("");
                 }
@@ -115,13 +117,13 @@ $(document).ready(function (){
         var input_type = $('#input_type').val() ? $('#input_type').val() : "";
         var trans_category = $('#transaction_cat').val() ? $('#transaction_cat').val() : "";
         var voucher_type = $('#voucher_type').val();
-        var txt_cgst = $('#txt_cgst').val() ? $('#txt_cgst').val() : "";
-        var txt_sgst = $('#txt_sgst').val() ? $('#txt_sgst').val() : ""; 
-        var txt_igst = $('#txt_igst').val() ? $('#txt_igst').val() : "";
-        var txt_utgst = $('#txt_utgst').val() ? $('#txt_utgst').val() : "";
-        var txt_cess = $('#txt_cess').val() ? $('#txt_cess').val() : "";
-        var interest = $('#interest_amount').val()? $('#interest_amount').val() : "";
-        var loss = $('#others_amount').val()? $('#others_amount').val() : "";
+        var txt_cgst = $('#txt_cgst').val() ? $('#txt_cgst').val() : 0;
+        var txt_sgst = $('#txt_sgst').val() ? $('#txt_sgst').val() : 0; 
+        var txt_igst = $('#txt_igst').val() ? $('#txt_igst').val() : 0;
+        var txt_utgst = $('#txt_utgst').val() ? $('#txt_utgst').val() : 0;
+        var txt_cess = $('#txt_cess').val() ? $('#txt_cess').val() : 0;
+        var interest = $('#interest_amount').val()? $('#interest_amount').val() : 0;
+        var loss = $('#others_amount').val()? $('#others_amount').val() : 0;
         var transaction_purpose = $('#transaction_purpose').val();
         if (voucher_date == null || voucher_date == "") {
             $("#err_voucher_date").text("Please Select Voucher Date.");
@@ -137,8 +139,7 @@ $(document).ready(function (){
             $("#err_trans_purpsose").text("");
         }
         if(trans_category == 'GST Payable' || trans_category == 'Tax received from GST'){
-               
-            if (txt_cgst == '' && txt_sgst == "" && txt_igst == '' && txt_utgst == '' && txt_cess == '') {
+            if(parseInt(txt_utgst) == 0 && parseInt(txt_cgst) == 0 && parseInt(txt_sgst) == 0 && parseInt(txt_utgst) == 0 && parseInt(txt_cess) == 0){
                 $("#err_txt_cgst").text("Please Enter Any One Tax Amount.");
                 return false;
             } else {
@@ -162,7 +163,7 @@ $(document).ready(function (){
         }
 
         if((transaction_purpose == 'Investments' && voucher_type == 'RECEIPTS') || trans_category == 'Sales/Disposal of Fixed Asset'){
-            if(interest != '' && loss != ''){
+            if(parseInt(interest) > 0 && parseInt(loss) > 0){
                 $("#err_others_amount").text("Please Enter any one Profit or Loss.");
                 return false;
             }else{
@@ -173,14 +174,34 @@ $(document).ready(function (){
         }
 
         if(trans_category == 'Purchase of Fixed Asset' || trans_category == 'Sales/Disposal of Fixed Asset' || trans_category == 'GST Payable' || trans_category == 'Tax received from GST'){
-                if(txt_cgst != '' && txt_sgst != "" && txt_utgst != ''){
+                
+                if(parseInt(txt_utgst) > 0 && parseInt(txt_cgst) > 0 && parseInt(txt_sgst) > 0){
                     $("#err_txt_utgst").text("Please Enter any one UTGST or SGST");
                     return false;
-                }else if((txt_igst != '' && txt_cgst != "" && txt_utgst != '') || (txt_igst != '' && txt_cgst != "" && txt_sgst != '')){
-                    $("#err_txt_utgst").text("Please Enter IGST / (CGST and SCGST) ");
+                }else if((parseInt(txt_igst) > 0 && parseInt(txt_cgst) > 0 && parseInt(txt_utgst) > 0) || (parseInt(txt_igst) > 0 && parseInt(txt_cgst) > 0 && parseInt(txt_sgst) > 0)){
+                    $("#err_txt_sgst").text("Please Enter IGST / (CGST and SCGST) ");
                     return false;
                 }else{
                     $("#err_txt_utgst").text("");
+                }
+
+
+                if(parseInt(txt_utgst) > 0 && parseInt(txt_cgst) > 0 ){
+                    if(parseInt(txt_utgst) != parseInt(txt_cgst)){
+                        $("#err_txt_utgst").text("Please Enter amount of UTGST & CGST are equal.");
+                        return false;
+                    }else{
+                        $("#err_txt_utgst").text("");
+                    }
+                }
+
+                if(parseInt(txt_cgst) > 0 && parseInt(txt_sgst) > 0){
+                    if(parseInt(txt_sgst) != parseInt(txt_cgst)){
+                        $("#err_txt_sgst").text("Please Enter amount of SGST & CGST are equal.");
+                        return false;
+                    }else{
+                        $("#err_txt_sgst").text("");
+                    }
                 }
 
         }

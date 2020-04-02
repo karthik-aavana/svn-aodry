@@ -1854,7 +1854,7 @@ Class General_voucher extends MY_Controller
                                     'ledger_name' => 'Interest on Income tax refund',
                                     'second_grp' => '',
                                     'primary_grp' => '',
-                                    'main_grp' => 'Indirect Income',
+                                    'main_grp' => 'Indirect Incomes',
                                     'default_ledger_id' => $default_intrest_it_id,
                                     'default_value' => 0,
                                     'amount' => 0
@@ -4977,7 +4977,7 @@ Class General_voucher extends MY_Controller
                                     'ledger_name' => 'Others',
                                     'second_grp' => '',
                                     'primary_grp' => '',
-                                    'main_grp' => 'Indirect Income',
+                                    'main_grp' => 'Indirect Incomes',
                                     'default_ledger_id' => $default_others_income_id,
                                     'default_value' => 0,
                                     'amount' => 0
