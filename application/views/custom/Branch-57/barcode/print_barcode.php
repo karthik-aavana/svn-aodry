@@ -147,9 +147,9 @@
 								                        	echo "info@leathercraft.net.in";
 								                        }
 			                            				?></span><br>
-			                            				Customer Care: <span> +91-
-			                            				<?php if ($branch[0]->branch_mobile != "" || $branch[0]->branch_mobile != null) {
-								                            echo $branch[0]->branch_mobile;
+			                            				Customer Care: <span> 
+			                            				<?php if ($branch[0]->branch_land_number != "" || $branch[0]->branch_land_number != null) {
+								                            echo $branch[0]->branch_land_number;
 								                        }else{
 								                        	echo "9088997788";
 								                        } ?></span>
