@@ -11431,6 +11431,31 @@ public function currencyListField() {
         );
         return $data;
     }
+    public function shipping_address_list_field_leathercraft(){
+        $string = "s.*, CASE when s.shipping_party_type = 'supplier' then sup.supplier_name ELSE cust.customer_name  END as party_name";
+        $table  = 'shipping_address s';
+       
+        $where = array(
+            's.branch_id'     => $this->ci->session->userdata('SESS_BRANCH_ID'),
+            's.delete_status' => 0,
+            's.shipping_party_type' => 'customer'
+        );
+        $join = ["customer cust" => "s.shipping_party_id = cust.customer_id" . "#" . "left",
+                "supplier sup" => "s.shipping_party_id = sup.supplier_id" . "#" . "left"];
+        $order = ["s.shipping_address_id" => "desc"];
+
+        $filter = array('sup.supplier_name', 'cust.customer_name', 's.shipping_address','s.shipping_code','s.email','s.contact_number','s.contact_person');
+       
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'filter' => $filter,
+            'join'   => $join,
+            'order'  => $order
+        );
+        return $data;
+    }
     public function shipping_address_list_popup($party_id,$party_type,$state_id,$country_id=''){
         $string = 's.*,sta.state_name';
         $table  = 'shipping_address s';
