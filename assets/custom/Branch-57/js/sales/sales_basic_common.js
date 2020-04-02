@@ -223,7 +223,9 @@ $(document).ready(function () {
                     var suggestions = [];
                     for (var i = 0; i < data.length; ++i) {
                         var quantity = 0;
-                        quantity = parseFloat(data[i].product_quantity) + parseFloat(data[i]. product_opening_quantity);
+                        var product_quantity = (data[i].product_quantity == null) ? 0 : data[i].product_quantity;
+                        var product_opening_quantity = (data[i].product_opening_quantity == null) ? 0 : data[i].product_opening_quantity;
+                        quantity = parseFloat(product_quantity) + parseFloat(product_opening_quantity);
                         if(quantity > 0){
                             var kv = data[i].item_code + " " + data[i].item_name+ ' ' + data[i].product_batch
                             suggestions.push(kv);
