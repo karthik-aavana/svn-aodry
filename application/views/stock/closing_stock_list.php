@@ -101,7 +101,7 @@ $(document).ready(function() {
                 {"data": "product_quantity"},
                 {"data": "map"},
                 {"data": "gst"},
-                {"data": "selling_price"}
+                {"data": "selling_price"},
                 {"data": "cost_price"},
                 {"data": "mrp"}
             ],

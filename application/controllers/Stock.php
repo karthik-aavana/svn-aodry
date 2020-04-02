@@ -414,8 +414,8 @@ class Stock extends MY_Controller {
                     $nestedData['purchase_qty'] = (float) $post->purchase_qty;
                     $nestedData['sales_qty'] = (float) $post->sales_qty;
                     $nestedData['product_batch'] = $post->product_batch;
-                    $nestedData['cost_price'] = $purchase_price;
-                    $nestedData['mrp'] = $post->product_mrp_price;
+                    $nestedData['cost_price'] = $this->precise_amount($purchase_price,$access_common_settings[0]->amount_precision);
+                    $nestedData['mrp'] = $this->precise_amount($post->product_mrp_price,$access_common_settings[0]->amount_precision);
                     $send_data[] = $nestedData;
                     
                 }
