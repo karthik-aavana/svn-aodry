@@ -3495,7 +3495,7 @@ class Common
         $pro_where = '';
         $ser_where = '';
         if($term != ''){
-            $pro_where = ' AND (product_code like "%' . $term . '%" or product_name like "%' . $term . '%") ';
+            $pro_where = ' AND (product_code like "%' . $term . '%" or product_name like "%' . $term . '%" or product_barcode like "%' . $term . '%") ';
             $ser_where = ' and (service_code like "%' . $term . '%" or service_name like "%' . $term . '%") ';
         }
         if ($item_access == "both")
@@ -5807,14 +5807,13 @@ class Common
     }
     public function customer_list_field()
     {
-        $string = 'cust.*,c.city_name,co.country_name,st.state_name,u.first_name,u.last_name,s.store_location,s.department';
+        $string = 'cust.*,c.city_name,co.country_name,st.state_name,u.first_name,u.last_name';
         $table  = 'customer cust';
         // $join['contact_person cp']='cp.contact_person_id=cust.customer_contact_person_id';
         $join['cities c']     = 'cust.customer_city_id=c.city_id' . '#' . 'left';
         $join['states st']    = 'cust.customer_state_id=st.state_id';
         $join['countries co'] = 'cust.customer_country_id=co.country_id';
         $join['users u']      = 'cust.added_user_id=u.id';
-        $join['shipping_address s'] = 'cust.customer_id = s.shipping_party_id' . '#' . 'left';
         $where = array(
             'cust.branch_id'     => $this->ci->session->userdata('SESS_BRANCH_ID'),
             'cust.delete_status' => 0
@@ -14467,11 +14466,12 @@ public function tds_report_sales_list(){
     }
 
     public function get_closing_stock_report(){
-        $string = "P.product_name, P.product_code, P.product_barcode, P.product_hsn_sac_code, P.product_id, P.product_basic_price, P.product_quantity, P.product_combination_id, (select SUM(SI.sales_item_quantity) from sales_item SI where P.product_id = SI.item_id and SI.item_type = 'product') as sales_qty, AVG(SI.sales_item_unit_price) as price, SUM(SI.sales_item_igst_amount) as igst, SUM(SI.sales_item_sgst_amount) as sgst, SUM(SI.sales_item_cgst_amount) as cgst, D.department_name, SD.sub_department_name, U.uom, CT.category_name, B.branch_name, B.branch_code, SC.sub_category_name, BD.brand_name, P.product_opening_quantity, (select SUM(PI.purchase_item_quantity) from purchase_item PI where `P`.`product_id` = `PI`.`item_id` and `PI`.`item_type` = 'product') as purchase_qty, PI.purchase_id, P.product_batch, C.supplier_name,C.supplier_code, sa.store_location";
+        $string = "P.product_name, P.product_code, P.product_barcode, P.product_hsn_sac_code, P.product_id, P.product_basic_price, P.product_quantity, P.product_combination_id, (select SUM(SI.sales_item_quantity) from sales_item SI where P.product_id = SI.item_id and SI.item_type = 'product') as sales_qty, AVG(SI.sales_item_unit_price) as price, SUM(SI.sales_item_igst_amount) as igst, SUM(SI.sales_item_sgst_amount) as sgst, SUM(SI.sales_item_cgst_amount) as cgst, D.department_name, SD.sub_department_name, U.uom, CT.category_name, B.branch_name, B.branch_code, SC.sub_category_name, BD.brand_name, P.product_opening_quantity, (select SUM(PI.purchase_item_quantity) from purchase_item PI where `P`.`product_id` = `PI`.`item_id` and `PI`.`item_type` = 'product') as purchase_qty, PI.purchase_id, P.product_batch, C.supplier_name,C.supplier_code, sa.store_location, P.product_mrp_price, P.product_selling_price, P.product_price, AVG(PI.purchase_item_unit_price) as purchase_price";
         $table  = "products P";
         $where = array(
             'P.branch_id' => $this->ci->session->userdata('SESS_BRANCH_ID'),
-            'P.delete_status'  => 0 );
+            'P.delete_status'  => 0,
+            'P.product_combination_id != ' => NULL );
         $join = [
              "purchase_item PI"  => "P.product_id = PI.item_id and PI.item_type = 'product'". "#" . "left" ,
              "purchase PU"   => "PU.purchase_id = PI.purchase_id". "#" . "left",

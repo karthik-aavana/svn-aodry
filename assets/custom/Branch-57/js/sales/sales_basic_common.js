@@ -222,7 +222,9 @@ $(document).ready(function () {
                 success: function (data) {
                     var suggestions = [];
                     for (var i = 0; i < data.length; ++i) {
-                        if(data[i].product_quantity > 0){
+                        var quantity = 0;
+                        quantity = parseFloat(data[i].product_quantity) + parseFloat(data[i]. product_opening_quantity);
+                        if(quantity > 0){
                             var kv = data[i].item_code + " " + data[i].item_name+ ' ' + data[i].product_batch
                             suggestions.push(kv);
                             kv = kv.replace(/ /g, "_"); 

@@ -36,7 +36,12 @@ class Shipping_Address extends MY_Controller {
             $start = $this->input->post('start');
             $order = $columns[$this->input->post('order')[0]['column']];
             $dir = $this->input->post('order')[0]['dir'];
-            $list_data = $this->common->shipping_address_list_field();
+            
+            if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('LeatherCraft')){
+                $list_data = $this->common->shipping_address_list_field_leathercraft();
+            }else{
+                $list_data = $this->common->shipping_address_list_field();
+            }
             $list_data['search'] = 'all';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
