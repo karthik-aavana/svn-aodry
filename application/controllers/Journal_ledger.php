@@ -139,18 +139,21 @@ class Journal_ledger extends MY_Controller
                 $vid = $value['journal_voucher_id'];
                 $accounts_voucher_id = ($value['accounts_general_id'] != '' ? $value['accounts_general_id']: 0);
                 /* Ledger dropdown with selected option */
-                $ledger_html = "<input type='hidden' value='{$accounts_voucher_id}' data-id='{$vid}' name='accounts_voucher_id'><select data-id='{$vid}' class='form-control js-example-basic-single disable_in' name='ledger_id'><option value=''>Select Ledger</option>";
+                $ledger_html = "<input type='hidden' value='{$accounts_voucher_id}' data-id='{$vid}' name='accounts_voucher_id'>";
+
+               /* <select data-id='{$vid}' class='form-control js-example-basic-single disable_in' name='ledger_id'><option value=''>Select Ledger</option>*/
 
                 if(!empty($ledger_list)){
                     foreach ($ledger_list as $key => $ld) {
                         $selected = '';
                         if($ld['ledger_id'] == $value['ledger_id']){
-                            $selected = 'selected';
+                           // $selected = 'selected';
+                            $ledger_html .= $ld['ledger_name'];
                         }
-                        $ledger_html .="<option value='{$ld['ledger_id']}' {$selected}>{$ld['ledger_name']}</option>";
+                        //$ledger_html .="<option value='{$ld['ledger_id']}' {$selected}>{$ld['ledger_name']}</option>";
                     }
                 }
-                $ledger_html .="</select>";
+                //$ledger_html .="</select>";
                 /*end*/
                 /* CR/DR HTML */
                 $amount_type = '';
