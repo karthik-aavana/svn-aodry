@@ -40,7 +40,7 @@ if (@$converted_rate)
                                 $date_for = date('d-m-Y', strtotime($date));
                                 echo $date_for;
                                 ?> </th>
-                <th colspan="6" style="text-align:left;">TAX INVOICE</th>
+                <th colspan="6" style="text-align:center;">TAX INVOICE</th>
                 <th colspan="5" style="text-align: right;">Bill No : <?php
                                 if (isset($data[0]->sales_brand_invoice_number)) {
                                     echo $data[0]->sales_brand_invoice_number;
@@ -48,8 +48,8 @@ if (@$converted_rate)
                                 ?> 
                 </th>
             </tr>
-            <tr>
-                <td colspan="6" style="text-align: left;">
+             <tr>
+                <td colspan="5" style="text-align: left;">
                     <table class="table" style="font-size:13px;">
                         <!-- <tr><td colspan="2"><b> From,</b></td></tr> -->
                         <tr><td style="width:35%"><b>From : </b></td>
@@ -76,15 +76,6 @@ if (@$converted_rate)
                                 }
                                 ?></td>
                         </tr>
-                        <!-- <tr><td>State code : </td>
-                            <td><?php
-                                if (isset($branch[0]->state_short_code)) {
-                                    if ($branch[0]->state_short_code != "") {
-                                        echo $branch[0]->state_short_code;
-                                    }
-                                }
-                                ?></td>
-                        </tr> -->
                         <tr><td><b>PAN :</b> </td>
                             <td><?php
                                 if (isset($branch[0]->branch_pan_number)) {
@@ -112,28 +103,9 @@ if (@$converted_rate)
                         </tr>
                     </table>
                 </td>
-                <td colspan="6" style="text-align: left;">
+                <td colspan="7" style="text-align: left;">
                     <table class="table" style="font-size:13px;">
-                        <!-- <tr>
-                            <td style="width:45%">Bill No : </td>
-                            <td class="uppercase" style="text-align: left;">
-                                <?php
-                                if (isset($data[0]->sales_invoice_number)) {
-                                    echo $data[0]->sales_invoice_number;
-                                }
-                                ?>                            
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="width:33%">Date : </td>
-                            <td class="uppercase" style="text-align: left;">
-                                <?php
-                                $date = $data[0]->sales_date;
-                                $date_for = date('d-m-Y', strtotime($date));
-                                echo $date_for;
-                                ?>                            
-                            </td>
-                        </tr> -->
+                        
                         <tr>
                             <td style="width:35%"><b>Route : </b></td>
                             <td class="uppercase" style="text-align: left;">
@@ -148,7 +120,6 @@ if (@$converted_rate)
                 </td>
                 <td colspan="4" style="text-align: left;">
                     <table class="table" style="font-size:13px;">
-                        <!-- <tr><td colspan="2"><b> BILL TO,</b></td></tr> -->
                         <tr><td style="width:32%"><b>Bill to : </b></td>
                             <td class="uppercase" style="text-align: left;"><?= strtolower($data[0]->customer_name) ?></td>
                         </tr>
@@ -156,13 +127,13 @@ if (@$converted_rate)
                             <td style="text-align: left;"><?php
                                 /* if ($data[0]->shipping_address_id != $data[0]->billing_address_id) { */
                                 if (!empty($billing_address)) {
-                                    echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>", $billing_address[0]->shipping_address);
+                                    echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>", $billing_address[0]->shipping_address).', '.$data[0]->place_of_supply.', '.$data[0]->customer_city;
                                 } elseif (isset($data[0]->customer_address) && $data[0]->customer_address != "") {
                                     echo "<br/>";
-                                    echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>", $data[0]->customer_address);
+                                    echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>", $data[0]->customer_address).', '.$data[0]->customer_state_name.', '.$data[0]->customer_city;
                                 } else {
                                     echo "<br/>";
-                                    echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>", $data[0]->shipping_address);
+                                    echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>", $data[0]->shipping_address).', '.$data[0]->customer_state_name.', '.$data[0]->customer_city;
                                 }
                                 /* } */
                                 ?></td>
@@ -176,15 +147,7 @@ if (@$converted_rate)
                                 }
                                 ?></td>
                         </tr>
-                        <!-- <tr><td>State code : </td>
-                            <td style="text-align: left;"><?php
-                                if (isset($data[0]->state_short_code)) {
-                                    if ($data[0]->state_short_code != "") {
-                                        echo $data[0]->state_short_code;
-                                    }
-                                }
-                                ?></td>
-                        </tr> -->
+                        
                         <tr><td><b>PAN : </b></td>
                             <td style="text-align: left;"><?php
                                 if (isset($data[0]->customer_pan_number)) {
@@ -214,6 +177,7 @@ if (@$converted_rate)
                     </table>                        
                 </td>
             </tr>
+           
         </table>
         <table class="item-table table_hsn mt-5"  style="font-size:11px; margin-left: 0px; padding-left: 0px;">
                 
@@ -370,14 +334,14 @@ if (@$converted_rate)
         
                     </tbody>
         </table>    
-        <table class="item-table mt-5"  style="font-size:11px; margin-left: 0px; padding-left: 0px;">
+        <table class="item-table_hsn mt-5"  style="font-size:11px; margin-left: 0px; padding-left: 0px;">
             <tr>
                 <td colspan="10">
                     <table style="font-size:12px;">
                         <tr><td colspan="7" style="text-align: center; border-top: 1px solid #333; border-bottom: 1px solid #333"><b>HSN Summary</b></td></tr>
                         <tr style="border-top: 1px solid #333;">
                             <th><b>HSN</b></th>
-                            <th><b>Taxable Amt</b></td>
+                            <th><b>Taxable Amt</b></th>
                             <th><b>CGST %</b></th>
                             <th><b>Value</b></th>
                             <th><b>SGST %</b></th>
@@ -490,18 +454,7 @@ if (@$converted_rate)
                         <td colspan="6" style="text-align: right;">For, <b class="uppercase"><?= strtolower($branch[0]->firm_name) ?></b><br>Signature</td>
                     </tr>
         </table>
-    <!-- Custom HTML header --> 
-    <!-- <div id="header"> 
-      <span style="float: right; margin-top: -25px"><h3><small style="font-size: 8px;line-height: 2"><?= ($invoice_type != '' ? $invoice_type : ''); ?></small></h3> 
-              <br><p class="right"></p></span> 
-              <table class="item-table-td table mt-20">
-                  <tr>
-                      <td colspan="13" style="text-align: center;"><b>TAX INVOICE</b></td>
-                  </tr>
-                  </table>
-    </div> -->  
-    <!-- Custom HTML footer --> 
-    <div class="footer">
+        <div class="footer">
         <?php echo $access_common_settings[0]->invoice_footer; ?>
     </div>
 </body>

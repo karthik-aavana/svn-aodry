@@ -74,10 +74,10 @@
                             <div class="form-group">
 
                                Invoice Type <br><select id="cmb_invoice_type" name="cmb_invoice_type" class="form-control select2">
-                                   <option value="tabular">Tabular Invoice</option>
+                                  <!-- <option value="tabular">Tabular Invoice</option>-->
                                    <option value="hsn_summary">With HSN Summary</option>
-                                   <option value="cash_invoice">Cash Invoice</option>
-                                   <option value="aodry_format">Aodry Format</option>
+                                   <!--<option value="cash_invoice">Cash Invoice</option>
+                                   <option value="aodry_format">Aodry Format</option>-->
                                </select>
 
                             </div>
