@@ -245,8 +245,9 @@ $(document).ready(function () {
                     
                     //console.log(term);
                     //&& isnum == true
-                    if (i == 1 && term.length > 7 ) {
-                        var k = data[0].item_code+'-'+data[0].product_batch;
+                    if (i == 1 && term.length > 9 ) {
+                        var k =  data[i].item_code + " " + data[i].item_name+ ' ' + data[i].product_batch;
+                        k = k.replace(/ /g, "_");
                         $.ajax({
                             url: base_url +
                                 "sales/get_table_items/" +
