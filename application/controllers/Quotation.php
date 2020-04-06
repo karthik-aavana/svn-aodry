@@ -376,6 +376,10 @@ class Quotation extends MY_Controller {
         $quotation_data['inclusion_other_charge_tax_id'] = $this->input->post('inclusion_other_charge_tax_id') ? (float) $this->input->post('inclusion_other_charge_tax_id') : 0;
         $quotation_data['exclusion_other_charge_tax_id'] = $this->input->post('exclusion_other_charge_tax_id') ? (float) $this->input->post('exclusion_other_charge_tax_id') : 0;
 
+        if(@$this->input->post('cash_discount')){
+            $quotation_data['sales_cash_discount'] = $this->input->post('cash_discount');
+        }
+
         $round_off_value = $quotation_data['quotation_grand_total'];
 
         if ($section_modules['access_common_settings'][0]->round_off_access == "yes" && $this->input->post('round_off_key') == "yes") {
@@ -1125,6 +1129,10 @@ class Quotation extends MY_Controller {
             "note1" => $this->input->post('note1'),
             "note2" => $this->input->post('note2')
         );
+
+        if(@$this->input->post('cash_discount')){
+            $quotation_data['sales_cash_discount'] = $this->input->post('cash_discount');
+        }
 
         $quotation_data['freight_charge_tax_id'] = $this->input->post('freight_charge_tax_id') ? (float) $this->input->post('freight_charge_tax_id') : 0;
         $quotation_data['insurance_charge_tax_id'] = $this->input->post('insurance_charge_tax_id') ? (float) $this->input->post('insurance_charge_tax_id') : 0;

@@ -84,7 +84,7 @@ $this->load->view('layout/header');
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="brand_invoice_number">Invoice Number<span class="validation-color">*</span></label>
-                                        <input type="text" class="form-control" id="brand_invoice_number" name="brand_invoice_number" value="<?=($data[0]->sales_brand_invoice_number);?>" <?=($data[0]->brand_id != 0 && $brand_data[0]->invoice_readonly == 'yes' ? 'readonly' : '');?>>
+                                        <input type="text" class="form-control" id="brand_invoice_number" name="brand_invoice_number" value="<?=($data[0]->sales_brand_invoice_number != '' ? $data[0]->sales_brand_invoice_number : $data[0]->sales_invoice_number);?>" <?=($data[0]->brand_id != 0 && $brand_data[0]->invoice_readonly == 'yes' ? 'readonly' : '');?>>
                                         <span class="validation-color" id="err_brand_invoice_number"></span>
                                     </div>
                                 </div>

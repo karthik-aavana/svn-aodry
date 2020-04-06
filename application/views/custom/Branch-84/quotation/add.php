@@ -609,6 +609,10 @@ $this->load->view('layout/header');
                                                     </td>
                                                 </tr>
                                             <?php } ?> 
+                                            <tr class="totalCashDiscount_tr">
+                                                <td align="right">Cash Discount (-)</td>
+                                                <td align='right'><span id="totalCashDiscount">0.00</span><input type="hidden" name="cash_discount"></td>
+                                            </tr>
                                             <tr>
                                                 <td align="right"><strong><?php echo 'Grand Total'; ?> (=)</strong></td>
                                                 <td align='right'><strong><span id="totalGrandTotal">0.00</span></strong></td>

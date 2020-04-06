@@ -886,6 +886,10 @@ $this->load->view('layout/header');
                                                 </tr>
                                             <?php } ?>
                                             <tr>
+                                                <td align="right">Cash Discount (-)</td>
+                                                <td align='right'><span id="totalCashDiscount"><?= precise_amount($data[0]->quotation_cash_discount);?></span><input type="hidden" name="cash_discount" value="<?= precise_amount($data[0]->quotation_cash_discount);?>"></td>
+                                            </tr>
+                                            <tr>
                                                 <td align="right">Grand Total (=)</td>
                                                 <td align='right'><span id="totalGrandTotal"><?= precise_amount($data[0]->quotation_grand_total); ?></span></td>
                                             </tr>
