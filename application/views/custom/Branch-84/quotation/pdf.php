@@ -30,20 +30,20 @@ if (@$converted_rate)
         <style><?php $this->load->view('common/common_pdf'); ?></style>
     </head>
     <body>
-        <span style="float: right; margin-top: -25px"><small style="font-size: 8px;line-height: 2"><?=($invoice_type != '' ? '('.$invoice_type.')' : ''); ?></small></h3>
-           <br><p class="right"></p></span>
+        <!-- <span style="float: right; margin-top: -25px"><small style="font-size: 8px;line-height: 2"><?=($invoice_type != '' ? '('.$invoice_type.')' : ''); ?></small></h3>
+           <br><p class="right"></p></span> -->
         
-            <table class="item-table-th item-table-td table mt-20" style="min-height: 300px">
+            <table class="item-table-th item-table-td table" style="min-height: 300px">
                 <tr>
                     <th colspan="5" style="text-align: left;">Date : <?php
-                                $date = $data[0]->sales_date;
+                                $date = $data[0]->quotation_date;
                                 $date_for = date('d-m-Y', strtotime($date));
                                 echo $date_for;
                                 ?> </th>
-                <th colspan="6" style="text-align:left;">TAX INVOICE</th>
+                <th colspan="6" style="text-align:center;">TAX INVOICE</th>
                 <th colspan="5" style="text-align: right;">Bill No : <?php
-                                if (isset($data[0]->sales_brand_invoice_number)) {
-                                    echo $data[0]->sales_brand_invoice_number;
+                                if (isset($data[0]->quotation_invoice_number)) {
+                                    echo $data[0]->quotation_invoice_number;
                                 }
                                 ?> 
                 </th>
@@ -118,8 +118,8 @@ if (@$converted_rate)
                             <td style="width:45%">Bill No : </td>
                             <td class="uppercase" style="text-align: left;">
                                 <?php
-                                if (isset($data[0]->sales_invoice_number)) {
-                                    echo $data[0]->sales_invoice_number;
+                                if (isset($data[0]->quotation_invoice_number)) {
+                                    echo $data[0]->quotation_invoice_number;
                                 }
                                 ?>                            
                             </td>
@@ -128,7 +128,7 @@ if (@$converted_rate)
                             <td style="width:33%">Date : </td>
                             <td class="uppercase" style="text-align: left;">
                                 <?php
-                                $date = $data[0]->sales_date;
+                                $date = $data[0]->quotation_date;
                                 $date_for = date('d-m-Y', strtotime($date));
                                 echo $date_for;
                                 ?>                            
@@ -265,97 +265,97 @@ if (@$converted_rate)
                 } else {
                     $product_name = $value->service_name;
                 }
-                $gst = round(abs($value->sales_item_igst_percentage), 2) + round(abs($value->sales_item_cgst_percentage), 2) + round(abs($value->sales_item_sgst_percentage), 2);
+                $gst = round(abs($value->quotation_item_igst_percentage), 2) + round(abs($value->quotation_item_cgst_percentage), 2) + round(abs($value->quotation_item_sgst_percentage), 2);
 
-                $tot_cgst_per += $value->sales_item_cgst_percentage;
-                $tot_sgst_per += $value->sales_item_sgst_percentage;
-                $tot_igst_per += $value->sales_item_igst_percentage;
+                $tot_cgst_per += $value->quotation_item_cgst_percentage;
+                $tot_sgst_per += $value->quotation_item_sgst_percentage;
+                $tot_igst_per += $value->quotation_item_igst_percentage;
 
-                $gst_amount = $value->sales_item_igst_amount + $value->sales_item_cgst_amount + $value->sales_item_sgst_amount;
-                $discount_amount = $value->sales_item_scheme_discount_amount + $value->sales_item_discount_amount;
+                $gst_amount = $value->quotation_item_igst_amount + $value->quotation_item_cgst_amount + $value->quotation_item_sgst_amount;
+                $discount_amount = $value->quotation_item_scheme_discount_amount + $value->quotation_item_discount_amount;
                 if ($value->item_discount_percentage == NULL || $value->item_discount_percentage == '') {
                     $discount_per = 0;
                 } else {
                     $discount_per = $value->item_discount_percentage;
                 }
-                $discount_percentage = $discount_per + $value->sales_item_scheme_discount_percentage;
-                $grand_total += $value->sales_item_grand_total;
+                $discount_percentage = $discount_per + $value->quotation_item_scheme_discount_percentage;
+                $grand_total += $value->quotation_item_grand_total;
                 $tot_gst += $gst_amount;
-                $tot_mrp += $value->sales_item_mrp_price;
-                $tot_qty += $value->sales_item_quantity;
-                $tot_qty_free += $value->sales_item_free_quantity;
-                $tot_price += $value->sales_item_unit_price;
+                $tot_mrp += $value->quotation_item_mrp_price;
+                $tot_qty += $value->quotation_item_quantity;
+                $tot_qty_free += $value->quotation_item_free_quantity;
+                $tot_price += $value->quotation_item_unit_price;
                 $tot_discount += $discount_amount;
-                $tot_taxable += $value->sales_item_taxable_value;
-                $tot_igst += $value->sales_item_igst_amount;
-                $tot_sgst += $value->sales_item_sgst_amount;
-                $tot_cgst += $value->sales_item_cgst_amount;
+                $tot_taxable += $value->quotation_item_taxable_value;
+                $tot_igst += $value->quotation_item_igst_amount;
+                $tot_sgst += $value->quotation_item_sgst_amount;
+                $tot_cgst += $value->quotation_item_cgst_amount;
                 ?>
                 <tr>
                     <td align="left"><?php echo $i; ?></td>
                     <td align="left" style="width: 20%;"><?php echo strtoupper(strtolower($product_name)); ?></td>
                     <td align="left"><?php echo $value->product_hsn_sac_code; ?></td>
                     <td></td>                    
-                    <td align="right"><?php echo precise_amount($value->sales_item_mrp_price); ?></td>
-                    <td align="right"><?php echo precise_amount($value->sales_item_quantity); ?></td>
-                    <td align="right"><?php echo precise_amount($value->sales_item_unit_price); ?></td>
+                    <td align="right"><?php echo precise_amount($value->quotation_item_mrp_price); ?></td>
+                    <td align="right"><?php echo precise_amount($value->quotation_item_quantity); ?></td>
+                    <td align="right"><?php echo precise_amount($value->quotation_item_unit_price); ?></td>
                     <td align="right"><?php echo precise_amount($value->item_discount_percentage); ?></td>
-                    <td align="right"><?php echo precise_amount($value->sales_item_discount_amount); ?></td>
-                    <td align="right"><?php echo precise_amount($value->sales_item_scheme_discount_percentage); ?></td>
-                    <td align="right"><?php echo precise_amount($value->sales_item_scheme_discount_amount); ?></td>
-                    <td align="right"><?php echo precise_amount($value->sales_item_cash_discount_amount); ?></td>
-                    <!-- <td align="right"><?php echo precise_amount($value->sales_item_discount_amount); ?><br>(<?php echo precise_amount($value->item_discount_percentage); ?>%)</td> -->
-                    <!-- <td align="right"><?php echo precise_amount($value->sales_item_scheme_discount_amount); ?><br>(<?php echo precise_amount($value->sales_item_scheme_discount_percentage); ?>%)</td> -->
-                    <td align="right"><?php echo precise_amount($value->sales_item_taxable_value); ?></td>
-                    <td align="right"><?php echo precise_amount($value->sales_item_tax_percentage); ?></td>
-                    <td align="right"><?php echo precise_amount($value->sales_item_tax_amount); ?></td>
-                    <!-- <td align="right"><?php echo precise_amount($value->sales_item_sgst_percentage); ?></td>
-                    <td align="right"><?php echo precise_amount($value->sales_item_sgst_amount); ?></td>
-                    <td align="right"><?php echo precise_amount($value->sales_item_cgst_percentage); ?></td>
-                    <td align="right"><?php echo precise_amount($value->sales_item_sgst_amount); ?></td> -->
-                    <td align="right"><?php echo precise_amount($value->sales_item_grand_total); ?></td>
+                    <td align="right"><?php echo precise_amount($value->quotation_item_discount_amount); ?></td>
+                    <td align="right"><?php echo precise_amount($value->quotation_item_scheme_discount_percentage); ?></td>
+                    <td align="right"><?php echo precise_amount($value->quotation_item_scheme_discount_amount); ?></td>
+                    <td align="right"><?php echo precise_amount($value->quotation_item_cash_discount_amount); ?></td>
+                    <!-- <td align="right"><?php echo precise_amount($value->quotation_item_discount_amount); ?><br>(<?php echo precise_amount($value->item_discount_percentage); ?>%)</td> -->
+                    <!-- <td align="right"><?php echo precise_amount($value->quotation_item_scheme_discount_amount); ?><br>(<?php echo precise_amount($value->quotation_item_scheme_discount_percentage); ?>%)</td> -->
+                    <td align="right"><?php echo precise_amount($value->quotation_item_taxable_value); ?></td>
+                    <td align="right"><?php echo precise_amount($value->quotation_item_tax_percentage); ?></td>
+                    <td align="right"><?php echo precise_amount($value->quotation_item_tax_amount); ?></td>
+                    <!-- <td align="right"><?php echo precise_amount($value->quotation_item_sgst_percentage); ?></td>
+                    <td align="right"><?php echo precise_amount($value->quotation_item_sgst_amount); ?></td>
+                    <td align="right"><?php echo precise_amount($value->quotation_item_cgst_percentage); ?></td>
+                    <td align="right"><?php echo precise_amount($value->quotation_item_sgst_amount); ?></td> -->
+                    <td align="right"><?php echo precise_amount($value->quotation_item_grand_total); ?></td>
                 </tr>
                 <?php
                     if ($igst_exist > 0) { ?>
                             <?php
 
-                            if ($value->sales_item_igst_amount <= 0) {
+                            if ($value->quotation_item_igst_amount <= 0) {
                                 echo '-';
                             } else { 
-                                $gst_summry['igst']['igst_'.$value->sales_item_igst_percentage]['percentage'] = $value->sales_item_igst_percentage;
-                                if(@$gst_summry['igst']['igst_'.$value->sales_item_igst_percentage]['amount']){
-                                    $gst_summry['igst']['igst_'.$value->sales_item_igst_percentage]['gst_amount'] += $value->sales_item_igst_amount;
-                                    $gst_summry['igst']['igst_'.$value->sales_item_igst_percentage]['amount'] += $value->sales_item_taxable_value;
+                                $gst_summry['igst']['igst_'.$value->quotation_item_igst_percentage]['percentage'] = $value->quotation_item_igst_percentage;
+                                if(@$gst_summry['igst']['igst_'.$value->quotation_item_igst_percentage]['amount']){
+                                    $gst_summry['igst']['igst_'.$value->quotation_item_igst_percentage]['gst_amount'] += $value->quotation_item_igst_amount;
+                                    $gst_summry['igst']['igst_'.$value->quotation_item_igst_percentage]['amount'] += $value->quotation_item_taxable_value;
                                 }else{
-                                    $gst_summry['igst']['igst_'.$value->sales_item_igst_percentage]['gst_amount'] = $value->sales_item_igst_amount;
-                                    $gst_summry['igst']['igst_'.$value->sales_item_igst_percentage]['amount'] = $value->sales_item_taxable_value;
+                                    $gst_summry['igst']['igst_'.$value->quotation_item_igst_percentage]['gst_amount'] = $value->quotation_item_igst_amount;
+                                    $gst_summry['igst']['igst_'.$value->quotation_item_igst_percentage]['amount'] = $value->quotation_item_taxable_value;
                                 } 
                             } ?>
                     <?php } elseif ($cgst_exist > 0 || $sgst_exist > 0) { ?>
                             <?php
-                            if ($value->sales_item_cgst_amount <= 0) {
+                            if ($value->quotation_item_cgst_amount <= 0) {
                                 echo '-';
                             } else {
-                                $gst_summry['cgst']['cgst_'.$value->sales_item_cgst_percentage]['percentage'] = $value->sales_item_cgst_percentage;
-                                if(@$gst_summry['cgst']['cgst_'.$value->sales_item_cgst_percentage]['amount']){
-                                    $gst_summry['cgst']['cgst_'.$value->sales_item_cgst_percentage]['gst_amount'] += $value->sales_item_cgst_amount;
-                                    $gst_summry['cgst']['cgst_'.$value->sales_item_cgst_percentage]['amount'] += $value->sales_item_taxable_value;
+                                $gst_summry['cgst']['cgst_'.$value->quotation_item_cgst_percentage]['percentage'] = $value->quotation_item_cgst_percentage;
+                                if(@$gst_summry['cgst']['cgst_'.$value->quotation_item_cgst_percentage]['amount']){
+                                    $gst_summry['cgst']['cgst_'.$value->quotation_item_cgst_percentage]['gst_amount'] += $value->quotation_item_cgst_amount;
+                                    $gst_summry['cgst']['cgst_'.$value->quotation_item_cgst_percentage]['amount'] += $value->quotation_item_taxable_value;
                                 }else{
-                                    $gst_summry['cgst']['cgst_'.$value->sales_item_cgst_percentage]['gst_amount'] = $value->sales_item_cgst_amount;
-                                    $gst_summry['cgst']['cgst_'.$value->sales_item_cgst_percentage]['amount'] = $value->sales_item_taxable_value;
+                                    $gst_summry['cgst']['cgst_'.$value->quotation_item_cgst_percentage]['gst_amount'] = $value->quotation_item_cgst_amount;
+                                    $gst_summry['cgst']['cgst_'.$value->quotation_item_cgst_percentage]['amount'] = $value->quotation_item_taxable_value;
                                 } ?>
                             <?php } ?>
                             <?php
-                            if ($value->sales_item_sgst_amount <= 0) {
+                            if ($value->quotation_item_sgst_amount <= 0) {
                                 echo '-';
                             } else {
-                                $gst_summry['sgst']['cgst_'.$value->sales_item_sgst_percentage]['percentage'] = $value->sales_item_sgst_percentage;
-                                if(@$gst_summry['sgst']['cgst_'.$value->sales_item_sgst_percentage]['amount']){
-                                    $gst_summry['sgst']['cgst_'.$value->sales_item_sgst_percentage]['gst_amount'] += $value->sales_item_sgst_amount;
-                                    $gst_summry['sgst']['cgst_'.$value->sales_item_sgst_percentage]['amount'] += $value->sales_item_taxable_value;
+                                $gst_summry['sgst']['cgst_'.$value->quotation_item_sgst_percentage]['percentage'] = $value->quotation_item_sgst_percentage;
+                                if(@$gst_summry['sgst']['cgst_'.$value->quotation_item_sgst_percentage]['amount']){
+                                    $gst_summry['sgst']['cgst_'.$value->quotation_item_sgst_percentage]['gst_amount'] += $value->quotation_item_sgst_amount;
+                                    $gst_summry['sgst']['cgst_'.$value->quotation_item_sgst_percentage]['amount'] += $value->quotation_item_taxable_value;
                                 }else{
-                                    $gst_summry['sgst']['cgst_'.$value->sales_item_sgst_percentage]['gst_amount'] = $value->sales_item_sgst_amount;
-                                    $gst_summry['sgst']['cgst_'.$value->sales_item_sgst_percentage]['amount'] = $value->sales_item_taxable_value;
+                                    $gst_summry['sgst']['cgst_'.$value->quotation_item_sgst_percentage]['gst_amount'] = $value->quotation_item_sgst_amount;
+                                    $gst_summry['sgst']['cgst_'.$value->quotation_item_sgst_percentage]['amount'] = $value->quotation_item_taxable_value;
                                 }?>
                             <?php } ?>
                         </td>
@@ -386,16 +386,16 @@ if (@$converted_rate)
                         </tr>
                         <?php
                         foreach ($hsn as $key => $value) {
-                            $tax_amount = $value->sales_item_sgst_amount + $value->sales_item_cgst_amount;
+                            $tax_amount = $value->quotation_item_sgst_amount + $value->quotation_item_cgst_amount;
                             if($value->hsn_sac_code != ''){
                             ?>
                             <tr>
                                 <td><?php echo $value->hsn_sac_code; ?></td>
-                                <td><?php echo precise_amount($value->sales_item_taxable_value); ?></td>
-                                <td><?php echo precise_amount($value->sales_item_cgst_percentage); ?></td>
-                                <td><?php echo precise_amount($value->sales_item_cgst_amount); ?></td>
-                                <td><?php echo precise_amount($value->sales_item_sgst_percentage); ?></td>
-                                <td><?php echo precise_amount($value->sales_item_sgst_amount); ?></td>
+                                <td><?php echo precise_amount($value->quotation_item_taxable_value); ?></td>
+                                <td><?php echo precise_amount($value->quotation_item_cgst_percentage); ?></td>
+                                <td><?php echo precise_amount($value->quotation_item_cgst_amount); ?></td>
+                                <td><?php echo precise_amount($value->quotation_item_sgst_percentage); ?></td>
+                                <td><?php echo precise_amount($value->quotation_item_sgst_amount); ?></td>
                                 <td><?php echo precise_amount($tax_amount); ?></td>
                             </tr>
                             <?php
@@ -467,23 +467,23 @@ if (@$converted_rate)
             <td colspan="5" style="text-align: left;">
                 <table style="font-size:14px;">
                     <tr><th style="text-align: right;">Taxable Amt:</th>
-                        <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->sales_sub_total)); ?></td>
+                        <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->quotation_sub_total)); ?></td>
                     </tr>
                     <tr><th style="text-align: right;">Total Disc:</th>
-                        <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->sales_discount_amount)); ?></td>
+                        <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->quotation_discount_amount)); ?></td>
                     </tr>
                     <tr><th style="text-align: right;">Net Amt:</th>
-                        <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->sales_grand_total)); ?></td>
+                        <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->quotation_grand_total)); ?></td>
                     </tr>
                     <tr><th style="text-align: right;">Net Payable:</th>
-                        <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->sales_grand_total)); ?></td>
+                        <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->quotation_grand_total)); ?></td>
                     </tr>
                 </table>
             </td>
         </tr>
         <tr>
-            <th colspan="10" style="text-align: left;">Amount In Words : <b><?php echo $data[0]->currency_name . " " . $this->numbertowords->convert_number(precise_amount(($data[0]->sales_grand_total * $convert_rate)), $data[0]->unit, $data[0]->decimal_unit) . " Only"; ?></td>
-            <th colspan="6" style="text-align: right;">Grand Total : <?php echo precise_amount($data[0]->sales_grand_total) ?></td>
+            <th colspan="10" style="text-align: left;">Amount In Words : <b><?php echo $data[0]->currency_name . " " . $this->numbertowords->convert_number(precise_amount(($data[0]->quotation_grand_total * $convert_rate)), $data[0]->unit, $data[0]->decimal_unit) . " Only"; ?></td>
+            <th colspan="6" style="text-align: right;">Grand Total : <?php echo precise_amount($data[0]->quotation_grand_total) ?></td>
         </tr>
         <tr>
             <td colspan="10" style="text-align: left;">Products Once Sold Cannot be taken back or exchanged. Please check items before taking  delivery. Subject to State jurisdiction Only.</td>

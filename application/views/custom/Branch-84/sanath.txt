@@ -39,6 +39,17 @@ PDF "- Template size variation
 - Header in each page"                                              
 Reports   - Brand wise reports  - One more reports need to developed as per brand with all the amount                                               
 
+Changes after final demo on 03-04-2020
+- On sales if QTY going zero than need to give alert 
+- Everywhere brand need to rename as a company
+- Purchase inline serach need to do.
+- disable TCS and Cess from every where
+- Sales PDF issue need to fix
+- Sales pdf bank details section need to remove
+- Module settings need to change lable as per module like in product there is no invoice prefix.
+- Product bulk import need to check
+- Brand '+' icon need to add
+
 
 ---------------------- Sanath----------------------
 
@@ -156,3 +167,35 @@ password
 - inline search in purchase
 - NAN issue need to fixed
 - Instead of plus icon need to give inline discount add (text box)
+
+custom :
+product/all files
+sales/edit.php
+stock/brand_closing_stock_list.php
+brand/
+sales/
+quotation/
+purchase/
+purchase_order/
+
+
+controller :
+product
+stock
+sales
+quotation
+
+libraries
+common
+ssp
+
+assets
+custom/js/sales_basic_common.js
+custom/js/purchase_basic_common.js
+
+ALTER TABLE `quotation_item` ADD `quotation_item_uom_id` INT NOT NULL AFTER `quotation_item_out_tax_amount`;
+ALTER TABLE `quotation_item` ADD `quotation_item_scheme_discount_id` INT NOT NULL AFTER `quotation_item_mrgn_discount_amount`, ADD `quotation_item_scheme_discount_amount` DECIMAL(25,5) NOT NULL AFTER `quotation_item_scheme_discount_id`, ADD `quotation_item_scheme_discount_percentage` DECIMAL(25,2) NOT NULL AFTER `quotation_item_scheme_discount_amount`;
+ALTER TABLE `quotation_item` ADD `quotation_item_mrp_price` DECIMAL(25,5) NOT NULL AFTER `quotation_item_basic_total`;
+ALTER TABLE `quotation_item` ADD `quotation_item_free_quantity` INT NOT NULL AFTER `quotation_item_quantity`;
+ALTER TABLE `quotation_item` ADD `quotation_item_cash_discount_amount` DECIMAL(25,5) NOT NULL AFTER `quotation_item_discount_amount`;
+ALTER TABLE `sales_item` CHANGE `sales_item_cash_discount_amount` `sales_item_cash_discount_amount` DECIMAL(25,5) NOT NULL;

@@ -236,7 +236,7 @@ class SSP {
 		// Total data set length
 		$resTotalLength = self::sql_exec( $db,
 			"SELECT COUNT({$primaryKey})
-			 FROM   $table"
+			 FROM   $table $where $group_by"
 		);
 		$recordsTotal = $resTotalLength[0][0];
 		/*

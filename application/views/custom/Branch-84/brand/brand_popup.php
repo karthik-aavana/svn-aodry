@@ -3,13 +3,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Add Brand</h4>
+                <h4 class="modal-title">Add Company</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group col-md-12">
-                            <label for="brand_name">Brand Name
+                            <label for="brand_name">Company Name
                                 <span class="validation-color">*</span>
                             </label>
                             <input type="text" class="form-control" id="brand_name" name="brand_name" value="<?php echo set_value('brand_name'); ?>">

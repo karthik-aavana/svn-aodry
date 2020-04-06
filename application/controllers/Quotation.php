@@ -462,6 +462,9 @@ class Quotation extends MY_Controller {
                             "item_type" => $value->item_type,
                             "quotation_item_quantity" => $value->item_quantity ? (float) $value->item_quantity : 0,
                             "quotation_item_unit_price" => $value->item_price ? (float) $value->item_price : 0,
+                            "quotation_item_free_quantity"   => (@$value->free_item_quantity ? (float) $value->free_item_quantity : 0),
+                            "quotation_item_mrp_price"      => (@$value->item_mrp_price ? (float) $value->item_mrp_price : 0),
+                            "quotation_item_cash_discount_amount" => (@$value->item_cash_discount ? (float) $value->item_cash_discount : 0) ,
                             "quotation_item_sub_total" => $value->item_sub_total ? (float) $value->item_sub_total : 0,
                             "quotation_item_taxable_value" => $value->item_taxable_value ? (float) $value->item_taxable_value : 0,
                             "quotation_item_discount_amount" => (@$value->item_discount_amount ? (float) $value->item_discount_amount : 0),
@@ -483,6 +486,7 @@ class Quotation extends MY_Controller {
                             "quotation_item_tax_amount" => $value->item_tax_amount ? (float) $value->item_tax_amount : 0,
                             'quotation_item_tax_cess_amount' => 0,
                             "quotation_item_description" => $value->item_description ? $value->item_description : "",
+                            "quotation_item_uom_id"  => (@$value->item_uom ? $value->item_uom : ""),
                             "debit_note_quantity" => 0,
                             "quotation_id" => $quotation_id);
 
@@ -1225,9 +1229,12 @@ class Quotation extends MY_Controller {
                             "item_type" => $value->item_type,
                             "quotation_item_quantity" => $value->item_quantity ? (float) $value->item_quantity : 0,
                             "quotation_item_unit_price" => $value->item_price ? (float) $value->item_price : 0,
+                            "quotation_item_free_quantity"   => (@$value->free_item_quantity ? (float) $value->free_item_quantity : 0),
+                            "quotation_item_mrp_price"      => (@$value->item_mrp_price ? (float) $value->item_mrp_price : 0),
+                            "quotation_item_cash_discount_amount" => (@$value->item_cash_discount ? (float) $value->item_cash_discount : 0) ,
                             "quotation_item_sub_total" => $value->item_sub_total ? (float) $value->item_sub_total : 0,
                             "quotation_item_taxable_value" => $value->item_taxable_value ? (float) $value->item_taxable_value : 0,
-                            "quotation_item_discount_amount" => $value->item_discount_amount ? (float) $value->item_discount_amount : 0,
+                            "quotation_item_discount_amount" => (@$value->item_discount_amount ? (float) $value->item_discount_amount : 0),
                             "quotation_item_discount_id" => $value->item_discount_id ? (float) $value->item_discount_id : 0,
                             "quotation_item_tds_id" => $value->item_tds_id ? (float) $value->item_tds_id : 0,
                             "quotation_item_tds_percentage" => $value->item_tds_percentage ? (float) $value->item_tds_percentage : 0,
@@ -1246,6 +1253,7 @@ class Quotation extends MY_Controller {
                             "quotation_item_tax_cess_percentage" => 0,
                             "quotation_item_tax_cess_amount" => 0,
                             "quotation_item_description" => $value->item_description ? $value->item_description : "",
+                            "quotation_item_uom_id"  => (@$value->item_uom ? $value->item_uom : ""),
                             "debit_note_quantity" => 0,
                             "quotation_id" => $quotation_id);
 
@@ -1441,6 +1449,11 @@ class Quotation extends MY_Controller {
         $pdf_json = $data['access_settings'][0]->pdf_settings;
         $rep = str_replace("\\", '', $pdf_json);
         $data['pdf_results'] = json_decode($rep, true);
+        
+        if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath')){
+            $hsn_data = $this->common->hsn_quotation_list_item_field1($id);
+            $data['hsn'] = $this->general_model->getPageJoinRecords($hsn_data);
+        }
 
         $html = $this->load->view('quotation/pdf', $data, true);
 

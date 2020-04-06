@@ -1065,8 +1065,8 @@ class Sales extends MY_Controller{
                             "item_id"                    => $value->item_id ,
                             "item_type"                  => $value->item_type ,
                             "sales_item_quantity"        => $value->item_quantity ? (float) $value->item_quantity : 0 ,
-                            "sales_item_free_quantity"   => (@$value->free_item_quantity ? (float) $value->free_item_quantity : 0),
                             "sales_item_unit_price"      => $value->item_price ? (float) $value->item_price : 0 ,
+                            "sales_item_free_quantity"   => (@$value->free_item_quantity ? (float) $value->free_item_quantity : 0),
                             "sales_item_mrp_price"      => (@$value->item_mrp_price ? (float) $value->item_mrp_price : 0),
                             "sales_item_sub_total"       => $value->item_sub_total ? (float) $value->item_sub_total : 0 ,
                             "sales_item_taxable_value"   => $value->item_taxable_value ? (float) $value->item_taxable_value : 0 ,
@@ -3741,7 +3741,7 @@ class Sales extends MY_Controller{
         $html = ob_get_clean();
         $html = utf8_encode($html);
         $data = $this->getSalesDetails($id,$this->input->post());
-        //echo "<pre>";print_r($data);exit();
+        
         $invoice_type = $this->input->post('pdf_type_check');
         $data['invoice_type'] = '';
             if ($invoice_type == "original")

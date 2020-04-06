@@ -6,7 +6,7 @@ $this->load->view('layout/header');
     <div class="fixed-breadcrumb">
         <ol class="breadcrumb abs-ol">
             <li><a href="<?php echo base_url('auth/dashboard'); ?>"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-            <li class="active">Brand</li>
+            <li class="active">Company</li>
         </ol>
     </div>
     <section class="content mt-50">
@@ -15,8 +15,8 @@ $this->load->view('layout/header');
                 <div class="box">
                 	<div id="plus_btn">
 	                    <div class="box-header with-border">
-	                        <h3 class="box-title">Brand</h3>
-                            <a class="btn btn-sm btn-info pull-right addBrand" >Add Brand</a>
+	                        <h3 class="box-title">Company</h3>
+                            <a class="btn btn-sm btn-info pull-right addBrand" >Add Company</a>
 	                    </div>
                     </div>
                     <div id="filter">
@@ -28,13 +28,13 @@ $this->load->view('layout/header');
                             <thead>
                                 <tr>
                                 	<th width="9px">#</th>
-                                    <th>Brand Name</th>
-                                    <th>Brand<br>First Prefix</th>
-                                    <th>Brand<br>Last Prefix</th>
-                                    <!-- <th>Brand<br>Separation</th> -->
-                                    <th>Brand<br>Type</th>
-                                    <th>Brand<br>Creation</th>
-                                    <th>Brand<br>Readonly</th>
+                                    <th>Company Name</th>
+                                    <th>Invoice<br>First Prefix</th>
+                                    <th>Invoice<br>Last Prefix</th>
+                                    <!-- <th>Company<br>Separation</th> -->
+                                    <th>Invoice Number<br>Type</th>
+                                    <th>Invoice Number<br>Creation</th>
+                                    <th>Invoice Number<br>Readonly</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -66,6 +66,7 @@ $this->load->view('brand/brand_popup');
         var table = $('#list_datatable').DataTable({
             "processing": true,
             "serverSide": true,
+            "pageLength": 50,
             "order": [[ 0, "desc" ]],
             "ajax": {
                 "url": base_url + "brand/getBrandList",

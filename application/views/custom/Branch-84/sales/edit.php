@@ -434,7 +434,7 @@ $this->load->view('layout/header');
                                                     <?php } ?> -->
                                                     <?php if ($access_settings[0]->tax_type == 'gst' || $access_settings[0]->tax_type == 'single_tax') { ?>
                                                         <th class="span2" width="7%">GST(%)<br><a href="javascript:void(0);" class="gst_plus"><strong>+</strong></a></th>
-                                                        <th class="span2" width="7%">Cess(%)</th>
+                                                        <!-- <th class="span2" width="7%">Cess(%)</th> -->
                                                     <?php } ?>
                                                     <?php
                                                     if ($access_settings[0]->discount_visible == 'yes') { ?>
@@ -480,7 +480,7 @@ $this->load->view('layout/header');
                                                         <td>
                                                             <input type='text' class='form-control form-fixer text-center float_number' value='<?php
                                                             echo $key->sales_item_quantity ? $key->sales_item_quantity : 0;
-                                                            ?>' data-rule='quantity' name='item_quantity'>
+                                                            ?>' data-rule='quantity' name='item_quantity' stock='<?=$key->stock;?>'>
                                                         </td>
                                                         <td>
                                                             <input type='text' class='form-control form-fixer text-center float_number' value='<?php
@@ -638,7 +638,7 @@ $this->load->view('layout/header');
                                                                     ?></select>
                                                             </div> <span id='item_tax_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?= $key->sales_item_tax_amount ? precise_amount($key->sales_item_tax_amount) : 0 ?></span>
                                                         </td>
-                                                        <td>
+                                                        <!-- <td>
                                                             <input type='hidden' name='item_tax_cess_id' value='<?= ($key->sales_item_tax_cess_id ? $key->sales_item_tax_cess_id : 0); ?>'>
                                                             <input type='hidden' name='item_tax_cess_percentage' value='<?= $key->sales_item_tax_cess_percentage ? (float) ($key->sales_item_tax_cess_percentage) : 0; ?>'>
                                                             <input type='hidden' name='item_tax_cess_amount' value='<?= $key->sales_item_tax_cess_amount ? precise_amount($key->sales_item_tax_cess_amount) : 0 ?>'>
@@ -654,7 +654,7 @@ $this->load->view('layout/header');
                                                                     }
                                                                     ?></select>
                                                             </div> <span id='item_tax_cess_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?= $key->sales_item_tax_cess_amount ? precise_amount($key->sales_item_tax_cess_amount) : 0 ?></span>
-                                                        </td>
+                                                        </td> -->
                                                         <!-- tax area  -->
                                                         <?php
                                                         if ($access_settings[0]->discount_visible == 'yes') { ?>
@@ -680,7 +680,7 @@ $this->load->view('layout/header');
                                                             "item_discount_percentage" => $key->item_discount_percentage ? precise_amount($key->item_discount_percentage) : 0,
                                                             "item_scheme_discount_amount" => (@$key->sales_item_scheme_discount_amount ? precise_amount($key->sales_item_scheme_discount_amount) : 0), 
                                                             "item_scheme_discount_id" => (@$key->sales_item_scheme_discount_id ? $key->sales_item_scheme_discount_id : 0), 
-                                                            "item_scheme_discount_percentage" => (@$key->item_scheme_discount_percentage ? precise_amount($key->item_scheme_discount_percentage) : 0), 
+                                                            "item_scheme_discount_percentage" => (@$key->sales_item_scheme_discount_percentage ? precise_amount($key->sales_item_scheme_discount_percentage) : 0), 
                                                             "item_tax_amount" => $key->sales_item_tax_amount ? precise_amount($key->sales_item_tax_amount) : 0, "item_tax_id" => $key->sales_item_tax_id ? $key->sales_item_tax_id : 0, "item_tax_cess_amount" => $key->sales_item_tax_cess_amount ? precise_amount($key->sales_item_tax_cess_amount) : 0, "item_tax_cess_id" => $key->sales_item_tax_cess_id ? $key->sales_item_tax_cess_id : 0, "item_tax_cess_percentage" => $key->sales_item_tax_cess_percentage ? precise_amount($key->sales_item_tax_cess_percentage) : 0, "item_tax_percentage" => $key->sales_item_tax_percentage ? precise_amount($key->sales_item_tax_percentage) : 0, "item_tds_amount" => $key->sales_item_tds_amount ? precise_amount($key->sales_item_tds_amount) : 0, "item_tds_id" => $key->sales_item_tds_id ? $key->sales_item_tds_id : 0, "item_tds_percentage" => $key->sales_item_tds_percentage ? precise_amount($key->sales_item_tds_percentage) : 0, "item_taxable_value" => $key->sales_item_taxable_value ? precise_amount($key->sales_item_taxable_value) : 0, "item_grand_total" => $key->sales_item_grand_total ? precise_amount($key->sales_item_grand_total) : 0);
                                                         if ($key->item_type == 'product' || $key->item_type == 'product_inventory') {
                                                             $sales_temp['item_code'] = $key->product_code;
@@ -758,12 +758,12 @@ $this->load->view('layout/header');
                                                                 <option value="">Select</option>
                                                             </select>
                                                         </div><span id="item_tax_lbl_0" class="pull-right" style="color:red;">0.00</span></td>
-                                                    <td>
+                                                    <!-- <td>
                                                         <div class="form-group" style="margin-bottom:0px !important;">
                                                             <select class="form-control open_tax form-fixer select2 select2-hidden-accessible" name="item_tax_cess" style="width: 100%;" tabindex="-1" aria-hidden="true"  readonly="true">
                                                                 <option value="">Select</option>
                                                             </select>
-                                                        </div><span id="item_tax_cess_lbl_0" class="pull-right" style="color:red;">0.00</span></td>
+                                                        </div><span id="item_tax_cess_lbl_0" class="pull-right" style="color:red;">0.00</span></td> -->
                                                     <?php } ?>
                                                     <?php
                                                     if ($access_settings[0]->discount_visible == 'yes') { ?>

@@ -2874,7 +2874,7 @@ class Common
     }
 
     public function product_field($product_id = ""){
-        $string = "p.product_id,p.product_code,p.product_hsn_sac_code,p.product_name,p.product_price,p.product_quantity,p.product_damaged_quantity,p.product_gst_id as product_tax_id,p.product_gst_value as product_tax_value,p.product_tds_id,p.product_tds_value,p.product_details,p.ledger_id,td.tax_name as module_type,p.product_batch,p.product_quantity,p.product_selling_price, p.product_mrp_price, p.product_discount_id,p.margin_discount_value,p.margin_discount_id,p.product_basic_price,p.product_unit,u.uom,p.equal_unit_number,p.equal_uom_id";
+        $string = "p.product_id,p.product_code,p.product_hsn_sac_code,p.product_name,p.product_price,p.product_quantity,p.product_damaged_quantity,p.product_gst_id as product_tax_id,p.product_gst_value as product_tax_value,p.product_tds_id,p.product_tds_value,p.product_details,p.ledger_id,td.tax_name as module_type,p.product_batch,p.product_quantity,p.product_opening_quantity,p.product_selling_price, p.product_mrp_price, p.product_discount_id,p.margin_discount_value,p.margin_discount_id,p.product_basic_price,p.product_unit,u.uom,p.equal_unit_number,p.equal_uom_id";
         $table = "products p";
         $join  = [
             'tax td' => 'td.tax_id = p.product_tds_id' . '#' . 'left',
@@ -3970,7 +3970,7 @@ class Common
     }
     public function sales_items_product_list_field($sales_id)
     {
-        $string = "si.*,pr.product_id,pr.product_code,pr.product_name,pr.packing,pr.mfg_date,pr.exp_date,b.brand_name,pr.product_image, pr.product_hsn_sac_code,pr.product_price,dt.discount_value as item_discount_percentage,pr.product_tax_id as item_tax_id,pr.product_tax_value as item_tax_percentage,td.tax_name as tds_module_type,pr.product_batch,U.uom as product_unit, US.uom as product_unit_sales";
+        $string = "si.*,pr.product_id,pr.product_code,pr.product_name,pr.packing,pr.mfg_date,pr.exp_date,b.brand_name,pr.product_image, SUM(pr.product_quantity + pr.product_opening_quantity) as stock, pr.product_hsn_sac_code,pr.product_price,dt.discount_value as item_discount_percentage,pr.product_tax_id as item_tax_id,pr.product_tax_value as item_tax_percentage,td.tax_name as tds_module_type,pr.product_batch,U.uom as product_unit, US.uom as product_unit_sales";
         $table  = "sales_item si";
         $join   = [
             'products pr' => 'si.item_id = pr.product_id',
@@ -4294,7 +4294,9 @@ class Common
                    c.customer_gstin_number,
                    c.customer_state_id,
                    c.customer_tan_number,
-                   c.customer_pan_number
+                   c.customer_pan_number,
+                   c.drug_licence_no,
+                   c.food_licence_number,
                    ";
         $table = "quotation q";
         $join  = [
@@ -14555,6 +14557,33 @@ public function tds_report_sales_list(){
         $order = array();
         $filter = array();
         $where['S.sales_id'] = $sales_id;
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'join'   => $join,
+            'filter' => $filter,
+            'order'  => $order,
+            'group'  => $group
+        );
+        return $data;
+    }
+
+    public function hsn_quotation_list_item_field1($quotation_id){
+
+        $string = "sum(SI.quotation_item_taxable_value) as quotation_item_taxable_value, S.quotation_id, SI.quotation_item_igst_percentage, SI.quotation_item_tax_percentage, SI.quotation_item_sgst_percentage,sum(SI.quotation_item_sub_total) as quotation_item_sub_total, sum(SI.quotation_item_quantity) as quotation_item_quantity, SI.quotation_item_cgst_percentage, SI.quotation_item_tax_cess_percentage, sum(SI.quotation_item_igst_amount) as quotation_item_igst_amount, sum(SI.quotation_item_sgst_amount) as quotation_item_sgst_amount, sum(SI.quotation_item_cgst_amount) as quotation_item_cgst_amount, sum(SI.quotation_item_tax_cess_amount) as quotation_item_tax_cess_amount, 
+            CASE SI.item_type when 'product' then P.product_hsn_sac_code 
+                when 'service' then SR.service_hsn_sac_code 
+                END as  hsn_sac_code, ";
+        $table  = "quotation_item SI";
+        $join   = ['quotation S' => 'S.quotation_id = SI.quotation_id', 
+                'products P'   => 'SI.item_id = P.product_id  and SI.item_type = "product"' . '#' . 'left',
+                'services SR'   => 'SI.item_id = SR.service_id and SI.item_type = "service"' . '#' . 'left',
+                'hsn hs' => '(hs.hsn_code = P.product_hsn_sac_code) OR (hs.hsn_code = SR.service_hsn_sac_code)'. '#' . 'left'];
+        $group = array('hsn_sac_code');
+        $order = array();
+        $filter = array();
+        $where['S.quotation_id'] = $quotation_id;
         $data = array(
             'string' => $string,
             'table'  => $table,

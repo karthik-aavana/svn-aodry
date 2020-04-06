@@ -11,8 +11,8 @@ $this->load->view('layout/header');
                 <li><a href="<?php echo base_url('auth/dashboard'); ?>"><i class="fa fa-dashboard"></i>
                     Dashboard</a>
                 </li>
-                <li><a href="<?php echo base_url('brand'); ?>">Brand</a></li>
-                <li class="active">Add Brand </li>
+                <li><a href="<?php echo base_url('brand'); ?>">Company</a></li>
+                <li class="active">Add Company </li>
             </ol>
         </h5>
     </section>
@@ -22,7 +22,7 @@ $this->load->view('layout/header');
                 <div class="box">
                     <div class="box-header with-border">
                         <h3 class="box-title">
-                            Add Brand
+                            Add Company
                         </h3>
                     </div>
                     <form role="form" id="form" method="post" action="<?php echo base_url('brand/add_brand'); ?>">
@@ -30,7 +30,7 @@ $this->load->view('layout/header');
                             <div class="row"> 
                                 <div class="col-md-12">
                                     <div class="form-group col-md-12">
-                                        <label for="module_name">Brand Name
+                                        <label for="module_name">Company Name
                                             <span class="validation-color">*</span>
                                         </label>
                                         <input type="text" class="form-control" id="brand_name" name="brand_name" value="<?php echo set_value('brand_name'); ?>">
