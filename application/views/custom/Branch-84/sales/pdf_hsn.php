@@ -283,7 +283,7 @@ if (@$converted_rate)
                     if ($igst_exist > 0) { ?>
                             <?php
 
-                            if ($value->sales_item_igst_amount < 1) {
+                            if ($value->sales_item_igst_amount < 0) {
                                 echo '-';
                             } else { 
                                 $gst_summry['igst']['igst_'.$value->sales_item_igst_percentage]['percentage'] = $value->sales_item_igst_percentage;
@@ -297,7 +297,7 @@ if (@$converted_rate)
                             } ?>
                     <?php } elseif ($cgst_exist > 0 || $sgst_exist > 0) { ?>
                             <?php
-                            if ($value->sales_item_cgst_amount < 1) {
+                            if ($value->sales_item_cgst_amount < 0) {
                                 echo '-';
                             } else {
                                 $gst_summry['cgst']['cgst_'.$value->sales_item_cgst_percentage]['percentage'] = $value->sales_item_cgst_percentage;
@@ -310,7 +310,7 @@ if (@$converted_rate)
                                 } ?>
                             <?php } ?>
                             <?php
-                            if ($value->sales_item_sgst_amount < 1) {
+                            if ($value->sales_item_sgst_amount < 0) {
                                 echo '-';
                             } else {
                                 $gst_summry['sgst']['cgst_'.$value->sales_item_sgst_percentage]['percentage'] = $value->sales_item_sgst_percentage;
