@@ -1,6 +1,7 @@
 $(document).ready(function () {
-        var comp_table = $('#customer_address_table').DataTable();
+        /*var comp_table = $('#customer_address_table').DataTable();*/
         $(document).on("click", "#shipping_pop", function () {
+            var comp_table = $('#customer_address_table').DataTable();
             var billing_state = $('#billing_state').val();
             var party_id = $("#ship_to").val();
             var ship_add = $('[name=shipping_address]').val();
@@ -9,7 +10,7 @@ $(document).ready(function () {
                 'ajax': {
                     url: base_url + 'general/get_shipping_popup',
                     type: 'post',
-                    data: {'billing_state': billing_state, 'party_id': party_id, shipping_id: ship_add},
+                    data: {'billing_state': billing_state, 'party_id': party_id, 'shipping_id': ship_add},
                 },
                 "processing": true,
                 "serverSide": true,
@@ -35,10 +36,10 @@ $(document).ready(function () {
             $("#billing_addr").modal();
         });
 
-        var comp_table = $('#customer_address_table').DataTable();
         $(document).on("click", "#shipping_pop_edit", function () {
             var billing_state = $('#billing_state').val();
             var party_id = $("#ship_to").val();
+            var comp_table = $('#customer_address_table').DataTable();
             comp_table.destroy();
             var shipping_id = $('[name=shipping_address]').val();
             comp_table = $('#customer_address_table').DataTable({
@@ -77,12 +78,13 @@ $(document).ready(function () {
                 var billing_state = $('#billing_state').val();
                 var party_id = $("#ship_to").val();
                 var shipping_id = $('[name=shipping_address]').val();
+                var comp_table = $('#customer_address_table').DataTable();
                 comp_table.destroy();
                 comp_table = $('#customer_address_table').DataTable({
                     'ajax': {
                         url: base_url + 'general/get_shipping_popup',
                         type: 'post',
-                        data: {'billing_state': billing_state, 'party_id': party_id, shipping_id: shipping_id},
+                        data: {'billing_state': billing_state, 'party_id': party_id, 'shipping_id': shipping_id},
                     },
                     "processing": true,
                     "serverSide": true,
