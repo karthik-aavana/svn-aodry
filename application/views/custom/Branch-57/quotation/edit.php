@@ -309,7 +309,8 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                             } else {
                                                 $product_modal = 1;
                                                 ?>
-                                                <a href="" data-toggle="modal" data-target="#product_modal" class="open_product_modal pull-left">+ Add Product</a>
+                                                <a href="<?=base_url('product/add');?>" target="_blank">+ Add Product</a>
+                                                <!-- <a href="" data-toggle="modal" data-target="#product_modal" class="open_product_modal pull-left">+ Add Product</a> -->
                                                 <?php
                                             }
                                         }
