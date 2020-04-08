@@ -53,7 +53,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label for="brand_id">Brand<span class="validation-color">*</span></label>
+                                        <label for="brand_id">Company<span class="validation-color">*</span></label>
                                         <select class="form-control select2" id="brand_id" name="brand_id">
                                             <option value="0">General</option>
                                             <?php
@@ -93,6 +93,9 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                 }
                                                 ?>
                                             </select>
+                                            <div class="input-group-addon">
+                                                <span id="customer_pop"><i class="fa fa-map-marker icon-blue"></i></span>
+                                            </div>
                                             <input type="hidden" name="billing_address" id="billing_address" value="">
                                         </div>
                                         <span class="validation-color" id="err_customer"><?php echo form_error('customer'); ?></span>

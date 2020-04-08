@@ -69,7 +69,7 @@ $this->load->view('layout/header');
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label for="brand_id">Brand<span class="validation-color">*</span></label>
+                                        <label for="brand_id">Company<span class="validation-color">*</span></label>
                                         <select class="form-control select2" id="brand_id" name="brand_id">
                                             <option value="0">General</option>
                                             <?php

@@ -1082,7 +1082,9 @@ class Customer extends MY_Controller {
         if($this->input->post('dl_no')){
             $customer_data['drug_licence_no'] = $this->input->post('dl_no');
         }
-
+        if($this->input->post('food_ln')){
+            $customer_data['food_licence_number'] = $this->input->post('food_ln');
+        }
         $table = "customer";
         $where = array("customer_id" => $id);
         
@@ -1281,6 +1283,9 @@ class Customer extends MY_Controller {
         if($this->input->post('dl_no')){
             $customer_data['drug_licence_no'] = $this->input->post('dl_no');
         }
+        if($this->input->post('food_ln')){
+            $customer_data['food_licence_number'] = $this->input->post('food_ln');
+        }
         $table = "customer";
         if ($id = $this->general_model->insertData($table, $customer_data)) {
             //$reference_number = $this->input->post('reference_number');
@@ -1473,6 +1478,9 @@ class Customer extends MY_Controller {
         }
         if($this->input->post('dl_no')){
             $customer_data['drug_licence_no'] = $this->input->post('dl_no');
+        }
+        if($this->input->post('food_ln')){
+            $customer_data['food_licence_number'] = $this->input->post('food_ln');
         }
         $table = "customer";
         $customer_id = $this->general_model->insertData($table, $customer_data);

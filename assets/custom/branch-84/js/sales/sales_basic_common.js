@@ -20,10 +20,16 @@ $(document).ready(function () {
     });
 
     $('.discount_plus').click(function(){
+        $('#add_discount_product').find('input[name=discount_percentage_modal]').val('');
+        $('#add_discount_product').find('[name=description]').val('');
+        $('#add_discount_product').find('.validation-color').text('');
         $('#add_discount_product').modal('show');
     })
 
     $('.gst_plus').click(function(){
+        $('#tax_gst_modal').find('input[name=tax_value_gst]').val('');
+        $('#tax_gst_modal').find('[name=tax_description]').val('');
+        $('#tax_gst_modal').find('.validation-color').text('');
         $('#tax_gst_modal').modal('show');
     })
 

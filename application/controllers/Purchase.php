@@ -3017,9 +3017,8 @@ class Purchase extends MY_Controller {
         $privilege = "add_privilege";
         $data['privilege'] = $privilege;
         $section_modules = $this->get_section_modules($purchase_module_id, $modules, $privilege);
-            
-
-         $LeatherCraft_id = $this->config->item('LeatherCraft');
+        if($term == '-') $term ='';
+        $LeatherCraft_id = $this->config->item('LeatherCraft');
         if($LeatherCraft_id == $this->session->userdata('SESS_BRANCH_ID')){
             $suggestions_query = $this->common->item_suggestions_field_leathercrafr($item_access, $term);
         }else{
@@ -4472,8 +4471,7 @@ class Purchase extends MY_Controller {
         $data['pdf_results'] = json_decode($rep, true);
 
         $html = $this->load->view('purchase/pdf', $data, true);
-        echo $html;
-        exit;
+        
         include APPPATH . "third_party/dompdf/autoload.inc.php";
         //and now im creating new instance dompdf
         $dompdf = new Dompdf\Dompdf();

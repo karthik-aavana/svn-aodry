@@ -146,13 +146,13 @@ $("#err_brand_name").text("");
         $('#brand_popup').find('[name=invoice_creation] option[value='+invoice_creation+']').prop('selected',true).change();
         $('#brand_popup').find('[name=invoice_type] option[value='+invoice_type+']').prop('selected',true).change();
         $('#brand_popup').find('[name=brand_invoice_readonly] option[value='+brand_invoice_readonly+']').prop('selected',true).change();
-        $('#brand_popup .modal-title').text('Edit Brand');
+        $('#brand_popup .modal-title').text('Edit Company');
         $('#brand_popup #brand_submit').text('Update');
         $('#brand_popup').modal('show');
     })
 
     $('.addBrand').click(function(){
-        $('#brand_popup .modal-title').text('Add Brand');
+        $('#brand_popup .modal-title').text('Add Company');
         $('#brand_popup #brand_submit').text('Add');
         $('#brand_popup').find('input').val('');
         $('#brand_popup').find('select').val('').prop('selected',true).change();

@@ -37,7 +37,7 @@
                             </div>
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label for="product_brand">Brand<span class="validation-color">*</span></label>
+                                    <label for="product_brand">Company<span class="validation-color">*</span></label>
                                     <select class="form-control select2" id="product_brand" name="product_brand">
                                         <option value="0">General</option>
                                         <?php

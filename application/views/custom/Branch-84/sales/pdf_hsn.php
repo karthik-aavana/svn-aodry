@@ -40,10 +40,12 @@ if (@$converted_rate)
                                 $date_for = date('d-m-Y', strtotime($date));
                                 echo $date_for;
                                 ?> </th>
-                <th colspan="6" style="text-align:left;">TAX INVOICE</th>
+                <th colspan="6" style="text-align:center;">TAX INVOICE</th>
                 <th colspan="5" style="text-align: right;">Bill No : <?php
-                                if (isset($data[0]->sales_brand_invoice_number)) {
+                                if (isset($data[0]->sales_brand_invoice_number) && $data[0]->sales_brand_invoice_number != '') {
                                     echo $data[0]->sales_brand_invoice_number;
+                                }else{
+                                    echo $data[0]->sales_invoice_number;
                                 }
                                 ?> 
                 </th>

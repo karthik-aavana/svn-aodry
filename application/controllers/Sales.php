@@ -4644,7 +4644,11 @@ class Sales extends MY_Controller{
             $rep                 = str_replace("\\" , '' , $pdf_json);
             $data['pdf_results'] = json_decode($rep , true);
             /*$html                 = $this->load->view('sales/pdf_view3' , $data , true);*/
-            $html                 = $this->load->view('sales/pdf' , $data , true);
+            if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath')){
+                $html = $this->load->view('sales/pdf_hsn' , $data , true);
+            }else{
+                $html = $this->load->view('sales/pdf' , $data , true);
+            }
         
             include APPPATH . "third_party/dompdf/autoload.inc.php";
             //and now im creating new instance dompdf

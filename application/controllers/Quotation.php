@@ -377,7 +377,7 @@ class Quotation extends MY_Controller {
         $quotation_data['exclusion_other_charge_tax_id'] = $this->input->post('exclusion_other_charge_tax_id') ? (float) $this->input->post('exclusion_other_charge_tax_id') : 0;
 
         if(@$this->input->post('cash_discount')){
-            $quotation_data['sales_cash_discount'] = $this->input->post('cash_discount');
+            $quotation_data['quotation_cash_discount'] = $this->input->post('cash_discount');
         }
 
         $round_off_value = $quotation_data['quotation_grand_total'];
@@ -1131,7 +1131,7 @@ class Quotation extends MY_Controller {
         );
 
         if(@$this->input->post('cash_discount')){
-            $quotation_data['sales_cash_discount'] = $this->input->post('cash_discount');
+            $quotation_data['quotation_cash_discount'] = $this->input->post('cash_discount');
         }
 
         $quotation_data['freight_charge_tax_id'] = $this->input->post('freight_charge_tax_id') ? (float) $this->input->post('freight_charge_tax_id') : 0;
@@ -1570,7 +1570,10 @@ class Quotation extends MY_Controller {
                 $email_sub_module = 1;
             }
         }
-
+        if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath')){
+            $hsn_data = $this->common->hsn_quotation_list_item_field1($id);
+            $data['hsn'] = $this->general_model->getPageJoinRecords($hsn_data);
+        }
         if ($email_sub_module == 1) {
             ob_start();
             $html = ob_get_clean();
@@ -1580,7 +1583,7 @@ class Quotation extends MY_Controller {
             $currency = $this->getBranchCurrencyCode();
             $data['data'][0]->currency_code = $currency[0]->currency_code;
             $data['data'][0]->currency_symbol = $currency[0]->currency_symbol;
-
+            
             $html = $this->load->view('quotation/pdf', $data, true);
             /* echo $html;exit(); */
             /* include APPPATH . 'third_party/mpdf60/mpdf.php';
