@@ -227,6 +227,7 @@ $this->load->view('layout/header');
         var bank_name = $('#cmb_bank').val() ? $('#cmb_bank').val() : "";
         var date_of_loan = $('#txt_date_of_loan').val() ? $('#txt_date_of_loan').val() : "";
         var name_regex1 = /^[a-zA-Z\[\]/@()#$%&\-.+,\d\-_\s\']+$/;
+        var name_regex = /^[-a-zA-Z\s0-9 ]+$/;
         var roi = $('#txt_roi').val() ? $('#txt_roi').val() : "";
         var status = $('#cmb_status').val() ? $('#cmb_status').val() : "";
         var pan = $('#txt_pan').val() ? $('#txt_pan').val() : "";
@@ -273,6 +274,19 @@ $this->load->view('layout/header');
             } else {
                 $("#err_pan").text("");
             }
+
+
+             if (pan != "") {
+                if (!pan.match(name_regex)) {
+                    $('#err_pan').text("Please Enter Valid Pan Number");
+                    return false;
+                } else {
+                    $("#err_pan").text("");
+                }
+            } else {
+                $("#err_pan").text("");
+            }
+
 
             if (roi == null || roi == "") {
                 $("#err_roi").text("Please Enter Rate of Interest.");

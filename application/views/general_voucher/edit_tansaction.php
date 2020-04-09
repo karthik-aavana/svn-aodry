@@ -20,6 +20,13 @@
                                     <option value="Capital Invested">Capital Invested</option>
                                   <option value="Cash transactions">Cash transactions</option>
                                     <option value="Deposits">Deposits</option>
+                                    <option value="Tax receivables">Tax receivables</option>
+                                     <option value="Tax payable">Tax payable</option>
+                                     <option value="Fixed Assset">Fixed Assset</option>
+                                     <option value="Interest">Interest</option>
+                                     <option value="Investments">Investments</option>
+                                     <option value="Loan Borrowed and repaid">Loan Borrowed and repaid</option>
+                                     <option value="Capital Invested">Capital Invested</option>
                                 </select>
                                 <span class="validation-color" id="err_transaction_e"></span>
                             </div>
@@ -77,6 +84,8 @@
                                     <option value="water">Water</option>
                                     <option value="withdraw">Withdraw</option>
                                     <option value="bank">Bank</option>
+                                    <option value="interest liability">Interest Liability</option>
+                                    <option value="interest loan">Interest Loan</option>
                                 </select>  
                                 <span class="validation-color" id="err_cmb_type_e"></span>
                             </div>
@@ -90,6 +99,7 @@
                                     <option value="RECEIPTS">RECEIPTS</option>
                                     <option value="PAYMENT">PAYMENT</option>
                                     <option value="CONTRA A/C">CONTRA A/C</option>
+                                    <option value="JOURNAL">JOURNAL</option>
                                 </select>  
                                 <span class="validation-color" id="err_voucher_type_e"></span>
                             </div>
