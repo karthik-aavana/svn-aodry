@@ -256,7 +256,7 @@ $this->load->view('layout/header');
                 }
             }
             if (!deposit_name.match(name_regex1)) {
-                $('#err_deposit_name').text("Please Select Valid Deposit Name");
+                $('#err_deposit_name').text("Please Enter Valid Deposit Name");
                 return false;
             } else {
                 $("#err_deposit_name").text("");

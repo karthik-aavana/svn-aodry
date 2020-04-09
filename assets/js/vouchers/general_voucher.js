@@ -197,7 +197,15 @@ $(document).ready(function (){
 
                 if(input_type == 'partner' || input_type == 'shareholder'){
                     $("#div_partner").show();
-                    $("#partner").text(input_type);
+                    if(input_type == 'partner'){
+                        $("#partner").html(input_type+'<span class="validation-color">*</span>');
+                        $("#err_partner").text('');  
+                    }else{
+                     $("#partner").text(input_type);   
+                     $("#err_partner").text('');
+                    }
+                    
+                    
                     
                      $.ajax({
                         url: base_url + 'general_voucher/get_parners',
