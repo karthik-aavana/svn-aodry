@@ -84,12 +84,12 @@ $this->load->view('layout/header');
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="rate_of_depr_it">Rate of depreciation (Income tax)<span class="validation-color">*</span></label>
-                                    <input class="form-control text-right number" type="text" name="txt_rate_of_depr_it" id="txt_rate_of_depr_it" maxlength="15" value="<?php echo round($data[0]->rate_depreciation_income_tax, 2); ?>" />
+                                    <input class="form-control text-right number" type="text" name="txt_rate_of_depr_it" id="txt_rate_of_depr_it" maxlength="2" value="<?php echo round($data[0]->rate_depreciation_income_tax, 2); ?>" />
                                     <span class="validation-color" id="err_rate_of_depr_it"><?php echo form_error('rate_of_depr_it'); ?></span>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="rate_of_depr_comp_act">Rate of depreciation (Companies Act)<span class="validation-color">*</span></label>
-                                    <input class="form-control text-right number" type="text" name="txt_rate_of_depr_comp_act" id="txt_rate_of_depr_comp_act" maxlength="15" value="<?php echo round($data[0]->rate_depreciation_company_act, 2); ?>" />
+                                    <input class="form-control text-right number" type="text" name="txt_rate_of_depr_comp_act" id="txt_rate_of_depr_comp_act" maxlength="2" value="<?php echo round($data[0]->rate_depreciation_company_act, 2); ?>" />
                                     <span class="validation-color" id="err_rate_of_depr_comp_act"><?php echo form_error('rate_of_depr_comp_act'); ?></span>
                                 </div>
                             </div>

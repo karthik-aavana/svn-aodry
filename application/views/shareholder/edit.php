@@ -172,12 +172,12 @@ $this->load->view('layout/header');
                                 </div>
                                 <div class="form-group col-md-3" id="div_partner_capt_roi">
                                     <label for="roi_capital_intrest">Rate of Interest on capital (%)<span class="validation-color"></span></label>
-                                    <input class="form-control text-right number" type="text" name="txt_roi_capital_intrest" id="txt_roi_capital_intrest" maxlength="15" value="<?php echo $data[0]->rate_of_interest_capital; ?>"  />
+                                    <input class="form-control text-right number" type="text" name="txt_roi_capital_intrest" id="txt_roi_capital_intrest" maxlength="2" value="<?php echo $data[0]->rate_of_interest_capital; ?>"  />
                                     <span class="validation-color" id="err_roi_capital_intrest"><?php echo form_error('roi_capital_intrest'); ?></span>
                                 </div>
                                 <div class="form-group col-md-3" id="div_partner_profit">
                                     <label for="share_profit">Percentage share of profit (%)<span class="validation-color"></span></label>
-                                    <input class="form-control text-right number" type="text" name="txt_share_profit" id="txt_share_profit" maxlength="15" value="<?php echo $data[0]->percentage_share_of_profit; ?>" />
+                                    <input class="form-control text-right number" type="text" name="txt_share_profit" id="txt_share_profit" maxlength="2" value="<?php echo $data[0]->percentage_share_of_profit; ?>" />
                                     <span class="validation-color" id="err_share_profit"><?php echo form_error('share_profit'); ?></span>
                                 </div>                               
                                 <div class="form-group col-md-3" style="display: none;" id="div_share_premium">

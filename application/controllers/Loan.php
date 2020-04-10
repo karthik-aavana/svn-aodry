@@ -371,7 +371,7 @@ class Loan extends MY_Controller {
         $loan_bank = trim($this->input->post('loan_bank'));
         $id = $this->input->post('id');
         
-        $rows = $this->db->query("SELECT loan_id FROM tbl_loans WHERE loan_bank like '".$deposit_bank."' AND loan_id != '{$id}' ")->num_rows();
+        $rows = $this->db->query("SELECT loan_id FROM tbl_loans WHERE loan_bank like '".$loan_bank."' AND loan_id != '{$id}' ")->num_rows();
 
         echo  json_encode(array('rows' => $rows ));
     }

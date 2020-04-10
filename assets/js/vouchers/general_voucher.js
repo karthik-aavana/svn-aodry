@@ -60,6 +60,7 @@ $(document).ready(function (){
                 $('#transaction_purpose').val(transaction_purpose);
                 var trans_category = parsedJson.transaction_category;
                 $('#transaction_cat').val(trans_category);
+                $('#transaction_cat_bank').val(trans_category);
                 if(trans_category == 'Advance Tax Refund by Govt' || trans_category == 'Deposit Amount Withdrawal from FD' || trans_category == 'Deposit Amount Withdrawal from RD'){
                     $("#div_interest").show();
                     $("#lbl_interest").text('Interest');
@@ -228,11 +229,13 @@ $(document).ready(function (){
                 
                
                 if( trans_category == 'Cash Receipt/Received from unknown' ||  trans_category == 'Cash Paid/Payment to unknown' ){
+                    $("#plus_mode").hide();
                     $('#payment_mode').html('');
                     $('#payment_mode').append('<option value="">Select</option>');
                     $('#payment_mode').append('<option value="cash">Cash</option>');
                 }else if(trans_category == 'Cash withdrawal from bank' || trans_category == 'Cash deposited in bank' || trans_category == 'Bank Receipt/Received from unknown' || trans_category == 'Bank Paid/Payment to unknown'){
                     $('#payment_mode').html('');
+                    $("#plus_mode").show();
                     console.log('hdie')
                     $.ajax({
                         url: base_url + 'general_voucher/getAllBank',
@@ -250,6 +253,7 @@ $(document).ready(function (){
                         }
                     });
                 }else if(trans_category != 'Cash deposited in bank' || trans_category != 'Bank Receipt/Received from unknown' || trans_category != 'Bank Paid/Payment to unknown' || trans_category != 'Cash withdrawal from bank' || trans_category != 'Cash Receipt/Received from unknown' ||  trans_category != 'Cash Paid/Payment to unknown'){
+                    $("#plus_mode").show();
                     $('#payment_mode').html('');
                      $.ajax({
                         url: base_url + 'general_voucher/getAllBank',

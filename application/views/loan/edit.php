@@ -125,7 +125,7 @@ $this->load->view('layout/header');
                                 </div>
                                 <div class="form-group col-md-3" style="display: none" id="roi_div">
                                     <label for="roi">Rate of Interest<span class="validation-color">*</span></label>
-                                    <input class="form-control text-right number" type="text" name="txt_roi" id="txt_roi" maxlength="5" value="<?php echo $data[0]->rate_of_interest; ?>" />
+                                    <input class="form-control text-right number" type="text" name="txt_roi" id="txt_roi" maxlength="2" value="<?php echo $data[0]->rate_of_interest; ?>" />
                                     <span class="validation-color" id="err_roi"><?php echo form_error('roi'); ?></span>
                                 </div>
                                 <div class="form-group col-md-3">

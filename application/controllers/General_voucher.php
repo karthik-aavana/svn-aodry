@@ -670,7 +670,14 @@ Class General_voucher extends MY_Controller
         $data['privilege'] = $privilege;
         $data['customer_module_id']        = $this->config->item('customer_module');
         $data['bank_account']     = $this->bank_account_call_new();
-
+        $bank_ledger = $this->config->item('bank_ledger');
+        $default_bank_id = $bank_ledger['bank'];
+        $bank_led = $this->ledger_model->getDefaultLedgerId($default_bank_id);
+        $ledger_title = 'Acc@{{BANK}}';
+        if(!empty($bank_led)){
+            $ledger_title = $bank_led->ledger_name;
+        }
+        $data['default_ledger_title'] = $ledger_title;
         
         
         $this->load->view('general_voucher/add', $data);

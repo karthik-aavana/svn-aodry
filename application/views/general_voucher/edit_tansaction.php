@@ -98,6 +98,7 @@
                                     <option value="">Select Voucher Type</option>
                                     <option value="RECEIPTS">RECEIPTS</option>
                                     <option value="PAYMENT">PAYMENT</option>
+                                    <option value="PAYMENTS">PAYMENTS</option>
                                     <option value="CONTRA A/C">CONTRA A/C</option>
                                     <option value="JOURNAL">JOURNAL</option>
                                 </select>  
@@ -133,6 +134,7 @@
                 $('#txt_transaction_category_e').val(result[0].transaction_category);
                 var voucher_type =  result[0].voucher_type;
                 var input_type =  result[0].input_type;
+                input_type= input_type.trim();
                 $('#voucher_type_e').val(voucher_type).change(); 
                 $('#cmb_type_e').val(input_type).change();
                 $('#txt_customise_option_e').val(result[0].customise_option);

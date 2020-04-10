@@ -104,7 +104,7 @@ $this->load->view('layout/header');
                                 </div>
                                 <div class="form-group col-md-3" style="display: none" id="roi_div">
                                     <label for="roi">Rate of Interest<span class="validation-color">*</span></label>
-                                    <input class="form-control text-right number" type="text" name="txt_roi" id="txt_roi" maxlength="5" />
+                                    <input class="form-control text-right number" type="text" name="txt_roi" id="txt_roi" maxlength="2" />
                                     <span class="validation-color" id="err_roi"><?php echo form_error('roi'); ?></span>
                                 </div>
                                 <div class="form-group col-md-3">
@@ -132,6 +132,7 @@ $this->load->view('layout/header');
             var loan_name = $(this).val();
             $('[name=loan_name_used]').val('0');
             $('#err_loan_name').text('');
+            if(loan_name != ''){
             xhr = $.ajax({
                 url: '<?= base_url(); ?>loan/LoanValidation',
                 type: 'post',
@@ -146,6 +147,7 @@ $this->load->view('layout/header');
 
                 }
             })
+        }
         });
 
         $('#cmb_bank').on('change', function () {
