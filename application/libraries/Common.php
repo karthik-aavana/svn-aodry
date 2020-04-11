@@ -2777,7 +2777,7 @@ class Common
     }
     public function branch_field($firm_id = "")
     {
-        $string = "f.*,br.*,con.country_name as branch_country_name,sta.state_name as branch_state_name,sta.state_code as branch_state_code,cit.city_name as branch_city_name,sta.state_short_code";
+        $string = "f.*,br.*,com.*,con.country_name as branch_country_name,sta.state_name as branch_state_name,sta.state_code as branch_state_code,cit.city_name as branch_city_name,sta.state_short_code";
         $table  = "branch br";
         $where  = array(
             'br.delete_status' => 0);
@@ -2808,6 +2808,39 @@ class Common
         );
         return $data;
     }
+
+    public function branch_before_update_field($firm_id = "")
+    {
+        $string = "f.*,br.*,com.*";
+        $table  = "branch br";
+        $where  = array(
+            'br.delete_status' => 0);
+        $join = [
+            "common_settings com" => "com.branch_id = br.branch_id" . "#" . "left",
+            "firm f"              => "f.firm_id = br.firm_id"
+        ];
+        if ($firm_id != "")
+        {
+            $where['br.firm_id'] = $firm_id;
+            // $where['br.branch_id']=$this->ci->session->userdata('SESS_BRANCH_ID');
+        }
+        else
+        {
+            // $join['firm f']="f.firm_id = br.firm_id";
+            $where['br.branch_id'] = $this->ci->session->userdata('SESS_BRANCH_ID');
+        }
+        $order = [
+            "br.branch_id" => "asc"];
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'order'  => $order,
+            'join'   => $join
+        );
+        return $data;
+    }
+
     public function customer_field()
     {
         $string = "c.*,con.country_name as customer_country_name,sta.state_name as customer_state_name,sta.state_code as customer_state_code,cit.city_name as customer_city_name";
@@ -3399,12 +3432,8 @@ class Common
     {
         $string = "*";
         $table  = "states";
-        $where  = array();
-        if ($country_id != "")
-        {
-            $where = array(
-                'country_id' => $country_id);
-        }
+        $where = array( 'country_id' => ($country_id == '' || $country_id == '0' ? 101 : $country_id));
+        
         if ($state_id != "")
         {
             $where['state_id'] = $state_id;

@@ -148,7 +148,8 @@ if (!function_exists('precise_amount')) {
             } 
             .content{
                 background: #ffffff;
-            }                  
+            }
+            .disable_menu{pointer-events: none;opacity: 0.7;}                  
         </style>
         <!-- jQuery 3.1.1 -->
         <script src="<?php echo base_url(); ?>assets/plugins/jQuery/jquery-3.1.1.js"></script> 
@@ -167,7 +168,7 @@ if (!function_exists('precise_amount')) {
                 </a>
                 <div class="cd-dropdown-wrapper">                   
                     <a class="cd-dropdown-trigger" href="javascript:void();">&nbsp;</a>
-                    <nav class="cd-dropdown">                       
+                    <nav class="cd-dropdown <?=($this->session->userdata('SESS_PACKAGE_STATUS') == '0' ? 'disable_menu' : '');?>">                       
                         <a href="javascript:void();" class="cd-close">Close</a>
                         <ul class="cd-dropdown-content">
                             <!--  <li>
@@ -985,7 +986,7 @@ if (!function_exists('precise_amount')) {
             </div>
         </div>
         <aside class="main-sidebar">
-            <section class="sidebar">
+            <section class="sidebar <?=($this->session->userdata('SESS_PACKAGE_STATUS') == '0' ? 'disable_menu' : '');?>">
                 <ul class="sidebar-menu tree" data-widget="tree">
                     <li class="treeview">
                         <a href="<?php echo base_url() ?>auth/dashboard">

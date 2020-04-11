@@ -68,6 +68,15 @@ class Auth extends MY_Controller {
     }
 
     public function signup(){
+        $sess_branch_id = $this->session->userdata('SESS_BRANCH_ID');
+        $sess_financial_year_id = $this->session->userdata('SESS_FINANCIAL_YEAR_ID');
+        $sess_user_id = $this->session->userdata('SESS_USER_ID'); 
+        $sess_default_currency = $this->session->userdata('SESS_DEFAULT_CURRENCY');
+        
+        /*$this->session->sess_destroy();*/
+        if ($sess_branch_id != "" && $sess_financial_year_id != "" && $sess_user_id != "" && $sess_default_currency != "") {
+            redirect('auth/dashboard', 'refresh');
+        }
         $data = array();
         if($this->session->flashdata('auto_data')){
             $data = $this->session->flashdata('auto_data');
@@ -158,7 +167,11 @@ class Auth extends MY_Controller {
                 //End login_auth data insert
                 $this->session->set_flashdata('message', $this->ion_auth->messages());
                 $this->session->set_flashdata('welcomeLoader',1);
-                redirect('auth/dashboard', 'refresh');
+                if($this->session->userdata('SESS_PACKAGE_STATUS') == '0' || $this->session->userdata('SESS_DETAILS_UPDATED') == '0'){
+                    redirect('company_setting', 'refresh');
+                }else{
+                    redirect('auth/dashboard', 'refresh');
+                }
             } else {
                 $this->session->set_flashdata('message', $this->ion_auth->errors());
                 redirect('auth/login', 'refresh');

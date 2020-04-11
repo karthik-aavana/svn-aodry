@@ -16,13 +16,13 @@ class Financial_year extends MY_Controller{
     }
 
     function index(){
-        $expense_module_id               = $this->config->item('expense_module');
-        $this->data['expense_module_id'] = $expense_module_id;
+        $user_module_id               = $this->config->item('user_module');
+        $this->data['user_module_id'] = $user_module_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
         $this->data['privilege']         = $privilege;
-        $section_modules                 = $this->get_section_modules($expense_module_id, $modules, $privilege);
-        $this->data['tds_section']      = $this->tds_section_call();
+        $section_modules                 = $this->get_section_modules($user_module_id, $modules, $privilege);
+        /*$this->data['tds_section']      = $this->tds_section_call();*/
         /* presents all the needed */
         $this->data=array_merge($this->data,$section_modules);
         

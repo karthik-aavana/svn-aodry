@@ -102,7 +102,8 @@ class Company_setting extends MY_Controller
         $data=array_merge($data,$section_modules);
 
         $data['data'] = $data['branch'];
-
+        /*echo "<pre>";
+        print_r($data['data'] );exit;*/
         // echo ($data['data'][0]->affliation_images);die;
         $this->load->view('company_setting/edit_old', $data);
     }
@@ -239,6 +240,7 @@ class Company_setting extends MY_Controller
         $branch_id = $this->input->post('branch_id');
         $firm_data = array(
                 "firm_name"            => $this->input->post('name'),
+                "is_updated" => 1,
                 "firm_short_name"      => $this->input->post('short_name'),
                 "firm_registered_type" => $this->input->post('registered_type'),
                 "firm_logo"            => $image_name,
@@ -297,6 +299,7 @@ class Company_setting extends MY_Controller
         if ($this->general_model->updateData('branch', $branch_data, array(
                         'branch_id' => $branch_id )))
         {
+            $this->session->set_userdata('SESS_DETAILS_UPDATED',1);
             $tax_split_percentage = 50;
                 if($this->input->post('tax_split_percentage') != '') 
                     if($this->input->post('tax_split_percentage') <= 100 ) 

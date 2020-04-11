@@ -19,12 +19,19 @@ class MY_Controller extends CI_Controller
 
     public function get_default_country_state()
     {
-        $branch_data  = $this->common->branch_field();
+        if($this->session->userdata() == '0'){
+            $branch_data  = $this->common->branch_before_update_field();
+        }else{
+            $branch_data  = $this->common->branch_field();
+        }
+        
         $branch       = $this->general_model->getJoinRecords($branch_data['string'], $branch_data['table'], $branch_data['where'], $branch_data['join'], $branch_data['order']);
         $country_data = $this->common->country_field();
         $country      = $this->general_model->getRecords($country_data['string'], $country_data['table'], $country_data['where']);
+        if(!@$branch[0]->branch_country_id) $branch[0]->branch_country_id = 101;
         $state_data   = $this->common->state_field($branch[0]->branch_country_id);
         $state        = $this->general_model->getRecords($state_data['string'], $state_data['table'], $state_data['where']);
+        if(!@$branch[0]->branch_state_id) $branch[0]->branch_state_id = 0;
         $city_data    = $this->common->city_field($branch[0]->branch_state_id);
         $city         = $this->general_model->getRecords($city_data['string'], $city_data['table'], $city_data['where']);
         $data         = array('branch' => $branch, 'country' => $country, 'state' => $state,
@@ -34,14 +41,29 @@ class MY_Controller extends CI_Controller
 
     public function get_default_country_state_old()
     {
-        $branch_data  = $this->common->branch_field_old();
+        if($this->session->userdata('SESS_DETAILS_UPDATED') == '0'){
+            $branch_data  = $this->common->branch_before_update_field();
+        }else{
+            $branch_data  = $this->common->branch_field();
+        }
         $branch       = $this->general_model->getJoinRecords($branch_data['string'], $branch_data['table'], $branch_data['where'], $branch_data['join'], $branch_data['order']);
+        /*echo "<pre>";
+        print_r($this->db->last_query());
+        print_r($branch);
+        exit;*/
         $country_data = $this->common->country_field();
         $country      = $this->general_model->getRecords($country_data['string'], $country_data['table'], $country_data['where']);
-        $state_data   = $this->common->state_field($branch[0]->branch_country_id);
+        /*if(!@$branch[0]->branch_country_id) $branch[0]->branch_country_id = 101;*/
+        $state = array();
+        $state_data   = $this->common->state_field((@$branch[0]->branch_country_id ? $branch[0]->branch_country_id : 0));
         $state        = $this->general_model->getRecords($state_data['string'], $state_data['table'], $state_data['where']);
-        $city_data    = $this->common->city_field($branch[0]->branch_state_id);
-        $city         = $this->general_model->getRecords($city_data['string'], $city_data['table'], $city_data['where']);
+        
+        $city = array();
+        if(@$branch[0]->branch_state_id){
+
+            $city_data    = $this->common->city_field((@$branch[0]->branch_state_id ? $branch[0]->branch_state_id : 0));
+            $city         = $this->general_model->getRecords($city_data['string'], $city_data['table'], $city_data['where']);
+        }
         $data         = array('branch' => $branch, 'country' => $country, 'state' => $state,
             'city'                         => $city);
         return $data;
@@ -155,7 +177,7 @@ class MY_Controller extends CI_Controller
 
     public function sa_getOnly_modules($user_id,$branch_id){
         $sess_user_id = $this->session->userdata('SESS_SA_USER_ID');
-        $module_data = $this->common->sa_autoModule_field($user_id, $branch_id);
+        $module_data = $this->common->sa_autoModule_field($branch_id);
         $module      = $this->general_model->getRecords($module_data['string'], $module_data['table'], $module_data['where']);
         
         foreach ($module as $key => $value) {
@@ -238,6 +260,13 @@ class MY_Controller extends CI_Controller
 
     public function get_section_modules($module_id, $modules, $privilege,$redirect ='')
     {
+        if($this->session->userdata('SESS_PACKAGE_STATUS') == '0' && $module_id != 36 && $module_id != 37){
+            redirect('auth/unauthorized', 'refresh');
+        }
+
+        if($this->session->userdata('SESS_DETAILS_UPDATED') == '0' && $module_id != 36 && $module_id != 37){
+            redirect('company_setting', 'refresh');
+        }
 
         if (in_array($module_id, $modules['user_active_modules']))
         {
@@ -3006,6 +3035,9 @@ public function generate_branch_number($access_settings, $primary_id, $table_nam
         $sales_data = $this->common->sales_list_field1($id);
         $data['currency'] = $this->currency_call();
         $data['data'] = $this->general_model->getJoinRecords($sales_data['string'] , $sales_data['table'] , $sales_data['where'] , $sales_data['join']);
+        /*echo "<pre>";
+        print_r($data['data']);
+        exit;*/
 
         $this->db->select('shipping_address,country_name,department,contact_person');
         $this->db->from('shipping_address s');

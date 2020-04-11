@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="<?php echo base_url(); ?>assets/lib/font-awesome/4.5.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="<?php echo base_url(); ?>assets/lib/ionicons/css/ionicons.min.css">
         <link rel="stylesheet" href="<?php echo base_url(); ?>assets/dist/css/AdminLTE.min.css">
-        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/plugins/iCheck/square/blue.css">    
+        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/plugins/iCheck/square/blue.css">
         <style>
             .left-side-bar{
                 margin-top: 11%;
@@ -85,7 +85,6 @@
             .footer-copyright a{
                 color: #333;
             }
-
         </style>
     </head>
     <body class="hold-transition login-page">
@@ -166,7 +165,8 @@
                                 </div>
                             </div>
                             <?php echo form_close(); ?>
-                            <a href="forgot_password">Forgot your password?</a>
+                            <a href="forgot_password">Forgot your password?</a><br><br>
+                            <span>Don't have account? </span><a href="signup">Register Now</a>
                         </div>
                     </div>
                 </div>
