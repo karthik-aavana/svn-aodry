@@ -78,21 +78,31 @@
             }
             .register-box{
                 max-width: 100% !important;
-                margin: 6% auto;
+                margin: 25% auto;
             }
             .register-box .btn-primary{
-            background: #FFEB3B !important;
-            color: #000000;
-            font-weight: 500;
+                background: #FFEB3B !important;
+                color: #000000;
+                font-weight: 500;
             }
-
             .p_l_0{padding-left: 0px;}
+            #infoMessage{color: #006500;
+                font-size: 15px;
+                font-weight: bold;
+                padding: 5px;
+                background: #a1fba1;
+                margin-bottom: 8px;
+                border: 1px solid transparent;
+                border-radius: 5px;
+            }
+            #infoMessage.error{color: red; background: #ffc7c7;}
+            .downBtn{opacity: 0.7; pointer-events: none;}
         </style>
     </head>
     <body class="hold-transition login-page">
         <div class="container">
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-7">
                     <div class="left-side-bar">
                         <img src = "<?= base_url('assets/images/aodry-black-logo.png') ?>">
                         <div id="rotate"> 
@@ -119,22 +129,22 @@
                         </div>                    
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-5">
                     <div class="register-box">                       
                         <div class="register-box-body">
                             <h4 class="box-title">Registration</h4>
-                            <p class="register-box-msg text-left">This is a secure system and you will need to provide your company details to try the Aodry trial.</p>
-                            
                             <?php if (@$error_message) { ?>
-                                <div id="infoMessage" style="color: red;"><?=($error_message);?></div>
+                                <div id="infoMessage" class="error" style="color: red;"><?=($error_message);?></div>
                             <?php } ?>
                             <?php if (@$message) { ?>
                                 <div id="infoMessage" style="color: green;"><?=($message);?></div>
                             <?php } ?>
+                            <p class="register-box-msg text-left">This is a secure system and you will need to provide your company details to try the Aodry trial.</p>
+                            
                             <!-- <form action="../../index2.html" method="post"> -->
                             <?php echo form_open("superadmin/firm/autoSignup"); ?>
                             <div class="row">
-                                <div class="form-group has-feedback col-sm-6">
+                                <!-- <div class="form-group has-feedback col-sm-6">
                                     <label for="registered_type">Registered Type <span class="validation-color"> *</span></label>
                                     <select class="form-control select2" id="registered_type" name="registered_type">
                                         <option value="">Select Registered Type</option>
@@ -145,22 +155,24 @@
                                         <option value="Limited Liability Partnership" <?=(@$registered_type && $registered_type == 'Limited Liability Partnership' ? 'selected': '')?>>Limited Liability Partnership</option>
                                     </select>
                                     <span class="validation-color" id="err_registration_type"></span>
-                                </div>
-                                <div class="form-group has-feedback col-sm-6">
+                                </div> -->
+
+                                <div class="form-group has-feedback col-sm-12">
                                     <label for="name">Firm Name <span class="validation-color"> *</span></label>
                                     <?php echo form_input('name', (@$name ? $name : ''), 'class="form-control" placeholder="Firm Name"'); ?>
                                     <input type="hidden" name="payment" value="trial">
                                     <span class="glyphicon glyphicon-user form-control-feedback"></span>
                                     <span class="validation-color" id="err_name"></span>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group has-feedback col-sm-6">
+                                <div class="form-group has-feedback col-sm-12">
                                     <label for="email">Email <span class="validation-color"> *</span></label>
                                     <?php echo form_input('email', (@$email ? $email : ''), 'class="form-control" placeholder="Email"'); ?>
                                     <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                                     <span class="validation-color" id="err_email"></span>
                                 </div>
+                            </div>
+                            <!-- <div class="row">
+                                
                                 <div class="form-group has-feedback col-sm-6">
                                     <label for="mobile">Mobile</label>
                                     <?php echo form_input('mobile', (@$mobile ? $mobile : ''), 'class="form-control" placeholder="Mobile Number"'); ?>
@@ -235,7 +247,7 @@
                                     <input type="text" class="form-control" id="branch_address" name="branch_address" value="<?=(@$branch_address ? $branch_address : '');?>">
                                     <span class="validation-color" id="err_branch_address"></span>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="row" >
                                  <div class="col-xs-9">
                                     <div class="checkbox icheck">
@@ -319,7 +331,7 @@
         var email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         var gst_regex = "^([0][1-9]|[1-4][0-9])([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$";
         $(document).ready(function(){
-            $('#sa_country').change(function () {
+            /*$('#sa_country').change(function () {
                 getCountryById();
             });
 
@@ -340,27 +352,59 @@
 						}
 					}
 				});
-			});
+			});*/
+
+            $('[name=name]').on('keyup',function(){
+                var name = $('[name=name]').val();
+                if (name == null || name == "") {
+                    $("#err_name").text('Please Enter Name.');
+                    
+                } else if (!name.match(name_regex_spl)) {
+                    $('#err_name').text("Please Enter Valid Name");
+                    
+                } else if (name.length < 3) {
+                    $('#err_name').text("Please Enter Name Minimun 3 Character");
+                    
+                } else {
+                    $("#err_name").text("");
+                }
+            })
+
+            $('[name=email]').on('keyup',function(){
+                var email = $('[name=email]').val();
+                if (email == null || email == "") {
+                    $("#err_email").text("Please Enter Email.");
+                    return false;
+                } else if (!email.match(email_regex)) {
+                    $('#err_email').text("Please Enter Valid Email");
+                    return false;
+                } else if (email.length < 2) {
+                    $('#err_email').text("Please Enter Valid Email");
+                    return false;
+                } else {
+                    $("#err_email").text("");
+                }
+            })
 
             $("[name=register]").click(function () {
-                var registered_type = $('#registered_type').val();
+                /*var registered_type = $('#registered_type').val();*/
                 var name = $('[name=name]').val();
-                var address = $('[name=branch_address]').val();
+                /*var address = $('[name=branch_address]').val();*/
                 var email = $('[name=email]').val();
-                var mobile = $('[name=mobile]').val();
+                /*var mobile = $('[name=mobile]').val();
                 var city = $('[name=sa_city]').val();
                 var state = $('[name=sa_state]').val();
                 var country = $('[name=sa_country]').val();           
                 var gstin = $('[name=branch_gstin_number]').val();
-                var state_code = $('[name=state_code]').val();
-                if(gstin) var gstin_state_code = gstin.slice(0, 2);
+                var state_code = $('[name=state_code]').val();*/
+                /*if(gstin) var gstin_state_code = gstin.slice(0, 2);
                 
-                 if (registered_type == null || registered_type == "") {
+                if (registered_type == null || registered_type == "") {
                     $("#err_registration_type").text('Please Select Registration Type');
                     return false;
                 } else {
                     $("#err_registration_type").text("");
-                }
+                }*/
                 if (name == null || name == "") {
                     $("#err_name").text('Please Enter Name.');
                     return false;
@@ -399,7 +443,7 @@
                     $("#err_email").text("");
                 }
                 
-                if(gstin != '' && gstin != null){
+                /*if(gstin != '' && gstin != null){
                     if (gstin.length > 0) {
                         if (!gstin.match(gst_regex)) {
                             $('#err_branch_gstin_number').text("Please Enter Valid GSTIN Number.");
@@ -445,7 +489,7 @@
                     return false;
                 } else {
                     $("#err_branch_address").text("");
-                }
+                }*/
               
                 
                 //email validation complite.
@@ -455,15 +499,15 @@
                 // } else {
                 //     $("#err_mobile").text("");
                 // }
-                if(mobile.length>1){
+                /*if(mobile.length>1){
                     if (!mobile.match(mobile_regex)) {
                         $('#err_mobile').text("Please Enter Valid Mobile No.");
                         return false;
                     } else {
                         $("#err_mobile").text("");
                     }
-                    /*$("#company_submit").attr('disabled',true);*/
-                }
+                }*/
+                $("[name=register]").addClass('downBtn');
                 
                 //mobile validation complite.
             });

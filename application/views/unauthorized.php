@@ -12,6 +12,14 @@ $this->load->view('layout/header');
         </h5>
     </section>
     <section class="content mt-50 unauthorized">
+        <?php
+                if($this->session->userdata('SESS_PACKAGE_STATUS') == '0'){ ?>
+                <div class="">
+                    <div class="alert alert-danger">
+                        <strong>Ooops!</strong> Your free trial has been expired please contact us to purchase the software.
+                    </div>
+                </div>
+            <?php } ?>
             <!-- <div class="brick"></div> -->
             <div class="number">
                 <div class="four"></div>
@@ -20,6 +28,7 @@ $this->load->view('layout/header');
                 </div>
                 <div class="four"></div>
             </div>
+
             <div class="info">
                 <h2>Something is wrong</h2>
                 <p>The page you are looking for was moved, removed, renamed or might never existed.</p>

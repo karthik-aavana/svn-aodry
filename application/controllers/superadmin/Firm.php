@@ -340,13 +340,13 @@ class Firm extends MY_Controller
 	}
 
     public function autoSignup(){
-        $this->form_validation->set_rules('registered_type','', 'required');
+        /*$this->form_validation->set_rules('registered_type','', 'required');*/
         $this->form_validation->set_rules('name','', 'trim|required|min_length[3]');
         $this->form_validation->set_rules('email','', 'trim|required|valid_email');
-        $this->form_validation->set_rules('sa_country','', 'required');
+        /*$this->form_validation->set_rules('sa_country','', 'required');
         $this->form_validation->set_rules('sa_state','', 'required');
-        $this->form_validation->set_rules('sa_city','', 'required');
-        $this->form_validation->set_rules('branch_address','', 'required');
+        $this->form_validation->set_rules('sa_city','', 'required');*/
+        /*$this->form_validation->set_rules('branch_address','', 'required');*/
         $data = $this->input->post();
         if ($this->form_validation->run() === true) {
             $email = $this->input->post('email');
@@ -371,11 +371,13 @@ class Firm extends MY_Controller
 
                 $company_code = COMPANY_CODE.$code_count;
                 $firm_data = array("firm_name" => $this->input->post('name'),
-                                "firm_short_name" => $this->input->post('short_name'),
-                                "firm_registered_type" => $this->input->post('registered_type'),
-                                "firm_logo" => '',
-                                "firm_company_code" => $company_code
-                            );
+                                    "auto_register"=>1,
+                                    "is_updated" => 0,
+                                    "firm_short_name" => $this->input->post('short_name'),
+                                    "firm_registered_type" => $this->input->post('registered_type'),
+                                    "firm_logo" => '',
+                                    "firm_company_code" => $company_code
+                                );
 
                 if($firm_id=$this->general_model->insertData('firm',$firm_data)){
                     /* Financial year */
@@ -395,16 +397,16 @@ class Firm extends MY_Controller
                     $branch_data = array(
                                         "firm_id" => $firm_id,
                                         "branch_name" => $this->input->post('name'),
-                                        "branch_gstin_number" => $this->input->post('branch_gstin_number'),
-                                        "branch_gst_registration_type" => $branch_gst_registration_type,
+                                        /*"branch_gstin_number" => $this->input->post('branch_gstin_number'),*/
+                                        /*"branch_gst_registration_type" => $branch_gst_registration_type,*/
                                         "branch_code" => $company_code,
-                                        "branch_address" => $this->input->post('branch_address'),
+                                        /*"branch_address" => $this->input->post('branch_address'),
                                         "branch_country_id" => $this->input->post('sa_country'),
                                         "branch_state_id" => $this->input->post('sa_state'),
-                                        "branch_city_id" => $this->input->post('sa_city'),
+                                        "branch_city_id" => $this->input->post('sa_city'),*/
                                         "branch_postal_code" => '',
                                         "branch_email_address" => $email,
-                                        "branch_mobile" => $this->input->post('mobile'),
+                                        /*"branch_mobile" => $this->input->post('mobile'),*/
                                         "branch_land_number" => '',
                                         "branch_pan_number" => '',
                                         "branch_cin_number" => '',
@@ -421,7 +423,23 @@ class Firm extends MY_Controller
                                     );
 
                     if($branch_id=$this->general_model->insertData('branch',$branch_data)){
-                        $warehouse_data = array(
+                        $package_id=0;
+                        if(@$this->input->post('payment')){
+                            $payment = $this->input->post('payment');
+                            if(strtolower($payment) == 'trial'){
+                                $this->db->select("*");
+                                $this->db->from("payment_methods");
+                                $this->db->where('payment_method','Trial');
+                                $re = $this->db->get();
+                                $payment_qry = $re->row();
+                                $days = (int)$payment_qry->valid_days;
+                                $current_date = date('Y-m-d H:i:s');
+                                $end_trial = date('Y-m-d H:i:s',strtotime($current_date.' + '.$days.' days'));
+                                $package_id = $payment_qry->Id;
+                                                   
+                            }
+                        }
+                        /*$warehouse_data = array(
                             "warehouse_name" => $this->input->post("name"),
                             "warehouse_address" => $this->input->post("branch_address"),
                             "warehouse_country_id" => $this->input->post("sa_country"),
@@ -431,7 +449,7 @@ class Firm extends MY_Controller
                             "added_date" => date("Y-m-d"),
                             "branch_id" => $branch_id
                         );
-                        $this->general_model->insertData('warehouse',$warehouse_data);
+                        $this->general_model->insertData('warehouse',$warehouse_data);*/
 
                         $addAcc = array(
                                     'branch_id' => $branch_id,
@@ -480,31 +498,9 @@ class Firm extends MY_Controller
                         $this->default_settings_entry($branch_id);
                         $this->default_active_sub_modules_entry($branch_id);
 
-                        $q = $this->db->select('m.*')->from('modules m')->where('m.delete_status', 0)->where('m.module_id IN (select module_id from active_modules where delete_status=0 and branch_id=' . $branch_id . ' )', NULL, FALSE)->get();
-                        $modules_added = $q->result();
-                    
-                        foreach($modules_added as $module ){
-                            $module_id = $module->module_id;
-                            $id_module_branch = $this->general_model->insertData('active_modules',['module_id' => $module_id,'branch_id'=> $branch_id]);
-                            if($id_module_branch){
-                                $sub_modules = $this->general_model->getRemainingSubModules($branch_id,$module_id);
-                                $active_sub_modules_data = array();
-                                if(!empty($sub_modules)){
-                                    foreach ($sub_modules as $sub_module) {
-                                        $sub_module_id = $sub_module->sub_module_id;
-                                        $active_sub_modules_data[] = array(
-                                                    'branch_id' => $branch_id,
-                                                    'module_id' => $module_id,
-                                                    'sub_module_id' => $sub_module_id
-                                                );
-                                        /*$this->general_model->insertData("active_sub_modules",$active_sub_modules_data);*/
-                                    }
-                                    $this->db->insert_batch("active_sub_modules", $active_sub_modules_data);
-                                }
-                            }
-                        }
+                        $q = $this->db->select('m.*')->from('tbl_package_modules m')->where('m.package_id', $package_id)->get();
 
-                        $modules = $this->general_model->getRemianingModules($branch_id);
+                        $modules = $q->result();
                         foreach($modules as $module ){
                             $module_id = $module->module_id;
                             $id_module_branch = $this->general_model->insertData('active_modules',['module_id' => $module_id,'branch_id'=> $branch_id]);
@@ -632,7 +628,7 @@ class Firm extends MY_Controller
                             /*$id =  $this->general_model->insertData('user_accessibility',$access_array);*/
                         }
                         $this->db->insert_batch("user_accessibility", $access_array);
-                        if(@$this->input->post('payment')){
+                        if($package_id){
                             $payment = $this->input->post('payment');
                             if(strtolower($payment) == 'trial'){
                                 $this->db->select("*");
@@ -643,15 +639,16 @@ class Firm extends MY_Controller
                                 $days = (int)$payment_qry->valid_days;
                                 $current_date = date('Y-m-d H:i:s');
                                 $end_trial = date('Y-m-d H:i:s',strtotime($current_date.' + '.$days.' days'));
+                                $package_id = $payment_qry->Id;
                                 $payment = array(
                                     'firm_id' => $firm_id,
                                     'package' => $payment_qry->Id,
                                     'amount' => 0,
-                                    'payment_status' => 1,
+                                    'payment_status' => '1',
                                     'activation_date' => $current_date,
                                     'end_date' => $end_trial,
-                                    'package_status' => 1,
-                                    'is_updated' => 0,
+                                    'package_status' => '1',
+                                    'is_updated' => '0',
                                     'added_date' => date('Y-m-d H:i:s'),
                                     'added_user_id' => $user_id,
                                 );

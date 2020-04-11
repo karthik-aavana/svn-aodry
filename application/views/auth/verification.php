@@ -89,7 +89,6 @@
                         <?php echo form_input($new_password_confirm, '', 'class="form-control"'); ?>
                         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                     </div>
-                    <p>Use 8 or more characters with a mix of letters, numbers & symbols.</p>
                     <?php echo form_input($user_id); ?>
                     <?php echo form_input($branch_id); ?>
                     <?php echo form_hidden($csrf); ?>

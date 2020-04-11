@@ -574,7 +574,9 @@ class Ion_auth_model extends CI_Model
         {
             $this->set_error('login_unsuccessful');
             return FALSE;
-        } $this->trigger_events('extra_where');
+        }
+        $this->trigger_events('extra_where');
+        
         $query = $this->db->select($this->identity_column . ', email,first_name,last_name, id,branch_id,branch_code, password, active, last_login')->where([
                         $this->identity_column => $identity,
                         'branch_code'          => $branch_code ])->where('username !=', 'superadmin')->limit(1)->order_by('id', 'desc')->get($this->tables['users']);
@@ -585,7 +587,7 @@ class Ion_auth_model extends CI_Model
             $this->trigger_events('post_login_unsuccessful');
             $this->set_error('login_timeout');
             return FALSE;
-        } 
+        }
         if ($query->num_rows() === 1){
             $user     = $query->row();
             
@@ -1233,13 +1235,42 @@ class Ion_auth_model extends CI_Model
                 'SESS_LAST_CHECK'      => time(), );
         $this->db->select('groups.name')->from('users')->join('users_groups', 'users.id = users_groups.user_id')->join('groups', 'users_groups.group_id = groups.id')->where('username !=', 'superadmin')->where('users.id', $user->id);
         $session_data['SESS_USER_TYPE']               = $this->db->get()->result_array();
-        $branch_data                                  = $this->db->select('branch.financial_year_id,concat(YEAR(tbl_financial_year.from_date),"-",YEAR(tbl_financial_year.to_date)) as financial_year_title,branch.branch_default_currency,currency.currency_symbol,currency.currency_code,currency.currency_text')->from('users')->join('branch', 'users.branch_id = branch.branch_id')->join('currency', 'currency.currency_id = branch.branch_default_currency')->join('tbl_financial_year', 'tbl_financial_year.year_id = branch.financial_year_id')->where('users.id', $user->id)->where('username !=', 'superadmin')->get()->row();
-        
+        $branch_data                                  = $this->db->select('branch.financial_year_id,branch.firm_id,is_updated,concat(YEAR(tbl_financial_year.from_date),"-",YEAR(tbl_financial_year.to_date)) as financial_year_title,branch.branch_default_currency,currency.currency_symbol,currency.currency_code,currency.currency_text')->from('users')->join('branch', 'users.branch_id = branch.branch_id')->join('currency', 'currency.currency_id = branch.branch_default_currency')->join('tbl_financial_year', 'tbl_financial_year.year_id = branch.financial_year_id')->join('firm', 'firm.firm_id = branch.firm_id')->where('users.id', $user->id)->where('username !=', 'superadmin')->get()->row();
+
+        $current_date = date('Y-m-d H:i:s');
+
+        $this->db->select('package,activation_date');
+        $this->db->from('tbl_billing_info');
+        $this->db->where('firm_id',$branch_data->firm_id);
+        $pack = $this->db->get();
+        if($pack->num_rows() > 0){
+            $this->db->select('package,activation_date');
+            $this->db->from('tbl_billing_info');
+            $this->db->where('payment_status','1');
+            $this->db->where('activation_date <=',$current_date);
+            $this->db->where('end_date >=',$current_date);
+            $this->db->where('package_status','1');
+            $this->db->where('firm_id',$branch_data->firm_id);
+            $this->db->order_by('bill_id','ASC');
+            $q = $this->db->get();
+            $package_result = $q->result();
+            if(!empty($package_result)){
+                $session_data['SESS_PACKAGE_STATUS'] = 1;
+                $session_data['SESS_PACKAGE_ID'] = $package_result[0]->package;
+                $session_data['SESS_PACKAGE_ACTIVATE'] = $package_result[0]->activation_date;
+            }else{
+                $session_data['SESS_PACKAGE_STATUS'] = 0;
+            }
+        }else{
+            $session_data['SESS_PACKAGE_STATUS'] = 1;
+        }
+
         $session_data['SESS_DEFAULT_CURRENCY']        = $branch_data->branch_default_currency;
         $session_data['SESS_DEFAULT_CURRENCY_SYMBOL'] = $branch_data->currency_symbol;
         $session_data['SESS_DEFAULT_CURRENCY_CODE']   = $branch_data->currency_code;
         $session_data['SESS_DEFAULT_CURRENCY_TEXT']   = $branch_data->currency_text;
         $session_data['SESS_FINANCIAL_YEAR_ID']       = $branch_data->financial_year_id;
+        $session_data['SESS_DETAILS_UPDATED']         = $branch_data->is_updated;
         $session_data['SESS_FINANCIAL_YEAR_TITLE']    = trim($branch_data->financial_year_title);
         $this->session->set_userdata($session_data);
         $this->trigger_events('post_set_session');
