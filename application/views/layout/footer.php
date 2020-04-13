@@ -301,6 +301,16 @@ if (isset($fin_data[0]) && isset($fin_data[1])) {
 <!-- Page script -->
 <?php $this->load->view('sales/tds_tcs_modal'); ?>
 <script>
+    $(document).ready(function () {
+        $(document).on('focus', '.select2-selection.select2-selection--single', function (e) {
+                $(this).closest(".select2-container").siblings('select:enabled').select2('open');
+            });
+        $('select.select2').on('select2:closing', function (e) {
+            $(e.target).data("select2").$selection.one('focus focusin', function (e) {
+                    e.stopPropagation();
+            });
+        });
+    });
     $(function () {
         var $select2 = $('.select2').select2({
             containerCssClass: "wrap"
