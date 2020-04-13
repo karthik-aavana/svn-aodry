@@ -407,7 +407,16 @@ $this->load->view('layout/header');
                                                             ?>
                                                             <td><input type='text' class='form-control form-fixer' name='item_description' value='<?php echo $key->quotation_item_description; ?>'></td>
                                                         <?php } ?>
-                                                        <td><input type='text' class='form-control form-fixer text-center float_number' value='<?= ($key->quotation_item_quantity ? $key->quotation_item_quantity : 0); ?>' data-rule='quantity' name='item_quantity'></td>
+                                                        <?php
+                                                            $stock = 0;
+                                                            if($key->product_quantity){
+                                                                $stock = $key->product_quantity;
+                                                            } 
+                                                            if($key->product_opening_quantity){
+                                                                $stock = $stock + $key->product_opening_quantity;
+                                                            }
+                                                        ?>
+                                                        <td><input type='text' class='form-control form-fixer text-center float_number' value='<?= ($key->quotation_item_quantity ? $key->quotation_item_quantity : 0); ?>' data-rule='quantity' name='item_quantity' stock='<?=$stock;?>'></td>
                                                         <td>
                                                             <input type='text' class='form-control form-fixer text-center float_number' value='<?php
                                                             echo $key->quotation_item_free_quantity ? $key->quotation_item_free_quantity : 0;
