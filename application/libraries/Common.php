@@ -3999,7 +3999,7 @@ class Common
     }
     public function sales_items_product_list_field($sales_id)
     {
-        $string = "si.*,pr.product_id,pr.product_code,pr.product_name,pr.packing,pr.mfg_date,pr.exp_date,b.brand_name,pr.product_image, SUM(pr.product_quantity + pr.product_opening_quantity) as stock, pr.product_hsn_sac_code,pr.product_price,dt.discount_value as item_discount_percentage,pr.product_tax_id as item_tax_id,pr.product_tax_value as item_tax_percentage,td.tax_name as tds_module_type,pr.product_batch,U.uom as product_unit, US.uom as product_unit_sales";
+        $string = "si.*,pr.product_id,pr.product_code,pr.product_name,pr.packing,pr.mfg_date,pr.exp_date,b.brand_name,pr.product_image,  pr.product_hsn_sac_code,pr.product_price,dt.discount_value as item_discount_percentage,pr.product_tax_id as item_tax_id,pr.product_tax_value as item_tax_percentage,td.tax_name as tds_module_type,pr.product_batch,U.uom as product_unit, US.uom as product_unit_sales,pr.product_quantity,pr.product_opening_quantity";//SUM(pr.product_quantity + pr.product_opening_quantity) as stock,
         $table  = "sales_item si";
         $join   = [
             'products pr' => 'si.item_id = pr.product_id',
@@ -4265,7 +4265,7 @@ class Common
     }
     public function quotation_items_product_list_field($quotation_id)
     {
-        $string = "qi.*,pr.product_id,pr.product_code,pr.product_name, pr.product_hsn_sac_code,pr.product_price,dt.discount_value as item_discount_percentage,U.uom as product_unit,pr.product_tax_id as item_tax_id,pr.product_tax_value as item_tax_percentage,td.tax_name as tds_module_type,pr.product_batch";
+        $string = "qi.*,pr.product_id,pr.product_code,pr.product_name, pr.product_hsn_sac_code,pr.product_price,dt.discount_value as item_discount_percentage,U.uom as product_unit,pr.product_tax_id as item_tax_id,pr.product_tax_value as item_tax_percentage,td.tax_name as tds_module_type,pr.product_batch,pr.product_quantity,pr.product_opening_quantity";
         $table  = "quotation_item qi";
         $join   = [
             'products pr' => 'qi.item_id = pr.product_id',

@@ -478,9 +478,18 @@ $this->load->view('layout/header');
                                                             <input type='text' class='form-control form-fixer' name='item_description' value='<?= $key->sales_item_description; ?>'>
                                                         </td>
                                                         <td>
+                                                            <?php
+                                                                $stock = 0;
+                                                                if($key->product_quantity){
+                                                                    $stock = $key->product_quantity;
+                                                                } 
+                                                                if($key->product_opening_quantity){
+                                                                    $stock = $stock + $key->product_opening_quantity;
+                                                                }
+                                                            ?>
                                                             <input type='text' class='form-control form-fixer text-center float_number' value='<?php
                                                             echo $key->sales_item_quantity ? $key->sales_item_quantity : 0;
-                                                            ?>' data-rule='quantity' name='item_quantity' stock='<?=$key->stock;?>'>
+                                                            ?>' data-rule='quantity' name='item_quantity' stock='<?=$stock;?>'>
                                                         </td>
                                                         <td>
                                                             <input type='text' class='form-control form-fixer text-center float_number' value='<?php
