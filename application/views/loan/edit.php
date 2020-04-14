@@ -336,6 +336,12 @@ $this->load->view('layout/header');
                 $("#err_bank").text("Bank already used!");
                 return false;
             }
+
+            $('#err_bank').text('');
+            if ($('[name=loan_name_used]').val() > 0) {
+                    $('#err_bank').text('Bank Name already used!');
+                    return false;
+            }
         }
     });
 </script>

@@ -152,6 +152,7 @@ $this->load->view('layout/header');
 
         $('#cmb_bank').on('change', function () {
             var loan_bank = $(this).val();
+            $('[name=loan_name_used]').val('0');
             $('#err_bank').text('');
             if(loan_bank != ''){
             xhr = $.ajax({
@@ -162,6 +163,7 @@ $this->load->view('layout/header');
                 success: function (json) {
                     if (json.rows > 0) {
                         $('#err_bank').text('Bank Name already used!');
+                        $('[name=loan_name_used]').val('1');
                     }
                 }, complete: function () {
 
@@ -302,6 +304,12 @@ $this->load->view('layout/header');
                 return false;
             } else {
                 $("#err_bank").text("");
+            }
+
+            $('#err_bank').text('');
+            if ($('[name=loan_name_used]').val() > 0) {
+                    $('#err_bank').text('Bank Name already used!');
+                    return false;
             }
         }       
     });
