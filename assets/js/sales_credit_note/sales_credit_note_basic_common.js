@@ -511,6 +511,11 @@ $(document).ready(function () {
         var newRow = $(this).closest("tr");
         deleteRow(newRow);
         $(this).closest("tr").remove();
+        $("#sales_credit_note_table_body").find('input[name^="item_tax_id"]').each(function () {
+            var row = $(this).closest("tr");
+            //if(type_of_supply == 'export_without_payment') row.find('[name=item_tax]').val('').change();
+            generateJson(row);
+        });
         calculateGrandTotal();
     });
 
