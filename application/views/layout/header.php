@@ -1465,6 +1465,12 @@ if (!function_exists('precise_amount')) {
                                     Compliance Register </a>
                             </li>
                             <li>
+                                <a href="<?php echo base_url('gst_report'); ?>">
+                                    <!--                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>-->
+                                    GSTR1 Register
+                                </a>
+                            </li>
+                            <li>
                                 <a href="<?php echo base_url('report/tds_report_sales'); ?>">
 <!--                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>-->
                                     TDS Sales Register
