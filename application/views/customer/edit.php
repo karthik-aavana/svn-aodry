@@ -454,7 +454,7 @@ $this->load->view('layout/header');
         var tan_number = $('#txt_tan_number').val() ? $('#txt_tan_number').val() : "";
         var gst_number = $('#gst_number').val() ? $('#gst_number').val() : "";
         var name_regex = /^[-a-zA-Z\s]+$/;
-        var tan_regex = /^([A-Z]{4}[0-9]{5}[A-Z]{1})$/;
+        var tan_regex = /^([A-Z][a-z]{4}[0-9]{5}[A-Z]{1})$/;
         var name_regex_pan = /^[-a-zA-Z\s0-9 ]+$/;
         var name_regex1 = /^[a-zA-Z\[\]/@()#$%&\-.+,\d\-_\s\']+$/;
         var email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;

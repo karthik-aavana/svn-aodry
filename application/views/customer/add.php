@@ -468,7 +468,7 @@ $this->load->view('layout/header');
         var gst_number = $('#gst_number').val() ? $('#gst_number').val() : "";
         var name_regex1 = /^[a-zA-Z\[\]/@()#$%&\-.+,\d\-_\s\']+$/;
         var name_regex = /^[-a-zA-Z\s0-9 ]+$/;
-        var tan_regex = /^([A-Z]{4}[0-9]{5}[A-Z]{1})$/;
+        var tan_regex = /^([A-Z][a-z]{4}[0-9]{5}[A-Z]{1})$/;
         var email = $('#email_address').val() ? $('#email_address').val() : "";
         var email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         var num_regex = /^[0-9]+$/;

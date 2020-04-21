@@ -908,7 +908,8 @@ $this->load->view('layout/header');
                             <input type="hidden" name="tax_type" id="tax_type" value="<?= $settings_tax_type ?>">
                             <div class="box-footer">
                                 <button type="submit" id="sales_submit" name="sales_submit" class="btn btn-info">Submit</button>
-                                <button class="btn btn-default" id="sale_cancel" onclick="cancel('quotation')">Cancel</button>
+                                <a class="btn btn-sm btn-default back_button" href1="<?php echo base_url('quotation'); ?>">Cancel</a>
+                                <!-- <button class="btn btn-default" id="sale_cancel" onclick="cancel('quotation')">Cancel</button> -->
                             </div>                            
                             <?php
                             $notes_sub_module = 0;

@@ -405,7 +405,7 @@ $("#vendor_submit_edit").click(function() {
             var gst_regex_format = "^([0][1-9]|[1-4][0-9])([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$";
              var flag_label = 'N';
              var name_regex = /^[a-zA-Z0-9\[\]/@()#$%&\-.+,\d\-_\s\']+$/;
-             var tan_regex = /^([A-Z]{4}[0-9]{5}[A-Z]{1})$/;
+             var tan_regex = /^([A-Z][a-z]{4}[0-9]{5}[A-Z]{1})$/;
              var alpa_regex = /^[a-zA-Z ]+$/;
              var num_regex = /^[0-9]+$/;
              var name_regex_alnu = /^[-a-zA-Z\s0-9 ]+$/;

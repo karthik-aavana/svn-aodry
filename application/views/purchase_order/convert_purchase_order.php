@@ -940,7 +940,8 @@ $this->load->view('layout/header');
                             <input type="hidden" name="tax_type" id="tax_type" value="<?= $settings_tax_type ?>">
                             <div class="box-footer">
                                 <button type="submit" id="purchase_order_submit" name="purchase_order_submit" class="btn btn-info">Update</button>
-                                <span class="btn btn-default" id="sale_cancel" onclick="cancel('purchase')">Cancel</span>
+                                <a class="btn btn-sm btn-default back_button" href1="<?php echo base_url('purchase_order'); ?>">Cancel </a>
+                                <!-- <span class="btn btn-default" id="sale_cancel" onclick="cancel('purchase')">Cancel</span> -->
                             </div>
                             
                             <?php
