@@ -58,13 +58,19 @@ $(document).ready(function() {
                 dataType: 'JSON',
                 method: 'POST',
                 data:{'uom': uom, 'description': description,'uom_type': uom_type },
+                beforeSend: function(){
+                                    // Show image container
+                                    $("#uom_modal #loader").show();
+                                },
                
                 success: function (result) {
+                     $("#uom_modal #loader").hide();
                     if((result['uom_count'] > 0 && result['uom_type'] =='both') || (result['uom_count'] > 0 && result['uom_type'] ==uom_type)){
                         $('#err_uom').text("UQC already exist in "+result['uom_type']);
                         return !1
                     } else{
                         UpdateUQC();
+                         $("#uom_modal").modal('hide');
                     }
                 }        
             });
@@ -95,12 +101,14 @@ $(document).ready(function() {
                                     'description': $('#description_uom').val(),
                                     'uom_type': $('#uom_type_a').val()
                                 },
-                                 beforeSend: function(){
-                                    // Show image container
-                                    $("#uom_modal #loader").show();
-                                },
+                                //  beforeSend: function(){
+                                //     // Show image container
+                                //     $("#uom_modal #loader").show();
+                                // },
                         success: function (result)
+
                         {
+                             // $("#uom_modal #loader").hide();
                             var tax_item_type = $('#tax_item_type').val();
                             var data = result.data;
                             if (tax_item_type == "product")
@@ -121,7 +129,7 @@ $(document).ready(function() {
                                 //$("#gst_tax").select2().val(result.id + '-' + tax_value).trigger('change.select2');
                                 $('#product_unit').val(result.id).attr("selected", "selected");
                                 $("#uomForm")[0].reset();
-                                $("#uom_modal").modal('hide');
+                               
                                // $("#gst_tax").change();
                             } else if (tax_item_type == "service")
                             {
