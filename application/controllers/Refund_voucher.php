@@ -26,6 +26,8 @@ class Refund_voucher extends MY_Controller {
           $data['access_settings'] = $section_modules['settings'];
           $data['access_common_settings'] = $section_modules['common_settings']; */
         $email_sub_module_id = $this->config->item('email_sub_module');
+        $data['email_module_id']           = $this->config->item('email_module');
+        $data['email_sub_module_id']       = $email_sub_module_id;
         if (!empty($this->input->post())) {
             $columns = array(
                 0 => 'rv.refund_id',
@@ -71,25 +73,29 @@ class Refund_voucher extends MY_Controller {
 
                     $cols = '<div class="box-body hide action_button">
                         <div class="btn-group">';
-
-                    $cols .= '<span><a href="' . base_url('refund_voucher/view/') . $refund_id . '" class="btn btn-app" data-toggle="tooltip" title="View Refund Voucher" data-placement="bottom">
+                    if (in_array($refund_voucher_module_id, $data['active_view'])){
+                        $cols .= '<span><a href="' . base_url('refund_voucher/view/') . $refund_id . '" class="btn btn-app" data-toggle="tooltip" title="View Refund Voucher" data-placement="bottom">
                                     <i class="fa fa-eye"></i>
                             </a></span>';
+                        $cols .= '<span><a href="' . base_url('refund_voucher/pdf/') . $refund_id . '" class="btn btn-app pdf_button" target="_blank" data-name="regular" data-toggle="tooltip" data-placement="bottom" title="Download PDF"><i class="fa fa-file-pdf-o"></i></a></span>';
+                    }
 
                     if (in_array($refund_voucher_module_id, $data['active_edit']) && $post->voucher_status != "2") {
                         $cols .= '<span><a href="' . base_url('refund_voucher/edit/') . $refund_id . '" class="btn btn-app" data-toggle="tooltip" title="Edit Refund Voucher" data-placement="bottom"><i class="fa fa-pencil"></i>
                             </a></span>';
                     }
 
-                    $cols .= '<span><a href="' . base_url('refund_voucher/pdf/') . $refund_id . '" class="btn btn-app pdf_button" target="_blank" data-name="regular" data-toggle="tooltip" data-placement="bottom" title="Download PDF"><i class="fa fa-file-pdf-o"></i></a></span>';
-
                     $email_sub_module = 0;
                     $email_sub_module = 1;
                     if ($email_sub_module == 1) {
-
-                        $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#composeMail"><a  class="btn btn-app pdf_button composeMail" data-id="' . $refund_id . '" data-name="regular" href="#" class="btn btn-app" data-placement="bottom" data-toggle="tooltip" title="Email Refund Voucher">
-                                    <i class="fa fa-envelope-o"></i>
-                            </a></span>';
+                        if (in_array($data['email_module_id'] , $data['active_view']))
+                        {
+                            if (in_array($data['email_sub_module_id'] , $data['access_sub_modules']))
+                            {
+                                $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#composeMail"><a  class="btn btn-app pdf_button composeMail" data-id="' . $refund_id . '" data-name="regular" href="#" class="btn btn-app" data-placement="bottom" data-toggle="tooltip" title="Email Refund Voucher">
+                                    <i class="fa fa-envelope-o"></i></a></span>';
+                            }
+                        }
                     }
 
                     /* if ($post->currency_id != $this->session->userdata('SESS_DEFAULT_CURRENCY') && $post->voucher_status != "2") {

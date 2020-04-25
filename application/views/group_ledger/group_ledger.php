@@ -43,7 +43,11 @@ $this->load->view('layout/header');
                 <div class="box">
                     <div class="box-header with-border">
                         <h3 class="box-title">Groups & Ledgers</h3>
+                        <?php
+                        if (in_array($group_ledgers_module_id, $active_add)) {
+                        ?>
                         <a class="btn btn-sm btn-info pull-right add_groups" href="javascript:void(0);">Add Group/Subgroup/Ledger</a>
+                        <?php } ?>
                     </div>
                     <div class="box-body">
                          <div id="loader">
@@ -78,9 +82,18 @@ $this->load->view('group_ledger/add_group_ledger');
 ?>
 <script src="<?php echo base_url('assets/js/') ?>icon-loader.js"></script>
 <script type="text/javascript">
+    var edit_privilege = true;
+    <?php if(in_array($group_ledgers_module_id, $active_edit)){ ?>
+        edit_privilege = false;
+    <?php } ?>
     GetCustomLedger();
     $(document).ready(function () {
         $(document).on('click', '.edit_grp', function () {
+            if(edit_privilege){
+                alert_d.text ="Access denied. Please Contact Admin";
+                PNotify.error(alert_d);
+                return false;
+            }
             $('table tbody').find('input,select').addClass('disable_in');
             $('table tbody').find('tr').removeClass('edit_mode');
             $('table tbody').find('.select2 span').removeClass('select2-selection--single');
@@ -328,6 +341,11 @@ $this->load->view('group_ledger/add_group_ledger');
         return comp_table;
     }
     function blockGroup(ths) {
+        if(edit_privilege){
+            alert_d.text ="Access denied. Please Contact Admin";
+            PNotify.error(alert_d);
+            return false;
+        }
         var msg = "Are you sure want to Active Status?";
         var status = 1;
         if (!ths.is(':checked')) {

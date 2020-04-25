@@ -62,8 +62,14 @@
 						<div class="form-group">
 							<label for="category_type_a">Movement Type<span class="validation-color">*</span></label>
 							<select class="form-control select2" id="cmb_move_product" name="cmb_move_product">
+								<?php
+                                    if (in_array($damaged_stock_module_id, $active_add)) {
+                                ?>
 								<option value='damaged'>Damaged</option>
-								<option value='found'>Found</option>								
+								<?php } 
+                                    if (in_array($product_module_id, $active_add)) {?>
+								<option value='found'>Found</option>	
+								<?php } ?>							
 							</select>
 							<span class="validation-color" id="err_product_movement"></span>
 						</div>

@@ -60,7 +60,17 @@ class Boe extends MY_Controller {
             if (!empty($posts)) {
                 foreach ($posts as $post) {
                     $boe_id = $this->encryption_url->encode($post->boe_id);
-                    $nestedData['check'] = '<input type="checkbox" name="check_boe" class="form-check-input" value="' . $boe_id . '"><input type="hidden" name="edit" value="' . base_url() . 'boe/edit/' . $boe_id . '"><input type="hidden" name="view" value="' . base_url() . 'boe/view/' . $boe_id . '"><input type="hidden" name="pdf" value="' . base_url() . 'boe/pdf/' . $boe_id . '"><input type="hidden" name="delete" value="' . $boe_id . '">'; //'.base_url().'boe/delete_boe/'
+                    $col = '<input type="checkbox" name="check_boe" class="form-check-input" value="' . $boe_id . '">';
+                    if(in_array($boe_module_id, $data['active_edit'])){
+                        $col .= '<input type="hidden" name="edit" value="' . base_url() . 'boe/edit/' . $boe_id . '">';
+                    }
+                    if(in_array($boe_module_id, $data['active_view'])){
+                        $col .= '<input type="hidden" name="view" value="' . base_url() . 'boe/view/' . $boe_id . '"><input type="hidden" name="pdf" value="' . base_url() . 'boe/pdf/' . $boe_id . '">';
+                    }
+                    if(in_array($boe_module_id, $data['active_delete'])){
+                        $col .= '<input type="hidden" name="delete" value="' . $boe_id . '">';
+                    }
+                    $nestedData['check'] = $col;//'.base_url().'boe/delete_boe/'
                     $nestedData['date'] = date('d-m-Y', strtotime($post->boe_date));
                     $nestedData['voucher_number'] = "<a href='" . base_url() . 'boe/view/' . $boe_id . "'>" . $post->boe_number . "</a>";
                     $nestedData['reference_number'] = $post->reference_number;
@@ -606,7 +616,7 @@ class Boe extends MY_Controller {
         $boe_module_id = $this->config->item('BOE_module');
         $module_id = $boe_module_id;
         $modules = $this->modules;
-        $privilege = "add_privilege";
+        $privilege = "edit_privilege";
         $section_modules = $this->get_section_modules($boe_module_id, $modules, $privilege);
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
@@ -1129,6 +1139,15 @@ class Boe extends MY_Controller {
         $id = $this->input->post('delete_id');
         $boe_id = $this->encryption_url->decode($id);
         $item_table = $this->config->item('boe_item_table');
+
+        $boe_module_id = $this->config->item('BOE_module');
+        $modules = $this->modules;
+        $privilege = "delete_privilege";
+        $data['privilege'] = $privilege;
+        $section_modules = $this->get_section_modules($boe_module_id, $modules, $privilege);
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
+
         /* delete Items */
         $this->db->where('boe_id', $boe_id);
         $this->db->delete($item_table);

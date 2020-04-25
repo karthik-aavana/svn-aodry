@@ -25,7 +25,11 @@ $this->load->view('layout/header');
                     <div id="plus_btn">
                         <div class="box-header with-border">
                             <h3 class="box-title">People</h3>
+                            <?php
+                            if (in_array($shareholder_module_id, $active_add)) {
+                            ?>
                             <a class="btn btn-sm btn-info pull-right" href="<?php echo base_url('share_holder/add'); ?>">Add People</a>
+                            <?php } ?>
                         </div>
                     </div>
                     <div id="filter">
@@ -85,10 +89,10 @@ $this->load->view('customer/customer_bulk_upload');
             },
         });
         anime.timeline({loop: !0}).add({targets: ".ml8 .circle-white", scale: [0, 3], opacity: [1, 0], easing: "easeInOutExpo", rotateZ: 360, duration: 8e3}), anime({targets: ".ml8 .circle-dark-dashed", rotateZ: 360, duration: 8e3, easing: "linear", loop: !0});
-        <?php
-            $partner_success = $this->session->flashdata('partner_success');
-            $partner_error = $this->session->flashdata('partner_error');
-        ?>
+		<?php
+			$partner_success = $this->session->flashdata('partner_success');
+			$partner_error = $this->session->flashdata('partner_error');
+		?>
         var alert_success = '<?= $partner_success; ?>';
         var alert_failure = '<?= $partner_error; ?>';
         if (alert_success != '') {

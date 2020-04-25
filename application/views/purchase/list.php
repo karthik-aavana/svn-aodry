@@ -29,7 +29,11 @@ $this->load->view('layout/header');
                     <div id="plus_btn">
                         <div class="box-header with-border">
                             <h3 class="box-title">Purchase</h3>
+                            <?php
+                            if (in_array($purchase_module_id, $active_add)) {
+                            ?>
                             <a class="btn btn-sm btn-info pull-right" href="<?php echo base_url('purchase/add'); ?>">Add Purchase </a>
+                            <?php } ?>
                         </div>
                     </div>                                     
                     <div id="filter">

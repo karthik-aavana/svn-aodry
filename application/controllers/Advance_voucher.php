@@ -21,6 +21,7 @@ class Advance_voucher extends MY_Controller {
         $data = array_merge($data, $section_modules);
         $access_common_settings = $section_modules['access_common_settings'];
         $email_sub_module_id             = $this->config->item('email_sub_module');
+        $sales_module_id             = $this->config->item('sales_module');
         if (!empty($this->input->post())) {
             $columns             = array(
                     0 => 'av.advance_voucher_id',
@@ -71,9 +72,14 @@ class Advance_voucher extends MY_Controller {
                   //  $cols = '<ul class="list-inline">        <li>        <a href="' . base_url('advance_voucher/view/') . $advance_id . '"><i class="fa fa-eye text-orange"></i> Advance Details</a>        </li>';
                     $cols = '<div class="box-body hide action_button">
                         <div class="btn-group">';
-                     $cols .= '<span> <a href="' . base_url('advance_voucher/view/') . $advance_id . '" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" data-original-title="View Advance Voucher"> <i class="fa fa-eye"></i> </a></span>';
-                    if ($unadjusted_amount > 0) {
-                        $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#connectSales"> <a href="#" class="connectSales btn btn-app" data-toggle="tooltip" data-id="' . $advance_id . '"data-placement="bottom" title="Connect to Sales"> <i class="fa fa-link"></i> </a></span>';
+                    if (in_array($advance_voucher_module_id, $data['active_view'])) {
+                        $cols .= '<span> <a href="' . base_url('advance_voucher/view/') . $advance_id . '" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" data-original-title="View Advance Voucher"> <i class="fa fa-eye"></i> </a></span>';
+                        $cols .= '<span> <a href="' . base_url('advance_voucher/view_details/') . $advance_id . '" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" data-original-title="View Ledger Details" target="_blank"> <i class="fa fa-eye"></i> </a></span>';
+                    }
+                    if (in_array($sales_module_id, $data['active_edit']) && in_array($advance_voucher_module_id, $data['active_edit'])) {
+                        if ($unadjusted_amount > 0) {
+                            $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#connectSales"> <a href="#" class="connectSales btn btn-app" data-toggle="tooltip" data-id="' . $advance_id . '"data-placement="bottom" title="Connect to Sales"> <i class="fa fa-link"></i> </a></span>';
+                        }
                     }
                     if (in_array($advance_voucher_module_id, $data['active_edit']) && $post->is_from_sales == 0) {
                         if ($post->reference_id == 0 || $post->reference_id == "" || $post->reference_id == null) {
@@ -91,10 +97,12 @@ class Advance_voucher extends MY_Controller {
                         if(!empty($customer_currency_code))
                         $customer_curr_code     = $customer_currency_code[0]->currency_code;
 
-                    if($branc_currency_code != $customer_curr_code){
-                        $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#pdf_type_modal"><a href1="' . base_url('advance_voucher/pdf/') . $advance_id . '" class="btn btn-app pdf_button" b_curr="'.$this->session->userdata('SESS_DEFAULT_CURRENCY').'"  b_code="'.$branc_currency_code.'" c_code="'.$customer_curr_code.'" c_curr="'.$post->currency_id.'" data-id="' . $advance_id . '" data-name="regular" target="_blank" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Download PDF"><i class="fa fa-file-pdf-o"></i></a></span>';
-                    }else{
-                        $cols .= '<span data-backdrop="static" data-keyboard="false" ><a href="' . base_url('advance_voucher/pdf/') . $advance_id . '" target="_blank" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Download PDF"><i class="fa fa-file-pdf-o"></i></a></span>';
+                    if (in_array($advance_voucher_module_id, $data['active_view'])) {
+                        if($branc_currency_code != $customer_curr_code){
+                            $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#pdf_type_modal"><a href1="' . base_url('advance_voucher/pdf/') . $advance_id . '" class="btn btn-app pdf_button" b_curr="'.$this->session->userdata('SESS_DEFAULT_CURRENCY').'"  b_code="'.$branc_currency_code.'" c_code="'.$customer_curr_code.'" c_curr="'.$post->currency_id.'" data-id="' . $advance_id . '" data-name="regular" target="_blank" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Download PDF"><i class="fa fa-file-pdf-o"></i></a></span>';
+                        }else{
+                            $cols .= '<span data-backdrop="static" data-keyboard="false" ><a href="' . base_url('advance_voucher/pdf/') . $advance_id . '" target="_blank" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Download PDF"><i class="fa fa-file-pdf-o"></i></a></span>';
+                        }
                     }
                     
 
@@ -116,8 +124,6 @@ class Advance_voucher extends MY_Controller {
 
                     }
 
-                $cols .= '<span> <a href="' . base_url('advance_voucher/view_details/') . $advance_id . '" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" data-original-title="View Ledger Details" target="_blank"> <i class="fa fa-eye"></i> </a></span>';
-
                   /*  if ($post->currency_id != $this->session->userdata('SESS_DEFAULT_CURRENCY') && $post->voucher_status != "2"){
                         $cols .= '<li>               <a data-backdrop="static" data-keyboard="false" class="convert_currency" data-toggle="modal" data-target="#convert_currency_modal" data-id="' . $advance_id . '" data-path="advance_voucher/convert_currency" data-currency_code="' . $post->currency_code . '" data-grand_total="' . $post->receipt_amount . '" href="#" title="Convert Currency" ><i class="fa fa-exchange"></i> Convert Currency</a>            </li>';
                     }
@@ -130,13 +136,13 @@ class Advance_voucher extends MY_Controller {
 
                         if ($post->currency_id != $this->session->userdata('SESS_DEFAULT_CURRENCY')) {
                             $conversion_date = $post->conversion_date;
-                        if($conversion_date == '0000-00-00') $conversion_date = $post->added_date;
-                        $conversion_date = date('d-m-Y',strtotime($conversion_date));
-                        $cols .= '<span data-toggle="tooltip" data-placement="bottom" title="Convert Currency"><a href="#" class="btn btn-app convert_currency" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#convert_currency_modal" data-id="' . $advance_id . '" data-conversion_date="'.$conversion_date.'" data-path="advance_voucher/convert_currency" data-currency_code="' . $post->currency_code . '" data-grand_total="' . $this->precise_amount($post->receipt_amount, $access_common_settings[0]->amount_precision) . '" data-rate="' . $this->precise_amount($post->currency_converted_rate, $access_common_settings[0]->amount_precision) . '" >
-                                    <i class="fa fa-exchange"></i>
-                            </a> </span>';
-                    }
-                    }
+                            if($conversion_date == '0000-00-00') $conversion_date = $post->added_date;
+                                $conversion_date = date('d-m-Y',strtotime($conversion_date));
+                                $cols .= '<span data-toggle="tooltip" data-placement="bottom" title="Convert Currency"><a href="#" class="btn btn-app convert_currency" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#convert_currency_modal" data-id="' . $advance_id . '" data-conversion_date="'.$conversion_date.'" data-path="advance_voucher/convert_currency" data-currency_code="' . $post->currency_code . '" data-grand_total="' . $this->precise_amount($post->receipt_amount, $access_common_settings[0]->amount_precision) . '" data-rate="' . $this->precise_amount($post->currency_converted_rate, $access_common_settings[0]->amount_precision) . '" >
+                                        <i class="fa fa-exchange"></i>
+                                    </a> </span>';
+                            }
+                        }
                     $cols .= '</div>';
 
                     $cols .= '</div></div>';
@@ -232,6 +238,12 @@ class Advance_voucher extends MY_Controller {
         $voucher_date = date('Y-m-d', strtotime($this->input->post('voucher_date')));
         $advance_ledger = $this->config->item('advance_ledger');
 
+        $advance_voucher_module_id         = $this->config->item('advance_voucher_module');
+        $data['module_id']                 = $advance_voucher_module_id;
+        $modules                           = $this->modules;
+        $privilege                         = "add_privilege";
+        $data['privilege']                 = "add_privilege";
+        $section_modules                   = $this->get_section_modules($advance_voucher_module_id, $modules, $privilege);
         $voucher_amount = $this->input->post('voucher_amount');
         $customer = $this->general_model->getRecords('customer_name,ledger_id,customer_country_id,customer_state_id', 'customer', array('customer_id' => $customer_id));
 
@@ -533,6 +545,14 @@ class Advance_voucher extends MY_Controller {
     public function getAllAdvanceDetail() {
         $sales_id = $this->input->post('sales_id');
         $customer_id = $this->input->post('c_id');
+
+        $advance_voucher_module_id         = $this->config->item('advance_voucher_module');
+        $data['module_id']                 = $advance_voucher_module_id;
+        $modules                           = $this->modules;
+        $privilege                         = "view_privilege";
+        $data['privilege']                 = "view_privilege";
+        $section_modules                   = $this->get_section_modules($advance_voucher_module_id, $modules, $privilege);
+
         $customer = $this->general_model->getRecords('ledger_id,customer_name', 'customer', array('customer_id' => $customer_id));
         $customer_name = '';
         if (!empty($customer))
@@ -2488,9 +2508,9 @@ class Advance_voucher extends MY_Controller {
 
         $data = array_merge($data, $section_modules);
         $access_common_settings = $section_modules['access_common_settings'];
-
+        $data['email_module_id'] = $this->config->item('email_module');
         $email_sub_module_id             = $this->config->item('email_sub_module');
-
+        $data['email_sub_module_id'] = $email_sub_module_id;
 
         $product_module_id               = $this->config->item('product_module');
         $service_module_id               = $this->config->item('service_module');
@@ -3234,6 +3254,12 @@ class Advance_voucher extends MY_Controller {
 
     public function get_advance_sales($id) {
       //  $id = $this->input->post('id');
+        $advance_voucher_module_id  = $this->config->item('advance_voucher_module');
+        $data['advance_voucher_module_id']  = $advance_voucher_module_id;
+        $modules = $this->modules;
+        $privilege                       = "view_privilege";
+        $data['privilege']               = "view_privilege";
+        $section_modules = $this->get_section_modules($advance_voucher_module_id, $modules, $privilege);
         $id = $this->encryption_url->decode($id);
         $list_data = $this->common->sales_voucher_list_advance_field($id);
         $list_data['search'] = 'all';
@@ -3405,6 +3431,12 @@ class Advance_voucher extends MY_Controller {
     }
 
     public function update_advance_sales() {
+        $advance_voucher_module_id         = $this->config->item('advance_voucher_module');
+        $data['module_id']                 = $advance_voucher_module_id;
+        $modules                           = $this->modules;
+        $privilege                         = "edit_privilege";
+        $data['privilege']                 = "edit_privilege";
+        $section_modules                   = $this->get_section_modules($advance_voucher_module_id, $modules, $privilege);
         $advance_voucher_id = $this->input->post('advance_id');
         $advance_amount = $this->input->post('advance_amount');
         $valueJSON = $this->input->post('valueJSON');

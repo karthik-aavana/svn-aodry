@@ -135,7 +135,11 @@ class Customer extends MY_Controller {
                         }
                     }
                     $cols .= '</div></div>';
-                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
+                    $disabled = '';
+                    if(!in_array($data['customer_module_id'], $data['active_delete']) && !in_array($data['customer_module_id'], $data['active_edit'])){
+                        $disabled = 'disabled';
+                    }
+                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal"'.$disabled.'>';
                     $send_data[] = $nestedData;
                 }
             } $json_data = array(
@@ -1667,6 +1671,16 @@ class Customer extends MY_Controller {
         $from_date = strtotime(date('Y-m-d'));
         require_once APPPATH . "/third_party/PHPExcel.php";
         $object = new PHPExcel();
+
+        $customer_module_id = $this->config->item('customer_module');
+        $data['customer_module_id'] = $customer_module_id;
+        $modules = $this->modules;
+        $privilege = "view_privilege";
+        $data['privilege'] = $privilege;
+        $section_modules = $this->get_section_modules($customer_module_id, $modules, $privilege);
+
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
 
         $table_columns = array("Customer Code", "Customer Type", "Company/Firm Name", "PIN Code", "Country", "State", "City", "Address", "GST Number", "PAN Number","Contact Person Name","Contact Number", "Email", "Due Days", "TAN Number");
 

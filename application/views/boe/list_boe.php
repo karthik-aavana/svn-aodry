@@ -10,7 +10,9 @@ $this->load->view('layout/header');
                     <div id="plus_btn">
                         <div class="box-header with-border">
                             <h3 class="box-title">BOE(Bill of Entry)</h3>
-                            <a href="<?php echo base_url('boe/add'); ?>" class="btn btn-info btn-sm pull-right">Add BOE</a>
+                            <?php if(in_array($boe_module_id, $active_add)){?>
+                                <a href="<?php echo base_url('boe/add'); ?>" class="btn btn-info btn-sm pull-right">Add BOE</a>
+                            <?php } ?>
                         </div>
                     </div>
                     <div id="filter">
@@ -88,10 +90,20 @@ $this->load->view('general/delete_modal');
             if ($(this).is(":checked")) {
                 $(document).find('[name=check_boe]').prop('checked', false);
                 $(this).prop('checked', true);
-                $('#filter .edit').attr('href', $(this).parent().find('[name=edit]').val());
-                $('#filter .pdf').attr('href', $(this).parent().find('[name=pdf]').val());
-                $('#filter .view').attr('href', $(this).parent().find('[name=view]').val());
-                $('#filter .delete_button').attr('data-id', $(this).parent().find('[name=delete]').val());
+                $('#filter span').hide();
+                if(typeof $(this).parent().find('[name=edit]').val() != 'undefined'){
+                    $('#filter .edit').attr('href', $(this).parent().find('[name=edit]').val()).parent().show();
+                }
+                if(typeof $(this).parent().find('[name=pdf]').val() != 'undefined'){
+                    $('#filter .pdf').attr('href', $(this).parent().find('[name=pdf]').val()).parent().show();
+                }
+                if(typeof $(this).parent().find('[name=view]').val() != 'undefined'){
+                    $('#filter .view').attr('href', $(this).parent().find('[name=view]').val()).parent().show();
+                }
+                if(typeof $(this).parent().find('[name=delete]').val() != 'undefined'){
+                    $('#filter .delete_button').attr('data-id', $(this).parent().find('[name=delete]').val());
+                    $('#filter .delete_button').show();
+                }
                 $('#plus_btn').hide();
                 $('#filter').show();
             } else {

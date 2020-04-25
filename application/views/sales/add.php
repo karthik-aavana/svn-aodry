@@ -259,7 +259,7 @@ $this->load->view('layout/header');
                                         <div class="input-group">
                                             <div class="input-group-addon">
                                                 <?php
-                                                if (in_array($service_module_id, $active_add) && in_array($product_module_id, $active_add)) {
+                                                if (in_array($service_module_id, $active_add) || in_array($product_module_id, $active_add)) {
                                                     $item_modal = 1;
                                                     ?>
                                                     <a href="" data-toggle="modal" data-target="#item_modal" class="pull-left">+</a>
@@ -494,7 +494,9 @@ $this->load->view('layout/header');
                                     </div>
                                     <div class="box-footer">
                                         <button type="submit" id="sales_submit" name="submit" value="add" class="btn btn-info">Add</button>
-                                        <button type="submit" id="sales_pay_now" name="submit" value="pay_now" class="btn btn-success"> Receive Now </button>
+                                        <?php if (in_array($receipt_voucher_module_id, $active_add)) { ?>
+                                            <button type="submit" id="sales_pay_now" name="submit" value="pay_now" class="btn btn-success"> Receive Now </button>
+                                        <?php } ?>
                                         <span class="btn btn-default" id="sale_cancel" onclick="cancel('sales')">Cancel</span>
                                     </div>
                                     <?php

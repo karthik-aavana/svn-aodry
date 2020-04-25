@@ -21,7 +21,9 @@ $this->load->view('layout/header');
                     <div class="box-header with-border">                      
                         <div id="plus_btn">
                             <h3 class="box-title">Purchase Order</h3>
-                            <a class="btn btn-sm btn-default pull-right" href="<?php echo base_url('purchase_order/add'); ?>">Add Purchase Order </a>
+                            <?php if(in_array($purchase_order_module_id, $active_add)){?>
+                                <a class="btn btn-sm btn-default pull-right" href="<?php echo base_url('purchase_order/add'); ?>">Add Purchase Order </a>
+                            <?php }?>
                         </div>
                         <div id="filter">
                             <div class="box-header box-body filter_body"></div>

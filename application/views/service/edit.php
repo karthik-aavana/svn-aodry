@@ -64,13 +64,13 @@ $this->load->view('layout/header');
                                         <input type="hidden" class="form-control" id="c_type" name="c_type" value="service">
                                         <label for="service_category">Category <span class="validation-color">*</span></label>
                                         <div class="input-group">
-                                            <?php
-                                            if (in_array($category_module_id, $active_add)) {
-                                                ?>
                                                 <div class="input-group-addon">
+                                                    <?php
+                                                    if (in_array($category_module_id, $active_add)) {
+                                                    ?>
                                                     <a href="" data-toggle="modal" data-target="#category_modal" data-name="service" class="pull-right new_category">+</a>
+                                                    <?php } ?>
                                                 </div>
-                                            <?php } ?>
                                             <select class="form-control select2" id="service_category" name="service_category" style="width: 100%;" tabindex="3">
                                                 <option value="">Select</option>
                                                 <?php
@@ -91,13 +91,13 @@ $this->load->view('layout/header');
                                     <div class="form-group">
                                         <label for="service_subcategory">Subcategory</label>
                                         <div class="input-group">
-                                            <?php
-                                            if (in_array($subcategory_module_id, $active_add)) {
-                                                ?>
                                                 <div class="input-group-addon">
-                                                    <a href="" data-toggle="modal" data-target="#subcategory_modal" data-name="service" class="pull-right open_subcategory_modal new_subcategory">+</a>
+                                                    <?php
+                                                    if (in_array($subcategory_module_id, $active_add)) {
+                                                    ?>
+                                                        <a href="" data-toggle="modal" data-target="#subcategory_modal" data-name="service" class="pull-right open_subcategory_modal new_subcategory">+</a>
+                                                    <?php } ?>
                                                 </div>
-                                            <?php } ?>
                                             <select class="form-control select2" id="service_subcategory" name="service_subcategory" style="width: 100%;" tabindex="4">
                                                 <option value="">Select</option>
                                                 <?php
@@ -136,13 +136,14 @@ $this->load->view('layout/header');
                                     <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="gst_tax">Tax(GST)</label>
-                                        <div class="input-group"><?php
-                                            if (in_array($tax_module_id, $active_add)) {
-                                                ?>
+                                        <div class="input-group">
                                                 <div class="input-group-addon">
+                                                    <?php
+                                                    if (in_array($tax_module_id, $active_add)) {
+                                                    ?>
                                                     <a href="" data-toggle="modal" data-target="#tax_gst_modal" data-name="service" class="pull-right new_tax">+</a>
+                                                    <?php } ?>
                                                 </div>
-                                            <?php } ?>
                                             <select class="form-control select2" id="gst_tax" name="gst_tax" style="width: 100%;" tabindex="6">
                                                 <option value="">Select Tax</option>
                                                 <?php
@@ -170,13 +171,14 @@ $this->load->view('layout/header');
                                     <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="tds_tax">Tax(TDS)</label>
-                                        <div class="input-group"><?php
-                                            if (in_array($tax_module_id, $active_add)) {
-                                                ?>
+                                        <div class="input-group">
                                                 <div class="input-group-addon">
+                                                    <?php
+                                                    if (in_array($tax_module_id, $active_add)) {
+                                                    ?>
                                                     <a href="" data-toggle="modal" data-target="#tax_tds_modal" data-name="service" class="pull-right new_tax">+</a>
+                                                    <?php } ?>
                                                 </div>
-                                            <?php } ?>
                                             <select class="form-control select2" id="tds_tax" name="tds_tax" style="width: 100%;" tabindex="6">
                                                 <option value="">Select Tax</option>
                                                 <?php
@@ -209,7 +211,11 @@ $this->load->view('layout/header');
                                             <label for="service_unit_uom">Unit of Measurement<span class="validation-color">*</span></label>
                                             <div class="input-group">
                                                 <div class="input-group-addon">
-                                                    <a href="#" data-toggle="modal" data-name="service" data-target="#uom_modal" class="pull-right new_tax">+</a>
+                                                    <?php
+                                                    if (in_array($uqc_module_id, $active_add)) {
+                                                    ?>
+                                                        <a href="#" data-toggle="modal" data-name="service" data-target="#uom_modal" class="pull-right new_tax">+</a>
+                                                    <?php } ?>
                                                 </div>
                                                 <select class="form-control select2" id="service_unit" name="service_unit"  tabindex="4">
                                                     <option value="">Select UOM</option>

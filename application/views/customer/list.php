@@ -44,10 +44,15 @@ $this->load->view('layout/header');
                             </div>
                         <?php } ?> -->
                          <h3 class="box-title">Customer</h3>
+                            <?php
+                            if (in_array($customer_module_id, $active_add)) {
+                            ?>
                             <a class="btn btn-sm btn-info pull-right" href="<?php echo base_url('customer/add'); ?>">Add Customer</a>
-                            <span><a href="<?php echo base_url("assets/excel/CustomerDemo.csv") ?>"  class="btn btn-sm btn-info pull-right" data-toggle="tooltip" data-placement="bottom" data-custom-class="tooltip-primary" data-original-title="Download Customer CSV Demo File" download><i class="fa fa-download"></i></a></span>
 
                             <span><a data-toggle="tooltip" data-placement="bottom" data-custom-class="tooltip-primary" class="btn btn-sm btn-info upload_customer_popup pull-right" data-original-title="Upload Customer" class=""><i class="fa fa-cloud-upload"></i></a> </span>
+                            <?php } ?>
+                            <span><a href="<?php echo base_url("assets/excel/CustomerDemo.csv") ?>"  class="btn btn-sm btn-info pull-right" data-toggle="tooltip" data-placement="bottom" data-custom-class="tooltip-primary" data-original-title="Download Customer CSV Demo File" download><i class="fa fa-download"></i></a></span>
+
                             <span><a ref="excel" href="javascript:void(0);" id='download_customer_data' class="btn download_sheet  pull-right" data-placement="bottom" data-toggle="tooltip" data-original-title="Download XLS" download><i class="fa fa-file-excel-o" aria-hidden="true"></i></a></span>
                         </div>
                         <form method="post" action="<?php echo base_url() ?>Customer/exportCustomerReportExcel" id="export_form">

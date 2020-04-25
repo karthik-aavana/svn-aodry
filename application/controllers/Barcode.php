@@ -27,12 +27,12 @@ class Barcode extends MY_Controller{
     }
 
     public function index(){
-        $product_module_id               = $this->config->item('product_module');
-        $data['module_id']               = $product_module_id;
+        $barcode_module_id               = $this->config->item('barcode_module');
+        $data['barcode_module_id']       = $barcode_module_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
         $data['privilege']               = $privilege;
-        $section_modules                 = $this->get_section_modules($product_module_id, $modules, $privilege);
+        $section_modules                 = $this->get_section_modules($barcode_module_id, $modules, $privilege);
 
         /* presents all the needed */
 
@@ -129,12 +129,12 @@ class Barcode extends MY_Controller{
 
    
     function get_barcode(){
-        $product_module_id               = $this->config->item('product_module');
-        $data['module_id']               = $product_module_id;
+        $barcode_module_id               = $this->config->item('barcode_module');
+        $data['module_id']               = $barcode_module_id;
         $modules                         = $this->modules;
-        $privilege                       = "view_privilege";
-        $data['privilege']               = "view_privilege";
-        $section_modules                 = $this->get_section_modules($product_module_id, $modules, $privilege);
+        $privilege                       = "add_privilege";
+        $data['privilege']               = "add_privilege";
+        $section_modules                 = $this->get_section_modules($barcode_module_id, $modules, $privilege);
         
         /* presents all the needed */
         $data=array_merge($data,$section_modules);
@@ -184,12 +184,12 @@ class Barcode extends MY_Controller{
     }
 
     function print_barcode(){
-        $product_module_id               = $this->config->item('product_module');
-        $data['module_id']               = $product_module_id;
+        $barcode_module_id               = $this->config->item('barcode_module');
+        $data['module_id']               = $barcode_module_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
         $data['privilege']               = "view_privilege";
-        $section_modules                 = $this->get_section_modules($product_module_id, $modules, $privilege);
+        $section_modules                 = $this->get_section_modules($barcode_module_id, $modules, $privilege);
         
         /* presents all the needed */
         $data=array_merge($data,$section_modules);
@@ -585,12 +585,12 @@ class Barcode extends MY_Controller{
 
     public function generate_barcode_from_list($id){
         $id  = $this->encryption_url->decode($id);
-        $product_module_id               = $this->config->item('product_module');
-        $data['module_id']               = $product_module_id;
+        $barcode_module_id               = $this->config->item('barcode_module');
+        $data['module_id']               = $barcode_module_id;
         $modules                         = $this->modules;
-        $privilege                       = "view_privilege";
+        $privilege                       = "add_privilege";
         $data['privilege']               = $privilege;
-        $section_modules                 = $this->get_section_modules($product_module_id, $modules, $privilege);
+        $section_modules                 = $this->get_section_modules($barcode_module_id, $modules, $privilege);
 
         /* presents all the needed */
 
@@ -603,12 +603,12 @@ class Barcode extends MY_Controller{
 
 
     function print_barcode_list(){
-        $product_module_id               = $this->config->item('product_module');
-        $data['module_id']               = $product_module_id;
+        $barcode_module_id               = $this->config->item('barcode_module');
+        $data['module_id']               = $barcode_module_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
         $data['privilege']               = "view_privilege";
-        $section_modules                 = $this->get_section_modules($product_module_id, $modules, $privilege);
+        $section_modules                 = $this->get_section_modules($barcode_module_id, $modules, $privilege);
         
         /* presents all the needed */
         $data=array_merge($data,$section_modules);

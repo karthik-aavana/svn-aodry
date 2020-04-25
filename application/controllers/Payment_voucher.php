@@ -31,6 +31,8 @@ class Payment_voucher extends MY_Controller
 
         $data['email_module_id']     = $this->config->item('email_module');
         $data['email_sub_module_id'] = $this->config->item('email_sub_module');
+        $purchase_module_id = $this->config->item('purchase_module');
+        $expense_bill_module_id = $this->config->item('expense_bill_module');
 
         if (!empty($this->input->post()))
         {
@@ -83,9 +85,17 @@ class Payment_voucher extends MY_Controller
                     $nestedData['supplier']                  = $post->supplier_name;
                     $reference_number          = str_replace(",", ",<br/>", $post->reference_number);
                     if($post->reference_type == 'expense'){
-                        $nestedData['reference_number'] = ' <a href="' . base_url('expense_bill/view/') . $purchase_id . '">' . $reference_number . '</a>';
+                        if(in_array($expense_bill_module_id, $data['active_view'])){
+                            $nestedData['reference_number'] = ' <a href="' . base_url('expense_bill/view/') . $purchase_id . '">' . $reference_number . '</a>';
+                        }else{
+                            $nestedData['reference_number'] = $reference_number;
+                        }
                     }else{
-                        $nestedData['reference_number'] = ' <a href="' . base_url('purchase/view/') . $purchase_id . '">' . $reference_number . '</a>';
+                        if(in_array($purchase_module_id, $data['active_view'])){
+                            $nestedData['reference_number'] = ' <a href="' . base_url('purchase/view/') . $purchase_id . '">' . $reference_number . '</a>';
+                        }else{
+                            $nestedData['reference_number'] = $reference_number;
+                        }
                     }
                     $amount =  str_replace(",", ",<br/> ", $post->imploded_receipt_amount);
                     $nestedData['amount'] = $this->precise_amount($amount,2);
@@ -93,16 +103,14 @@ class Payment_voucher extends MY_Controller
                     $nestedData['to_account']                = $post->to_account;
                     $nestedData['added_user']                = $post->first_name . ' ' . $post->last_name;
 					$cols = '<div class="box-body hide action_button"><div class="btn-group">';
-					$cols .= '<span><a data-toggle="tooltip" data-placement="bottom" href="' . base_url('payment_voucher/view_details/') . $payment_id . '"  title="View Payment Voucher" class="btn btn-app"><i class="fa fa-eye"></i></a></span>';
-
+                    if (in_array($payment_voucher_module_id, $data['active_view'])){
+                        $cols .= '<span><a data-toggle="tooltip" data-placement="bottom" href="' . base_url('payment_voucher/view_details/') . $payment_id . '"  title="View Payment Voucher" class="btn btn-app"><i class="fa fa-eye"></i></a></span>';
+                        $cols .= '<span><a data-toggle="tooltip" data-placement="bottom" href="' . base_url('payment_voucher/pdf/') . $payment_id . '" target="_blank" title="Download PDF" class="btn btn-app"><i class="fa fa-file-pdf-o"></i></a></span>';
+                    }
                     if (in_array($payment_voucher_module_id, $data['active_edit']) && $post->voucher_status != "2")
                     {
                         $cols .= '<span><a data-toggle="tooltip" data-placement="bottom" href="' . base_url('payment_voucher/edit/') . $payment_id . '" title="Edit Payment Voucher" class="btn btn-app"><i class="fa fa-pencil"></i></a></span>';
                     }
-
-                    $cols .= '<span><a data-toggle="tooltip" data-placement="bottom" href="' . base_url('payment_voucher/pdf/') . $payment_id . '" target="_blank" title="Download PDF" class="btn btn-app"><i class="fa fa-file-pdf-o"></i></a></span>';
-
-
                     /*if (in_array($data['email_module_id'], $data['active_view']))
                     {
                         if (in_array($data['email_sub_module_id'], $data['access_sub_modules']))
@@ -1699,8 +1707,8 @@ class Payment_voucher extends MY_Controller
         $payment_voucher_module_id = $this->config->item('payment_voucher_module');
         $data['module_id']         = $payment_voucher_module_id;
         $modules                   = $this->modules;
-        $privilege                 = "edit_privilege";
-        $data['privilege']         = "edit_privilege";
+        $privilege                 = "add_privilege";
+        $data['privilege']         = "add_privilege";
         $section_modules           = $this->get_section_modules($payment_voucher_module_id, $modules, $privilege);
 
         /* presents all the needed */
@@ -1752,8 +1760,8 @@ class Payment_voucher extends MY_Controller
         $payment_voucher_module_id = $this->config->item('payment_voucher_module');
         $data['module_id']         = $payment_voucher_module_id;
         $modules                   = $this->modules;
-        $privilege                 = "edit_privilege";
-        $data['privilege']         = "edit_privilege";
+        $privilege                 = "add_privilege";
+        $data['privilege']         = "add_privilege";
         $section_modules           = $this->get_section_modules($payment_voucher_module_id, $modules, $privilege);
 
         /* presents all the needed */

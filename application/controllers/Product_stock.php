@@ -10,20 +10,22 @@ class Product_stock extends MY_Controller {
         $this->load->helper('image_upload_helper');
     }
     public function index() {
-        $stock_module_id = $this->config->item('damaged_stock_module');
-        $data['stock_module_id'] = $stock_module_id;
+        $damaged_stock_module_id = $this->config->item('damaged_stock_module');
+        $product_stock_report_id = $this->config->item('product_stock_report');
+        $data['missing_stock_module_id'] = $this->config->item('missing_stock_module');
+        $data['damaged_stock_module_id'] = $damaged_stock_module_id;
+        $data['product_stock_report_id'] = $product_stock_report_id;
         $modules = $this->modules;
-        $privilege = "add_privilege";
-        $data['privilege'] = "add_privilege";
-        $section_modules = $this->get_section_modules($stock_module_id, $modules, $privilege);
-
+        $privilege = "view_privilege";
+        $data['privilege'] = "view_privilege";
+        $section_modules = $this->get_section_modules($product_stock_report_id, $modules, $privilege);
         $data['products'] = $this->product_call();
         /* presents all the needed */
         $branch_id =$this->session->userdata('SESS_BRANCH_ID');
         $data['products_all'] = $this->general_model->getRecords('*', 'products', [
             'delete_status' => 0, 'product_quantity > ' => 0, 'branch_id' => $branch_id ]);
-        $data=array_merge($data,$section_modules);       
-        $access_settings        = $data['access_settings'];
+        $data=array_merge($data,$section_modules);      
+        $access_settings        = $this->check_settings($damaged_stock_module_id, $modules['settings']);
          $type = 'damaged';
         $primary_id  = "product_damage_id";
         $table_name             = "product_damaged";
@@ -257,6 +259,19 @@ class Product_stock extends MY_Controller {
     }
 
     public function product_details() {
+        $damaged_stock_module_id = $this->config->item('damaged_stock_module');
+        $missing_stock_module_id = $this->config->item('missing_stock_module');
+        $data['damaged_stock_module_id'] = $damaged_stock_module_id;
+        $modules = $this->modules;
+        $privilege = "view_privilege";
+        $data['privilege'] = $privilege;
+        $section_modules = $this->check_privilege_section_modules($damaged_stock_module_id, $modules, $privilege);
+        if(empty($section_modules)){
+            $data['missing_stock_module_id'] = $missing_stock_module_id;
+            $section_modules = $this->get_section_modules($missing_stock_module_id, $modules, $privilege);
+        }
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
         $id = $this->input->post('id');
         $product_data = $this->general_model->get_product_stock_damaged($id);
         $send = array();
@@ -289,7 +304,17 @@ class Product_stock extends MY_Controller {
                                         <option value="missing" ' . $selected_missing . '>Missing</option>
                                     </select>';
                 $nestedData['comments'] = '<input type="text" name="comments" id="comments_' . $product_damage_id . '" rows="2" class="form-control disable_in" data-id="' . $product_damage_id . '" value="' . $com->comments . '">';
-                $nestedData['action'] = '<a href="#" class="edit_damage_cell" data-id="' . $product_damage_id . '"><i class="fa fa-pencil"></i></a> | <a class="btn btn-info btn-xs save_damage_cell" href="#" data-id="' . $product_damage_id . '"><i class="fa fa-save"></i></a>';
+                $action = '<a href="#" class="edit_damage_cell" data-id="' . $product_damage_id . '"><i class="fa fa-pencil"></i></a> | <a class="btn btn-info btn-xs save_damage_cell" href="#" data-id="' . $product_damage_id . '"><i class="fa fa-save"></i></a>';
+                $nestedData['action'] = '';
+                if ($stock_type == 'damaged') {
+                    if (in_array($damaged_stock_module_id , $data['active_edit'])){
+                        $nestedData['action'] = $action;
+                    }
+                }else{
+                    if (in_array($missing_stock_module_id , $data['active_edit'])){
+                        $nestedData['action'] = $action;
+                    }
+                }
                 $send[] = $nestedData;
             }
         }
@@ -307,13 +332,24 @@ class Product_stock extends MY_Controller {
         $product_id = $this->input->post('product_id');
         $quantity_old = $this->input->post('quantity_old');
         $id = $this->input->post('id');
-
-
-
         $user_id = $this->session->userdata('SESS_USER_ID');
         $financial_id = $this->session->userdata('SESS_FINANCIAL_YEAR_ID');
         $branch_id = $this->session->userdata('SESS_BRANCH_ID');
-
+        if($cmb_move_product == 'missing'){
+            $stock_module_id = $this->config->item('missing_stock_module');
+            $modules = $this->modules;
+            $privilege = "add_privilege";
+            $section_modules = $this->get_section_modules($stock_module_id, $modules, $privilege);
+            /* presents all the needed
+            $data = array_merge($data, $section_modules);*/
+        }else{
+            $stock_module_id = $this->config->item('damaged_stock_module');
+            $modules = $this->modules;
+            $privilege = "add_privilege";
+            $section_modules = $this->get_section_modules($stock_module_id, $modules, $privilege);
+            /* presents all the needed 
+            $data = array_merge($data, $section_modules);*/
+        }
         $damage_data = array("item_id" => $product_id,
             "item_type" => "product_inventory",
             "reference_date" => $reference_date,
@@ -476,6 +512,20 @@ class Product_stock extends MY_Controller {
     }
 
     public function damaged_history($id) {
+        $damaged_stock_module_id = $this->config->item('damaged_stock_module');
+        $data['damaged_stock_module_id'] = $damaged_stock_module_id;
+        $modules = $this->modules;
+        $privilege = "view_privilege";
+        $data['privilege'] = $privilege;
+        $section_modules = $this->check_privilege_section_modules($damaged_stock_module_id, $modules, $privilege);
+        if(empty($section_modules)){
+            $damaged_stock_module_id = $this->config->item('missing_stock_module');
+            $data['damaged_stock_module_id'] = $damaged_stock_module_id;
+            $section_modules = $this->get_section_modules($damaged_stock_module_id, $modules, $privilege);
+        }
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
+
         $list_data = $this->common->get_product_stock_missing_damaged_history($id);
         $list_data['search'] = 'all';
         $post = $this->general_model->getPageJoinRecords($list_data);

@@ -31,7 +31,7 @@ $this->load->view('layout/header');
         border: 1px solid red !important;
     }
 </style>
-<div class="content-wrapper">		
+<div class="content-wrapper">       
     <div class="fixed-breadcrumb">
         <ol class="breadcrumb abs-ol">
             <li>
@@ -94,6 +94,10 @@ $this->load->view('layout/footer');
 ?>
 <script type="text/javascript">
     var ledger_table;
+    var edit_privilege = true;
+    <?php if(in_array($closing_balance_module_id, $active_edit)){ ?>
+        edit_privilege = false;
+    <?php } ?>
     $(document).ready(function(){
 
         <?php if($close_date != '' ){ ?>
@@ -101,6 +105,11 @@ $this->load->view('layout/footer');
         <?php } ?>
        
         $(document).on('click','.edit_ledger',function(){
+            if(edit_privilege){
+                alert_d.text ="Access denied. Please Contact Admin";
+                PNotify.error(alert_d);
+                return false;
+            }
             var id = $(this).attr('data-id');
             var tr = $(this).closest('tr');
             $('#balance_table tr').removeClass('edit_mode');
@@ -184,6 +193,10 @@ $this->load->view('layout/footer');
     });
     
     function getOpeningBalance(){
+        /*var status_action = false;
+        <?php if (in_array($closing_balance_module_id, $active_edit)) { ?>
+            status_action = true;
+        <?php } ?>*/
         $('#balance_table').show();
         $('.report_row').show();
         var comp_table = $('#balance_table').DataTable({        
@@ -198,12 +211,13 @@ $this->load->view('layout/footer');
             "bStateSave": true,
             'ordering':  true,
             'columns' : [
-            {'data':'id'},
-            {'data' : 'ledger_name'},
-            {'data' : 'amount','sType':'dom-text'},
-            {'data' : 'amount_type','sType':'dom-text'},
-            {'data' : 'action'}, 
-            {'data' : 'status'}], 
+                {'data':'id'},
+                {'data' : 'ledger_name'},
+                {'data' : 'amount','sType':'dom-text'},
+                {'data' : 'amount_type','sType':'dom-text'},
+                {'data' : 'action'}, 
+                {'data' : 'status'}
+            ], 
             'order' : [[0, 'desc']],
             "columnDefs": [
             { "visible": false, "targets": [0]},
@@ -228,6 +242,11 @@ $this->load->view('layout/footer');
     }
 
     function blockLedger(ths) {
+        if(edit_privilege){
+            alert_d.text ="Access denied. Please Contact Admin";
+            PNotify.error(alert_d);
+            return false;
+        }
         var msg = "Are you sure want to Active Status..?";
         var status = 1;
         if (!ths.is(':checked')){

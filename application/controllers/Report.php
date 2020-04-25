@@ -982,28 +982,28 @@ class Report extends MY_Controller {
     }
 
     public function sales_test() {
-        $sales_module_id = $this->config->item('sales_module');
-        $data['module_id'] = $sales_module_id;
+        $sales_report_module_id = $this->config->item('sales_report_module');
+        $data['module_id'] = $sales_report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($sales_report_module_id, $modules, $privilege);
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
 
+        $sales_module_id = $this->config->item('sales_module');
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
 
-
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
         if (!empty($this->input->post())) {
 
             $columns = array(
@@ -1122,7 +1122,10 @@ class Report extends MY_Controller {
                     $recivable_date = date('Y-m-d', strtotime($post->sales_date . ' + 15 days'));
                     $sales_id = $this->encryption_url->encode($post->sales_id);
                     $nestedData['date'] = date('d-m-Y', strtotime($post->sales_date));
-                    $nestedData['invoice'] = '<a href="' . base_url('sales/view/') . $sales_id . '">' . $post->sales_invoice_number . '</a>';
+                    $nestedData['invoice'] = $post->sales_invoice_number;
+                    if(in_array($sales_module_id, $data['active_view'])){
+                        $nestedData['invoice'] = '<a href="' . base_url('sales/view/') . $sales_id . '">' . $post->sales_invoice_number . '</a>';
+                    }
                     $nestedData['customer'] = $post->customer_name;
                     // $nestedData['grand_total'] = $this->session->userdata('SESS_DEFAULT_CURRENCY_SYMBOL') . ' ' . $post->sales_grand_total;
                     $nestedData['grand_total'] = $post->currency_symbol . ' ' .$this->precise_amount($post->sales_grand_total, 2);
@@ -1277,27 +1280,28 @@ class Report extends MY_Controller {
     }
 
     public function purchase_test() {
-        $sales_module_id = $this->config->item('purchase_module');
-        $data['module_id'] = $sales_module_id;
+        $purchase_report_module_id = $this->config->item('purchase_report_module');
+        $data['module_id'] = $purchase_report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($purchase_report_module_id, $modules, $privilege);
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
 
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
+        $purchase_module_id = $this->config->item('purchase_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
 
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
         if (!empty($this->input->post())) {
             $columns = array(
                 0 => 'supplier',
@@ -1397,7 +1401,10 @@ class Report extends MY_Controller {
                     $recivable_date = date('Y-m-d', strtotime($post->purchase_date . ' + 15 days'));
                     $purchase_id = $this->encryption_url->encode($post->purchase_id);
                     $nestedData['date'] = date('d-m-Y', strtotime($post->purchase_date));
-                    $nestedData['invoice'] = ' <a href="' . base_url('purchase/view/') . $purchase_id . '">' . $post->purchase_invoice_number . '</a>';
+                    $nestedData['invoice'] = $post->purchase_invoice_number;
+                    if(in_array($purchase_module_id, $data['active_view'])){
+                        $nestedData['invoice'] = ' <a href="' . base_url('purchase/view/') . $purchase_id . '">' . $post->purchase_invoice_number . '</a>';
+                    }
                     $nestedData['supplier'] = $post->supplier_name;
                     $nestedData['grand_total'] = $this->session->userdata('SESS_DEFAULT_CURRENCY_SYMBOL') . ' ' . $this->precise_amount($post->purchase_grand_total, 2);
                     /* if ($post->credit_note_amount != 0) {
@@ -1561,26 +1568,27 @@ class Report extends MY_Controller {
     }
 
     public function expense_bill_report() {
-        $sales_module_id = $this->config->item('expense_bill_module');
-        $data['module_id'] = $sales_module_id;
+        $expense_bill_report_module_id = $this->config->item('expense_bill_report_module');
+        $data['module_id'] = $expense_bill_report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($expense_bill_report_module_id, $modules, $privilege);
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
 
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
+        $expense_bill_module_id = $this->config->item('expense_bill_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
         if (!empty($this->input->post())) {
             $columns = array(
                 0 => 'supplier',
@@ -1673,7 +1681,10 @@ class Report extends MY_Controller {
                     $recivable_date = date('Y-m-d', strtotime($post->expense_bill_date . ' + 15 days'));
                     $expense_bill_id = $this->encryption_url->encode($post->expense_bill_id);
                     $nestedData['date'] = date('d-m-Y', strtotime($post->expense_bill_date));
-                    $nestedData['invoice'] = ' <a href="' . base_url('expense_bill/view/') . $expense_bill_id . '">' . $post->expense_bill_invoice_number . '</a>';
+                    $nestedData['invoice'] = $post->expense_bill_invoice_number;
+                    if(in_array($expense_bill_module_id, $data['active_view'])){
+                        $nestedData['invoice'] = ' <a href="' . base_url('expense_bill/view/') . $expense_bill_id . '">' . $post->expense_bill_invoice_number . '</a>';
+                    }
                     $nestedData['supplier'] = $post->supplier_name;
                     $nestedData['grand_total'] = $this->session->userdata('SESS_DEFAULT_CURRENCY_SYMBOL') .' '.$this->precise_amount($post->expense_bill_item_grand_total, 2);
                     
@@ -1787,26 +1798,27 @@ class Report extends MY_Controller {
     }
 
     public function credit_note_report() {
-        $sales_module_id = $this->config->item('sales_credit_note_module');
-        $data['module_id'] = $sales_module_id;
+        $sales_credit_note_report_module_id = $this->config->item('sales_credit_note_report_module');
+        $data['module_id'] = $sales_credit_note_report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($sales_credit_note_report_module_id, $modules, $privilege);
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
-
+        $sales_module_id = $this->config->item('sales_module');
+        $sales_credit_note_module_id = $this->config->item('sales_credit_note_module');
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "edit_privilege";
         $data['privilege'] = "edit_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
         if (!empty($this->input->post())) {
             $columns = array(
                 0 => 'supplier',
@@ -1893,7 +1905,10 @@ class Report extends MY_Controller {
                     $sales_credit_note_id = $this->encryption_url->encode($post->sales_credit_note_id); 
                     $sales_id = $this->encryption_url->encode($post->sales_id);
                     $nestedData['date'] = date('d-m-Y', strtotime($post->sales_credit_note_date));
-                    $nestedData['invoice'] = '<a href="' . base_url('sales_credit_note/view/') . $sales_credit_note_id . '">' . $post->sales_credit_note_invoice_number . '</a>';
+                    $nestedData['invoice'] = $post->sales_credit_note_invoice_number;
+                    if(in_array($sales_credit_note_module_id, $data['active_view'])){
+                        $nestedData['invoice'] = '<a href="' . base_url('sales_credit_note/view/') . $sales_credit_note_id . '">' . $post->sales_credit_note_invoice_number . '</a>';
+                    }
                     $nestedData['supplier'] = $post->customer_name;
                     $nestedData['grand_total'] = $post->currency_symbol . ' ' . $this->precise_amount($post->sales_credit_note_grand_total, 2);
                     $nestedData['taxable'] = $post->currency_symbol .' '.$this->precise_amount($post->sales_credit_note_taxable_value, 2);
@@ -1910,7 +1925,10 @@ class Report extends MY_Controller {
                     $nestedData['from_account'] = $post->from_account;
                     $nestedData['nature_of_supply'] = ucwords($post->sales_credit_note_nature_of_supply);
                     $nestedData['gst_payable'] = ucwords($post->sales_credit_note_gst_payable);
-                    $nestedData['Sales_invoice_number'] = '<a href="' . base_url('sales/view/') . $sales_id  . '">' . $post->sales_invoice_number . '</a>';
+                    $nestedData['Sales_invoice_number'] = $post->sales_invoice_number;
+                    if(in_array($sales_module_id, $data['active_view'])){
+                        $nestedData['Sales_invoice_number'] = '<a href="' . base_url('sales/view/') . $sales_id  . '">' . $post->sales_invoice_number . '</a>';
+                    }
                     $nestedData['credit_note_type_of_supply'] = $post->sales_credit_note_type_of_supply;
                     $nestedData['country_name'] = $post->country_name ? $post->country_name : "-";
                     $nestedData['bill_to_name'] = $post->customer_name;
@@ -2006,27 +2024,29 @@ class Report extends MY_Controller {
     }
 
     public function debit_note_report() {
-        $sales_module_id = $this->config->item('sales_debit_note_module');
-        $data['module_id'] = $sales_module_id;
+        $sales_debit_note_report_module_id = $this->config->item('sales_debit_note_report_module');
+        $data['module_id'] = $sales_debit_note_report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($sales_debit_note_report_module_id, $modules, $privilege);
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
 
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
+        $sales_module_id = $this->config->item('sales_module');
+        $sales_debit_note_module_id = $this->config->item('sales_debit_note_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "edit_privilege";
         $data['privilege'] = "edit_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
         // $default_date      = $section_modules['common_settings'][0]->default_notification_date;
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
         if (!empty($this->input->post())) {
             $columns = array(
                 0 => 'supplier',
@@ -2114,13 +2134,19 @@ class Report extends MY_Controller {
                     $sales_debit_note_id = $this->encryption_url->encode($post->sales_debit_note_id);
                     $sales_id = $this->encryption_url->encode($post->sales_id);
                     $nestedData['date'] = date('d-m-Y', strtotime($post->sales_debit_note_date));
-                    $nestedData['invoice'] = ' <a href="' . base_url('sales_debit_note/view/') . $sales_debit_note_id . '">' . $post->sales_debit_note_invoice_number . '</a>';
+                    $nestedData['invoice'] = $post->sales_debit_note_invoice_number;
+                    if(in_array($sales_debit_note_module_id, $data['active_view'])){
+                        $nestedData['invoice'] = ' <a href="' . base_url('sales_debit_note/view/') . $sales_debit_note_id . '">' . $post->sales_debit_note_invoice_number . '</a>';
+                    }
                     $nestedData['customer'] = $post->customer_name;
                     $nestedData['grand_total'] = $post->currency_symbol . ' ' . $this->precise_amount($post->sales_debit_note_grand_total, 2);
                     $nestedData['pending_amount'] = $post->sales_debit_note_type_of_supply;
                     $nestedData['payment_status'] = $post->sales_debit_note_type_of_supply;
                     $nestedData['gst_payable'] = ucwords($post->sales_debit_note_gst_payable);
-                    $nestedData['sales_invoice_number'] = '<a href="' . base_url('sales/view/') . $sales_id  . '">' . $post->sales_invoice_number . '</a>';
+                    $nestedData['sales_invoice_number'] = $post->sales_invoice_number;
+                    if(in_array($sales_module_id, $data['active_view'])){
+                        $nestedData['sales_invoice_number'] = '<a href="' . base_url('sales/view/') . $sales_id  . '">' . $post->sales_invoice_number . '</a>';
+                    }
                     $nestedData['taxable'] = $post->currency_symbol.' '.$this->precise_amount($post->sales_debit_note_taxable_value, 2);
                     $nestedData['cgst'] = $this->precise_amount($post->sales_debit_note_cgst_amount, 2);
                     if ($post->is_utgst == 1) {
@@ -2238,26 +2264,27 @@ class Report extends MY_Controller {
     }
 
     public function purchase_debit_note_report() {
-        $report_module_id = $this->config->item('report_module');
-        $data['module_id'] = $report_module_id;
+        $purchase_debit_note_report_module_id = $this->config->item('purchase_debit_note_report_module');
+        $data['module_id'] = $purchase_debit_note_report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($report_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($purchase_debit_note_report_module_id, $modules, $privilege);
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
 
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
-
-        $user_module_id = $this->config->item('user_module');
+        $purchase_module_id = $this->config->item('purchase_module');
+        $purchase_debit_note_module_id = $this->config->item('purchase_debit_note_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "edit_privilege";
         $data['privilege'] = "edit_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
         if (!empty($this->input->post())) {
             $columns = array(
                 0 => 'supplier',
@@ -2378,11 +2405,17 @@ class Report extends MY_Controller {
                     $purchase_debit_note_id = $this->encryption_url->encode($post->purchase_debit_note_id);
                     $purchase_id = $this->encryption_url->encode($post->purchase_id);
                     $nestedData['date'] = date('d-m-Y', strtotime($post->purchase_debit_note_date));
-                    $nestedData['invoice'] = ' <a href="' . base_url('purchase_debit_note/view/') . $purchase_debit_note_id . '">' . $post->purchase_debit_note_invoice_number . '</a>';
+                    $nestedData['invoice'] = $post->purchase_debit_note_invoice_number;
+                    if(in_array($purchase_debit_note_module_id, $data['active_view'])){
+                        $nestedData['invoice'] = ' <a href="' . base_url('purchase_debit_note/view/') . $purchase_debit_note_id . '">' . $post->purchase_debit_note_invoice_number . '</a>';
+                    }
                     $nestedData['supplier'] = $post->supplier_name;
                     $nestedData['grand_total'] = $this->session->userdata('SESS_DEFAULT_CURRENCY_SYMBOL') . ' ' .$this->precise_amount($post->purchase_debit_note_grand_total, 2);
                     $nestedData['pending_amount'] = $post->purchase_debit_note_nature_of_supply;
-                    $nestedData['purchase_invoice_number'] = ' <a href="' . base_url('purchase/view/') . $purchase_id . '">' . $post->purchase_invoice_number . '</a>';
+                    $nestedData['purchase_invoice_number'] = $post->purchase_invoice_number;
+                    if(in_array($purchase_module_id, $data['active_view'])){
+                        $nestedData['purchase_invoice_number'] = ' <a href="' . base_url('purchase/view/') . $purchase_id . '">' . $post->purchase_invoice_number . '</a>';
+                    }
                     $nestedData['filter_billing_country'] = $post->billing_country;
                     $nestedData['taxable'] = $this->session->userdata('SESS_DEFAULT_CURRENCY_SYMBOL') . ' ' .$this->precise_amount($post->purchase_debit_note_taxable_value, 2);
                     $nestedData['cgst'] = $this->precise_amount($post->purchase_debit_note_cgst_amount, 2);
@@ -2489,26 +2522,27 @@ class Report extends MY_Controller {
     }
 
     public function purchase_credit_note_report() {
-        $sales_module_id = $this->config->item('sales_module');
-        $data['module_id'] = $sales_module_id;
+        $purchase_credit_note_report_module_id = $this->config->item('purchase_credit_note_report_module');
+        $data['module_id'] = $purchase_credit_note_report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($purchase_credit_note_report_module_id, $modules, $privilege);
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
 
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
-
-        $user_module_id = $this->config->item('user_module');
+        $purchase_module_id = $this->config->item('purchase_module');
+        $purchase_credit_note_module_id = $this->config->item('purchase_credit_note_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "edit_privilege";
         $data['privilege'] = "edit_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
         if (!empty($this->input->post())) {
             $columns = array(
                 0 => 'supplier',
@@ -2628,12 +2662,18 @@ class Report extends MY_Controller {
                     $purchase_credit_note_id = $this->encryption_url->encode($post->purchase_credit_note_id);
                     $purchase_id = $this->encryption_url->encode($post->purchase_id);
                     $nestedData['date'] = date('d-m-Y', strtotime($post->purchase_credit_note_date));
-                    $nestedData['invoice'] = ' <a href="' . base_url('purchase_credit_note/view/') . $purchase_credit_note_id . '">' . $post->purchase_credit_note_invoice_number . '</a>';
+                    $nestedData['invoice'] = $post->purchase_credit_note_invoice_number;
+                    if(in_array($purchase_credit_note_module_id, $data['active_view'])){
+                        $nestedData['invoice'] = ' <a href="' . base_url('purchase_credit_note/view/') . $purchase_credit_note_id . '">' . $post->purchase_credit_note_invoice_number . '</a>';
+                    }
                     $nestedData['supplier'] = $post->supplier_name;
                     $nestedData['grand_total'] = $this->session->userdata('SESS_DEFAULT_CURRENCY_SYMBOL') .' '.$this->precise_amount($post->purchase_credit_note_grand_total, 2);
                     $nestedData['nature_of_supply'] = ucwords($post->purchase_credit_note_nature_of_supply);
                     $nestedData['receivable_date'] = $post->receivable_date;
-                    $nestedData['purchase_invoice_number'] = ' <a href="' . base_url('purchase/view/') . $purchase_id . '">' . $post->purchase_invoice_number . '</a>';
+                    $nestedData['purchase_invoice_number'] = $post->purchase_invoice_number;
+                    if(in_array($purchase_module_id, $data['active_view'])){
+                        $nestedData['purchase_invoice_number'] = ' <a href="' . base_url('purchase/view/') . $purchase_id . '">' . $post->purchase_invoice_number . '</a>';
+                    }
                     $nestedData['payment_status'] = $post->purchase_credit_note_type_of_supply;
 
                     $nestedData['taxable'] = $this->session->userdata('SESS_DEFAULT_CURRENCY_SYMBOL') .' '.$this->precise_amount($post->purchase_credit_note_taxable_value, 2);
@@ -2743,26 +2783,27 @@ class Report extends MY_Controller {
     }
 
     public function advance_voucher_report() {
-        $sales_module_id = $this->config->item('sales_module');
-        $data['module_id'] = $sales_module_id;
+        $advance_voucher_report_module_id = $this->config->item('advance_voucher_report_module');
+        $data['module_id'] = $advance_voucher_report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($advance_voucher_report_module_id, $modules, $privilege);
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
 
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
+        $advance_voucher_module_id = $this->config->item('advance_voucher_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
         if (!empty($this->input->post())) {
             $columns = array(
                 0 => 'supplier',
@@ -2853,7 +2894,10 @@ class Report extends MY_Controller {
                     // $recivable_date                = date('Y-m-d', strtotime($post->voucher_date . ' + 15 days'));
                     $advance_voucher_id = $this->encryption_url->encode($post->advance_voucher_id);
                     $nestedData['date'] = date('d-m-Y', strtotime($post->voucher_date));
-                    $nestedData['invoice'] = ' <a href="' . base_url('advance_voucher/view/') . $advance_voucher_id . '">' . $post->voucher_number . '</a>';
+                    $nestedData['invoice'] = $post->voucher_number;
+                    if(in_array($advance_voucher_module_id, $data['active_view'])){
+                        $nestedData['invoice'] = ' <a href="' . base_url('advance_voucher/view/') . $advance_voucher_id . '">' . $post->voucher_number . '</a>';
+                    }
                     $nestedData['customer'] = $post->customer_name;
                     $nestedData['billing_country'] = $post->country_name;
                     $nestedData['to_account'] = $post->to_account;
@@ -2952,26 +2996,28 @@ class Report extends MY_Controller {
     }
 
     public function receipt_voucher_report() {
-        $sales_module_id = $this->config->item('sales_module');
-        $data['module_id'] = $sales_module_id;
+        $receipt_voucher_report_module_id = $this->config->item('receipt_voucher_report_module');
+        $data['module_id'] = $receipt_voucher_report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($receipt_voucher_report_module_id, $modules, $privilege);
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
 
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
+        $sales_module_id = $this->config->item('sales_module');
+        $receipt_voucher_module_id = $this->config->item('receipt_voucher_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
         if (!empty($this->input->post())) {
             $columns = array(
                 0 => 'date',
@@ -3065,10 +3111,16 @@ class Report extends MY_Controller {
                     $receipt_id = $this->encryption_url->encode($post->receipt_id);
                     $sales_id = $this->encryption_url->encode($post->sales_id);
                     $nestedData['date'] = date('d-m-Y', strtotime($post->voucher_date));
-                    $nestedData['invoice'] = ' <a href="' . base_url('receipt_voucher/view_details/') . $receipt_id . '">' . $post->voucher_number . '</a>';
+                    $nestedData['invoice'] = $post->voucher_number;
+                    if(in_array($receipt_voucher_module_id, $data['active_view'])){
+                        $nestedData['invoice'] = ' <a href="' . base_url('receipt_voucher/view_details/') . $receipt_id . '">' . $post->voucher_number . '</a>';
+                    }
                     $nestedData['customer'] = $post->customer_name;
                     // $reference_number = explode(",", $post->reference_number);
-                    $nestedData['reference_number'] = ' <a href="' . base_url('sales/view/') . $sales_id . '">' . $post->sales_invoice_number . '</a>';
+                    $nestedData['reference_number'] = $post->sales_invoice_number;
+                    if(in_array($sales_module_id, $data['active_view'])){
+                        $nestedData['reference_number'] = ' <a href="' . base_url('sales/view/') . $sales_id . '">' . $post->sales_invoice_number . '</a>';
+                    }
                     if(!in_array($post->voucher_number,$is_exist)){
                         $tot_receipt_amount += $post->main_receipt_amount;
                         array_push($is_exist, $post->voucher_number);
@@ -3159,27 +3211,29 @@ class Report extends MY_Controller {
     }
 
     public function payment_voucher_report() {
-        $report_module_id = $this->config->item('report_module');
-        $data['module_id'] = $report_module_id;
+        $payment_voucher_report_module_id = $this->config->item('payment_voucher_report_module');
+        $data['module_id'] = $payment_voucher_report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($report_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($payment_voucher_report_module_id, $modules, $privilege);
 
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
+        
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
-
-        $user_module_id = $this->config->item('user_module');
+        $payment_voucher_module_id = $this->config->item('payment_voucher_module');
+        $purchase_module_id = $this->config->item('purchase_module');
+        $expense_bill_module_id = $this->config->item('expense_bill_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
 
-        /* presents all the needed */
-        $data = array_merge($data, $section_modules);
-
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
         if (!empty($this->input->post())) {
             $columns = array(
                 0 => 'date',
@@ -3308,7 +3362,10 @@ class Report extends MY_Controller {
                     $payment_id = $this->encryption_url->encode($post->payment_id);
                     $purchase_id = $this->encryption_url->encode($post->purchase_id);
                     $nestedData['supplier'] = $post->supplier_name;
-                    $nestedData['invoice'] = ' <a href="' . base_url('payment_voucher/view_details/') . $payment_id . '">' . $post->voucher_number . '</a>';
+                    $nestedData['invoice'] = $post->voucher_number;
+                    if(in_array($payment_voucher_module_id, $data['active_view'])){
+                        $nestedData['invoice'] = ' <a href="' . base_url('payment_voucher/view_details/') . $payment_id . '">' . $post->voucher_number . '</a>';
+                    }
                     $nestedData['date'] = date('d-m-Y', strtotime($post->voucher_date));
                     // $nestedData['reference_number'] = $post->reference_number;
                     $nestedData['invoice_total'] = $this->precise_amount($post->receipt_amount, 2);
@@ -3320,13 +3377,22 @@ class Report extends MY_Controller {
                     $nestedData['voucher_type'] = $post->reference_voucher_type ? $post->reference_voucher_type : "-";
                     if ($nestedData['voucher_type'] == 'expense') {
                         $nestedData['voucher_type'] = 'Expense Bill';
-                        $nestedData['reference_number'] = ' <a href="' . base_url('expense_bill/view/') . $purchase_id . '">' . $post->purchase_invoice_number . '</a>';
+                        $nestedData['reference_number'] = $post->purchase_invoice_number;
+                        if(in_array($expense_bill_module_id, $data['active_view'])){
+                            $nestedData['reference_number'] = ' <a href="' . base_url('expense_bill/view/') . $purchase_id . '">' . $post->purchase_invoice_number . '</a>';
+                        }
                     } elseif ($nestedData['voucher_type'] == 'purchase') {
                         $nestedData['voucher_type'] = 'Purchase Bill';
-                        $nestedData['reference_number'] = ' <a href="' . base_url('purchase/view/') . $purchase_id . '">' . $post->purchase_invoice_number . '</a>';
+                        $nestedData['reference_number'] = $post->purchase_invoice_number;
+                        if(in_array($purchase_module_id, $data['active_view'])){
+                            $nestedData['reference_number'] = ' <a href="' . base_url('purchase/view/') . $purchase_id . '">' . $post->purchase_invoice_number . '</a>';
+                        }
                     } else {
                         $nestedData['voucher_type'] = 'Excess';
-                        $nestedData['reference_number'] = ' <a href="' . base_url('purchase/view/') . $purchase_id . '">' . $post->purchase_invoice_number . '</a>';
+                        $nestedData['reference_number'] = $post->purchase_invoice_number;
+                        if(in_array($purchase_module_id, $data['active_view'])){
+                            $nestedData['reference_number'] = ' <a href="' . base_url('purchase/view/') . $purchase_id . '">' . $post->purchase_invoice_number . '</a>';
+                        }
                     }
                     $nestedData['currency_name'] = $post->currency_name ? $post->currency_name : "-";
                     //$nestedData['payment_mode'] = $post->to_account;
@@ -3413,26 +3479,27 @@ class Report extends MY_Controller {
     }
 
     public function refund_voucher_report() {
-        $sales_module_id = $this->config->item('sales_module');
-        $data['module_id'] = $sales_module_id;
+        $refund_voucher_report_module_id = $this->config->item('refund_voucher_report_module');
+        $data['module_id'] = $refund_voucher_report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($refund_voucher_report_module_id, $modules, $privilege);
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
 
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
-
-        $user_module_id = $this->config->item('user_module');
+        $advance_voucher_module_id = $this->config->item('advance_voucher_module');
+        $refund_voucher_module_id = $this->config->item('refund_voucher_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
         if (!empty($this->input->post())) {
             $columns = array(
                 0 => 'supplier',
@@ -3537,10 +3604,16 @@ class Report extends MY_Controller {
                     $refund_id = $this->encryption_url->encode($post->refund_id);
                     $reference_id = $this->encryption_url->encode($post->reference_id);
                     $nestedData['date'] = date('d-m-Y', strtotime($post->voucher_date));
-                    $nestedData['invoice'] = ' <a href="' . base_url('refund_voucher/view/') . $refund_id . '">' . $post->voucher_number . '</a>';
+                    $nestedData['invoice'] = $post->voucher_number;
+                    if(in_array($refund_voucher_module_id, $data['active_view'])){
+                        $nestedData['invoice'] = ' <a href="' . base_url('refund_voucher/view/') . $refund_id . '">' . $post->voucher_number . '</a>';
+                    }
                     $nestedData['customer'] = $post->customer_name;
                     //$nestedData['country'] = $post->country_name;
-                    $nestedData['reference_number'] = ' <a href="' . base_url('advance_voucher/view/') . $reference_id . '">' . $post->reference_number . '</a>';
+                    $nestedData['reference_number'] = $post->reference_number;
+                    if(in_array($advance_voucher_module_id, $data['active_view'])){
+                        $nestedData['reference_number'] = ' <a href="' . base_url('advance_voucher/view/') . $reference_id . '">' . $post->reference_number . '</a>';
+                    }
                     $nestedData['refund_amount'] = $this->precise_amount($post->receipt_amount, 2);
                     $nestedData['billing_country'] = $post->billing_country;
                     // $nestedData['receivable_date'] = $post->reference_number;
@@ -3645,6 +3718,17 @@ class Report extends MY_Controller {
         $data['privilege'] = $privilege;
         $section_modules = $this->get_section_modules($report_module_id, $modules, $privilege);
 
+        $data['sales_report_module_id'] = $this->config->item('sales_report_module');
+        $data['sales_credit_note_report_module_id'] = $this->config->item('sales_credit_note_report_module');
+        $data['sales_debit_note_report_module_id'] = $this->config->item('sales_debit_note_report_module');
+        $data['purchase_report_module_id'] = $this->config->item('purchase_report_module');
+        $data['purchase_credit_note_report_module_id'] = $this->config->item('purchase_credit_note_report_module');
+        $data['purchase_debit_note_report_module_id'] = $this->config->item('purchase_debit_note_report_module');
+        $data['expense_bill_report_module_id'] = $this->config->item('expense_bill_report_module');
+        $data['advance_voucher_report_module_id'] = $this->config->item('advance_voucher_report_module');
+        $data['refund_voucher_report_module_id'] = $this->config->item('refund_voucher_report_module');
+        $data['receipt_voucher_report_module_id'] = $this->config->item('receipt_voucher_report_module');
+        $data['payment_voucher_report_module_id'] = $this->config->item('payment_voucher_report_module');
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
         $list_data = $this->common->sales_report_front_field();
@@ -4112,20 +4196,21 @@ class Report extends MY_Controller {
     }
 
     public function gst_report() {
-        $sales_module_id = $this->config->item('sales_module');
-        $data['module_id'] = $sales_module_id;
+        $gst_report_id = $this->config->item('gst_report');
+        $data['module_id'] = $gst_report_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($gst_report_id, $modules, $privilege);
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
 
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
+        $sales_module_id = $this->config->item('sales_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
@@ -4133,7 +4218,7 @@ class Report extends MY_Controller {
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
 
 
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
         if (!empty($this->input->post())) {
             $columns = array(
                 0 => 'voucher_number',
@@ -4260,7 +4345,10 @@ class Report extends MY_Controller {
                 foreach ($posts as $post) {
                     $gst_percentage = $post->sales_item_cgst_percentage + $post->sales_item_sgst_percentage + $post->sales_item_igst_percentage;
                     $sales_id = $this->encryption_url->encode($post->sales_id);
-                    $nestedData['voucher_number'] = '<a href="' . base_url('sales/view/') . $sales_id . '">' . $post->sales_invoice_number . '</a>';
+                    $nestedData['voucher_number'] = $post->sales_invoice_number;
+                    if(in_array($sales_module_id, $data['active_view'])){
+                        $nestedData['voucher_number'] = '<a href="' . base_url('sales/view/') . $sales_id . '">' . $post->sales_invoice_number . '</a>';
+                    }
                     $nestedData['customer_name'] = $post->customer_name;
                     $nestedData['gstin'] = '-';
                     if($post->customer_gstin_number != ''){
@@ -4345,7 +4433,7 @@ class Report extends MY_Controller {
     }
 
     public function tcs_report_sales() {
-        $report_module_id = $this->config->item('report_module');
+        $report_module_id = $this->config->item('tcs_sales_report_module');
         $data['module_id'] = $report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
@@ -4463,7 +4551,7 @@ class Report extends MY_Controller {
     }
 
     public function tds_report_sales() {
-        $report_module_id = $this->config->item('report_module');
+        $report_module_id = $this->config->item('tds_sales_report_module');
         $data['module_id'] = $report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
@@ -4576,7 +4664,7 @@ class Report extends MY_Controller {
     }
 
     public function tcs_report_purchase() {
-        $report_module_id = $this->config->item('report_module');
+        $report_module_id = $this->config->item('tcs_purchase_report_module');
         $data['module_id'] = $report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
@@ -4683,7 +4771,7 @@ class Report extends MY_Controller {
     }
 
     public function tds_report_expense() {
-        $report_module_id = $this->config->item('report_module');
+        $report_module_id = $this->config->item('tds_expense_report_module');
         $data['module_id'] = $report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
@@ -4794,7 +4882,7 @@ class Report extends MY_Controller {
     }
 
     public function gst_credit_note_report() {
-        $sales_module_id = $this->config->item('sales_module');
+        $sales_module_id = $this->config->item('gst_sales_credit_note_report');
         $data['module_id'] = $sales_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
@@ -4806,16 +4894,19 @@ class Report extends MY_Controller {
 
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
+        $sales_module_id = $this->config->item('sales_module');
+        $sales_credit_note_module_id = $this->config->item('sales_credit_note_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
 
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
 
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+
         if (!empty($this->input->post())) {
             $columns = array(
                 0 => 'voucher_number',
@@ -4942,10 +5033,16 @@ class Report extends MY_Controller {
                     $sales_credit_note_id = $this->encryption_url->encode($post->sales_credit_note_id);
                     $sales_id = $this->encryption_url->encode($post->sales_id);
                     $gst_percentage = $post->sales_credit_note_item_cgst_percentage + $post->sales_credit_note_item_sgst_percentage + $post->sales_credit_note_item_igst_percentage;
-                    $nestedData['voucher_number'] = '<a href="' . base_url('sales_credit_note/view/') . $sales_credit_note_id . '">' . $post->sales_credit_note_invoice_number . '</a>';
+                    $nestedData['voucher_number'] = $post->sales_credit_note_invoice_number;
+                    if(in_array($sales_credit_note_module_id, $data['active_view'])){
+                        $nestedData['voucher_number'] = '<a href="' . base_url('sales_credit_note/view/') . $sales_credit_note_id . '">' . $post->sales_credit_note_invoice_number . '</a>';
+                    }
                     $nestedData['customer_name'] = $post->customer_name;
                     $nestedData['gstin'] = $post->customer_gstin_number ? $post->customer_gstin_number:'-';
-                    $nestedData['invoice_number'] = '<a href="' . base_url('sales/view/') . $sales_id . '">' . $post->sales_invoice_number . '</a>';
+                    $nestedData['invoice_number'] = $post->sales_invoice_number;
+                    if(in_array($sales_module_id, $data['active_view'])){
+                        $nestedData['invoice_number'] = '<a href="' . base_url('sales/view/') . $sales_id . '">' . $post->sales_invoice_number . '</a>';
+                    }
                     $nestedData['invoice_date'] = date('d-m-Y', strtotime($post->sales_credit_note_date));
                     $nestedData['taxable_value'] = $this->session->userdata('SESS_DEFAULT_CURRENCY_SYMBOL') .' '.$this->precise_amount($post->sales_credit_note_item_sub_total, 2);
                     $nestedData['hsn_code'] = $post->product_hsn_sac_code;
@@ -5022,10 +5119,8 @@ class Report extends MY_Controller {
         }
     }
 
-    
-
     public function gst_debit_note_report() {
-        $sales_module_id = $this->config->item('sales_module');
+        $sales_module_id = $this->config->item('gst_sales_debit_note_report');
         $data['module_id'] = $sales_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
@@ -5038,7 +5133,9 @@ class Report extends MY_Controller {
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
 
-        $user_module_id = $this->config->item('user_module');
+        $sales_module_id = $this->config->item('sales_module');
+        $sales_debit_note_module_id = $this->config->item('sales_debit_note_module');
+       /* $user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
@@ -5046,7 +5143,7 @@ class Report extends MY_Controller {
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
 
 
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
         if (!empty($this->input->post())) {
             $columns = array(
                 0 => 'voucher_number',
@@ -5172,10 +5269,16 @@ class Report extends MY_Controller {
                     $sales_debit_note_id = $this->encryption_url->encode($post->sales_debit_note_id);
                     $sales_id = $this->encryption_url->encode($post->sales_id);
                     $gst_percentage = $post->sales_debit_note_item_cgst_percentage + $post->sales_debit_note_item_sgst_percentage + $post->sales_debit_note_item_igst_percentage;
-                    $nestedData['voucher_number'] = '<a href="' . base_url('sales_debit_note/view/') . $sales_debit_note_id . '">' . $post->sales_debit_note_invoice_number . '</a>';
+                    $nestedData['voucher_number'] = $post->sales_debit_note_invoice_number;
+                    if(in_array($sales_debit_note_module_id, $data['active_view'])){
+                        $nestedData['voucher_number'] = '<a href="' . base_url('sales_debit_note/view/') . $sales_debit_note_id . '">' . $post->sales_debit_note_invoice_number . '</a>';
+                    }
                     $nestedData['customer_name'] = $post->customer_name;
                     $nestedData['gstin'] = $post->customer_gstin_number ? $post->customer_gstin_number : '-';
-                    $nestedData['invoice_number'] = '<a href="' . base_url('sales/view/') . $sales_id . '">' . $post->sales_invoice_number . '</a>';
+                    $nestedData['invoice_number'] = $post->sales_invoice_number;
+                    if(in_array($sales_module_id, $data['active_view'])){
+                        $nestedData['invoice_number'] = '<a href="' . base_url('sales/view/') . $sales_id . '">' . $post->sales_invoice_number . '</a>';
+                    }
                     $nestedData['invoice_date'] = date('d-m-Y', strtotime($post->sales_debit_note_date));
                     $nestedData['taxable_value'] = $this->session->userdata('SESS_DEFAULT_CURRENCY_SYMBOL') .' '.$this->precise_amount($post->sales_debit_note_item_sub_total, 2);
                     $nestedData['hsn_code'] = $post->product_hsn_sac_code;
@@ -5249,7 +5352,7 @@ class Report extends MY_Controller {
     }
 
     public function hsn_report() {
-        $sales_module_id = $this->config->item('sales_module');
+        $sales_module_id = $this->config->item('hsn_report_module');
         $data['module_id'] = $sales_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
@@ -5262,7 +5365,7 @@ class Report extends MY_Controller {
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
@@ -5270,7 +5373,7 @@ class Report extends MY_Controller {
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
 
 
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
         if (!empty($this->input->post())) {
             $columns = array(
                 0 => 'hsn',

@@ -14,12 +14,12 @@ class Filemanager extends MY_Controller {
 
 	public function index() {
 
-		$boe_module_id = $this->config->item('BOE_module');
-        $data['boe_module_id'] = $boe_module_id;
+		$file_manager_module_id = $this->config->item('file_manager_module');
+        $data['file_manager_module_id'] = $file_manager_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($boe_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($file_manager_module_id, $modules, $privilege);
         $access_common_settings = $section_modules['access_common_settings'];
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
@@ -37,6 +37,14 @@ class Filemanager extends MY_Controller {
 	}
 
 	public function GetDirectoryFiles(){
+		$file_manager_module_id = $this->config->item('file_manager_module');
+        $data['file_manager_module_id'] = $file_manager_module_id;
+        $modules = $this->modules;
+        $privilege = "view_privilege";
+        $data['privilege'] = $privilege;
+        $section_modules = $this->get_section_modules($file_manager_module_id, $modules, $privilege);
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
 		$server = site_url();
 		/*$branch_id = $this->session->userdata('SESS_BRANCH_ID');
 		$branch_dir = 'BRANCH-'.$branch_id;*/
@@ -194,6 +202,16 @@ class Filemanager extends MY_Controller {
 		} else {
 			$data['thumb'] = '';
 		}
+		if(in_array($file_manager_module_id, $data['active_add'])){
+			$data['add'] = 1;
+		}else{
+			$data['add'] = 0;
+		}
+		if(in_array($file_manager_module_id, $data['active_delete'])){
+			$data['delete'] = 1;
+		}else{
+			$data['delete'] = 0;
+		}
 
 		// Parent
 		$url = '';
@@ -258,7 +276,6 @@ class Filemanager extends MY_Controller {
 		if (isset($thumb)) {
 			$url .= '&thumb=' . $thumb;
 		}
-
 		//$pagination = new Pagination();
 		//$pagination->total = $image_total;
 		//$pagination->page = $page;
@@ -276,7 +293,14 @@ class Filemanager extends MY_Controller {
 	}
 
 	public function upload() {
-	
+		$file_manager_module_id = $this->config->item('file_manager_module');
+        $data['file_manager_module_id'] = $file_manager_module_id;
+        $modules = $this->modules;
+        $privilege = "add_privilege";
+        $data['privilege'] = $privilege;
+        $section_modules = $this->get_section_modules($file_manager_module_id, $modules, $privilege);
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
 		$json = array();
 		$dir_image = str_replace("\\","/", DIR_IMAGE);
 		$directory = $this->input->get('directory');
@@ -328,6 +352,14 @@ class Filemanager extends MY_Controller {
 	}
 
 	public function folder() {
+		$file_manager_module_id = $this->config->item('file_manager_module');
+        $data['file_manager_module_id'] = $file_manager_module_id;
+        $modules = $this->modules;
+        $privilege = "add_privilege";
+        $data['privilege'] = $privilege;
+        $section_modules = $this->get_section_modules($file_manager_module_id, $modules, $privilege);
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
 		//$this->load->language('common/filemanager');
 		$json = array();
 				
@@ -386,6 +418,14 @@ class Filemanager extends MY_Controller {
 	}
 
 	public function delete() {
+		$file_manager_module_id = $this->config->item('file_manager_module');
+        $data['file_manager_module_id'] = $file_manager_module_id;
+        $modules = $this->modules;
+        $privilege = "delete_privilege";
+        $data['privilege'] = $privilege;
+        $section_modules = $this->get_section_modules($file_manager_module_id, $modules, $privilege);
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
 		//$this->load->language('common/filemanager');
 		$dir_image = str_replace("\\","/", DIR_IMAGE);
 		$json = array();

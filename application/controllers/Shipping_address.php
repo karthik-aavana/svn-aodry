@@ -11,12 +11,17 @@ class Shipping_Address extends MY_Controller {
     }
 
     public function index() {
-        $customer_module_id = $this->config->item('customer_module');
-        $data['customer_module_id'] = $customer_module_id;
+        $shipping_address_module_id = $this->config->item('customer_module');
+        $data['shipping_address_module_id'] = $shipping_address_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($customer_module_id, $modules, $privilege);
+        $section_modules = $this->check_privilege_section_modules($shipping_address_module_id, $modules, $privilege);
+        if(empty($section_modules)){
+            $shipping_address_module_id = $this->config->item('supplier_module');
+            $data['shipping_address_module_id'] = $shipping_address_module_id;
+            $section_modules = $this->get_section_modules($shipping_address_module_id, $modules, $privilege);
+        }
         $data['country'] = $this->country_call();
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
@@ -88,18 +93,20 @@ class Shipping_Address extends MY_Controller {
 
                     $cols = '<div class="box-body hide action_button"><div class="btn-group">';
 
-                    if (in_array($data['customer_module_id'], $data['active_edit'])) {
+                    if (in_array($data['shipping_address_module_id'], $data['active_edit'])) {
                         $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#edit_shipping"><a data-id="' . $shipping_address_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="edit_shipping btn btn-app"><i class="fa fa-pencil"></i></a></span>';
                     }
 
-                    if (in_array($data['customer_module_id'], $data['active_delete'])) {
+                    if (in_array($data['shipping_address_module_id'], $data['active_delete'])) {
                         $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal"><a data-id="' . $shipping_address_id . '" data-path="shipping_address/delete" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete_button btn btn-app"><i class="fa fa-trash"></i></a></span>';
                         ;
                     }
-
-                    // $nestedData['action'] = $cols;
                     $cols .= '</div></div>';
-                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
+                    $disabled = '';
+                    if(!in_array($data['shipping_address_module_id'], $data['active_delete']) && !in_array($data['shipping_address_module_id'], $data['active_edit'])){
+                        $disabled = 'disabled';
+                    }
+                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal"'.$disabled.'>';
 
                     $send_data[] = $nestedData;
                 }
@@ -116,13 +123,17 @@ class Shipping_Address extends MY_Controller {
 
     public function add() {
         $data = $this->get_default_country_state();
-        $customer_module_id = $this->config->item('customer_module');
-        $data['module_id'] = $customer_module_id;
+        $shipping_address_module_id = $this->config->item('customer_module');
+        $data['shipping_address_module_id'] = $shipping_address_module_id;
         $modules = $this->modules;
         $privilege = "add_privilege";
-        $data['privilege'] = "add_privilege";
-        $section_modules = $this->get_section_modules($customer_module_id, $modules, $privilege);
-
+        $data['privilege'] = $privilege;
+        $section_modules = $this->check_privilege_section_modules($shipping_address_module_id, $modules, $privilege);
+        if(empty($section_modules)){
+            $shipping_address_module_id = $this->config->item('supplier_module');
+            $data['shipping_address_module_id'] = $shipping_address_module_id;
+            $section_modules = $this->get_section_modules($shipping_address_module_id, $modules, $privilege);
+        }
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
 
@@ -133,12 +144,17 @@ class Shipping_Address extends MY_Controller {
 
         $id = $this->encryption_url->decode($id);
 
-        $customer_module_id = $this->config->item('customer_module');
-        $data['module_id'] = $customer_module_id;
+        $shipping_address_module_id = $this->config->item('customer_module');
+        $data['shipping_address_module_id'] = $shipping_address_module_id;
         $modules = $this->modules;
         $privilege = "edit_privilege";
-        $data['privilege'] = "edit_privilege";
-        $section_modules = $this->get_section_modules($customer_module_id, $modules, $privilege);
+        $data['privilege'] = $privilege;
+        $section_modules = $this->check_privilege_section_modules($shipping_address_module_id, $modules, $privilege);
+        if(empty($section_modules)){
+            $shipping_address_module_id = $this->config->item('supplier_module');
+            $data['shipping_address_module_id'] = $shipping_address_module_id;
+            $section_modules = $this->get_section_modules($shipping_address_module_id, $modules, $privilege);
+        }
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
@@ -172,12 +188,17 @@ class Shipping_Address extends MY_Controller {
 
     public function edit_shipping_address() {
 
-        $customer_module_id = $this->config->item('customer_module');
-        $data['module_id'] = $customer_module_id;
+        $shipping_address_module_id = $this->config->item('customer_module');
+        $data['shipping_address_module_id'] = $shipping_address_module_id;
         $modules = $this->modules;
         $privilege = "edit_privilege";
-        $data['privilege'] = "edit_privilege";
-        $section_modules = $this->get_section_modules($customer_module_id, $modules, $privilege);
+        $data['privilege'] = $privilege;
+        $section_modules = $this->check_privilege_section_modules($shipping_address_module_id, $modules, $privilege);
+        if(empty($section_modules)){
+            $shipping_address_module_id = $this->config->item('supplier_module');
+            $data['shipping_address_module_id'] = $shipping_address_module_id;
+            $section_modules = $this->get_section_modules($shipping_address_module_id, $modules, $privilege);
+        }
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
@@ -234,12 +255,17 @@ class Shipping_Address extends MY_Controller {
     }
 
     public function add_shipping_address() {
-        $customer_module_id = $this->config->item('customer_module');
-        $data['module_id'] = $customer_module_id;
+        $shipping_address_module_id = $this->config->item('customer_module');
+        $data['shipping_address_module_id'] = $shipping_address_module_id;
         $modules = $this->modules;
         $privilege = "add_privilege";
-        $data['privilege'] = "add_privilege";
-        $section_modules = $this->get_section_modules($customer_module_id, $modules, $privilege);
+        $data['privilege'] = $privilege;
+        $section_modules = $this->check_privilege_section_modules($shipping_address_module_id, $modules, $privilege);
+        if(empty($section_modules)){
+            $shipping_address_module_id = $this->config->item('supplier_module');
+            $data['shipping_address_module_id'] = $shipping_address_module_id;
+            $section_modules = $this->get_section_modules($shipping_address_module_id, $modules, $privilege);
+        }
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
@@ -300,12 +326,17 @@ class Shipping_Address extends MY_Controller {
 
     public function delete() {
 
-        $customer_module_id = $this->config->item('customer_module');
-        $data['module_id'] = $customer_module_id;
+        $shipping_address_module_id = $this->config->item('customer_module');
+        $data['shipping_address_module_id'] = $shipping_address_module_id;
         $modules = $this->modules;
         $privilege = "delete_privilege";
-        $data['privilege'] = "delete_privilege";
-        $section_modules = $this->get_section_modules($customer_module_id, $modules, $privilege);
+        $data['privilege'] = $privilege;
+        $section_modules = $this->check_privilege_section_modules($shipping_address_module_id, $modules, $privilege);
+        if(empty($section_modules)){
+            $shipping_address_module_id = $this->config->item('supplier_module');
+            $data['shipping_address_module_id'] = $shipping_address_module_id;
+            $section_modules = $this->get_section_modules($shipping_address_module_id, $modules, $privilege);
+        }
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
@@ -359,12 +390,17 @@ class Shipping_Address extends MY_Controller {
 
     public function edit_modal($id) {
         $id = $this->encryption_url->decode($id);
-        $supplier_module_id = $this->config->item('supplier_module');
-        $data['module_id'] = $supplier_module_id;
+        $shipping_address_module_id = $this->config->item('customer_module');
+        $data['shipping_address_module_id'] = $shipping_address_module_id;
         $modules = $this->modules;
         $privilege = "edit_privilege";
-        $data['privilege'] = "edit_privilege";
-        $section_modules = $this->get_section_modules($supplier_module_id, $modules, $privilege);
+        $data['privilege'] = $privilege;
+        $section_modules = $this->check_privilege_section_modules($shipping_address_module_id, $modules, $privilege);
+        if(empty($section_modules)){
+            $shipping_address_module_id = $this->config->item('supplier_module');
+            $data['shipping_address_module_id'] = $shipping_address_module_id;
+            $section_modules = $this->get_section_modules($shipping_address_module_id, $modules, $privilege);
+        }
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);

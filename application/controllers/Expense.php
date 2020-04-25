@@ -64,20 +64,31 @@ class Expense extends MY_Controller {
                     $nestedData['ledger'] = $ledger_name;
                     $nestedData['expense_tds'] = $post->expense_tds;
                     $nestedData['added_user'] = $post->first_name . ' ' . $post->last_name;                                        
-                    $cols = '<div class="box-body hide action_button"><div class="btn-group">';                    
-                    $cols .= '<span data-toggle="modal" data-target="#expense_edit_modal" data-backdrop="static" data-keyboard="false"><a data-toggle="tooltip" data-placement="bottom" data-id="' . $expense_id . '"  title="Edit Expense" data-section="edit_expense" class="edit_button btn btn-app"><i class="fa fa-pencil"></i></a></span>';
+                    $cols = '<div class="box-body hide action_button"><div class="btn-group">';
+                    if (in_array($expense_module_id , $data['active_edit']))
+                    {
+                    	$cols .= '<span data-toggle="modal" data-target="#expense_edit_modal" data-backdrop="static" data-keyboard="false"><a data-toggle="tooltip" data-placement="bottom" data-id="' . $expense_id . '"  title="Edit Expense" data-section="edit_expense" class="edit_button btn btn-app"><i class="fa fa-pencil"></i></a></span>';
+                    }
                     $expense_bill_item = $this->general_model->getJoinRecords('ei.*', 'expense_bill_item ei', array(
                         'ei.expense_type_id' => $post->expense_id,
                         'ei.delete_status' => 0,
                         'e.branch_id' => $this->session->userdata('SESS_BRANCH_ID')), array(
                         'expense_bill e' => 'e.expense_bill_id=ei.expense_bill_id'));
-                    if ($expense_bill_item) {
-                        $cols .= ' <span data-toggle="modal" data-target="#false_delete_modal" data-backdrop="static" data-keyboard="false"><a data-toggle="tooltip" data-placement="bottom" data-id="' . $expense_id . '" title="Delete Expense" class="delete_button btn btn-app"><i class="fa fa-trash"></i></a>';
-                    } else {
-                        $cols .= ' <span data-toggle="modal" data-target="#delete_modal" data-backdrop="static" data-keyboard="false"><a data-toggle="tooltip" data-placement="bottom" data-id="' . $expense_id . '" title="Delete Expense" data-path="expense/delete" class="delete_button btn btn-app"><i class="fa fa-trash"></i></a></span>';
+
+                    if (in_array($expense_module_id , $data['active_delete']))
+                    {
+                        if ($expense_bill_item) {
+                            $cols .= ' <span data-toggle="modal" data-target="#false_delete_modal" data-backdrop="static" data-keyboard="false"><a data-toggle="tooltip" data-placement="bottom" data-id="' . $expense_id . '" title="Delete Expense" class="delete_button btn btn-app"><i class="fa fa-trash"></i></a>';
+                        } else {
+                            $cols .= ' <span data-toggle="modal" data-target="#delete_modal" data-backdrop="static" data-keyboard="false"><a data-toggle="tooltip" data-placement="bottom" data-id="' . $expense_id . '" title="Delete Expense" data-path="expense/delete" class="delete_button btn btn-app"><i class="fa fa-trash"></i></a></span>';
+                        }
                     }       
-                    $cols .= '</div></div>';                   
-                    $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass">';
+                    $cols .= '</div></div>';
+                    $disabled = '';
+                    if(!in_array($expense_module_id , $data['active_edit']) && !in_array($expense_module_id , $data['active_delete'])){
+                        $disabled = 'disabled';
+                    }                   
+                    $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass"'.$disabled.'>';
                                        
                     $send_data[] = $nestedData;
                 }

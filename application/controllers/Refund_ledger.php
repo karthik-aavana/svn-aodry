@@ -17,12 +17,12 @@ class Refund_ledger extends MY_Controller
     }
 
     function index(){
-        $sales_voucher_module_id         = $this->config->item('sales_voucher_module');
-        $data['module_id']               = $sales_voucher_module_id;
+        $refund_voucher_module_id         = $this->config->item('refund_voucher_module');
+        $data['module_id']               = $refund_voucher_module_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
         $data['privilege']               = $privilege;
-        $section_modules                 = $this->get_section_modules($sales_voucher_module_id, $modules, $privilege);
+        $section_modules                 = $this->get_section_modules($refund_voucher_module_id, $modules, $privilege);
 
         $data['ledgers']                 = $this->ledger_model->GetLedgersName();
 

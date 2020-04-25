@@ -44,10 +44,14 @@ $this->load->view('layout/header');
                     <div id="plus_btn">
                         <div class="box-header with-border">
                             <h3 class="box-title">Vendor</h3>
+                            <?php
+                            if (in_array($supplier_module_id, $active_add)) {
+                            ?>
                             <a class="btn btn-sm btn-info pull-right" href="<?php echo base_url("supplier/add") ?>">Add Vendor</a>
+                            <span><a data-toggle="tooltip" data-placement="bottom" data-custom-class="tooltip-primary" class="btn btn-sm btn-info upload_supplier_popup pull-right" data-original-title="Upload Supplier" class=""><i class="fa fa-cloud-upload"></i></a> </span>
+                            <?php } ?>
                             <span><a href="<?php echo base_url("assets/excel/SupplierDemo.csv") ?>"  class="btn btn-sm btn-info pull-right" data-toggle="tooltip" data-placement="bottom" data-custom-class="tooltip-primary" data-original-title="Download Supplier CSV Demo File" download><i class="fa fa-download"></i></a></span>
 
-                            <span><a data-toggle="tooltip" data-placement="bottom" data-custom-class="tooltip-primary" class="btn btn-sm btn-info upload_supplier_popup pull-right" data-original-title="Upload Supplier" class=""><i class="fa fa-cloud-upload"></i></a> </span>
                             <span><a ref="excel" href="javascript:void(0);" id='download_supplier_data' class="btn download_sheet  pull-right" data-placement="bottom" data-toggle="tooltip" data-original-title="Download XLS" download><i class="fa fa-file-excel-o" aria-hidden="true"></i></a></span>
                         </div>
                         <form method="post" action="<?php echo base_url() ?>Supplier/exportSupplierReportExcel" id="export_form" >

@@ -26,7 +26,9 @@ class Expense_bill extends MY_Controller
 
         $data['email_sub_module_id']             = $this->config->item('email_sub_module');
         $data['recurrence_sub_module_id']        = $this->config->item('recurrence_sub_module');
-        
+        $payment_voucher_module_id        = $this->config->item('payment_voucher_module');
+        $expense_voucher_module_id        = $this->config->item('expense_voucher_module');
+        $file_manager_module_id        = $this->config->item('file_manager_module');
         if (!empty($this->input->post()))
         {
             $columns             = array(
@@ -73,7 +75,8 @@ class Expense_bill extends MY_Controller
                     {
                         if ($post->expense_bill_paid_amount == 0 || $post->expense_bill_paid_amount == null)
                             $edit = base_url('expense_bill/edit/') . $expense_bill_id;
-
+                    }
+                    if (in_array($expense_bill_module_id, $data['active_view'])){
                         if (in_array($data['email_sub_module_id'], $data['access_sub_modules']))
                             //$email = base_url('expense_bill/email/') . $expense_bill_id;
                             $email = $expense_bill_id;
@@ -86,17 +89,17 @@ class Expense_bill extends MY_Controller
                             $data['pdf_results'] = json_decode($rep, true);
 
                             $pdf = base_url('expense_bill/pdf/') . $expense_bill_id;
+                    }
+                    if (in_array($data['recurrence_sub_module_id'], $data['access_sub_modules']))
+                        $recurrence_sub_module = 1;
 
-                        if (in_array($data['recurrence_sub_module_id'], $data['access_sub_modules']))
-                            $recurrence_sub_module = 1;
-
-                        if (in_array($expense_bill_module_id, $data['active_delete']))
-                            $delete = $expense_bill_id;
-
+                    if (in_array($expense_bill_module_id, $data['active_delete'])){
+                        $delete = $expense_bill_id;
+                    }
+                    if (in_array($payment_voucher_module_id, $data['active_add'])){
                         if ($post->expense_bill_paid_amount < $post->supplier_receivable_amount)
                             $payment = base_url('payment_voucher/add_expense_payment/') . $expense_bill_id;
                     }
-
                     $this->db->select('expense_voucher_id');
                     $this->db->from('expense_voucher');
                     $this->db->where('reference_id',$post->expense_bill_id);
@@ -111,8 +114,10 @@ class Expense_bill extends MY_Controller
 
                     $expense_voucher_str = '' ; 
                     if($expense_voucher_id != ''){
-                        $expense_voucher_id = $this->encryption_url->encode($expense_voucher_id);
-                        $expense_voucher_str = ' voucher_link="' .base_url('expense_voucher/view_details/') . $expense_voucher_id.'" ledger_action="' .base_url('expense_ledgers').'" reference_id="'.$expense_voucher_id.'" ';
+                        if(in_array($expense_voucher_module_id, $data['active_view'])){
+                            $expense_voucher_id = $this->encryption_url->encode($expense_voucher_id);
+                            $expense_voucher_str = ' voucher_link="' .base_url('expense_voucher/view_details/') . $expense_voucher_id.'" ledger_action="' .base_url('expense_ledgers').'" reference_id="'.$expense_voucher_id.'" ';
+                        }
                         /*$nestedData['expence_voucher_view'] = ' <a href="' .base_url('expense_voucher/view_details/') . $expense_voucher_id.'" target="_blank">' . '<i class="fa fa-file" aria-hidden="true" title="Voucher View"></i>' . '</a>'. '  ' .' <form  action="' .base_url('expense_ledgers').'" method="POST" target="_blank"><input type="hidden" name="reference_id" value="'.$expense_voucher_id.'"><button type="submit">' . '<i class="fa fa-file" aria-hidden="true" title="Ledger View"></i></button></form>';*/
                     }
 
@@ -122,7 +127,11 @@ class Expense_bill extends MY_Controller
                     $expense_file = $post->expense_file;
                     if($expense_file != ''){
                         $url = base_url().'filemanager/?directory=Expense';
-                        $nestedData['invoice'] = ' <a href="' . base_url('expense_bill/view/') . $expense_bill_id  . '">' . $post->expense_bill_invoice_number . '</a>' ." ".' <a href="' . $url.'"target="_blank">' . '<i class="fa fa-folder-open" aria-hidden="true" title="Open Attachment"></i>' . '</a>';
+                        if(in_array($file_manager_module_id, $data['active_view'])){
+                            $nestedData['invoice'] = ' <a href="' . base_url('expense_bill/view/') . $expense_bill_id  . '">' . $post->expense_bill_invoice_number . '</a>' ." ".' <a href="' . $url.'"target="_blank">' . '<i class="fa fa-folder-open" aria-hidden="true" title="Open Attachment"></i>' . '</a>';
+                        }else{
+                            $nestedData['invoice'] = ' <a href="' . base_url('expense_bill/view/') . $expense_bill_id  . '">' . $post->expense_bill_invoice_number . '</a>' ." ".' <i class="fa fa-folder-open" aria-hidden="true" title="Open Attachment"></i>';
+                        }
                     }
                     $nestedData['payee']                     = $post->supplier_name;
                     $nestedData['grand_total']               = $this->precise_amount($post->expense_bill_grand_total,$access_common_settings[0]->amount_precision);
@@ -2392,7 +2401,7 @@ class Expense_bill extends MY_Controller
         $expense_bill_voucher_module_id = $this->config->item('expense_bill_module');
         $module_id               = $expense_bill_voucher_module_id;
         $modules                 = $this->get_modules();
-        $privilege               = "add_privilege";
+        $privilege               = "view_privilege";
         $section_modules         = $this->get_section_modules($expense_bill_voucher_module_id , $modules , $privilege);
 
         $access_sub_modules    = $section_modules['access_sub_modules'];
@@ -3067,14 +3076,15 @@ class Expense_bill extends MY_Controller
         $data               = $this->get_default_country_state();
         $expense_bill_module_id = $this->config->item('expense_bill_module');
         $modules            = $this->modules;
-        $privilege          = "edit_privilege";
-        $data['privilege']  = "edit_privilege";
+        $privilege          = "view_privilege";
+        $data['privilege']  = "view_privilege";
         $section_modules    = $this->get_section_modules($expense_bill_module_id, $modules, $privilege);
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
 
         $data['expense_bill_module_id']    = $expense_bill_module_id;
         $data['module_id']                 = $expense_bill_module_id;
+        $data['payment_voucher_module_id'] = $this->config->item('payment_voucher_module');
         $data['notes_module_id']           = $this->config->item('notes_module');
         $data['product_module_id']         = $this->config->item('expense_module');
         $data['supplier_module_id']        = $this->config->item('supplier_module');

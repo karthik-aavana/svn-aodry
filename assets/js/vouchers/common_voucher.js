@@ -14,10 +14,16 @@ $(document).ready(function () {
             $('.edit_voucher').attr('voucher_id',voucher_id);
             $('.delete_voucher').attr('voucher_type',voucher_type).show();
             $('.delete_voucher').attr('voucher_id',voucher_id);
+            $('.add_voucher').hide();
+            $('.download_voucher').hide();
+            $('.upload_voucher_popup').hide();
         }else{
             $(document).find('[name=check_voucher]').prop('checked',false);
             $('.edit_voucher').hide();
             $('.delete_voucher').hide();
+            $('.add_voucher').show();
+            $('.download_voucher').show();
+            $('.upload_voucher_popup').show();
             setDefault();
         }
     })

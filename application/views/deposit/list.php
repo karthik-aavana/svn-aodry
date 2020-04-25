@@ -35,7 +35,11 @@ $this->load->view('layout/header');
                     <div id="plus_btn">
                         <div class="box-header with-border">
                             <h3 class="box-title">Deposits</h3>
+                            <?php
+                            if (in_array($deposit_module_id, $active_add)) {
+                            ?>
                             <a class="btn btn-sm btn-info pull-right" href="<?php echo base_url('deposit/add'); ?>">Add Deposits</a>
+                            <?php } ?>
                         </div>
                     </div>
                     <div id="filter">

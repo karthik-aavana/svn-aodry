@@ -15,7 +15,7 @@ class Payment_ledger extends MY_Controller{
     }
 
     function index(){
-        $payment_voucher_module_id         = $this->config->item('payment_voucher_module');
+        $payment_voucher_module_id       = $this->config->item('payment_voucher_module');
         $data['module_id']               = $payment_voucher_module_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";

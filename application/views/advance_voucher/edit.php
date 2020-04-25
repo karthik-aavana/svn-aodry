@@ -187,15 +187,18 @@ $this->load->view('layout/header');
                                             <div class="col-sm-3">
                                                 <div class="form-group">
                                                     <label for="paying_by">Payment Mode <span class="validation-color">*</span></label>
-                                                    <?php
+                                                    <!-- <?php
                                                     if (isset($other_modules_present['bank_account_module_id']) && $other_modules_present['bank_account_module_id'] != "")
                                                     {
-                                                        ?>
+                                                        ?> -->
                                                         <div class="input-group">
                                                             <div class="input-group-addon">
+                                                                <?php 
+                                                                if(in_array($bank_account_module_id, $active_add)){?>
                                                                 <a href="" data-toggle="modal" data-target="#bank_account_modal" class="pull-right">+</a>
+                                                                <?php } ?>
                                                             </div>
-                                                        <?php } ?>
+                                                        <!-- <?php } ?> -->
                                                         <select class="form-control select2" id="payment_mode" name="payment_mode">
                                                             <option value="">Select</option>
                                                            <option value="cash" <?php

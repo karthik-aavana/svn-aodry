@@ -19,7 +19,8 @@ class Product extends MY_Controller
         /*$this->load->library('ProductHook');*/
     }
 
-    public function index(){        
+    public function index(){
+
         $product_module_id         = $this->config->item('product_module');
         $data['product_module_id'] = $product_module_id;
         $modules                   = $this->modules;
@@ -111,9 +112,12 @@ class Product extends MY_Controller
                             $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-id="' . $product_id . '" data-path="product/delete" data-toggle="tooltip" data-placement="bottom" title="Delete"> <i class="fa fa-trash-o"></i> </a></span>';
                         }
                     }
-
                     $cols .= '</div></div>';
-                    $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
+                    $disabled = '';
+                    if(!in_array($data['product_module_id'], $data['active_delete']) && !in_array($data['product_module_id'], $data['active_edit'])){
+                        $disabled = 'disabled';
+                    }
+                    $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal"'.$disabled.'>';
                     $send_data[]          = $nestedData;
                 }
             }
@@ -558,8 +562,8 @@ class Product extends MY_Controller
         $data['module_id'] = $product_module_id;
         $data['product_module_id'] = $product_module_id;
         $modules           = $this->modules;
-        $privilege         = "view_privilege";
-        $data['privilege'] = "view_privilege";
+        $privilege         = "add_privilege";
+        $data['privilege'] = "add_privilege";
         $section_modules   = $this->get_section_modules($product_module_id, $modules, $privilege);
 
         /* presents all the needed */
@@ -568,6 +572,8 @@ class Product extends MY_Controller
         $data['category_module_id']    = $this->config->item('category_module');
         $data['subcategory_module_id'] = $this->config->item('subcategory_module');
         $data['tax_module_id']         = $this->config->item('tax_module');
+        $data['uqc_module_id']         = $this->config->item('uqc_module');
+        $data['discount_module_id']         = $this->config->item('discount_module');
         $data['tax_gst']          = $this->tax_call_type('GST');
         $data['tax_tds']          = $this->tax_call_type('TCS');
         $data['product_category'] = $this->product_category_call();
@@ -898,8 +904,8 @@ class Product extends MY_Controller
         $product_module_id = $this->config->item('product_module');
         $data['module_id'] = $product_module_id;
         $modules           = $this->modules;
-        $privilege         = "view_privilege";
-        $data['privilege'] = "view_privilege";
+        $privilege         = "add_privilege";
+        $data['privilege'] = "add_privilege";
         $section_modules   = $this->get_section_modules($product_module_id, $modules, $privilege);
 
         /* presents all the needed */
@@ -2082,7 +2088,8 @@ class Product extends MY_Controller
         $data['category_module_id']    = $this->config->item('category_module');
         $data['subcategory_module_id'] = $this->config->item('subcategory_module');
         $data['tax_module_id']         = $this->config->item('tax_module');
-        
+        $data['uqc_module_id']         = $this->config->item('uqc_module');
+        $data['discount_module_id']         = $this->config->item('discount_module');
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
 
@@ -3502,7 +3509,7 @@ class Product extends MY_Controller
         {
         $product_module_id = $this->config->item('product_module');
         $modules           = $this->modules;
-        $privilege         = "add_privilege";
+        $privilege         = "view_privilege";
         $data['privilege'] = $privilege;
         $section_modules   = $this->get_section_modules($product_module_id, $modules, $privilege);
 
@@ -3904,7 +3911,7 @@ class Product extends MY_Controller
     }
 
     public function sales_product(){
-        $product_module_id         = $this->config->item('product_module');
+        $product_module_id         = $this->config->item('sales_stock_report');
         $data['product_module_id'] = $product_module_id;
         $modules                   = $this->modules;
         $privilege                 = "view_privilege";
@@ -4223,8 +4230,8 @@ class Product extends MY_Controller
         $product_module_id = $this->config->item('product_module');
         $data['module_id'] = $product_module_id; 
         $modules           = $this->modules;
-        $privilege         = "add_privilege";
-        $data['privilege'] = "add_privilege";
+        $privilege         = "edit_privilege";
+        $data['privilege'] = "edit_privilege";
         $section_modules   = $this->get_section_modules($product_module_id, $modules, $privilege);
 
         /* presents all the needed */

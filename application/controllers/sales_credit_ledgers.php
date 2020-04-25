@@ -17,12 +17,12 @@ class Sales_credit_ledgers extends MY_Controller
     }
 
     function index(){
-        $sales_voucher_module_id         = $this->config->item('sales_voucher_module');
-        $data['module_id']               = $sales_voucher_module_id;
+        $sales_credit_note_voucher_id    = $this->config->item('sales_credit_note_voucher');
+        $data['module_id']               = $sales_credit_note_voucher_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
         $data['privilege']               = $privilege;
-        $section_modules                 = $this->get_section_modules($sales_voucher_module_id, $modules, $privilege);
+        $section_modules                 = $this->get_section_modules($sales_credit_note_voucher_id, $modules, $privilege);
 
         $data['ledgers']                 = $this->ledger_model->GetLedgersName();
         $data['ledger_value'] = $this->input->post('reference_id');

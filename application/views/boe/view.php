@@ -269,7 +269,22 @@ $this->load->view('layout/header');
                                             <?php
                                         }
                                         ?>
-                                        
+                                        <?php
+                                        if (in_array($boe_module_id, $active_edit)) {
+                                                ?>
+                                            <div class="btn-group">
+                                                <a class="tip btn btn-warning tip" href="<?php
+                                                echo base_url('boe/edit/');
+                                                ?><?php
+                                                echo $boe_id;
+                                                ?>" title="Edit">
+                                                    <i class="fa fa-pencil"></i>
+                                                    <span class="hidden-sm hidden-xs">Edit</span>
+                                                </a>
+                                            </div>
+                                            <?php
+                                        }
+                                        ?>
                                         <?php
                                         if (in_array($boe_module_id, $active_delete)) {
                                             ?>

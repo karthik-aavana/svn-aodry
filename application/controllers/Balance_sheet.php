@@ -15,7 +15,7 @@ class Balance_sheet extends MY_Controller {
     }
 
     function index(){
-        $report_module_id         = $this->config->item('report_module');
+        $report_module_id         = $this->config->item('balance_sheet_report_module');
         $data['module_id']               = $report_module_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
@@ -32,6 +32,12 @@ class Balance_sheet extends MY_Controller {
     }
 
     public function getBSReport(){
+        $report_module_id         = $this->config->item('balance_sheet_report_module');
+        $data['module_id']               = $report_module_id;
+        $modules                         = $this->modules;
+        $privilege                       = "view_privilege";
+        $data['privilege']               = $privilege;
+        $section_modules                 = $this->get_section_modules($report_module_id, $modules, $privilege);
         /*$firm_id = $this->input->post('firm_id');
         $acc_id = $this->input->post('acc_id');*/
         $year_id = $this->input->post('year_id');
@@ -289,6 +295,12 @@ class Balance_sheet extends MY_Controller {
     }
 
     public function downloadBSReport(){
+        $report_module_id         = $this->config->item('balance_sheet_report_module');
+        $data['module_id']               = $report_module_id;
+        $modules                         = $this->modules;
+        $privilege                       = "view_privilege";
+        $data['privilege']               = $privilege;
+        $section_modules                 = $this->get_section_modules($report_module_id, $modules, $privilege);
         $branch_id = $this->branch_id;
         $year_id = $this->input->post('year_id');
         /*$this->session->set_userdata('year_id',$year_id);*/

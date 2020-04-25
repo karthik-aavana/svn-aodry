@@ -67,10 +67,18 @@ class Uqc extends MY_Controller
                     $nestedData['description'] = $post->description;
                     $nestedData['added_user']  = $post->first_name . ' ' . $post->last_name;
                    $cols = '<div class="box-body hide action_button"><div class="btn-group">';
-				   $cols.= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#edit_uom_modal"><a data-id="' . $uqc_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="edit_uom btn btn-app"><i class="fa fa-pencil"></i></a></span>';
-				   $cols.= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-id="' . $uqc_id . '" data-path="uqc/delete" data-toggle="tooltip" data-placement="bottom" title="Delete"> <i class="fa fa-trash-o"></i> </a></span>';                  
-				   $cols .= '</div></div>';					
-                   $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';				
+                   if (in_array($uqc_module_id, $data['active_edit'])) {
+				        $cols.= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#edit_uom_modal"><a data-id="' . $uqc_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="edit_uom btn btn-app"><i class="fa fa-pencil"></i></a></span>';
+                    }
+                    if (in_array($uqc_module_id, $data['active_delete'])) {
+				        $cols.= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-id="' . $uqc_id . '" data-path="uqc/delete" data-toggle="tooltip" data-placement="bottom" title="Delete"> <i class="fa fa-trash-o"></i> </a></span>';
+                    }                  
+				   $cols .= '</div></div>';
+                   $disabled = '';
+                    if(!in_array($uqc_module_id, $data['active_delete']) && !in_array($uqc_module_id, $data['active_edit'])){
+                        $disabled = 'disabled';
+                    }					
+                   $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal"'.$disabled.'>';				
 					
                    $send_data[]               = $nestedData;
                 }
@@ -350,8 +358,8 @@ class Uqc extends MY_Controller
         $uqc_module_id  = $this->config->item('uqc_module');
         $data['module_id'] = $uqc_module_id;
         $modules                         = $this->modules;
-        $privilege                       = "add_privilege";
-        $data['privilege']               = "add_privilege";
+        $privilege                       = "view_privilege";
+        $data['privilege']               = "view_privilege";
         $section_modules                 = $this->get_section_modules($uqc_module_id, $modules, $privilege);
 
         /* presents all the needed */
@@ -387,11 +395,11 @@ class Uqc extends MY_Controller
     }
     public function get_uqc_modal($id) {
         $id                   = $this->encryption_url->decode($id);
-       $uqc_module_id  = $this->config->item('uqc_module');
+        $uqc_module_id  = $this->config->item('uqc_module');
         $data['module_id'] = $uqc_module_id;
         $modules                         = $this->modules;
-        $privilege                       = "add_privilege";
-        $data['privilege']               = "add_privilege";
+        $privilege                       = "edit_privilege";
+        $data['privilege']               = "edit_privilege";
         $section_modules                 = $this->get_section_modules($uqc_module_id, $modules, $privilege);
         
         /* presents all the needed */

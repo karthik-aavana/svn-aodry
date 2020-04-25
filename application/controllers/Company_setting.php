@@ -91,20 +91,18 @@ class Company_setting extends MY_Controller
                 'delete_status' => 0 ));*/
         $data['currency'] = $this->currency_call();
         $data['financial_year']          = $this->financial_year_call();
-        $user_module_id                  = $this->config->item('user_module');
+        $user_module_id                  = $this->config->item('company_setting_module');
         $data['module_id']               = $user_module_id;
         $modules                         = $this->modules;
-        $privilege                       = "edit_privilege";
-        $data['privilege']               = "edit_privilege";
+        $privilege                       = "view_privilege";
+        $data['privilege']               = "view_privilege";
         $section_modules                 = $this->get_section_modules($user_module_id, $modules, $privilege);
         
         /* presents all the needed */
         $data=array_merge($data,$section_modules);
 
         $data['data'] = $data['branch'];
-        /*echo "<pre>";
-        print_r($data['data'] );exit;*/
-        // echo ($data['data'][0]->affliation_images);die;
+
         $this->load->view('company_setting/edit_old', $data);
     }
 
@@ -129,7 +127,7 @@ class Company_setting extends MY_Controller
 
         $fyp                             = $this->input->post('financial_year_password');
         $efyd                            = $this->encryption->encrypt($fyp);
-        $user_module_id                  = $this->config->item('user_module');
+        $user_module_id                  = $this->config->item('company_setting_module');
         $data['module_id']               = $user_module_id;
         $modules                         = $this->modules;
         $privilege                       = "edit_privilege";
@@ -493,7 +491,6 @@ class Company_setting extends MY_Controller
         }
 
         redirect('company_setting', 'refresh');
-        
 
     }
 
@@ -667,7 +664,7 @@ class Company_setting extends MY_Controller
         }
         else
         {
-            $this->session->set_flashdata('fail', 'Bategory can not be Deleted.');
+            $this->session->set_flashdata('fail', 'Category can not be Deleted.');
             redirect("company_setting", 'refresh');
         }
     }

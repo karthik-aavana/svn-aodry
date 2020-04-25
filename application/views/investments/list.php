@@ -32,7 +32,11 @@ $this->load->view('layout/header');
                     <div id="plus_btn">
                         <div class="box-header with-border">
                             <h3 class="box-title">Investments</h3>
-                            <a class="btn btn-sm btn-info pull-right" href="<?php echo base_url('investments/add'); ?>">Add Investments</a>
+                            <?php
+                            if (in_array($investments_module_id, $active_add)) {
+                            ?>
+                                <a class="btn btn-sm btn-info pull-right" href="<?php echo base_url('investments/add'); ?>">Add Investments</a>
+                            <?php } ?>
                         </div>
                     </div>
                     <div id="filter">

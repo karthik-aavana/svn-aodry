@@ -123,7 +123,11 @@ class Supplier extends MY_Controller {
                         }
                     }
                     $cols .= '</div></div>';
-                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
+                    $disabled = '';
+                    if(!in_array($data['supplier_module_id'], $data['active_delete']) && !in_array($data['supplier_module_id'], $data['active_edit'])){
+                        $disabled = 'disabled';
+                    }
+                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal"'.$disabled.'>';
                     $send_data[] = $nestedData;
                 }
             } $json_data = array(
@@ -1295,6 +1299,15 @@ class Supplier extends MY_Controller {
         $from_date = strtotime(date('Y-m-d'));
         require_once APPPATH . "/third_party/PHPExcel.php";
         $object = new PHPExcel();
+
+        $supplier_module_id = $this->config->item('supplier_module');
+        $data['supplier_module_id'] = $supplier_module_id;
+        $modules = $this->modules;
+        $privilege = "view_privilege";
+        $data['privilege'] = $privilege;
+        $section_modules = $this->get_section_modules($supplier_module_id, $modules, $privilege);
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
 
         $table_columns = array("Vendor Code", "Supplier Type", "Company/Firm Name", "GST Number", "Contact Person Name", "Country", "State", "City", "Address", "PIN Code","PAN Number","TAN Number", "Contact Number", "Email", "Payment Days");
 

@@ -44,12 +44,23 @@ $this->load->view('layout/header');
                             
                         <div id="filter" style="display: block; float: right">
                             <div class="box-header box-body filter_body">
-                                <div class="btn-group">             
+                                <div class="btn-group">
+                                <?php
+                                    if (in_array($module_id, $active_edit)) {
+                                ?>             
                                     <span><a data-toggle="tooltip" data-placement="bottom" class="btn btn-app edit_voucher" data-custom-class="tooltip-primary" data-original-title="Edit Journal Voucher" style="display: none;"><i class="fa fa-pencil"></i></a></span>
+                                <?php } 
+                                    if (in_array($module_id, $active_delete)) {
+                                ?>
                                     <span><a data-toggle="tooltip" data-placement="bottom" class="btn btn-app delete_voucher" data-custom-class="tooltip-primary" data-original-title="Delete Journal Voucher" style="display: none;"><i class="fa fa-trash-o"></i></a></span>
+                                <?php } 
+                                    if (in_array($module_id, $active_add)) {
+                                ?> 
                                     <span><a data-toggle="tooltip" data-placement="bottom" class="btn btn-app add_voucher" data-value="journal" data-custom-class="tooltip-primary" data-original-title="Add Journal Voucher"><i class="fa fa-plus"></i></a></span>
-                                    <span><a href="<?php echo base_url("assets/excel/voucher_with_ledgers_demo.csv") ?>"  class="btn btn-app" data-toggle="tooltip" data-placement="bottom" data-custom-class="tooltip-primary" data-original-title="Download Journal Voucher with ledgers CSV demo file" download><i class="fa fa-download"></i></a></span>
                                     <span><a data-toggle="tooltip" data-placement="bottom" data-custom-class="tooltip-primary" class="btn btn-app upload_voucher_popup" data-original-title="Upload Journal Voucher" class=""><i class="fa fa-cloud-upload"></i></a> </span>
+                                <?php } ?>
+                                    <span><a href="<?php echo base_url("assets/excel/voucher_with_ledgers_demo.csv") ?>"  class="btn btn-app download_voucher" data-toggle="tooltip" data-placement="bottom" data-custom-class="tooltip-primary" data-original-title="Download Journal Voucher with ledgers CSV demo file" download><i class="fa fa-download"></i></a></span>
+                                    
                                    <!--  <span><a href="<?= base_url(); ?>upload_voucher" data-toggle="tooltip" data-placement="bottom" class="btn btn-app" data-custom-class="tooltip-primary" data-original-title="Upload Bulk Voucher"><i class="fa fa-cloud-upload"></i></a> </span> -->
                                 </div>
                             </div>
@@ -87,7 +98,7 @@ $this->load->view('general/upload_popup.php');
 // $this->load->view('general/delete_modal');
 ?>
 <script>
-    var getVoucher;    
+    var getVoucher;
     $(document).ready(function(){
         getVoucher = GetAllVoucher();
         <?php 
@@ -96,7 +107,6 @@ $this->load->view('general/upload_popup.php');
         ?>
         var alert_success = '<?= $journal_voucher_success; ?>';
         var alert_failure = '<?= $journal_voucher_error; ?>';
-       // alert('alert_success');
         if(alert_success != ''){
             alert_d.text = alert_success;
             PNotify.success(alert_d);

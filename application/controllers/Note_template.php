@@ -69,12 +69,20 @@ class Note_template extends MY_Controller
                             "\n" ), " <br>", $post->content);
                     $nestedData['added_user'] = $post->first_name . ' ' . $post->last_name;
                     $note_template_id         = $this->encryption_url->encode($post->note_template_id);
-                    $cols = '<div class="box-body hide action_button"><div class="btn-group">'; 
-                    $cols.=  '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#edit_note_template_modal"><a data-id="' . $note_template_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="edit_note_template btn btn-app"><i class="fa fa-pencil"></i></a></span>';
+                    $cols = '<div class="box-body hide action_button"><div class="btn-group">';
+                    if(in_array($notes_module_id, $data['active_edit'])){
+                        $cols.=  '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#edit_note_template_modal"><a data-id="' . $note_template_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="edit_note_template btn btn-app"><i class="fa fa-pencil"></i></a></span>';
+                    }
                    // $cols.= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"><a data-id="' . $note_template_id . '" data-path="note_template/delete" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Delete" ><i class="fa fa-trash"></i></a></span>';
-                    $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-id="' . $note_template_id . '" data-path="note_template/delete" data-toggle="tooltip" data-placement="bottom" title="Delete"> <i class="fa fa-trash-o"></i> </a></span>';
-                    $cols .= '</div></div>';					
-                    $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
+                    if(in_array($notes_module_id, $data['active_delete'])){
+                        $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-id="' . $note_template_id . '" data-path="note_template/delete" data-toggle="tooltip" data-placement="bottom" title="Delete"> <i class="fa fa-trash-o"></i> </a></span>';
+                    }
+                    $cols .= '</div></div>';
+                    $disabled = '';
+                    if(!in_array($notes_module_id, $data['active_delete']) && !in_array($notes_module_id, $data['active_edit'])){
+                        $disabled = 'disabled';
+                    }
+                    $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal"'.$disabled.'>';
                     $send_data[]              = $nestedData;
                 }
             } $json_data = array(
@@ -318,17 +326,17 @@ class Note_template extends MY_Controller
     public function get_note_template_by_tag()
     {
         $notes_module_id                 = $this->config->item('notes_module');
-        $data['module_id']               = $notes_module_id;
+        /*$data['module_id']               = $notes_module_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
         $data['privilege']               = "view_privilege";
         $section_modules                 = $this->get_section_modules($notes_module_id, $modules, $privilege);
         $data['access_modules']          = $section_modules['active_modules'];
         $data['access_sub_modules']      = $section_modules['access_sub_modules'];
-        /*$data['access_module_privilege'] = $section_modules['module_privilege'];
-        $data['access_user_privilege']   = $section_modules['user_privilege'];*/
+        $data['access_module_privilege'] = $section_modules['module_privilege'];
+        $data['access_user_privilege']   = $section_modules['user_privilege'];
         $data['access_settings']         = $section_modules['access_settings'];
-        $data['access_common_settings']  = $section_modules['access_common_settings'];
+        $data['access_common_settings']  = $section_modules['access_common_settings'];*/
         $hash_tag                        = $this->input->post('hash_tag');
         $data                            = $this->general_model->getRecords('*', 'note_template', array(
                 'hash_tag'      => $hash_tag, 'delete_status' => 0 ));

@@ -17,6 +17,7 @@ class Sales_debit_note extends MY_Controller {
     public function index() {
         $sales_debit_note_module_id = $this->config->item('sales_debit_note_module');
         $data['sales_debit_note_module_id'] = $sales_debit_note_module_id;
+        $data['sales_debit_note_voucher']        = $this->config->item('sales_debit_note_voucher');
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
@@ -95,16 +96,23 @@ class Sales_debit_note extends MY_Controller {
                     $nestedData['added_user'] = $post->first_name . ' ' . $post->last_name;
 
                     $cols = '<div class="box-body hide action_button"><div class="btn-group">';
-
-                    $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Sales Debit Note" href="' . base_url('sales_debit_note/view/') . $sales_debit_note_id . '"><i class="fa fa-eye"></i> </a></span>';
-
-                    $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Edit Sales Debit Note" href="' . base_url('sales_debit_note/edit/') . $sales_debit_note_id . '"><i class="fa fa-pencil"></i></a></span>';
+                    if (in_array($data['sales_debit_note_module_id'] , $data['active_view']))
+                    {
+                        $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Sales Debit Note" href="' . base_url('sales_debit_note/view/') . $sales_debit_note_id . '"><i class="fa fa-eye"></i> </a></span>';
+                    }
+                    if (in_array($data['sales_debit_note_module_id'] , $data['active_edit']))
+                    {
+                        $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Edit Sales Debit Note" href="' . base_url('sales_debit_note/edit/') . $sales_debit_note_id . '"><i class="fa fa-pencil"></i></a></span>';
+                    }
                     $customer_currency_code = $this->getCurrencyInfo($post->currency_id);
                     $customer_curr_code = '';
                     if (!empty($customer_currency_code))
                         $customer_curr_code = $customer_currency_code[0]->currency_code;
 
-                     $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#pdf_type_modal"><a class="btn btn-app pdf_button" data-toggle="tooltip" data-placement="bottom" title="Download PDF"  b_curr="'.$this->session->userdata('SESS_DEFAULT_CURRENCY').'"  b_code="'.$data['currency_code'].'" c_code="'.$customer_curr_code.'" c_curr="'.$post->currency_id.'" data-id="' . $sales_debit_note_id . '" data-name="regular" href1="' . base_url('sales_debit_note/pdf/') . $sales_debit_note_id . '" href="javascript:void(0);"><i class="fa fa-file-pdf-o"></i></a></span>';
+                    if (in_array($data['sales_debit_note_module_id'] , $data['active_view']))
+                    {
+                        $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#pdf_type_modal"><a class="btn btn-app pdf_button" data-toggle="tooltip" data-placement="bottom" title="Download PDF"  b_curr="'.$this->session->userdata('SESS_DEFAULT_CURRENCY').'"  b_code="'.$data['currency_code'].'" c_code="'.$customer_curr_code.'" c_curr="'.$post->currency_id.'" data-id="' . $sales_debit_note_id . '" data-name="regular" href1="' . base_url('sales_debit_note/pdf/') . $sales_debit_note_id . '" href="javascript:void(0);"><i class="fa fa-file-pdf-o"></i></a></span>';
+                    }
                     /* $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Download PDF" href="' . base_url('sales_debit_note/pdf/') . $sales_debit_note_id . '" target="_blank"><i class="fa fa-file-pdf-o"></i></a></span>'; */
 
                     /* if (in_array($sales_debit_note_module_id, $data['active_view']))
@@ -128,10 +136,11 @@ class Sales_debit_note extends MY_Controller {
                         
 
                         // $nestedData['sales_dn_voucher_view'] = ' <a href="' .base_url('sales_voucher/view_details/') . $sales_dn_voucher_id.'" target="_blank">' . '<i class="fa fa-file" aria-hidden="true" title="Voucher View"></i>' . '</a>'. '  ' .' <form  action="' .base_url('sales_debit_ledgers').'" method="POST" target="_blank"><input type="hidden" name="reference_id" value="'.$sales_dn_voucher_id.'"><button type="submit">' . '<i class="fa fa-file" aria-hidden="true" title="Ledger View"></i></button></form>';
+                        if(in_array($data['sales_debit_note_voucher'], $data['active_view'])){
+                            $cols .= '<span><a href="' .base_url('sales_voucher/view_details/') . $sales_dn_voucher_id.'" target="_blank" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Voucher"><i class="fa fa-eye"></i></a></span>';
 
-                        $cols .= '<span><a href="' .base_url('sales_voucher/view_details/') . $sales_dn_voucher_id.'" target="_blank" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Voucher"><i class="fa fa-eye"></i></a></span>';
-
-                        $cols .= '<span><form  action="' .base_url('sales_debit_ledgers').'" method="POST" target="_blank"><input type="hidden" name="reference_id" value="'.$sales_dn_voucher_id.'"><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" class="btn btn-app" title="View Ledger"><button type="submit" class="sales_action">' . '<i class="fa fa-eye" aria-hidden="true"></i></button></a></form></span>';
+                            $cols .= '<span><form  action="' .base_url('sales_debit_ledgers').'" method="POST" target="_blank"><input type="hidden" name="reference_id" value="'.$sales_dn_voucher_id.'"><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" class="btn btn-app" title="View Ledger"><button type="submit" class="sales_action">' . '<i class="fa fa-eye" aria-hidden="true"></i></button></a></form></span>';
+                        }
                     }
 
                     if (in_array($sales_debit_note_module_id, $data['active_delete'])) {
@@ -709,10 +718,10 @@ class Sales_debit_note extends MY_Controller {
 
     public function sales_debit_note_voucher_entry($data_main, $js_data, $action, $branch) {
        
-        $sales_voucher_module_id = $this->config->item('sales_voucher_module');
+        $sales_voucher_module_id = $this->config->item('sales_debit_note_module');
         $module_id = $sales_voucher_module_id;
         $modules = $this->get_modules();
-        $privilege = "add_privilege";
+        $privilege = "view_privilege";
         $section_modules = $this->get_section_modules($sales_voucher_module_id, $modules, $privilege);
 
         $access_sub_modules = $section_modules['access_sub_modules'];

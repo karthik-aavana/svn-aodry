@@ -59,7 +59,9 @@ class Discount extends MY_Controller {
                     $cols = '<div class="box-body hide action_button">
                         <div class="btn-group">';
 
-                    $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#edit_discount"><a data-id="' . $discount_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="edit_discount btn btn-app"><i class="fa fa-pencil"></i></a></span>';
+                    if(in_array($discount_module_id, $data['active_edit'])){    
+                        $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#edit_discount"><a data-id="' . $discount_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="edit_discount btn btn-app"><i class="fa fa-pencil"></i></a></span>';
+                    }
                     $purchase_order_item = $this->general_model->getJoinRecords('pi.*', 'purchase_order_item pi', array(
                         'pi.purchase_order_item_discount_id' => $post->discount_id,
                         'pi.delete_status' => 0,
@@ -105,15 +107,19 @@ class Discount extends MY_Controller {
                         'di.delete_status' => 0,
                         'd.branch_id' => $this->session->userdata('SESS_BRANCH_ID')), array(
                         'sales_debit_note d' => 'd.sales_debit_note_id=di.sales_debit_note_id'));
-                    if ($purchase_order_item || $purchase_item || $purchase_return_item || $purchase_credit_note_item || $purchase_debit_note_item || $quotation_item || $sales_item || $credit_note_item || $debit_note_item) {
-                        $cols .= '<span><a data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#false_delete_modal" title="Delete" class="btn btn-app btn-danger"><i class="fa fa-trash-o"></i></a></span>';
-                    } else {
-                        $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-id="' . $discount_id . '" data-path="discount/delete" data-toggle="tooltip" data-placement="bottom" title="Delete"> <i class="fa fa-trash-o"></i> </a></span>';
+                    if(in_array($discount_module_id, $data['active_delete'])){
+                        if ($purchase_order_item || $purchase_item || $purchase_return_item || $purchase_credit_note_item || $purchase_debit_note_item || $quotation_item || $sales_item || $credit_note_item || $debit_note_item) {
+                            $cols .= '<span><a data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#false_delete_modal" title="Delete" class="btn btn-app btn-danger"><i class="fa fa-trash-o"></i></a></span>';
+                        } else {
+                            $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-id="' . $discount_id . '" data-path="discount/delete" data-toggle="tooltip" data-placement="bottom" title="Delete"> <i class="fa fa-trash-o"></i> </a></span>';
+                        }
                     }
-
                     $cols .= '</div></div>';
-
-                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
+                    $disabled = '';
+                    if(!in_array($discount_module_id, $data['active_delete']) && !in_array($discount_module_id, $data['active_edit'])){
+                        $disabled = 'disabled';
+                    }
+                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal"'.$disabled.'>';
                     $send_data[] = $nestedData;
                 }
             } $json_data = array(
@@ -238,6 +244,15 @@ class Discount extends MY_Controller {
     }
 
     public function add_discount_ajax() {
+        $discount_module_id = $this->config->item('discount_module');
+        $data['module_id'] = $discount_module_id;
+        $modules = $this->modules;
+        $privilege = "add_privilege";
+        $data['privilege'] = "add_privilege";
+        $section_modules = $this->get_section_modules($discount_module_id, $modules, $privilege);
+
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
         $discount_data = array(
             "discount_name" => $this->input->post('discount_name'),
             "discount_value" => $this->input->post('discount_percentage'),
@@ -264,6 +279,15 @@ class Discount extends MY_Controller {
     }
 
     public function delete() {
+        $discount_module_id = $this->config->item('discount_module');
+        $data['module_id'] = $discount_module_id;
+        $modules = $this->modules;
+        $privilege = "delete_privilege";
+        $data['privilege'] = "delete_privilege";
+        $section_modules = $this->get_section_modules($discount_module_id, $modules, $privilege);
+
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
         $id = $this->input->post('delete_id');
         $id = $this->encryption_url->decode($id);
         if ($id1 = $this->general_model->updateData('discount', [
@@ -425,8 +449,8 @@ class Discount extends MY_Controller {
         $discount_module_id = $this->config->item('discount_module');
         $data['module_id'] = $discount_module_id;
         $modules = $this->modules;
-        $privilege = "add_privilege";
-        $data['privilege'] = "add_privilege";
+        $privilege = "edit_privilege";
+        $data['privilege'] = "edit_privilege";
         $section_modules = $this->get_section_modules($discount_module_id, $modules, $privilege);
 
         /* presents all the needed */

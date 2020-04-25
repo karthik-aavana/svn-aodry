@@ -23,7 +23,11 @@ $this->load->view('layout/header');
                 <div class="box-header with-border">
                     <div id="plus_btn">                       
                             <h3 class="box-title">Sales</h3>
+                            <?php
+                            if (in_array($sales_module_id, $active_add)) {
+                            ?>
                             <a class="btn btn-sm btn-default pull-right" href="<?php echo base_url('sales/add'); ?>">Add Sales </a>
+                            <?php } ?>
                         </div>
                         <div id="filter">
                             <div class="box-header box-body filter_body"></div>

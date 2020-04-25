@@ -15,7 +15,7 @@ class Profit_loss extends MY_Controller {
     }
 
     function index(){
-        $report_module_id         = $this->config->item('report_module');
+        $report_module_id         = $this->config->item('profit_loss_report_module');
         $data['module_id']               = $report_module_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
@@ -32,6 +32,12 @@ class Profit_loss extends MY_Controller {
     }
 
     public function getPLReport(){
+        $report_module_id         = $this->config->item('profit_loss_report_module');
+        $data['module_id']               = $report_module_id;
+        $modules                         = $this->modules;
+        $privilege                       = "view_privilege";
+        $data['privilege']               = $privilege;
+        $section_modules                 = $this->get_section_modules($report_module_id, $modules, $privilege);
         $year_id = $this->input->post('year_id');
         /*$this->session->set_userdata('year_id',$year_id);*/
 
@@ -113,6 +119,12 @@ class Profit_loss extends MY_Controller {
     }
 
     public function downloadPLReport(){
+        $report_module_id         = $this->config->item('profit_loss_report_module');
+        $data['module_id']               = $report_module_id;
+        $modules                         = $this->modules;
+        $privilege                       = "view_privilege";
+        $data['privilege']               = $privilege;
+        $section_modules                 = $this->get_section_modules($report_module_id, $modules, $privilege);
         $year_id = $this->input->post('year_id');
         /*$this->session->set_userdata('firm_id',$firm_id);
         $this->session->set_userdata('acc_id',$acc_id);

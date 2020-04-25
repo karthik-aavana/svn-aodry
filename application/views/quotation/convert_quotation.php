@@ -960,6 +960,8 @@ if ($item_modal == 1) {
     }
 }*/
 $this->load->view('sub_modules/shipping_address_modal');
+$this->load->view('sales/customer_address');
+$this->load->view('sales/billing_address');
 ?>
 <?php
 if ($charges_sub_module == 1) {

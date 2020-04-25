@@ -71,11 +71,19 @@ class Hsn extends MY_Controller
                     $nestedData['type'] = ucwords($post->type);
                     $nestedData['hsn_code'] = $post->hsn_code;
                     $nestedData['description'] = $post->description;
-                    $cols = '<div class="box-body hide action_button"><div class="btn-group">';                   
-                    $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#edit_hsn_modal"><a data-id="' . $hsn_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="edit_hsn btn btn-app"><i class="fa fa-pencil"></i></a></span>';
-                    $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-id="' . $hsn_id . '" data-path="hsn/delete" data-toggle="tooltip" data-placement="bottom" title="Delete"> <i class="fa fa-trash-o"></i> </a></span>';
-                    $cols .= '</div></div>';					
-                    $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
+                    $cols = '<div class="box-body hide action_button"><div class="btn-group">'; 
+                    if(in_array($hsn_module_id, $data['active_edit'])){                  
+                        $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#edit_hsn_modal"><a data-id="' . $hsn_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="edit_hsn btn btn-app"><i class="fa fa-pencil"></i></a></span>';
+                    }
+                    if(in_array($hsn_module_id, $data['active_delete'])){
+                        $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-id="' . $hsn_id . '" data-path="hsn/delete" data-toggle="tooltip" data-placement="bottom" title="Delete"> <i class="fa fa-trash-o"></i> </a></span>';
+                    }
+                    $cols .= '</div></div>';
+                    $disabled = '';
+                    if(!in_array($hsn_module_id, $data['active_delete']) && !in_array($hsn_module_id, $data['active_edit'])){
+                        $disabled = 'disabled';
+                    }					
+                    $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal"'.$disabled.'>';
                     $send_data[]          = $nestedData; 
                     }                      
                 }
@@ -155,7 +163,7 @@ class Hsn extends MY_Controller
         echo json_encode($result); 
     }
 
-   public function gethsnCode() {
+    public function gethsnCode() {
         $hsnId  = $this->input->post('hsnId');
         $hsnCode = $this->input->post('hsnCode');
         $data   = $this->general_model->getRecords('count(*) as num_hsn_code', 'hsn', array(
@@ -168,13 +176,13 @@ class Hsn extends MY_Controller
 
 
 
-public function get_hsn_modal($id) {
+    public function get_hsn_modal($id) {
         $id                   = $this->encryption_url->decode($id);
         $hsn_module_id              = $this->config->item('hsn_module');
         $data['module_id']               = $hsn_module_id;
         $modules                         = $this->modules;
-        $privilege                       = "add_privilege";
-        $data['privilege']               = "add_privilege";
+        $privilege                       = "edit_privilege";
+        $data['privilege']               = "edit_privilege";
         $section_modules                 = $this->get_section_modules($hsn_module_id, $modules, $privilege);
         
         /* presents all the needed */
@@ -234,6 +242,15 @@ public function get_hsn_modal($id) {
     public function delete() {
         $id = $this->input->post('delete_id');
         $id = $this->encryption_url->decode($id);
+        $hsn_module_id                   = $this->config->item('hsn_module');
+        $data['module_id']               = $hsn_module_id;
+        $modules                         = $this->modules;
+        $privilege                       = "delete_privilege";
+        $data['privilege']               = "delete_privilege";
+        $section_modules                 = $this->get_section_modules($hsn_module_id, $modules, $privilege);
+        
+        /* presents all the needed */
+        $data=array_merge($data,$section_modules);
         $session_user_id = $this->session->userdata('SESS_USER_ID');
         $session_branch_id = $this->session->userdata('SESS_BRANCH_ID');
         $session_finacial_year_id = $this->session->userdata('SESS_FINANCIAL_YEAR_ID');

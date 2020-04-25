@@ -1,7 +1,7 @@
 <?php
 
 defined('BASEPATH') OR exit('No direct script access allowed');
-/*test*/
+
 class Category extends MY_Controller
 {
 
@@ -95,8 +95,11 @@ class Category extends MY_Controller
                     }
 
 					$cols .= '</div></div>';
-					
-                    $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
+					$disabled = '';
+                    if(!in_array($data['category_module_id'], $data['active_delete']) && !in_array($data['category_module_id'], $data['active_edit'])){
+                        $disabled = 'disabled';
+                    }
+                    $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal"'.$disabled.'>';
                     $send_data[]          = $nestedData;
                 }
             }
@@ -176,15 +179,15 @@ class Category extends MY_Controller
 
     public function get_category_ajax()
     {
-        $category_module_id  = $this->config->item('category_module');
+        /*$category_module_id  = $this->config->item('category_module');
         $data['module_id']   = $category_module_id;
         $modules             = $this->modules;
         $privilege           = "view_privilege";
         $data['privilege']   = "view_privilege";
         $section_modules     = $this->get_section_modules($category_module_id, $modules, $privilege);
         
-        /* presents all the needed */
-        $data=array_merge($data,$section_modules);
+        presents all the needed 
+        $data=array_merge($data,$section_modules);*/
 
         $id              = $this->input->post('new_category');
         $type            = $this->input->post('new_type');
@@ -201,8 +204,8 @@ class Category extends MY_Controller
         $category_module_id   = $this->config->item('category_module');
         $data['module_id']    = $category_module_id;
         $modules              = $this->modules;
-        $privilege            = "view_privilege";
-        $data['privilege']    = "view_privilege";
+        $privilege            = "edit_privilege";
+        $data['privilege']    = "edit_privilege";
         $section_modules      = $this->get_section_modules($category_module_id, $modules, $privilege);
         
         /* presents all the needed */

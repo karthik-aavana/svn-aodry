@@ -9,7 +9,7 @@
         <div class="box">
           <div class="box-header with-border">
             <h3 class="box-title">GSTR</h3>
-            <a class="btn btn-sm btn-info pull-right" href="<?php echo base_url()?>">Back</a>
+            <!-- <a class="btn btn-sm btn-info pull-right" href="<?php echo base_url()?>">Back</a> -->
           </div>
           <div class="box-body">
             <div class="row">

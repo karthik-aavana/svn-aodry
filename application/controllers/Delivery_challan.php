@@ -103,9 +103,14 @@ class Delivery_challan extends MY_Controller {
                     $delivery_challan_id = $this->encryption_url->encode($post->delivery_challan_id);
                     
                     $cols = '<div class="box-body hide action_button"><div class="btn-group">';
-                    $cols .= '<span><a href="' . base_url('delivery_challan/pdf/') . $delivery_challan_id . '"  class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Download PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a></span>';
-
-                    $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#composeMail"><a data-id="' . $delivery_challan_id . '" data-name="regular" href="javascript:void(0);" class="btn btn-app pdf_button composeMail" data-toggle="tooltip" data-placement="bottom" title="Email Delivery Challan"><i class="fa fa-envelope-o"></i></a></span>';
+                    if (in_array($delivery_challan_module_id, $data['active_view'])) {
+                        $cols .= '<span><a href="' . base_url('delivery_challan/pdf/') . $delivery_challan_id . '"  class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Download PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a></span>';
+                    }
+                    if (in_array($data['email_module_id'], $data['active_view'])) {
+                        if (in_array($data['email_sub_module_id'], $data['access_sub_modules'])) {
+                            $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#composeMail"><a data-id="' . $delivery_challan_id . '" data-name="regular" href="javascript:void(0);" class="btn btn-app pdf_button composeMail" data-toggle="tooltip" data-placement="bottom" title="Email Delivery Challan"><i class="fa fa-envelope-o"></i></a></span>';
+                        }
+                    }
 
                     if (in_array($delivery_challan_module_id, $data['active_delete'])) {
                         $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-id="' . $delivery_challan_id . '" data-path="delivery_challan/delete" class="delete_button"><a  href="#"  class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Delete Delivery Challan" ><i class="fa fa-trash-o"></i></a></span>';
@@ -473,7 +478,7 @@ class Delivery_challan extends MY_Controller {
     public function delete() {
         $id = $this->input->post('delete_id');
         $id = $this->encryption_url->decode($id);
-        $delivery_challan_module_id = $this->config->item('delivery_challan_module');
+        /*$delivery_challan_module_id = $this->config->item('delivery_challan_module');*/
         $delivery_challan_module_id = $this->config->item('delivery_challan_module');
         $data['module_id'] = $delivery_challan_module_id;
         $modules = $this->modules;

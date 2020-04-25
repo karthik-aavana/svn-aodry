@@ -15,6 +15,7 @@ class Expense_voucher extends MY_Controller
     function index()
     {
         $expense_voucher_module_id       = $this->config->item('expense_voucher_module');
+        $expense_bill_module_id       = $this->config->item('expense_bill_module');
         $data['module_id']               = $expense_voucher_module_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
@@ -63,7 +64,21 @@ class Expense_voucher extends MY_Controller
                 {
                     $expense_voucher_id           = $this->encryption_url->encode($post->expense_voucher_id);
                     $expense_id = $this->encryption_url->encode($post->reference_id);
-                    $nestedData['check']  = '<input type="checkbox" name="check_expense" class="form-check-input" value="'.$expense_id.'"><input type="hidden" name="edit" value="'.base_url().'expense_bill/edit/'.$expense_id.'"><input type="hidden" name="view" value="'.base_url().'expense_bill/view/'.$expense_id.'"><input type="hidden" name="pdf" value="'.base_url().'expense_bill/pdf/'.$expense_id.'"><input type="hidden" name="delete" value="'.$expense_id.'">';//
+                    $col = '<input type="checkbox" name="check_expense" class="form-check-input" value="'.$expense_id.'">';
+                    if(in_array($expense_bill_module_id, $data['active_edit'])){
+                        
+                        $col .= '<input type="hidden" name="edit" value="'.base_url().'expense_bill/edit/'.$expense_id.'">';
+                    }
+                    if(in_array($expense_bill_module_id, $data['active_view'])){
+                        $col .= '<input type="hidden" name="pdf" value="'.base_url().'expense_bill/pdf/'.$expense_id.'">';
+                    }
+                    if(in_array($expense_voucher_module_id, $data['active_view'])){
+                        $col .= '<input type="hidden" name="view" value="'.base_url().'expense_voucher/view_details/'.$expense_id.'">';
+                    }
+                    if(in_array($expense_bill_module_id, $data['active_delete'])){
+                         $col .= '<input type="hidden" name="delete" value="'.$expense_id.'">';
+                    }
+                    $nestedData['check']  = $col;//
                     $nestedData['voucher_date']   = date('d-m-Y', strtotime($post->voucher_date));
                     $nestedData['voucher_number'] = '<a href="' . base_url('expense_voucher/view_details/') . $expense_voucher_id . '">' . $post->voucher_number . '</a>';
                     $nestedData['invoice_number'] = str_replace(",", ",<br/>", $post->reference_number);

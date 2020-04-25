@@ -70,8 +70,11 @@ class Contra_voucher extends MY_Controller
                     $contra_voucher_id            = $this->encryption_url->encode($post->contra_voucher_id);
                     $nestedData['action'] = '<input type="checkbox" value="'.$contra_voucher_id.'" name="check_voucher" vtype="contra">';
                     $nestedData['voucher_date']   = date('d-m-Y', strtotime($post->voucher_date));
-                    $nestedData['voucher_number'] = '<a href="' . base_url('contra_voucher/view_details/') . $contra_voucher_id . '">' . $post->voucher_number . '</a>';
-
+                    $nestedData['voucher_number'] = $post->voucher_number;
+                    if (in_array($contra_voucher_module_id , $data['active_view']))
+                    {
+                        $nestedData['voucher_number'] = '<a href="' . base_url('contra_voucher/view_details/') . $contra_voucher_id . '">' . $post->voucher_number . '</a>';
+                    }
                     $nestedData['invoice_number'] = str_replace(",", ",<br/>", $post->reference_number);
                     $nestedData['grand_total']    = $post->currency_symbol . ' ' . $this->precise_amount(str_replace(",", ",<br/>", $post->receipt_amount),2);
                     $nestedData['from_account']   = $post->from_account;

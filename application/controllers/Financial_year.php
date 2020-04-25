@@ -16,13 +16,14 @@ class Financial_year extends MY_Controller{
     }
 
     function index(){
-        $user_module_id               = $this->config->item('user_module');
-        $this->data['user_module_id'] = $user_module_id;
+        $financial_year_module_id               = $this->config->item('financial_year_module');
+        $this->data['financial_year_module_id'] = $financial_year_module_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
         $this->data['privilege']         = $privilege;
-        $section_modules                 = $this->get_section_modules($user_module_id, $modules, $privilege);
-        /*$this->data['tds_section']      = $this->tds_section_call();*/
+        $section_modules                 = $this->get_section_modules($financial_year_module_id, $modules, $privilege);
+
+        $this->data['tds_section']      = $this->tds_section_call();
         /* presents all the needed */
         $this->data=array_merge($this->data,$section_modules);
         
@@ -30,6 +31,12 @@ class Financial_year extends MY_Controller{
     }
 
     public function addNewYear(){
+        $financial_year_module_id               = $this->config->item('financial_year_module');
+        $this->data['financial_year_module_id'] = $financial_year_module_id;
+        $modules                         = $this->modules;
+        $privilege                       = "add_privilege";
+        $this->data['privilege']         = $privilege;
+        $section_modules                 = $this->get_section_modules($financial_year_module_id, $modules, $privilege);
         $branch_id = $this->session->userdata('SESS_BRANCH_ID');
         $year_from_date = '01-'.$this->input->post('year_from_date');
         $year_from_date = date('Y-m-01 H:i:s',strtotime($year_from_date));
@@ -157,6 +164,15 @@ class Financial_year extends MY_Controller{
     }
 
     public function getAllAccYear(){
+        $financial_year_module_id               = $this->config->item('financial_year_module');
+        $data['financial_year_module_id']       = $financial_year_module_id;
+        $this->data['financial_year_module_id'] = $financial_year_module_id;
+        $modules                         = $this->modules;
+        $privilege                       = "view_privilege";
+        $this->data['privilege']         = $privilege;
+        $section_modules                 = $this->get_section_modules($financial_year_module_id, $modules, $privilege);
+        /* presents all the needed */
+        $data                   = array_merge($data , $section_modules);
         $branch_id = $this->branch_id;
         $table = 'tbl_financial_year f JOIN branch a ON f.branch_id=a.branch_id';
         $primaryKey = 'year_id';
@@ -223,8 +239,13 @@ class Financial_year extends MY_Controller{
                     $d['is_current'] = '';
                     $d['from_date'] = '';
                     $d['to_date'] = '';
-                    
-                    $d['action'] = "<a href='javascript:void(0);' class='edit_fin_year' data-id='{$k}' year_id='{$d['year_id']}'><i class='fa fa-pencil'></i></a> | <a href='javascript:void(0);' class='submit_acc_detail' data-id='{$k}' year_id='{$d['year_id']}'><i class='fa fa-floppy-o'></i></a>";
+                    $active_edit = '';
+                    $active_delete = '';
+                    $d['action'] = '';
+                    if (in_array($financial_year_module_id , $data['active_edit']))
+                    {
+                        $d['action'] = "<a href='javascript:void(0);' class='edit_fin_year' data-id='{$k}' year_id='{$d['year_id']}'><i class='fa fa-pencil'></i></a> | <a href='javascript:void(0);' class='submit_acc_detail' data-id='{$k}' year_id='{$d['year_id']}'><i class='fa fa-floppy-o'></i></a>";
+                    }
                    
                     $d['status'] = '';
                 }
@@ -247,6 +268,12 @@ class Financial_year extends MY_Controller{
     }
 
     public function updateFinanceYear(){
+        $financial_year_module_id               = $this->config->item('financial_year_module');
+        $this->data['financial_year_module_id'] = $financial_year_module_id;
+        $modules                         = $this->modules;
+        $privilege                       = "edit_privilege";
+        $this->data['privilege']         = $privilege;
+        $section_modules                 = $this->get_section_modules($financial_year_module_id, $modules, $privilege);
         $update_ary = $this->input->post('update_ary');
         $update_ary = json_decode($update_ary,true);
         $error = array();
@@ -331,6 +358,12 @@ class Financial_year extends MY_Controller{
     }
 
     public function changeYearStatus(){
+        $financial_year_module_id               = $this->config->item('financial_year_module');
+        $this->data['financial_year_module_id'] = $financial_year_module_id;
+        $modules                         = $this->modules;
+        $privilege                       = "edit_privilege";
+        $this->data['privilege']         = $privilege;
+        $section_modules                 = $this->get_section_modules($financial_year_module_id, $modules, $privilege);
         $updateData = array('year_status'=>$this->input->post('sts'));
         $this->db->where(array('year_id'=>$this->input->post('id')));
         if ($this->db->update('tbl_financial_year', $updateData)) {

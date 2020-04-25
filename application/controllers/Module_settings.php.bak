@@ -14,7 +14,7 @@ class Module_settings extends MY_Controller
 
     function index()
     {
-        $privilege_module_id         = $this->config->item('module_setting');
+        $privilege_module_id         = $this->config->item('privilege_module');
         $data['privilege_module_id'] = $privilege_module_id;
         $modules                     = $this->modules;
         $privilege                   = "view_privilege";
@@ -91,20 +91,11 @@ class Module_settings extends MY_Controller
                     $nestedData['invoice_readonly']     = $post->invoice_readonly;
                     $nestedData['item_access']          = $post->item_access;
                     $nestedData['note_split']           = $post->note_split;                   
-				    $cols = '<div class="box-body hide action_button"><div class="btn-group">';		
-
-                    if (in_array($data['privilege_module_id'], $data['active_edit'])) {		   
-				        $cols.= '<span><a href="' . base_url('module_settings/edit/') . $settings_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="btn btn-app"><i class="fa fa-pencil"></i></a></span>';
-                    }
-                    if (in_array($data['privilege_module_id'], $data['active_delete'])) {
-                        $cols.='<span data-backdrop="static" data-keyboard="false" class="delete_button" data-toggle="modal" data-target="#delete_modal" data-id="' . $settings_id . '" data-path="module_settings/delete" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"><a  class="btn btn-app" href="#" data-toggle="tooltip" data-placement="bottom" title="Delete" ><i class="fa fa-trash"></i></a></span>';
-                    }
-                    $cols .= '</div></div>'; 
-                    $disabled = '';
-                    if(!in_array($data['privilege_module_id'], $data['active_delete']) && !in_array($data['privilege_module_id'], $data['active_edit'])){
-                        $disabled = 'disabled';
-                    }                  
- 					$nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal"'.$disabled.'>';
+				    $cols = '<div class="box-body hide action_button"><div class="btn-group">';				   
+				    $cols.= '<span><a href="' . base_url('module_settings/edit/') . $settings_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="btn btn-app"><i class="fa fa-pencil"></i></a></span>';
+                    $cols.='<span data-backdrop="static" data-keyboard="false" class="delete_button" data-toggle="modal" data-target="#delete_modal" data-id="' . $settings_id . '" data-path="module_settings/delete" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"><a  class="btn btn-app" href="#" data-toggle="tooltip" data-placement="bottom" title="Delete" ><i class="fa fa-trash"></i></a></span>';
+                    $cols .= '</div></div>';                   
+ 					$nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
                     $send_data[]                        = $nestedData;
                 }
             } $json_data = array(
@@ -122,7 +113,7 @@ class Module_settings extends MY_Controller
 
     public function add()
     {
-        $privilege_module_id             = $this->config->item('module_setting');
+        $privilege_module_id             = $this->config->item('privilege_module');
         $data['module_id']               = $privilege_module_id;
         $modules                         = $this->modules;
         $privilege                       = "add_privilege";
@@ -159,7 +150,7 @@ class Module_settings extends MY_Controller
 
     public function add_module_settings()
     {
-        $privilege_module_id             = $this->config->item('module_setting');
+        $privilege_module_id             = $this->config->item('privilege_module');
         $data['module_id']               = $privilege_module_id;
         $modules                         = $this->modules;
         $privilege                       = "add_privilege";
@@ -219,7 +210,7 @@ class Module_settings extends MY_Controller
     public function edit($id)
     {
         $id                              = $this->encryption_url->decode($id);
-        $privilege_module_id             = $this->config->item('module_setting');
+        $privilege_module_id             = $this->config->item('privilege_module');
         $data['module_id']               = $privilege_module_id;
         $modules                         = $this->modules;
         $privilege                       = "edit_privilege";
@@ -264,7 +255,7 @@ class Module_settings extends MY_Controller
 
     public function edit_module_settings()
     {
-        $privilege_module_id             = $this->config->item('module_setting');
+        $privilege_module_id             = $this->config->item('privilege_module');
         $data['module_id']               = $privilege_module_id;
         $modules                         = $this->modules;
         $privilege                       = "edit_privilege";
@@ -326,7 +317,7 @@ class Module_settings extends MY_Controller
 
     public function delete()
     {
-        $privilege_module_id             = $this->config->item('module_setting');
+        $privilege_module_id             = $this->config->item('privilege_module');
         $data['module_id']               = $privilege_module_id;
         $modules                         = $this->modules;
         $privilege                       = "delete_privilege";

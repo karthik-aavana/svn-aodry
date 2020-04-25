@@ -16,7 +16,11 @@ $this->load->view('layout/header');
                     <div id="plus_btn">
                         <div class="box-header with-border">
                             <h3 class="box-title">Variants</h3>
+                            <?php
+                            if (in_array($varients_module_id, $active_add)) {
+                            ?>
                             <a data-toggle="modal" data-target="#add_varient_modal" class="btn btn-sm btn-info pull-right">Add Variant</a>
+                            <?php } ?>
                         </div>
                     </div>
                     <div id="filter">

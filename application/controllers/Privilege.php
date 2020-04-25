@@ -52,17 +52,30 @@ class Privilege extends MY_Controller
                 "user_accessibility.branch_id"     => $branch_id,
                 "user_accessibility.delete_status" => 0 ];
         $data['privilege_active_modules'] = $this->general_model->getJoinRecords($string, $table, $where, $join);
-        $data['modules']                  = $this->general_model->getActiveRemianingModules($id, $branch_id);
+        $data['modules']                  = $this->general_model->getActiveRemianingModulesNew($id, $branch_id);
         $data['user_id']                  = $id;
         $this->load->view("privileges/user_add", $data);
     }
 
     function get_privilege($id)
     {
-        $data = $this->general_model->getRecords('*', 'user_accessibility', array(
+        /*$data = $this->general_model->getRecords('*', 'user_accessibility', array(
                 'accessibility_id' => $id,
-                'delete_status'    => 0 ));
-        echo json_encode($data);
+                'delete_status'    => 0 ));*/
+        $list_data  = $this->common->get_user_accessibility_privilege_list_field($id);
+        $posts      = $this->general_model->getPageJoinRecords($list_data);
+        echo json_encode($posts);
+    }
+    function get_module_group_assigned_privilege()
+    {
+        $module_id = $this->input->post('module_id');
+        $user_id = $this->input->post('user_id');
+
+        $list_data           = $this->common->module_group_assigned_privilege($user_id,$module_id);
+
+        $assigned_data       = $this->general_model->getPageJoinRecords($list_data);
+       
+        echo json_encode($assigned_data);
     }
 
     function update_privilege()
@@ -119,7 +132,7 @@ class Privilege extends MY_Controller
                 "delete_privilege" => $this->input->post('delete') != "" ? 'yes' : 'no',
                 "view_privilege"   => $this->input->post('view') != "" ? 'yes' : 'no',
                 "module_id"        => $this->input->post('module_id'), );
-        $id                              = $this->general_model->insertData('user_accessibility', $access_array);
+        $id                        = $this->general_model->insertData('user_accessibility', $access_array);
         $successMsg = 'Module Added Successfully';
         $this->session->set_flashdata('module_add',$successMsg);
         $log_data = array(

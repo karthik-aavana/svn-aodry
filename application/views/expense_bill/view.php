@@ -31,7 +31,11 @@ $this->load->view('layout/header');
                         ?>
                         <h3 class="box-title">Expense Bill View</h3>
                         <div class="pull-right">
+                            <?php 
+                            if(in_array($payment_voucher_module_id, $active_add)){
+                            ?>
                             <a class="btn btn-sm btn-info" href="<?php echo base_url('payment_voucher/add_expense_payment/') . $expense_bill_id; ?>" title="Pay Now">Pay Now</a>
+                            <?php } ?>
                             <a class="btn btn-sm btn-info back_button" id="cancel" onclick1="cancel('expense_bill')">Back</a>
                         </div>
                     </div>

@@ -20,7 +20,11 @@ $this->load->view('layout/header');
                     <div id="plus_btn">
                         <div class="box-header with-border">
                             <h3 class="box-title">Customer / Vendor Shipping Address </h3>
-                            <a class="btn btn-sm btn-info pull-right" data-toggle="modal" data-target="#add_shipping">Add Customer / Vendor Shipping Address</a>
+                            <?php
+                            if (in_array($shipping_address_module_id, $active_add)) {
+                            ?>
+                                <a class="btn btn-sm btn-info pull-right" data-toggle="modal" data-target="#add_shipping">Add Customer / Vendor Shipping Address</a>
+                            <?php } ?>
                         </div>
                     </div>
                     <div id="filter">

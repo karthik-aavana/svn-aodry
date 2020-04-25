@@ -256,7 +256,7 @@ $this->load->view('layout/header');
                                         <div class="input-group">
                                             <div class="input-group-addon">
                                                 <?php
-                                                if (in_array($service_module_id, $active_add) && in_array($product_module_id, $active_add)) {
+                                                if (in_array($service_module_id, $active_add) || in_array($product_module_id, $active_add)) {
                                                     $item_modal = 1;
                                                     ?>
                                                     <a href="" data-toggle="modal" data-target="#item_modal" class="pull-left">+</a>

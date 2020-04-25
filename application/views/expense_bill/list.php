@@ -204,7 +204,7 @@ $this->load->view('expense_bill/compose_mail');
                     $('#filter .pdf_btn').attr('href', $(this).attr('pdf')).parent().show();
                 if ($(this).attr('email') != '0')
                     $('#filter .composeMail').attr('data-id', $(this).attr('email')).parent().show();
-                if ($(this).val() != '')
+                if ($(this).val() != '0' && $(this).val() != '')
                     $('#filter .delete_button').attr('data-id', $(this).val()).show();
                 if ($(this).attr('payment') != '0')
                     $('#filter .payment').attr('href', $(this).attr('payment')).parent().show();

@@ -12,16 +12,17 @@ class Purchase_return extends MY_Controller {
     }
 
     public function index() {
-        $sales_module_id = $this->config->item('purchase_return_module');
+        $purchase_return_module_id = $this->config->item('purchase_return_module');
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($purchase_return_module_id, $modules, $privilege);
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
         $access_common_settings = $section_modules['access_common_settings'];
         /* Modules Present */
-        $data['sales_module_id'] = $sales_module_id;
+        $data['purchase_return_module_id'] = $purchase_return_module_id;
+        $data['purchase_module_id'] = $this->config->item('purchase_module');
         $data['receipt_voucher_module_id'] = $this->config->item('receipt_voucher_module');
         $data['advance_voucher_module_id'] = $this->config->item('advance_voucher_module');
         $data['email_module_id'] = $this->config->item('email_module');
@@ -64,33 +65,33 @@ class Purchase_return extends MY_Controller {
                     $purchase_id = $this->encryption_url->encode($post->purchase_id);
                     // $nestedData['date']                      = $post->purchase_return_date;
                     $nestedData['voucher_no'] = ' <a href="' . base_url('purchase_return/view/') . $purchase_return_id . '">' . $post->purchase_return_invoice_number . '</a>';
-                    $nestedData['purchase_voucher_no'] = ' <a href="' . base_url('purchase/view/') . $purchase_id . '">' . $post->purchase_invoice_number . '</a>';
+                    $nestedData['purchase_voucher_no'] = $post->purchase_invoice_number;
+                    if (in_array($data['purchase_module_id'], $data['active_view'])) {
+                        $nestedData['purchase_voucher_no'] = ' <a href="' . base_url('purchase/view/') . $purchase_id . '">' . $post->purchase_invoice_number . '</a>';
+                    }
                     $nestedData['supplier'] = $post->supplier_name ? $post->supplier_name : '';
                     /*$nestedData['supplier'] = $post->supplier_name . ' (<a href="' . base_url('purchase_return/view/') . $purchase_return_id . '">' . $post->purchase_return_invoice_number . '</a>) ';*/
                     $nestedData['grand_total'] = $post->currency_symbol . ' ' . $this->precise_amount($post->purchase_return_grand_total, 2);
                     //  $nestedData['currency_converted_amount'] = $post->currency_converted_amount;
                     // $nestedData['added_user']                = $post->first_name . ' ' . $post->last_name;
-
                     $cols = '<div class="box-body hide action_button">
                         <div class="btn-group">';
 
-                    $cols .= '<span><a href="' . base_url('purchase_return/view/') . $purchase_return_id . '" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Purchase Return">
+                    if (in_array($purchase_return_module_id, $data['active_view'])) {
+                        $cols .= '<span><a href="' . base_url('purchase_return/view/') . $purchase_return_id . '" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Purchase Return">
                                     <i class="fa fa-eye"></i>
                             </a></span>';
-
-
-                    if (in_array($sales_module_id, $data['active_edit'])) {
-
+                        $cols .= '<span><a href="' . base_url('purchase_return/pdf/') . $purchase_return_id . '" target="_blank" class="btn btn-app pdf_button" data-name="regular" data-toggle="tooltip" data-placement="bottom" title="Download PDF">
+                                    <i class="fa fa-file-pdf-o"></i>
+                            </a></span>';
+                    }
+                    if (in_array($purchase_return_module_id, $data['active_edit'])) {
                         $cols .= '<span><a href="' . base_url('purchase_return/edit/') . $purchase_return_id . '" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Edit Purchase Return">
                                     <i class="fa fa-pencil"></i>
                             </a></span>';
                     }
 
                     // $cols .= '<li><a href="' . base_url('purchase_return/pdf/') . $purchase_return_id . '" target="_blank"><i class="fa fa-file-pdf-o text-green"></i> Download PDF</a></li>';
-
-                    $cols .= '<span><a href="' . base_url('purchase_return/pdf/') . $purchase_return_id . '" target="_blank" class="btn btn-app pdf_button" data-name="regular" data-toggle="tooltip" data-placement="bottom" title="Download PDF">
-                                    <i class="fa fa-file-pdf-o"></i>
-                            </a></span>';
 
                     /* $email_sub_module = 0;
                       if (in_array($data['receipt_voucher_module_id'] , $data['active_add'])){
@@ -106,15 +107,17 @@ class Purchase_return extends MY_Controller {
                       if ($email_sub_module == 1){
                       $cols .= '<li><a href="' . base_url('purchase_return/email/') . $purchase_return_id . '"><i class="fa fa-envelope-o text-purple"></i> Email Purchase Return</a>                                </li>';
                       } */
-                    $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#composeMail" >
+                    if (in_array($data['email_module_id'], $data['active_view'])) {
+                        if (in_array($data['email_sub_module_id'], $data['access_sub_modules'])) {
+                            $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#composeMail" >
                         <a class="btn btn-app composeMail" data-id="' . $purchase_return_id . '" data-name="regular"  href="javascript:void(0);" class="btn btn-app" data-placement="bottom" data-toggle="tooltip" title="Email Purchase Return"><i class="fa fa-envelope-o"></i></a></span>';
-
-
+                        }
+                    }
 
                     /* if ($post->currency_id != $this->session->userdata('SESS_DEFAULT_CURRENCY')){
                       $cols .= '<li><a data-backdrop="static" data-keyboard="false" class="convert_currency" data-toggle="modal" data-target="#convert_currency_modal" data-id="' . $purchase_return_id . '" data-path="purchase_return/convert_currency" data-currency_code="' . $post->currency_code . '" data-grand_total="' . $post->purchase_return_grand_total . '" href="#" title="Convert Currency" ><i class="fa fa-exchange"></i> Convert Currency</a></li>';
                       } */
-                    if (in_array($sales_module_id, $data['active_delete'])) {
+                    if (in_array($purchase_return_module_id, $data['active_delete'])) {
                         $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal"><a href="#" class="btn btn-app delete_button"  data-id="' . $purchase_return_id . '" data-path="purchase_return/delete" href="#" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?" data-toggle="tooltip" data-placement="bottom" title="Delete Purchase Return"><i class="fa fa-trash-o"></i></a></span>';
                     }
                     $cols .= '</div>';
@@ -393,7 +396,7 @@ class Purchase_return extends MY_Controller {
         $purchase_return_module_id = $this->config->item('purchase_return_module');
         $data['module_id'] = $purchase_return_module_id;
         $modules = $this->modules;
-        $privilege = "add_privilege";
+        $privilege = "edit_privilege";
         $data['privilege'] = $privilege;
         $section_modules = $this->get_section_modules($purchase_return_module_id, $modules, $privilege);
         $data = array_merge($data, $section_modules);
@@ -527,7 +530,7 @@ class Purchase_return extends MY_Controller {
         $purchase_return_module_id = $this->config->item('purchase_return_module');
         $data['module_id'] = $purchase_return_module_id;
         $modules = $this->modules;
-        $privilege = "add_privilege";
+        $privilege = "edit_privilege";
         $data['privilege'] = $privilege;
         $section_modules = $this->get_section_modules($purchase_return_module_id, $modules, $privilege);
         $data = array_merge($data, $section_modules);

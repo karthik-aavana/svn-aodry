@@ -28,6 +28,8 @@ class Purchase_debit_note extends MY_Controller {
 
         $data['email_sub_module_id'] = $this->config->item('email_sub_module');
         $data['purchase_return_module_id'] = $this->config->item('purchase_return_module');
+        $purchase_debit_note_voucher_id = $this->config->item('purchase_debit_note_voucher');
+        $purchase_module_id = $this->config->item('purchase_module');
         $currency = $this->getBranchCurrencyCode();
         $currency_code = $currency[0]->currency_code;
         $currency_symbol = $currency[0]->currency_symbol;
@@ -75,8 +77,10 @@ class Purchase_debit_note extends MY_Controller {
                     /* $nestedData['supplier']    = $post->supplier_name . ' (<a href="' . base_url('purchase_debit_note/view/') . $purchase_debit_note_id . '">' . $post->purchase_debit_note_invoice_number . '</a>) '; */
                     $nestedData['supplier'] = $post->supplier_name . ($post->purchase_supplier_debit_note_number != '' ? ' ( ' . $post->purchase_supplier_debit_note_number . ' ) ' : '');
                     $nestedData['invoice_number'] = ' <a href="' . base_url('purchase_debit_note/view/') . $purchase_debit_note_id . '">' . $post->purchase_debit_note_invoice_number . '</a>';
-                    $nestedData['reference_invoice_number'] = ' <a href="' . base_url('purchase/view/') . $purchase_id . '">' . $post->purchase_invoice_number . '</a>';
-
+                    $nestedData['reference_invoice_number'] = $post->purchase_invoice_number;
+                    if(in_array($purchase_module_id, $data['active_view'])){
+                        $nestedData['reference_invoice_number'] = ' <a href="' . base_url('purchase/view/') . $purchase_id . '">' . $post->purchase_invoice_number . '</a>';
+                    }
                     $nestedData['grand_total'] = $currency_symbol . ' ' . $this->precise_amount($post->purchase_debit_note_grand_total, $access_common_settings[0]->amount_precision) . ' (INV)';
 
                     $nestedData['debit_note_number'] = $post->purchase_supplier_debit_note_number;
@@ -106,11 +110,15 @@ class Purchase_debit_note extends MY_Controller {
 
                     $cols = '<div class="box-body hide action_button"><div class="btn-group">';
 
-                    $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" href="' . base_url('purchase_debit_note/view/') . $purchase_debit_note_id . '" title="View Purchase Debit Note"><i class="fa fa-eye"></i></a></span>';
-
-                    $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" href="' . base_url('purchase_debit_note/edit/') . $purchase_debit_note_id . '" title="Edit Purchase Debit Note"><i class="fa fa-pencil"></i></a></span>';
-
-                    $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" href="' . base_url('purchase_debit_note/pdf/') . $purchase_debit_note_id . '" title="Download PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a></span>';
+                    if (in_array($purchase_debit_note_module_id , $data['active_view']))
+                    {
+                        $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" href="' . base_url('purchase_debit_note/view/') . $purchase_debit_note_id . '" title="View Purchase Debit Note"><i class="fa fa-eye"></i></a></span>';
+                        $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" href="' . base_url('purchase_debit_note/pdf/') . $purchase_debit_note_id . '" title="Download PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a></span>';
+                    }
+                    if (in_array($purchase_debit_note_module_id , $data['active_edit']))
+                    {
+                        $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" href="' . base_url('purchase_debit_note/edit/') . $purchase_debit_note_id . '" title="Edit Purchase Debit Note"><i class="fa fa-pencil"></i></a></span>';
+                    }
 
                     /* if (in_array($purchase_debit_note_module_id, $data['active_view']))
                       {
@@ -127,10 +135,12 @@ class Purchase_debit_note extends MY_Controller {
                         $purchase_dn_voucher_id = $this->encryption_url->encode($purchase_dn_voucher_id);
                        
                        /* $nestedData['purchase_dn_voucher_view'] = ' <a href="' .base_url('purchase_voucher/view_details/') . $purchase_dn_voucher_id.'" target="_blank">' . '<i class="fa fa-file" aria-hidden="true" title="Voucher View"></i>' . '</a>'. '  ' .' <form  action="' .base_url('purchase_debit_ledger').'" method="POST" target="_blank"><input type="hidden" name="reference_id" value="'.$purchase_dn_voucher_id.'"><button type="submit">' . '<i class="fa fa-file" aria-hidden="true" title="Ledger View"></i></button></form>';*/
+                        if (in_array($purchase_debit_note_voucher_id , $data['active_view']))
+                        {
+                            $cols .= '<span><a href="' .base_url('purchase_voucher/view_details/') . $purchase_dn_voucher_id.'" target="_blank" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Voucher"><i class="fa fa-eye"></i></a></span>';
 
-                         $cols .= '<span><a href="' .base_url('purchase_voucher/view_details/') . $purchase_dn_voucher_id.'" target="_blank" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Voucher"><i class="fa fa-eye"></i></a></span>';
-
-                        $cols .= '<span><form  action="' .base_url('purchase_debit_ledger').'" method="POST" target="_blank"><input type="hidden" name="reference_id" value="'.$purchase_dn_voucher_id.'"><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" class="btn btn-app" title="View Ledger"><button type="submit" class="sales_action">' . '<i class="fa fa-eye" aria-hidden="true"></i></button></a></form></span>';
+                            $cols .= '<span><form  action="' .base_url('purchase_debit_ledger').'" method="POST" target="_blank"><input type="hidden" name="reference_id" value="'.$purchase_dn_voucher_id.'"><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" class="btn btn-app" title="View Ledger"><button type="submit" class="sales_action">' . '<i class="fa fa-eye" aria-hidden="true"></i></button></a></form></span>';
+                        }
                     }
                     if (in_array($purchase_debit_note_module_id, $data['active_delete'])) {
                         $cols .= '<span data-backdrop="static" data-keyboard="false" class="delete_button" data-toggle="modal" data-target="#delete_modal" data-id="' . $purchase_debit_note_id . '" data-path="purchase_debit_note/delete" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" href="#" title="Delete Purchase Debit Note" ><i class="fa fa-trash-o"></i></a></span>';
@@ -2552,10 +2562,10 @@ class Purchase_debit_note extends MY_Controller {
     }
 
     public function purchase_debit_note_voucher_entry($data_main, $js_data, $action, $branch) {
-        $purchase_debit_note_voucher_module_id = $this->config->item('purchase_voucher_module');
+        $purchase_debit_note_voucher_module_id = $this->config->item('purchase_debit_note_module');
         $module_id = $purchase_debit_note_voucher_module_id;
         $modules = $this->get_modules();
-        $privilege = "add_privilege";
+        $privilege = "view_privilege";
         $section_modules = $this->get_section_modules($purchase_debit_note_voucher_module_id, $modules, $privilege);
 
         $access_sub_modules = $section_modules['access_sub_modules'];
@@ -2700,7 +2710,7 @@ class Purchase_debit_note extends MY_Controller {
         $id = $this->encryption_url->decode($id);
         /* echo $id;exit(); */
         $data = $this->get_default_country_state();
-        $purchase_debit_note_module_id = $this->config->item('purchase_module');
+        $purchase_debit_note_module_id = $this->config->item('purchase_debit_note_module');
         $modules = $this->modules;
         $privilege = "edit_privilege";
         $data['privilege'] = "edit_privilege";

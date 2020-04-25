@@ -120,13 +120,13 @@ $this->load->view('layout/header');
                                         <input type="hidden" class="form-control" id="c_type" name="c_type" value="product">
                                         <label for="product_category">Category <span class="validation-color">*</span></label>
                                         <div class="input-group">
-                                            <?php
-                                            if (in_array($category_module_id,  $active_add)) {
+                                            <div class="input-group-addon">
+                                                <?php
+                                                if (in_array($category_module_id,  $active_add)) {
                                                 ?>
-                                                <div class="input-group-addon">
                                                     <a href="" data-toggle="modal" data-target="#category_modal" data-name="product" class="pull-right new_category">+</a>
-                                                </div>
-                                            <?php } ?>
+                                                <?php } ?>
+                                            </div>
                                             <select class="form-control select2" id="product_category" name="product_category" style="width: 100%;" tabindex="5">
                                                 <option value="">Select</option>
                                                 <?php
@@ -143,13 +143,13 @@ $this->load->view('layout/header');
                                     <div class="form-group ">
                                         <label for="product_subcategory">Subcategory</label>
                                         <div class="input-group">       
-                                            <?php
-                                            if (in_array($subcategory_module_id, $active_add)) {
+                                            <div class="input-group-addon">
+                                                <?php
+                                                if (in_array($subcategory_module_id, $active_add)) {
                                                 ?>
-                                                <div class="input-group-addon">
-                                                    <a href="" data-toggle="modal" data-target="#subcategory_modal" data-name="product" class="pull-right new_subcategory">+</a>
-                                                </div>
-                                            <?php } ?>
+                                                <a href="" data-toggle="modal" data-target="#subcategory_modal" data-name="product" class="pull-right new_subcategory">+</a>
+                                                <?php } ?>
+                                            </div>
                                             <select class="form-control select2" id="product_subcategory" name="product_subcategory" style="width: 100%;" tabindex="6">
                                                 <option value="">Select</option>
                                             </select></div>
@@ -171,7 +171,11 @@ $this->load->view('layout/header');
                                         <label for="product_unit">Unit of Measurement<span class="validation-color">*</span></label>
                                         <div class="input-group">
                                             <div class="input-group-addon">
-                                                <a href="#" data-toggle="modal" data-name="product" data-target="#uom_modal" class="pull-right new_tax" title="Add UOM">+</a>
+                                                <?php
+                                                    if (in_array($uqc_module_id, $active_add)) {
+                                                ?>
+                                                    <a href="#" data-toggle="modal" data-name="product" data-target="#uom_modal" class="pull-right new_tax" title="Add UOM">+</a>
+                                                <?php } ?>
                                             </div>												
                                             <select class="form-control select2" id="product_unit" name="product_unit" style="width: 100%;" tabindex="4">
                                                 <option value="">Select UOM</option>
@@ -190,7 +194,11 @@ $this->load->view('layout/header');
                                         <label for="product_discount">Discount<!-- <span class="validation-color">*</span> --></label>
                                         <div class="input-group">
                                             <div class="input-group-addon">
-                                                <a href="#" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-name="product" data-target="#add_discount_product" class="pull-right new_tax" title="Add Discount">+</a>
+                                                <?php
+                                                if (in_array($discount_module_id, $active_add)) {
+                                                ?>
+                                                    <a href="#" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-name="product" data-target="#add_discount_product" class="pull-right new_tax" title="Add Discount">+</a>
+                                                <?php } ?>
                                             </div>                                              
                                             <select class="form-control select2" id="product_discount" name="product_discount" style="width: 100%;" tabindex="4">
                                                 <option value="">Select Discount</option>
@@ -216,13 +224,14 @@ $this->load->view('layout/header');
                                 <div class="col-md-3 product_gst">
                                     <div class="form-group">
                                         <label for="gst_tax_product">Tax (GST)</label>
-                                        <div class="input-group"><?php
-                                            if (in_array($tax_module_id, $active_add)) {
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <?php
+                                                if (in_array($tax_module_id, $active_add)) {
                                                 ?>
-                                                <div class="input-group-addon">
-                                                    <a href="" data-toggle="modal" data-target="#tax_gst_modal" data-name="product" class="pull-right new_tax">+</a>
-                                                </div>
-                                            <?php } ?>
+                                                <a href="" data-toggle="modal" data-target="#tax_gst_modal" data-name="product" class="pull-right new_tax">+</a>
+                                                <?php } ?>
+                                            </div>
                                             <select class="form-control select2" id="gst_tax_product" name="gst_tax_product" style="width: 100%;" tabindex="6">
                                                 <option value="">Select Tax</option>
                                                 <?php
@@ -246,14 +255,13 @@ $this->load->view('layout/header');
                                     <div class="form-group">
                                         <label for="tds_tax_product">Tax (TCS)</label>
                                         <div class="input-group">
-                                            <?php
-                                            if (in_array($tax_module_id, $active_add)) {
+                                            <div class="input-group-addon">
+                                                <?php
+                                                if (in_array($tax_module_id, $active_add)) {
                                                 ?>
-                                                <div class="input-group-addon">
                                                     <a href="" data-toggle="modal" data-target="#tax_tds_modal" data-name="product" class="pull-right new_tax">+</a>
-                                                </div>
-                                            <?php }
-                                            ?>
+                                                <?php } ?>
+                                            </div>
                                             <select class="form-control select2" id="tds_tax_product" name="tds_tax_product" style="width: 100%;" tabindex="6">
                                                 <option value="">Select Tax</option>
                                                 <?php

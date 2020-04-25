@@ -22,7 +22,8 @@ class Purchase extends MY_Controller {
         $access_common_settings = $section_modules['access_common_settings'];
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
-
+        $data['payment_voucher_module_id'] = $this->config->item('payment_voucher_module');
+        $data['purchase_voucher_module_id'] = $this->config->item('purchase_voucher_module');
         $data['email_sub_module_id'] = $this->config->item('email_sub_module');
         $data['purchase_return_module_id'] = $this->config->item('purchase_return_module');
 
@@ -235,12 +236,14 @@ class Purchase extends MY_Controller {
                     $nestedData['added_user'] = $post->first_name . ' ' . $post->last_name;
 
                     $cols = '<div class="box-body hide action_button"><div class="btn-group">';
-                    $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Purchase" href="' . base_url('purchase/view/') . $purchase_id . '"><i class="fa fa-eye"></i></a></span>';
-
+                    if (in_array($purchase_module_id, $data['active_view'])) {
+                        $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Purchase" href="' . base_url('purchase/view/') . $purchase_id . '"><i class="fa fa-eye"></i></a></span>';
+                        $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Download PDF" href="' . base_url('purchase/pdf/') . $purchase_id . '" target="_blank"><i class="fa fa-file-pdf-o"></i></a></span>';
+                    }
                     /* $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#myModal1"><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Follow Up Dates" href="#" onclick="addToModel(' . $post->purchase_id . ')"><i class="fa fa-eye"></i></a>'; */
 
-                    if (in_array($purchase_module_id, $data['active_add'])) {
-                        if ($pending_amount > 0) {
+                    if ($pending_amount > 0) {
+                        if (in_array($data['payment_voucher_module_id'], $data['active_add'])) {
                             $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Pay Now" href="' . base_url('payment_voucher/add_purchase_payment/') . $purchase_id . '"><i class="fa fa-money"></i></a></span>';
                         }
                     }
@@ -248,7 +251,7 @@ class Purchase extends MY_Controller {
                     if (in_array($purchase_module_id, $data['active_edit'])) {
                         if ($post->is_edit == '1') {
                             if($net_receivable == $pending_amount){
-                            $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Edit Purchase" href="' . base_url('purchase/edit/') . $purchase_id . '"><i class="fa fa-pencil"></i></a></span>';
+                                $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Edit Purchase" href="' . base_url('purchase/edit/') . $purchase_id . '"><i class="fa fa-pencil"></i></a></span>';
                             }
                         }
                     }
@@ -257,8 +260,6 @@ class Purchase extends MY_Controller {
                       {
                       $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Purchase Return" href="' . base_url('purchase/purchase_return/') . $purchase_id . '"><i class="fa fa-truck"></i></a></span>';
                       } */
-
-                    $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Download PDF" href="' . base_url('purchase/pdf/') . $purchase_id . '" target="_blank"><i class="fa fa-file-pdf-o"></i></a></span>';
 
                     /* if (in_array($purchase_module_id, $data['active_view']))
                       {
@@ -273,13 +274,13 @@ class Purchase extends MY_Controller {
                       } */
 
 
-                     if($purchase_voucher_id != ''){
+                    if($purchase_voucher_id != ''){
                         $purchase_voucher_id = $this->encryption_url->encode($purchase_voucher_id);
-                        $cols .= '<span><a href="' .base_url('purchase_voucher/view_details/') . $purchase_voucher_id.'" target="_blank" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Voucher"><i class="fa fa-eye"></i></a></span>';
+                        if(in_array($data['purchase_voucher_module_id'], $data['active_view'])){
+                            $cols .= '<span><a href="' .base_url('purchase_voucher/view_details/') . $purchase_voucher_id.'" target="_blank" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Voucher"><i class="fa fa-eye"></i></a></span>';
 
-                        $cols .= '<span><form  action="' .base_url('purchase_ledger').'" method="POST" target="_blank"><input type="hidden" name="reference_id" value="'.$purchase_voucher_id.'"><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" class="btn btn-app" title="View Ledger"><button type="submit" class="sales_action">' . '<i class="fa fa-eye" aria-hidden="true"></i></button></a></form></span>';
-
-
+                            $cols .= '<span><form  action="' .base_url('purchase_ledger').'" method="POST" target="_blank"><input type="hidden" name="reference_id" value="'.$purchase_voucher_id.'"><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" class="btn btn-app" title="View Ledger"><button type="submit" class="sales_action">' . '<i class="fa fa-eye" aria-hidden="true"></i></button></a></form></span>';
+                        }
                     } 
 
                     if (in_array($purchase_module_id, $data['active_delete'])) {
@@ -334,6 +335,7 @@ class Purchase extends MY_Controller {
         $data['discount_module_id'] = $this->config->item('discount_module');
         $data['accounts_module_id'] = $this->config->item('accounts_module');
         /* Sub Modules Present */
+        $data['payment_voucher_module_id'] = $this->config->item('payment_voucher_module');
         $data['notes_sub_module_id'] = $this->config->item('notes_sub_module');
         $data['transporter_sub_module_id'] = $this->config->item('transporter_sub_module');
         $data['shipping_sub_module_id'] = $this->config->item('shipping_sub_module');
@@ -2863,10 +2865,10 @@ class Purchase extends MY_Controller {
     }
 
     public function purchase_voucher_entry($data_main, $js_data, $action, $branch) {
-        $purchase_voucher_module_id = $this->config->item('purchase_voucher_module');
+        $purchase_voucher_module_id = $this->config->item('purchase_module');
         $module_id = $purchase_voucher_module_id;
         $modules = $this->get_modules();
-        $privilege = "add_privilege";
+        $privilege = "view_privilege";
         $section_modules = $this->get_section_modules($purchase_voucher_module_id, $modules, $privilege);
 
         $access_sub_modules = $section_modules['access_sub_modules'];
@@ -3012,11 +3014,11 @@ class Purchase extends MY_Controller {
     }
 
     public function get_purchase_suggestions($term, $inventory_advanced, $item_access) {
-        $purchase_module_id = $this->config->item('purchase_module');
+        /*$purchase_module_id = $this->config->item('purchase_module');
         $modules = $this->modules;
         $privilege = "add_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($purchase_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($purchase_module_id, $modules, $privilege);*/
         if($term == '-') $term ='';
         $LeatherCraft_id = $this->config->item('LeatherCraft');
         if($LeatherCraft_id == $this->session->userdata('SESS_BRANCH_ID')){
@@ -3036,7 +3038,7 @@ class Purchase extends MY_Controller {
         $modules = $this->modules;
         $privilege = "add_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($purchase_module_id, $modules, $privilege);
+        /*$section_modules = $this->get_section_modules($purchase_module_id, $modules, $privilege);*/
 
         $item_code = explode("-", $code);
 
@@ -3078,6 +3080,7 @@ class Purchase extends MY_Controller {
         $branch_data = $this->common->branch_field();
         $data['branch'] = $this->general_model->getJoinRecords($branch_data['string'], $branch_data['table'], $branch_data['where'], $branch_data['join'], $branch_data['order']);
         $purchase_module_id = $this->config->item('purchase_module');
+        $data['payment_voucher_module_id'] = $this->config->item('payment_voucher_module');
         $data['email_module_id'] = $this->config->item('email_module');
         /* Sub Modules Present */
         $data['email_sub_module_id'] = $this->config->item('email_sub_module');
@@ -3093,7 +3096,7 @@ class Purchase extends MY_Controller {
         $data = array_merge($data, $section_modules);
 
         $purchase_data = $this->common->purchase_list_field1($id);
-
+        
         $data['data'] = $this->general_model->getJoinRecords($purchase_data['string'], $purchase_data['table'], $purchase_data['where'], $purchase_data['join']);
 
         $item_types = $this->general_model->getRecords('item_type,purchase_item_description', 'purchase_item', array('purchase_id' => $id));

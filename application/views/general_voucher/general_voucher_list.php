@@ -21,7 +21,11 @@ $this->load->view('layout/header');
                     <div id="plus_btn">
                         <div class="box-header with-border">
                             <h3 class="box-title">General Voucher</h3>
-                             <a class="btn btn-sm btn-default pull-right" href="<?php echo base_url('general_voucher/add'); ?>">Add General Voucher </a>
+                            <?php
+                            if (in_array($module_id, $active_add)) {
+                            ?>
+                                <a class="btn btn-sm btn-default pull-right" href="<?php echo base_url('general_voucher/add'); ?>">Add General Voucher </a>
+                            <?php } ?>
                         </div>
                     </div>
                     <div id="filter">

@@ -109,6 +109,29 @@ $user_id = $this->uri->segment(3);
                                         <span class="validation-color" id="err_password_confirm"><?php echo form_error('password_confirm'); ?></span>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="user_group">
+                                           User Group<span class="validation-color">*</span>
+                                        </label>
+                                         <select class="form-control select2" id="cmb_group" class="group" name="cmb_group" style="width: 100%;">
+                                                <option value="">Select User Group</option>
+                                                <?php
+                                                $user_group_id = (@$user_group[0]->group_id ? $user_group[0]->group_id : '0');
+                                                foreach ($groups as $key) {
+                                                    if($key->id == $user_group_id){
+                                                        ?>
+                                                        <option value='<?php echo $key->id ?>' selected><?php echo $key->name; ?> </option>
+                                                        <?php
+                                                    }else{?>
+                                                    <option value='<?php echo $key->id ?>' ><?php echo $key->name; ?> </option>
+                                                <?php }} ?>
+                                            </select>
+                                        <span class="validation-color" id="err_user_group"></span>
+                                    </div>
+                                </div>
                             </div>                          
                             <div class="row" style="display: none">
                                 <?php

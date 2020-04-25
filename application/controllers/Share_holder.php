@@ -104,7 +104,11 @@ class Share_holder extends MY_Controller {
                        }
                     }
                     $cols .= '</div></div>';
-                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
+                    $disabled = '';
+                    if(!in_array($data['shareholder_module_id'], $data['active_delete']) && !in_array($data['shareholder_module_id'], $data['active_edit'])){
+                        $disabled = 'disabled';
+                    }
+                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal"'.$disabled.'>';
                     $send_data[] = $nestedData;
                 }
             } $json_data = array(
@@ -500,7 +504,7 @@ class Share_holder extends MY_Controller {
 
     function updateOptionDirector($id,$investment_name,$type_input){
 
-         $branch_id = $this->session->userdata('SESS_BRANCH_ID');
+        $branch_id = $this->session->userdata('SESS_BRANCH_ID');
         $user_id = $this->session->userdata('SESS_USER_ID');
         $this->db->select('customise_option,id');
         $this->db->from('tbl_transaction_purpose');

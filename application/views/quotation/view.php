@@ -12,7 +12,7 @@ $this->load->view('layout/header');
                         <h3 class="box-title">Quotation Details</h3>
 
                         <?php $quotation_id = $this->encryption_url->encode($data[0]->quotation_id); ?>
-                        <a class="btn btn-sm btn-default pull-right back_button" id="cancel" onclick1="cancel('quotation')">Back</a>
+                        <a class="btn btn-sm btn-default pull-right back_button" id="cancel" onclick="cancel('quotation')">Back</a>
                     </div>
                     <div class="box-body">
                         <div class="row">

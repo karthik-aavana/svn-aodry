@@ -49,11 +49,12 @@ class Auth extends MY_Controller {
               $this->data['active_add'][$key] = $value->module_id;
               }
               } */
-            $sales_module_id = $this->config->item('user_module');
-            $privilege = "edit_privilege";
-            $data['module_id'] = $sales_module_id;
+            $user_module_id = $this->config->item('user_module');
+            $data['privilege_module_id'] = $this->config->item('privilege_module');
+            $privilege = "view_privilege";
+            $data['user_module_id'] = $user_module_id;
             $data['privilege'] = $privilege;
-            $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+            $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
             /* presents all the needed */
 
             $this->data = array_merge($data, $section_modules);
@@ -1402,18 +1403,19 @@ class Auth extends MY_Controller {
     }
 
     public function create_user() {
-        $data['groups'] = $this->general_model->getRecords("groups.*", "groups", [
-            "delete_status" => 0]);
         $modules = $this->get_modules();
-        $sales_module_id = $this->config->item('user_module');
+        $user_module_id = $this->config->item('user_module');
         $privilege = "add_privilege";
-        $data['module_id'] = $sales_module_id;
+        $data['module_id'] = $user_module_id;
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
         /* presents all the needed */
 
 
         $data = array_merge($data, $section_modules);
+        $data['groups'] = $this->general_model->getRecords("groups.*", "groups", [
+            "delete_status" => 0,
+            "branch_id"         => $this->session->userdata("SESS_BRANCH_ID")]);
         $data['access_common_settings '] = $access_common_settings = $section_modules['access_common_settings'];
         $this->load->view("auth/create_user", $data);
     }
@@ -1428,11 +1430,11 @@ class Auth extends MY_Controller {
     public function edit_user($id) {
         $id = $this->encryption_url->decode($id);
         $modules = $this->get_modules();
-        $sales_module_id = $this->config->item('user_module');
+        $user_module_id = $this->config->item('user_module');
         $privilege = "edit_privilege";
-        $data['module_id'] = $sales_module_id;
+        $data['module_id'] = $user_module_id;
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
         $this->data = array_merge($data, $section_modules);
         $this->data['access_common_settings '] = $access_common_settings = $section_modules['access_common_settings'];
         $this->data['title'] = $this->lang->line('edit_user_heading');
@@ -1522,7 +1524,8 @@ class Auth extends MY_Controller {
             'type' => 'password'
         );
         $this->data['groups'] = $this->general_model->getRecords("groups.*", "groups", [
-            "delete_status" => 0]);
+            "delete_status" => 0,
+            "branch_id"         => $this->session->userdata("SESS_BRANCH_ID")]);
         $this->data['user_group'] = $this->general_model->getRecords("users_groups.*", "users_groups", [
             "user_id" => $id]);
         $this->_render_page('auth' . DIRECTORY_SEPARATOR . 'edit_user', $this->data);
@@ -1776,12 +1779,22 @@ class Auth extends MY_Controller {
 
     public function edit() {
         $id = $this->input->post('id');
-        $group = $this->input->post("group");
+        $group = $this->input->post("cmb_group");
         $this->db->where('user_id',$id);
         $grp = $this->db->get('users_groups');
+        $group_result = $grp->result();
+
+        $user_module_id = $this->config->item('user_module');
+        $privilege = "edit_privilege";
+        $modules = $this->get_modules();
+        $data['module_id'] = $user_module_id;
+        $data['privilege'] = $privilege;
+        $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
+
         if(!empty($grp->result())){
 
-            $this->general_model->updateData("users_groups", [
+            $previous_group_id = $group_result[0]->group_id;
+            $id1 = $this->general_model->updateData("users_groups", [
                 "group_id" => $group], [
                 "user_id" => $id]);
             $successMsg = 'User Updated Successfully';
@@ -1795,6 +1808,46 @@ class Auth extends MY_Controller {
                 'message' => 'User Updated');
                 $log_table = $this->config->item('log_table');
                 $this->general_model->insertData($log_table , $log_data);
+                /*new implementation - hari*/
+                if($previous_group_id != $group){
+                    if($this->general_model->updateData('user_accessibility', array(
+                    'delete_status' => 1 ), array(
+                    'user_id' => $id,'branch_id' => $this->session->userdata('SESS_BRANCH_ID')))){
+                        
+                        $list_data           = $this->common->assigned_module_list_field($group);
+                        $assigned_data       = $this->general_model->getPageJoinRecords($list_data);
+
+                        $data_item = array();
+                        foreach ($assigned_data as $key => $value) {
+                            $data_item[$key]['branch_id'] = $this->session->userdata('SESS_BRANCH_ID');
+                            $data_item[$key]['user_id'] = $id;
+                            $data_item[$key]['module_id'] = $value->module_id;
+                            if ($value->add_privilege == 1) {
+                                $data_item[$key]['add_privilege'] = "yes";
+                            } else {
+                                $data_item[$key]['add_privilege'] = "no";
+                            }
+                            if ($value->edit_privilege == 1) {
+                                $data_item[$key]['edit_privilege'] = "yes";
+                            } else {
+                                $data_item[$key]['edit_privilege'] = "no";
+                            }
+                            if ($value->delete_privilege == 1) {
+                                $data_item[$key]['delete_privilege'] = "yes";
+                            } else {
+                                $data_item[$key]['delete_privilege'] = "no";
+                            }
+                            if ($value->view_privilege == 1) {
+                                $data_item[$key]['view_privilege'] = "yes";
+                            } else {
+                                $data_item[$key]['view_privilege'] = "no";
+                            }
+                        }
+                        foreach ($data_item as $value) {
+                            $this->general_model->insertData("user_accessibility", $value);
+                        }
+                    }
+                }
         }else{
             $grp_data = array('user_id' => $id, 'group_id' => $group);
             $this->db->insert('users_groups',$grp_data);
@@ -1947,6 +2000,14 @@ class Auth extends MY_Controller {
     }
 
     public function create_new_user() {
+        $user_module_id = $this->config->item('user_module');
+        $privilege = "add_privilege";
+        $data['module_id'] = $user_module_id;
+        $data['privilege'] = $privilege;
+        $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
+
         $email = strtolower($this->input->post('email'));
         $identity = $email;
         $password = $this->input->post('password');
@@ -1956,12 +2017,12 @@ class Auth extends MY_Controller {
             'company' => $this->input->post('company'),
             'phone' => $this->input->post('phone'),
         );
-        $group = $this->input->post("group");
+        $group = $this->input->post("cmb_group");
         
         $branch_id = $this->session->userdata('SESS_BRANCH_ID');
         $user_id = $this->ion_auth->register($branch_id, $identity, $password, $email, $additional_data);
-        $group = $this->input->post("group");
-        $this->general_model->insertData("users_groups", [
+        $group = $this->input->post("cmb_group");
+        $id = $this->general_model->insertData("users_groups", [
             "user_id" => $user_id,
             "group_id" => $group]);
         $successMsg = 'User Added Successfully';
@@ -1975,7 +2036,58 @@ class Auth extends MY_Controller {
                 'message' => 'New User Inserted');
                 $log_table = $this->config->item('log_table');
                 $this->general_model->insertData($log_table , $log_data);
-        $active_modules = array();
+
+        /*new implementation*/
+        $list_data           = $this->common->assigned_module_list_field($group);
+        $assigned_data       = $this->general_model->getPageJoinRecords($list_data);
+
+        $data_item = array();
+        foreach ($assigned_data as $key => $value) {
+            $data_item[$key]['branch_id'] = $this->session->userdata('SESS_BRANCH_ID');
+            $data_item[$key]['user_id'] = $user_id;
+            $data_item[$key]['module_id'] = $value->module_id;
+            if ($value->add_privilege == 1) {
+                $data_item[$key]['add_privilege'] = "yes";
+            } else {
+                $data_item[$key]['add_privilege'] = "no";
+            }
+            if ($value->edit_privilege == 1) {
+                $data_item[$key]['edit_privilege'] = "yes";
+            } else {
+                $data_item[$key]['edit_privilege'] = "no";
+            }
+            if ($value->delete_privilege == 1) {
+                $data_item[$key]['delete_privilege'] = "yes";
+            } else {
+                $data_item[$key]['delete_privilege'] = "no";
+            }
+            if ($value->view_privilege == 1) {
+                $data_item[$key]['view_privilege'] = "yes";
+            } else {
+                $data_item[$key]['view_privilege'] = "no";
+            }
+        }
+        foreach ($data_item as $value) {
+            $this->general_model->insertData("user_accessibility", $value);
+        }
+
+        /*$modules = $this->general_model->getActiveRemianingModules($user_id,$branch_id);*/
+        redirect("auth");
+        /*foreach($modules as $module ){
+                $module_id = $module->module_id;
+                $access_array = array("branch_id" => $branch_id,
+                                      "user_id" => $user_id,
+                                       "add_privilege" => 'yes',
+                                       "edit_privilege" => 'yes',   
+                                        "delete_privilege" => 'yes',    
+                                        "view_privilege" => 'yes',  
+                                        "module_id" => $module_id,
+                                    );
+
+            $id =  $this->general_model->insertData('user_accessibility',$access_array);
+        }*/
+        
+        /*$active_modules = array();
 
         $modules = $this->get_modules();
         foreach ($modules['modules'] as $key => $value) {
@@ -2055,26 +2167,7 @@ class Auth extends MY_Controller {
             } else {
                 $data_item[$key]['view_privilege'] = "no";
             }
-        }
-        foreach ($data_item as $value) {
-            $this->general_model->insertData("user_accessibility", $value);
-        }
-
-        $modules = $this->general_model->getActiveRemianingModules($user_id,$branch_id);
-        foreach($modules as $module ){
-                $module_id = $module->module_id;
-                $access_array = array("branch_id" => $branch_id,
-                                      "user_id" => $user_id,
-                                       "add_privilege" => 'yes',
-                                       "edit_privilege" => 'yes',   
-                                        "delete_privilege" => 'yes',    
-                                        "view_privilege" => 'yes',  
-                                        "module_id" => $module_id,
-                                    );
-
-            $id =  $this->general_model->insertData('user_accessibility',$access_array);
-        }
-        redirect("auth");
+        }*/
     }
 
     public function get_check_email() {
@@ -2138,11 +2231,11 @@ class Auth extends MY_Controller {
             return true;
         }
     }
-    public function reports() {
+    /*public function reports() {
         $data['test'] = "test";
         $data = $this->ion_auth_model->allReports();
         $this->load->view('auth/dashboard', $data);
-    }
+    }*/
 
     public function loader() {
         $data['test'] = "test";

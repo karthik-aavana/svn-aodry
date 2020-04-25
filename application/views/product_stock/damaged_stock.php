@@ -28,6 +28,10 @@
 <script>
 
     $(document).ready(function () {
+        var disable = true;
+        <?php if(!in_array($missing_stock_module_id, $active_edit) && !in_array($damaged_stock_module_id, $active_edit)){ ?>
+            disable = false;
+        <?php } ?>
         var comp_table = $('#editable_damaged_product').DataTable();
         $(document).on("click", ".damaged_product", function () {
             var id = $(this).data('id');
@@ -44,7 +48,7 @@
                     {'data': 'product_quantity'},
                     {'data': 'movement'},
                     {'data': 'comments'}, 
-                     {'data': 'action'},
+                     {'data': 'action','visible': disable},
                 ]
             });
         });

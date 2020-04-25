@@ -83,7 +83,11 @@ class Investments extends MY_Controller {
                        
                     }
                     $cols .= '</div></div>';
-                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
+                    $disabled = '';
+                    if(!in_array($data['investments_module_id'], $data['active_delete']) && !in_array($data['investments_module_id'], $data['active_edit'])){
+                        $disabled = 'disabled';
+                    }
+                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal"'.$disabled.'>';
                     $send_data[] = $nestedData;
                 }
             } $json_data = array(
@@ -347,7 +351,7 @@ class Investments extends MY_Controller {
         echo  json_encode(array('rows' => $rows ));
     }
 
- function createOption_deposit($id,$investment_name,$type_input){
+    function createOption_deposit($id,$investment_name,$type_input){
 
         $branch_id = $this->session->userdata('SESS_BRANCH_ID');
         $user_id = $this->session->userdata('SESS_USER_ID');

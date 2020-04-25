@@ -15,6 +15,7 @@ class Quotation extends MY_Controller {
 
     public function index() {
         $quotation_module_id = $this->config->item('quotation_module');
+        $data['quotation_module_id'] = $quotation_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
@@ -30,7 +31,7 @@ class Quotation extends MY_Controller {
         }*/
         $access_common_settings = $section_modules['access_common_settings'];
         /* Modules Present */
-        $data['quotation_module_id'] = $quotation_module_id;
+        $sales_module_id = $this->config->item('sales_module');
         $data['receipt_voucher_module_id'] = $this->config->item('receipt_voucher_module');
         $data['advance_voucher_module_id'] = $this->config->item('advance_voucher_module');
         $data['email_module_id'] = $this->config->item('email_module');
@@ -73,7 +74,10 @@ class Quotation extends MY_Controller {
                 foreach ($posts as $post) {
                     $quotation_id = $this->encryption_url->encode($post->quotation_id);
                     $nestedData['date'] = date('d-m-Y', strtotime($post->quotation_date));
-                    $nestedData['customer'] = $post->customer_name . ' (<a href="' . base_url('quotation/view/') . $quotation_id . '">' . $post->quotation_invoice_number . '</a>) ';
+                    $nestedData['customer'] = $post->customer_name . ' (' . $post->quotation_invoice_number . ') ';
+                    if (in_array($quotation_module_id, $data['active_view'])) {
+                        $nestedData['customer'] = $post->customer_name . ' (<a href="' . base_url('quotation/view/') . $quotation_id . '">' . $post->quotation_invoice_number . '</a>) ';
+                    }
                     $nestedData['grand_total'] = $post->currency_symbol . ' ' . $this->precise_amount($post->quotation_grand_total, $access_common_settings[0]->amount_precision);
                     $nestedData['converted_grand_total'] = $this->precise_amount($post->converted_grand_total, $access_common_settings[0]->amount_precision);
                     $is_complate = 0;
@@ -97,7 +101,7 @@ class Quotation extends MY_Controller {
                                     <i class="fa fa-pencil"></i></a></span>';
                         }
                     }
-                    if ($is_complate == '0') {
+                    if (in_array($sales_module_id, $data['active_edit']) && $is_complate == '0') {
                         $cols .= '<span><a href="' . base_url('quotation/convert_quotation/') . $quotation_id . '" class="btn btn-app" data-placement="bottom" data-toggle="tooltip" title="Move to Sales">
                                     <i class="fa fa-reply"></i>
                             </a></span>';
@@ -1574,6 +1578,7 @@ class Quotation extends MY_Controller {
             $hsn_data = $this->common->hsn_quotation_list_item_field1($id);
             $data['hsn'] = $this->general_model->getPageJoinRecords($hsn_data);
         }
+
         if ($email_sub_module == 1) {
             ob_start();
             $html = ob_get_clean();
@@ -1679,59 +1684,60 @@ class Quotation extends MY_Controller {
             }
         }
 
+        if ($email_sub_module == 1) {
+            ob_start();
+            $html = ob_get_clean();
+            $html = utf8_encode($html);
+            $data = $this->getQuotationDetail($id);
+            $data['invoice_type'] = "ORIGINAL FOR RECIPIENT";
+            $currency = $this->getBranchCurrencyCode();
+            $data['data'][0]->currency_code = $currency[0]->currency_code;
+            $data['data'][0]->currency_symbol = $currency[0]->currency_symbol;
+             $data['data'][0]->currency_symbol_pdf = $currency[0]->currency_symbol_pdf;
+            $html = $this->load->view('quotation/pdf', $data, true);
+            /* echo $html;exit(); */
+            /* include APPPATH . 'third_party/mpdf60/mpdf.php';
+              $mpdf                           = new mPDF();
+              $mpdf->allow_charset_conversion = true;
+              $mpdf->charset_in               = 'UTF-8';
+              $file_path                      = "././pdf_form/";
+              $mpdf->WriteHTML($html);
+              $file_name = str_replace($data['access_settings'][0]->invoice_seperation, "_", $data['data'][0]->quotation_invoice_number);
+              $mpdf->Output($file_path . $file_name . '.pdf', 'F'); */
+            include APPPATH . "third_party/dompdf/autoload.inc.php";
 
-        ob_start();
-        $html = ob_get_clean();
-        $html = utf8_encode($html);
-        $data = $this->getQuotationDetail($id);
-        $data['invoice_type'] = "ORIGINAL FOR RECIPIENT";
-        $currency = $this->getBranchCurrencyCode();
-        $data['data'][0]->currency_code = $currency[0]->currency_code;
-        $data['data'][0]->currency_symbol = $currency[0]->currency_symbol;
-         $data['data'][0]->currency_symbol_pdf = $currency[0]->currency_symbol_pdf;
-        $html = $this->load->view('quotation/pdf', $data, true);
-        /* echo $html;exit(); */
-        /* include APPPATH . 'third_party/mpdf60/mpdf.php';
-          $mpdf                           = new mPDF();
-          $mpdf->allow_charset_conversion = true;
-          $mpdf->charset_in               = 'UTF-8';
-          $file_path                      = "././pdf_form/";
-          $mpdf->WriteHTML($html);
-          $file_name = str_replace($data['access_settings'][0]->invoice_seperation, "_", $data['data'][0]->quotation_invoice_number);
-          $mpdf->Output($file_path . $file_name . '.pdf', 'F'); */
-        include APPPATH . "third_party/dompdf/autoload.inc.php";
+            //and now im creating new instance dompdf
+            $file_path = "././pdf_form/";
+            $file_name = str_replace($data['access_settings'][0]->invoice_seperation, "_", $data['data'][0]->quotation_invoice_number);
+            $dompdf = new Dompdf\Dompdf();
 
-        //and now im creating new instance dompdf
-        $file_path = "././pdf_form/";
-        $file_name = str_replace($data['access_settings'][0]->invoice_seperation, "_", $data['data'][0]->quotation_invoice_number);
-        $dompdf = new Dompdf\Dompdf();
-
-        $paper_size = 'a4';
-        $orientation = 'portrait';
-        $dompdf->load_html($html);
-        $dompdf->render();
-        $output = $dompdf->output();
-        file_put_contents($file_path . $file_name . '.pdf', $output);
-        $data['pdf_file_path'] = 'pdf_form/' . $file_name . '.pdf';
-        $data['pdf_file_name'] = $file_name . '.pdf';
-        $quotation_data = $this->common->quotation_list_field1($id);
-        $data['data'] = $this->general_model->getJoinRecords($quotation_data['string'], $quotation_data['table'], $quotation_data['where'], $quotation_data['join']);
-        $branch_data = $this->common->branch_field();
-        $data['branch'] = $this->general_model->getJoinRecords($branch_data['string'], $branch_data['table'], $branch_data['where'], $branch_data['join'], $branch_data['order']);
-        $data['email_setup'] = $this->general_model->getRecords('*', 'email_setup', array(
-            'delete_status' => 0,
-            'branch_id' => $this->session->userdata('SESS_BRANCH_ID'),
-            'added_user_id' => $this->session->userdata('SESS_USER_ID')));
-        $data['email_template'] = $this->general_model->getRecords('*', 'email_template', array(
-            'module_id' => $quotation_module_id,
-            'branch_id' => $this->session->userdata('SESS_BRANCH_ID'),
-            'delete_status' => 0));
-        $data['data'][0]->pdf_file_path = $data['pdf_file_path'];
-        $data['data'][0]->pdf_file_name = $data['pdf_file_name'];
-        $data['data'][0]->email_template = $data['email_template'];
-        $data['data'][0]->firm_name = $data['branch'][0]->firm_name;
-        $result = json_encode($data['data']);
-        echo $result;
+            $paper_size = 'a4';
+            $orientation = 'portrait';
+            $dompdf->load_html($html);
+            $dompdf->render();
+            $output = $dompdf->output();
+            file_put_contents($file_path . $file_name . '.pdf', $output);
+            $data['pdf_file_path'] = 'pdf_form/' . $file_name . '.pdf';
+            $data['pdf_file_name'] = $file_name . '.pdf';
+            $quotation_data = $this->common->quotation_list_field1($id);
+            $data['data'] = $this->general_model->getJoinRecords($quotation_data['string'], $quotation_data['table'], $quotation_data['where'], $quotation_data['join']);
+            $branch_data = $this->common->branch_field();
+            $data['branch'] = $this->general_model->getJoinRecords($branch_data['string'], $branch_data['table'], $branch_data['where'], $branch_data['join'], $branch_data['order']);
+            $data['email_setup'] = $this->general_model->getRecords('*', 'email_setup', array(
+                'delete_status' => 0,
+                'branch_id' => $this->session->userdata('SESS_BRANCH_ID'),
+                'added_user_id' => $this->session->userdata('SESS_USER_ID')));
+            $data['email_template'] = $this->general_model->getRecords('*', 'email_template', array(
+                'module_id' => $quotation_module_id,
+                'branch_id' => $this->session->userdata('SESS_BRANCH_ID'),
+                'delete_status' => 0));
+            $data['data'][0]->pdf_file_path = $data['pdf_file_path'];
+            $data['data'][0]->pdf_file_name = $data['pdf_file_name'];
+            $data['data'][0]->email_template = $data['email_template'];
+            $data['data'][0]->firm_name = $data['branch'][0]->firm_name;
+            $result = json_encode($data['data']);
+            echo $result;
+        }
     }
 
 }

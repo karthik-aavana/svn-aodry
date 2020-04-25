@@ -27,9 +27,11 @@ if (!function_exists('precise_amount')) {
                     <div class="box">
                         <div class="box-header with-border">
                             <h3 class="box-title">Sales  Invoice</h3>
-                            <a class="btn btn-sm btn-info pull-right" href="<?php
-                            echo base_url('receipt_voucher/add_sales_receipt/') . $sales_id;
-                            ?>" title="Receive Now">Receive Now</a>
+                            <?php if (in_array($receipt_voucher_module_id, $active_add)) { ?>
+                                <a class="btn btn-sm btn-info pull-right" href="<?php
+                                echo base_url('receipt_voucher/add_sales_receipt/') . $sales_id;
+                                ?>" title="Receive Now">Receive Now</a>
+                            <?php } ?>
                             <a class="btn btn-sm btn-default pull-right back_button" id="cancel" onclick1="cancel('sales')">Back</a>
                         </div>
                     <?php } ?>

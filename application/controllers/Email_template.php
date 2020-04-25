@@ -71,10 +71,16 @@ class Email_template extends MY_Controller {
                     $nestedData['module_name'] = $post->module_name;
                     $nestedData['added_user'] = $post->first_name . ' ' . $post->last_name;
                     $email_template_id = $this->encryption_url->encode($post->email_template_id);
-                    $cols = '<div class="box-body hide action_button"><div class="btn-group">';                    
-                    $cols .= '<span data-target="#view_modal" data-toggle="modal" data-backdrop="static" data-keyboard="false"><a data-id="' . $email_template_id . '" class="btn btn-xs btn-app view_template" data-toggle="tooltip" data-placement="bottom" title="View"><i class="fa fa-eye"></i></a></span>';
-                    $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#edit_modal"><a data-id="' . $email_template_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="btn btn-xs btn-app edit_template"><i class="fa fa-pencil"></i></a></span>';
-                    $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal"><a class="delete_button btn btn-xs btn-app"  data-id="' . $email_template_id . '" data-path="email_template/delete" data-toggle="tooltip" data-placement="bottom" title="Delete"><i class="fa fa-trash"></i></a></span>';
+                    $cols = '<div class="box-body hide action_button"><div class="btn-group">';
+                    if(in_array($email_module_id, $data['active_view'])){                   
+                        $cols .= '<span data-target="#view_modal" data-toggle="modal" data-backdrop="static" data-keyboard="false"><a data-id="' . $email_template_id . '" class="btn btn-xs btn-app view_template" data-toggle="tooltip" data-placement="bottom" title="View"><i class="fa fa-eye"></i></a></span>';
+                    }
+                    if(in_array($email_module_id, $data['active_edit'])){  
+                        $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#edit_modal"><a data-id="' . $email_template_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="btn btn-xs btn-app edit_template"><i class="fa fa-pencil"></i></a></span>';
+                    }
+                    if(in_array($email_module_id, $data['active_delete'])){  
+                        $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal"><a class="delete_button btn btn-xs btn-app"  data-id="' . $email_template_id . '" data-path="email_template/delete" data-toggle="tooltip" data-placement="bottom" title="Delete"><i class="fa fa-trash"></i></a></span>';
+                    }
                     $cols .= '</div></div>';                   
                     $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
                     $send_data[] = $nestedData;
@@ -185,13 +191,13 @@ class Email_template extends MY_Controller {
         $id = $this->input->post('id');
         $email_module_id = $this->config->item('email_module');
         $data['module_id'] = $email_module_id;
-        $modules = $this->modules;
+        /*$modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($email_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($email_module_id, $modules, $privilege);*/
 
         /* presents all the needed */
-        $data = array_merge($data, $section_modules);
+        /*$data = array_merge($data, $section_modules);*/
 
         $data['data'] = $this->general_model->getRecords('*', 'email_template', array(
             'email_template_id' => $id,

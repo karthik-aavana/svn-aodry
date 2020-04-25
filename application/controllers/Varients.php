@@ -60,8 +60,11 @@ class Varients extends MY_Controller {
                     $nestedData['added_user'] = $post->first_name . ' ' . $post->last_name;
                     $cols = '<div class="box-body hide action_button">
                         <div class="btn-group">';
-                    $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#edit_varient_value_modal"><a data-id="' . $post->varients_value_id . '"  data-toggle="tooltip" data-placement="bottom" title="Edit Varient Value" class="edit_varient_value btn btn-app"><i class="fa fa-pencil"></i></a></span>';
-                    $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#edit_varient_key_modal"><a data-id="' . $post->varients_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit Varient Key" class="edit_varient_key btn btn-app"><i class="fa fa-key"></i></a></span>';
+                    if(in_array($varients_module_id, $data['active_edit'])){
+                        $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#edit_varient_value_modal"><a data-id="' . $post->varients_value_id . '"  data-toggle="tooltip" data-placement="bottom" title="Edit Varient Value" class="edit_varient_value btn btn-app"><i class="fa fa-pencil"></i></a></span>';
+
+                        $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#edit_varient_key_modal"><a data-id="' . $post->varients_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit Varient Key" class="edit_varient_key btn btn-app"><i class="fa fa-key"></i></a></span>';
+                    }
                     $varient_id = $this->general_model->getRecords('*', 'varients_value', array(
                         'varients_id' => $post->varients_id,
                         'delete_status' => 0,
@@ -72,16 +75,21 @@ class Varients extends MY_Controller {
                         'delete_status' => 0)
                         );
                     /*$varient_used = $varient_used->result();*/
-
-                    if ($varient_id) {
-                        if(empty($varient_used))
-                        $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal"> <a class="btn btn-app delete_button" data-id="' . $post->varients_value_id . '" data-path="varients/delete_varients_value" data-toggle="tooltip" data-placement="bottom" title="Delete"> <i class="fa fa-trash-o"></i> </a></span>';
-                        // $cols .= '<a data-toggle="modal" data-target="#false_delete_modal" title="Delete" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></a>';
-                    } else {
-                        $cols .= '<a data-toggle="modal" data-target="#delete_modal" data-id="' . $post->varients_id . '" data-path="varients/delete_varients_key" title="Delete Varient Key" class="delete_button btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></a>';
+                    if(in_array($varients_module_id, $data['active_delete'])){
+                        if ($varient_id) {
+                            if(empty($varient_used))
+                            $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal"> <a class="btn btn-app delete_button" data-id="' . $post->varients_value_id . '" data-path="varients/delete_varients_value" data-toggle="tooltip" data-placement="bottom" title="Delete"> <i class="fa fa-trash-o"></i> </a></span>';
+                            // $cols .= '<a data-toggle="modal" data-target="#false_delete_modal" title="Delete" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></a>';
+                        } else {
+                            $cols .= '<a data-toggle="modal" data-target="#delete_modal" data-id="' . $post->varients_id . '" data-path="varients/delete_varients_key" title="Delete Varient Key" class="delete_button btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></a>';
+                        }
                     }
                     $cols .= '</div></div>';
-                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
+                    $disabled = '';
+                    if(!in_array($varients_module_id, $data['active_delete']) && !in_array($varients_module_id, $data['active_edit'])){
+                        $disabled = 'disabled';
+                    }
+                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal"'.$disabled.'>';
                     $send_data[] = $nestedData;
                 }
             } $json_data = array(
@@ -99,7 +107,7 @@ class Varients extends MY_Controller {
         $varients_module_id = $this->config->item('varients_module');
         $data['varients_module_id'] = $varients_module_id;
         $modules = $this->modules;
-        $privilege = "view_privilege";
+        $privilege = "add_privilege";
         $data['privilege'] = $privilege;
         $section_modules = $this->get_section_modules($varients_module_id, $modules, $privilege);
 
@@ -117,7 +125,7 @@ class Varients extends MY_Controller {
         $varients_module_id = $this->config->item('varients_module');
         $data['module_id'] = $varients_module_id;
         $modules = $this->modules;
-        $privilege = "view_privilege";
+        $privilege = "add_privilege";
         $data['privilege'] = $privilege;
         $section_modules = $this->get_section_modules($varients_module_id, $modules, $privilege);
 
@@ -152,7 +160,7 @@ class Varients extends MY_Controller {
         $varients_module_id = $this->config->item('varients_module');
         $data['module_id'] = $varients_module_id;
         $modules = $this->modules;
-        $privilege = "view_privilege";
+        $privilege = "add_privilege";
         $data['privilege'] = $privilege;
         $section_modules = $this->get_section_modules($varients_module_id, $modules, $privilege);
 
@@ -167,7 +175,7 @@ class Varients extends MY_Controller {
 
             $i = 0;
             foreach ($varient_value_data as $key => $value) {
-               
+
                 $varient_data = array(
                     'varients_id' => $varient_key,
                     'varients_value' => $varient_value_data[$i],
@@ -201,7 +209,7 @@ class Varients extends MY_Controller {
         $varients_module_id = $this->config->item('varients_module');
         $data['module_id'] = $varients_module_id;
         $modules = $this->modules;
-        $privilege = "view_privilege";
+        $privilege = "add_privilege";
         $data['privilege'] = $privilege;
         $section_modules = $this->get_section_modules($varients_module_id, $modules, $privilege);
 

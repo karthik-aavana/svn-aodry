@@ -82,8 +82,9 @@ class Bank_account extends MY_Controller
                     
                      $cols = '<div class="box-body hide action_button">
                         <div class="btn-group">';
-                    
-                    $cols.= '<span data-toggle="modal" data-target="#edit_bank_modal" data-backdrop="static" data-keyboard="false"><a data-id="' . $bank_account_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="edit_bank btn btn-app"><i class="fa fa-pencil"></i></a></span>';
+                    if(in_array($bank_account_module_id, $data['active_edit'])){
+                        $cols.= '<span data-toggle="modal" data-target="#edit_bank_modal" data-backdrop="static" data-keyboard="false"><a data-id="' . $bank_account_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="edit_bank btn btn-app"><i class="fa fa-pencil"></i></a></span>';
+                    }
                     $advance_voucher            = $this->general_model->getRecords('*', 'advance_voucher', array(
                             'payment_mode'  => $post->bank_account_id,
                             'delete_status' => 0,
@@ -100,17 +101,23 @@ class Bank_account extends MY_Controller
                             'payment_mode'  => $post->bank_account_id,
                             'delete_status' => 0,
                             'branch_id'     => $this->session->userdata('SESS_BRANCH_ID') ));
-                    if ($advance_voucher || $refund_voucher || $receipt_voucher || $payment_voucher)
-                    {
-                        $cols .= '
-                       <span data-toggle="modal" data-target="#false_delete_modal" data-backdrop="static" data-keyboard="false"><a title="Delete" class="btn btn-app"><i class="fa fa-trash-o"></i></a></span>';
-                    }
-                    else
-                    {
-                        $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" ><a data-id="' . $bank_account_id . '" data-path="bank_account/delete" class="delete_button btn btn-app" href="#" data-toggle="tooltip" data-placement="bottom" title="Delete" ><i class="fa fa-trash-o"></i></a></span>';
+                    if(in_array($bank_account_module_id, $data['active_delete'])){
+                        if ($advance_voucher || $refund_voucher || $receipt_voucher || $payment_voucher)
+                        {
+                            $cols .= '
+                           <span data-toggle="modal" data-target="#false_delete_modal" data-backdrop="static" data-keyboard="false"><a title="Delete" class="btn btn-app"><i class="fa fa-trash-o"></i></a></span>';
+                        }
+                        else
+                        {
+                            $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" ><a data-id="' . $bank_account_id . '" data-path="bank_account/delete" class="delete_button btn btn-app" href="#" data-toggle="tooltip" data-placement="bottom" title="Delete" ><i class="fa fa-trash-o"></i></a></span>';
+                        }
                     }
                     $cols .= '</div></div>';
-                    $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
+                    $disabled = '';
+                    if(!in_array($bank_account_module_id, $data['active_delete']) && !in_array($bank_account_module_id, $data['active_edit'])){
+                        $disabled = 'disabled';
+                    }
+                    $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal"'.$disabled.'>';
                     $send_data[]          = $nestedData;
                 }
             } $json_data = array(

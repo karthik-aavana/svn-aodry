@@ -23,7 +23,9 @@ $this->load->view('layout/header');
                 <div class="box">
                     <div class="box-header with-border">
                         <h3 class="box-title">Missing Stock</h3>
-                        <a class="btn btn-sm btn-info pull-right btn-flat" data-toggle="modal" data-target="#add_report_fixed" href="#">Report Found/Damged Stock</a>
+                        <?php if(in_array($damaged_stock_module_id, $active_add) || in_array($product_module_id, $active_add)) {?>
+                            <a class="btn btn-sm btn-info pull-right btn-flat" data-toggle="modal" data-target="#add_report_fixed" href="#">Report Found/Damged Stock</a>
+                        <?php } ?>
                     </div>
                     <div class="well">
                         <div class="box-body">
@@ -89,6 +91,10 @@ $this->load->view('missing_stock/edit_fixed_stock');
     });
 
     function getAllMissingStock(){
+        var disable = true;
+        <?php if(!in_array($damaged_stock_module_id, $active_view) && !in_array($product_module_id, $active_view)){ ?>
+            disable = false;
+        <?php } ?>
          var table =  $('#list_datatable').DataTable({
             "processing": true,
             "serverSide": true,
@@ -106,7 +112,7 @@ $this->load->view('missing_stock/edit_fixed_stock');
                 {"data": "total_fixed"},
                 {"data": "total_remaining"},
                 {"data": "history"},
-                {"data": "action"}
+                {"data": "action",'visible': disable}
             ],
              'language': {
                 'loadingRecords': '&nbsp;',

@@ -6,23 +6,22 @@ class Gst_report extends MY_Controller {
 	public function __construct() {
         parent::__construct();
         $this->load->model('general_model');
-        $this->load->model('report_model');
         $this->modules = $this->get_modules();
     }
     function index($id= 0){
-        $report_module_id         = $this->config->item('report_module');
-        $data['module_id']               = $report_module_id;
+        $gstr1_report_module_id         = $this->config->item('gstr1_report_module');
+        $data['module_id']               = $gstr1_report_module_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
         $data['privilege']               = $privilege;
-        $section_modules                 = $this->get_section_modules($report_module_id, $modules, $privilege);
+        $section_modules                 = $this->get_section_modules($gstr1_report_module_id, $modules, $privilege);
         $data['path_data'] = array();
         /* presents all the needed */
         $data=array_merge($data,$section_modules);
         $this->load->view('gstr/list', $data);
     }
     public function download_report(){
-        $report_module_id         = $this->config->item('report_module');
+        $report_module_id         = $this->config->item('gstr1_report_module');
         $data['module_id']               = $report_module_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
@@ -147,25 +146,25 @@ class Gst_report extends MY_Controller {
     echo json_encode($totalData);
     }*/
     public function advances_report($from_date,$to_date) {
-     	$advance_voucher_module_id  = $this->config->item('advance_voucher_module');
-        $data['advance_voucher_module_id']  = $advance_voucher_module_id;
+     	$gstr1_report_module_id  = $this->config->item('gstr1_report_module');
+        $data['advance_voucher_module_id']  = $gstr1_report_module_id;
         $modules = $this->modules;
         $privilege                       = "view_privilege";
         $data['privilege']               = "view_privilege";
-        $section_modules = $this->get_section_modules($advance_voucher_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($gstr1_report_module_id, $modules, $privilege);
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
 
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
       
     	$list_data = $this->common->advance_gst_report_list_field($from_date,$to_date);
         $posts = $this->general_model->getPageJoinRecords($list_data);
@@ -196,12 +195,12 @@ class Gst_report extends MY_Controller {
         }*/
     }
     public function b2cl_report($from_date,$to_date) {
-    	$sales_module_id = $this->config->item('sales_module');
-        $data['module_id'] = $sales_module_id;
+    	$gstr1_report_module_id = $this->config->item('gstr1_report_module');
+        $data['module_id'] = $gstr1_report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($gstr1_report_module_id, $modules, $privilege);
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
@@ -209,13 +208,13 @@ class Gst_report extends MY_Controller {
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
 
         $list_data = $this->common->gst_b2cl_report_list_field($from_date,$to_date);
         $posts = $this->general_model->getPageJoinRecords($list_data);
@@ -298,12 +297,12 @@ class Gst_report extends MY_Controller {
         }   
     }*/
     public function b2cs_report($from_date,$to_date) {
-    	$sales_module_id = $this->config->item('sales_module');
-        $data['module_id'] = $sales_module_id;
+    	$gstr1_report_module_id = $this->config->item('gstr1_report_module');
+        $data['module_id'] = $gstr1_report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($gstr1_report_module_id, $modules, $privilege);
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
@@ -311,13 +310,13 @@ class Gst_report extends MY_Controller {
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
 
         $list_data = $this->common->gst_b2cs_report_list_field($from_date,$to_date);
         $posts = $this->general_model->getPageJoinRecords($list_data);
@@ -397,12 +396,12 @@ class Gst_report extends MY_Controller {
         }   
     }*/
     public function credit_debit_note_b2b_report($from_date,$to_date) {
-    	$sales_module_id = $this->config->item('sales_module');
-        $data['module_id'] = $sales_module_id;
+    	$gstr1_report_module_id = $this->config->item('gstr1_report_module');
+        $data['module_id'] = $gstr1_report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($gstr1_report_module_id, $modules, $privilege);
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
@@ -410,13 +409,13 @@ class Gst_report extends MY_Controller {
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
 
         $list_data = $this->common->credit_debit_note_b2b_report_list_field($from_date,$to_date);
         $posts = $this->general_model->getQueryRecords($list_data);
@@ -506,12 +505,12 @@ class Gst_report extends MY_Controller {
         }   
     }*/
     public function credit_debit_note_b2c_report($from_date,$to_date) {
-    	$sales_module_id = $this->config->item('sales_module');
-        $data['module_id'] = $sales_module_id;
+    	$gstr1_report_module_id = $this->config->item('gstr1_report_module');
+        $data['module_id'] = $gstr1_report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($gstr1_report_module_id, $modules, $privilege);
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
@@ -519,13 +518,13 @@ class Gst_report extends MY_Controller {
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
 
         $list_data = $this->common->credit_debit_note_b2c_report_list_field($from_date,$to_date);
         $posts = $this->general_model->getQueryRecords($list_data);
@@ -572,12 +571,12 @@ class Gst_report extends MY_Controller {
         }*/
     }
     public function credit_debit_note_b2cs_report($from_date,$to_date) {
-        $sales_module_id = $this->config->item('sales_module');
-        $data['module_id'] = $sales_module_id;
+        $gstr1_report_module_id = $this->config->item('gstr1_report_module');
+        $data['module_id'] = $gstr1_report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($gstr1_report_module_id, $modules, $privilege);
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
@@ -585,13 +584,13 @@ class Gst_report extends MY_Controller {
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
 
         $list_data = $this->common->credit_debit_note_b2cs_report_list_field($from_date,$to_date);
         $posts = $this->general_model->getQueryRecords($list_data);
@@ -628,12 +627,12 @@ class Gst_report extends MY_Controller {
         }*/
     }
     public function exports_report($from_date,$to_date) {
-    	$sales_module_id = $this->config->item('sales_module');
-        $data['module_id'] = $sales_module_id;
+    	$gstr1_report_module_id = $this->config->item('gstr1_report_module');
+        $data['module_id'] = $gstr1_report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($gstr1_report_module_id, $modules, $privilege);
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
@@ -641,13 +640,13 @@ class Gst_report extends MY_Controller {
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
 
         $list_data = $this->common->exports_report_list_field($from_date,$to_date);
         $posts = $this->general_model->getPageJoinRecords($list_data);
@@ -683,12 +682,12 @@ class Gst_report extends MY_Controller {
         }*/
     }
     public function hsn_summary_report($from_date,$to_date) {
-    	$sales_module_id = $this->config->item('sales_module');
-        $data['module_id'] = $sales_module_id;
+    	$gstr1_report_module_id = $this->config->item('gstr1_report_module');
+        $data['module_id'] = $gstr1_report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($gstr1_report_module_id, $modules, $privilege);
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
@@ -696,13 +695,13 @@ class Gst_report extends MY_Controller {
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
 
         $list_data = $this->common->gst_hsn_summary_list_field($from_date,$to_date);
         
@@ -740,21 +739,21 @@ class Gst_report extends MY_Controller {
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $data['access_settings'] = $this->check_settings($sales_module_id, $modules['settings']);
+        /*$section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);*/
 
         /* presents all the needed */
-        $data = array_merge($data, $section_modules);
-
+        /*$data = array_merge($data, $section_modules);*/
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
 
         $access_settings        = $data['access_settings'];
         $sales_data = $this->common->sales_gst_documents_report_list_field($access_settings,$from_date,$to_date);
@@ -764,7 +763,7 @@ class Gst_report extends MY_Controller {
         $sales_credit_note_module_id = $this->config->item('sales_credit_note_module');
         $credit_note_modules = $this->modules;
         $credit_note_privilege = "view_privilege";
-        $credit_note_section_modules = $this->get_section_modules($sales_credit_note_module_id, $credit_note_modules, $credit_note_privilege);
+        $credit_note_section_modules['access_settings'] = $this->check_settings($sales_credit_note_module_id, $modules['settings']);
         /* presents all the needed */
         $credit_note_access_settings = $credit_note_section_modules['access_settings'];
         $sales_credit_note_data = $this->common->sales_credit_note_gst_documents_report_list_field($credit_note_access_settings,$from_date,$to_date);
@@ -774,7 +773,7 @@ class Gst_report extends MY_Controller {
         $sales_debit_note_module_id = $this->config->item('sales_debit_note_module');
         $debit_note_modules = $this->modules;
         $debit_note_privilege = "view_privilege";
-        $debit_note_section_modules = $this->get_section_modules($sales_debit_note_module_id, $debit_note_modules, $debit_note_privilege);
+        $debit_note_section_modules['access_settings'] = $this->check_settings($sales_debit_note_module_id, $modules['settings']);
         /* presents all the needed */
         $debit_note_access_settings        = $debit_note_section_modules['access_settings'];
         $sales_debit_note_data = $this->common->sales_debit_note_gst_documents_report_list_field($debit_note_access_settings,$from_date,$to_date);
@@ -784,7 +783,7 @@ class Gst_report extends MY_Controller {
         $advance_voucher_module_id = $this->config->item('advance_voucher_module');
         $advance_voucher_module = $this->modules;
         $advance_voucher_privilege = "view_privilege";
-        $advance_voucher_section_modules = $this->get_section_modules($advance_voucher_module_id, $advance_voucher_module, $advance_voucher_privilege);
+        $advance_voucher_section_modules['access_settings'] = $this->check_settings($advance_voucher_module_id, $modules['settings']);
         /* presents all the needed */
         $advance_voucher_access_settings = $advance_voucher_section_modules['access_settings'];
         $advance_voucher_data = $this->common->advance_voucher_gst_documents_report_list_field($advance_voucher_access_settings,$from_date,$to_date);
@@ -794,7 +793,7 @@ class Gst_report extends MY_Controller {
         $delivery_challan_module_id = $this->config->item('delivery_challan_module');
         $delivery_challan_modules = $this->modules;
         $delivery_challan_privilege = "view_privilege";
-        $delivery_challan_section_modules = $this->get_section_modules($delivery_challan_module_id, $delivery_challan_modules, $delivery_challan_privilege);
+        $delivery_challan_section_modules['access_settings'] = $this->check_settings($delivery_challan_module_id, $modules['settings']);
         /* presents all the needed */
         $delivery_challan_access_settings = $delivery_challan_section_modules['access_settings'];
         $delivery_challen_data = $this->common->delivery_challen_gst_documents_report_list_field($delivery_challan_access_settings,$from_date,$to_date);
@@ -804,12 +803,13 @@ class Gst_report extends MY_Controller {
         $refund_voucher_module_id = $this->config->item('refund_voucher_module');
         $refund_voucher_modules = $this->modules;
         $refund_voucher_privilege = "view_privilege";
-        $refund_voucher_section_modules = $this->get_section_modules($refund_voucher_module_id, $refund_voucher_modules, $refund_voucher_privilege);
+        $refund_voucher_section_modules['access_settings'] = $this->check_settings($refund_voucher_module_id, $modules['settings']);
         $refund_access_settings = $refund_voucher_section_modules['access_settings'];
         $refund_voucher_data = $this->common->refund_voucher_gst_documents_report_list_field($refund_access_settings,$from_date,$to_date);
         $refund_voucher_posts = $this->general_model->getPageJoinRecords($refund_voucher_data);
 
         $data_merged = array_merge((array)$sales_posts,(array)$sales_credit_note_posts,(array)$sales_debit_note_posts,(array)$advance_voucher_posts,(array)$delivery_challen_posts,(array)$refund_voucher_posts);
+
         $table_columns['headers'] = array("Nature of Document","Sr. No. From","Sr. No. To","Total Number","Cancelled");
         $table_columns['data_type'] = 'Documents';
         if(!empty($data_merged)){            
@@ -875,21 +875,22 @@ class Gst_report extends MY_Controller {
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $data['access_settings'] = $this->check_settings($sales_module_id, $modules['settings']);
+        /*$section_modules = $this->get_section_modules($gstr1_report_module_id, $modules, $privilege);*/
 
         /* presents all the needed */
-        $data = array_merge($data, $section_modules);
+        /*$data = array_merge($data, $section_modules);*/
 
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
 
         $access_settings        = $data['access_settings'];
         $sales_data = $this->common->sales_gst_documents_report_list_field($access_settings,$from_date,$to_date);
@@ -897,9 +898,9 @@ class Gst_report extends MY_Controller {
         
         /*credit note report data*/ 
         $sales_credit_note_module_id = $this->config->item('sales_credit_note_module');
-        $credit_note_modules = $this->modules;
+        /*$credit_note_modules = $this->modules;*/
         $credit_note_privilege = "view_privilege";
-        $credit_note_section_modules = $this->get_section_modules($sales_credit_note_module_id, $credit_note_modules, $credit_note_privilege);
+        $credit_note_section_modules['access_settings'] = $this->check_settings($sales_credit_note_module_id, $modules['settings']);
         /* presents all the needed */
         $credit_note_access_settings = $credit_note_section_modules['access_settings'];
         $sales_credit_note_data = $this->common->sales_credit_note_gst_documents_report_list_field($credit_note_access_settings,$from_date,$to_date);
@@ -907,9 +908,9 @@ class Gst_report extends MY_Controller {
 
         /*debit note report data*/ 
         $sales_debit_note_module_id = $this->config->item('sales_debit_note_module');
-        $debit_note_modules = $this->modules;
+        /*$debit_note_modules = $this->modules;*/
         $debit_note_privilege = "view_privilege";
-        $debit_note_section_modules = $this->get_section_modules($sales_debit_note_module_id, $debit_note_modules, $debit_note_privilege);
+        $debit_note_section_modules['access_settings'] = $this->check_settings($sales_debit_note_module_id, $modules['settings']);
         /* presents all the needed */
         $debit_note_access_settings        = $debit_note_section_modules['access_settings'];
         $sales_debit_note_data = $this->common->sales_debit_note_gst_documents_report_list_field($debit_note_access_settings,$from_date,$to_date);
@@ -917,9 +918,9 @@ class Gst_report extends MY_Controller {
 
         /*Advance challen report data*/
         $advance_voucher_module_id = $this->config->item('advance_voucher_module');
-        $advance_voucher_module = $this->modules;
+        /*$advance_voucher_module = $this->modules;*/
         $advance_voucher_privilege = "view_privilege";
-        $advance_voucher_section_modules = $this->get_section_modules($advance_voucher_module_id, $advance_voucher_module, $advance_voucher_privilege);
+        $advance_voucher_section_modules['access_settings'] = $this->check_settings($advance_voucher_module_id, $modules['settings']);
         /* presents all the needed */
         $advance_voucher_access_settings = $advance_voucher_section_modules['access_settings'];
         $advance_voucher_data = $this->common->advance_voucher_gst_documents_report_list_field($advance_voucher_access_settings,$from_date,$to_date);
@@ -927,9 +928,9 @@ class Gst_report extends MY_Controller {
         
         /*delivery challen report data*/
         $delivery_challan_module_id = $this->config->item('delivery_challan_module');
-        $delivery_challan_modules = $this->modules;
+        /*$delivery_challan_modules = $this->modules;*/
         $delivery_challan_privilege = "view_privilege";
-        $delivery_challan_section_modules = $this->get_section_modules($delivery_challan_module_id, $delivery_challan_modules, $delivery_challan_privilege);
+        $delivery_challan_section_modules['access_settings'] = $this->check_settings($delivery_challan_module_id, $modules['settings']);
         /* presents all the needed */
         $delivery_challan_access_settings = $delivery_challan_section_modules['access_settings'];
         $delivery_challen_data = $this->common->delivery_challen_gst_documents_report_list_field($delivery_challan_access_settings,$from_date,$to_date);
@@ -937,23 +938,23 @@ class Gst_report extends MY_Controller {
 
         /*Refund Voucher report data*/
         $refund_voucher_module_id = $this->config->item('refund_voucher_module');
-        $refund_voucher_modules = $this->modules;
+        /*$refund_voucher_modules = $this->modules;*/
         $refund_voucher_privilege = "view_privilege";
-        $refund_voucher_section_modules = $this->get_section_modules($refund_voucher_module_id, $refund_voucher_modules, $refund_voucher_privilege);
+        $refund_voucher_section_modules['access_settings'] = $this->check_settings($refund_voucher_module_id, $modules['settings']);
         $refund_access_settings = $refund_voucher_section_modules['access_settings'];
         $refund_voucher_data = $this->common->refund_voucher_gst_documents_report_list_field($refund_access_settings,$from_date,$to_date);
         $refund_voucher_posts = $this->general_model->getPageJoinRecords($refund_voucher_data);
 
-        $data_merged = array_merge((array)$sales_posts,(array)$sales_debit_note_posts,(array)$delivery_challen_posts,(array)$refund_voucher_posts);
+        $data_merged = array_merge((array)$sales_posts,(array)$sales_credit_note_posts,(array)$sales_debit_note_posts,(array)$advance_voucher_posts, (array)$delivery_challen_posts,(array)$refund_voucher_posts);
         return $data_merged;
     }
     public function gst_exempt_supply_report($from_date,$to_date) {
-        $sales_module_id = $this->config->item('sales_module');
-        $data['module_id'] = $sales_module_id;
+        $gstr1_report_module_id = $this->config->item('gstr1_report_module');
+        $data['module_id'] = $gstr1_report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($sales_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($gstr1_report_module_id, $modules, $privilege);
 
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
@@ -961,13 +962,13 @@ class Gst_report extends MY_Controller {
         $email_sub_module_id = $this->config->item('email_sub_module');
         $recurrence_sub_module_id = $this->config->item('recurrence_sub_module');
 
-        $user_module_id = $this->config->item('user_module');
+        /*$user_module_id = $this->config->item('user_module');
         $data['module_id'] = $user_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
-        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;
+        $default_date = $section_modules['access_common_settings'][0]->default_notification_date;*/
 
         $list_data = $this->common->exempt_supply_report_list_field($from_date,$to_date);
         $posts = $this->general_model->getQueryRecords($list_data);

@@ -17,7 +17,7 @@ class Purchase_ledger extends MY_Controller
     }
 
     function index(){
-        $purchase_voucher_module_id         = $this->config->item('purchase_voucher_module');
+        $purchase_voucher_module_id      = $this->config->item('purchase_voucher_module');
         $data['module_id']               = $purchase_voucher_module_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
@@ -34,12 +34,12 @@ class Purchase_ledger extends MY_Controller
     }
 
     function purchase_credit_ledger(){
-        $purchase_voucher_module_id         = $this->config->item('purchase_voucher_module');
-        $data['module_id']               = $purchase_voucher_module_id;
+        $purchase_credit_note_voucher_id = $this->config->item('purchase_credit_note_voucher');
+        $data['module_id']               = $purchase_credit_note_voucher_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
         $data['privilege']               = $privilege;
-        $section_modules                 = $this->get_section_modules($purchase_voucher_module_id, $modules, $privilege);
+        $section_modules                 = $this->get_section_modules($purchase_credit_note_voucher_id, $modules, $privilege);
         $data['ledger_value'] = $this->input->post('reference_id');
 
         $data['ledgers']                 = $this->ledger_model->GetLedgersName();
@@ -53,12 +53,12 @@ class Purchase_ledger extends MY_Controller
     }
 
     function purchase_debit_ledger(){
-        $purchase_voucher_module_id         = $this->config->item('purchase_voucher_module');
-        $data['module_id']               = $purchase_voucher_module_id;
+        $purchase_debit_note_voucher_id  = $this->config->item('purchase_debit_note_voucher');
+        $data['module_id']               = $purchase_debit_note_voucher_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
         $data['privilege']               = $privilege;
-        $section_modules                 = $this->get_section_modules($purchase_voucher_module_id, $modules, $privilege);
+        $section_modules                 = $this->get_section_modules($purchase_debit_note_voucher_id, $modules, $privilege);
 
         $data['ledgers']                 = $this->ledger_model->GetLedgersName();
         $data['ledger_value'] = $this->input->post('reference_id');

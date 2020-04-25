@@ -26,15 +26,15 @@
     </div>
 </div>
 <script type="text/javascript">
-    var damaged_table = $('#damagedStockHistory').DataTable();
-        
-        $(document).on("click", ".history_damage", function () {
+    $(document).ready(function () {
+        var comp_table = $('#damagedStockHistory').DataTable();
+        $(document).on("click", ".history", function () {
             var id = $(this).data('id');
-            damaged_table.destroy();
+            comp_table.destroy();
             table_load(id);
         });
-         function table_load(id) {
-            damaged_table = $('#damagedStockHistory').DataTable({
+        function table_load(id) {
+            comp_table = $('#damagedStockHistory').DataTable({
                 'ajax': {
                     url: base_url + 'product_stock/damaged_history/' + id,
                     type: 'post'
@@ -49,8 +49,5 @@
                 ]
             });
         }
-    $(document).ready(function () {
-
-       
     });
 </script>

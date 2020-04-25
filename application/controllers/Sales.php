@@ -21,6 +21,7 @@ class Sales extends MY_Controller{
     
     function index(){
         $sales_module_id        = $this->config->item('sales_module');
+        $data['sales_module_id'] = $sales_module_id;
         $modules                = $this->modules;
         $privilege              = "view_privilege";
         $data['privilege']      = $privilege;
@@ -33,6 +34,7 @@ class Sales extends MY_Controller{
         $data['receipt_voucher_module_id'] = $this->config->item('receipt_voucher_module');
         $data['advance_voucher_module_id'] = $this->config->item('advance_voucher_module');
         $data['email_module_id']           = $this->config->item('email_module');
+        $data['sales_voucher_module']      = $this->config->item('sales_voucher_module');
         $data['recurrence_module_id']      = $this->config->item('recurrence_module');
         /* Sub Modules Present */
         $data['email_sub_module_id']       = $this->config->item('email_sub_module');
@@ -189,7 +191,7 @@ class Sales extends MY_Controller{
                     }
                     if(!empty($sales_credit_ledgers)){
                         foreach ($sales_credit_ledgers as $key => $led) {
-                             $sales_credit_note_id = $this->encryption_url->encode($led->sales_credit_note_id);
+                            $sales_credit_note_id = $this->encryption_url->encode($led->sales_credit_note_id);
                             $nestedData['customer'] .=  ' (<a href="' . base_url('sales_credit_note/view/') . $sales_credit_note_id . '">' . $led->sales_credit_note_invoice_number . '</a>)<br>';
                             array_push($total_receivable, $this->precise_amount($led->voucher_amount,$access_common_settings[0]->amount_precision).'(CN)');
                             $net_receivable -= $led->voucher_amount;
@@ -300,8 +302,7 @@ class Sales extends MY_Controller{
                         $cols .= '<span><a class="btn btn-app get_advance" data-toggle="tooltip" data-placement="bottom" title="Advance Vouchers"><i class="fa fa-file-text-o" aria-hidden="true"></i></a></span>';    
                     }
                     /*$cols .= '<span><a data-backdrop="static" data-keyboard="false" href="javascript:void(0);" data-toggle="tooltip" onclick="addToModel(' . $post->sales_id . ')" class="btn btn-app" title="Follow Up Dates"  data-placement="bottom"><i class="fa fa-book"></i></a></span>';*/
-
-                    $cols .= '<span><a href="javascript:void(0);" class="btn btn-app get_excess" data-toggle="tooltip" data-id="' . $sales_id . '" data-placement="bottom" title="Excess History"><i class="fa fa-history"></i></a></span>';         
+                    $cols .= '<span><a href="javascript:void(0);" class="btn btn-app get_excess" data-toggle="tooltip" data-id="' . $sales_id . '" data-placement="bottom" title="Excess History"><i class="fa fa-history"></i></a></span>';  
                     if (in_array($sales_module_id , $data['active_view']))
                     {
                         $customer_currency_code = $this->getCurrencyInfo($post->currency_id);
@@ -319,12 +320,15 @@ class Sales extends MY_Controller{
                     }
                     if($total_excess > 0){
                         $nestedData['pending_amount'] = ($is_pending_minus == true ? '-':'').$total_excess.'(EXC)';
-                        $excess_ids = 0;
-                        if(!empty($excess_ary)) $excess_ids = implode(',', $excess_ary);
-                        $cols .= '<span data-backdrop="static" data-keyboard="false" class="get_excess_amount" data-id="' . $sales_id . '"> <input type="hidden" value="'.$total_excess.'" name="excess_amount"><input type="hidden" value="'.$excess_ids.'" name="excess_ids"><a href="#" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Excess Amount"> <i class="fa fa-money"></i></a></span>';
+                        if (in_array($data['advance_voucher_module_id'] , $data['active_add']))
+                        {
+                            $excess_ids = 0;
+                            if(!empty($excess_ary)) $excess_ids = implode(',', $excess_ary);
+                            $cols .= '<span data-backdrop="static" data-keyboard="false" class="get_excess_amount" data-id="' . $sales_id . '"> <input type="hidden" value="'.$total_excess.'" name="excess_amount"><input type="hidden" value="'.$excess_ids.'" name="excess_ids"><a href="#" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Excess Amount"> <i class="fa fa-money"></i></a></span>';
+                        }
                     }
 
-                     if ($post->currency_id != $this->session->userdata('SESS_DEFAULT_CURRENCY'))
+                    if ($post->currency_id != $this->session->userdata('SESS_DEFAULT_CURRENCY'))
                     {
                         $conversion_date = $post->currency_converted_date;
                         if($conversion_date == '0000-00-00') $conversion_date = $post->added_date;
@@ -335,10 +339,11 @@ class Sales extends MY_Controller{
 
                     if($sales_voucher_id != ''){
                         $sales_voucher_id = $this->encryption_url->encode($sales_voucher_id);
+                        if(in_array($data['sales_voucher_module'], $data['active_view'])){
+                            $cols .= '<span><a href="' .base_url('sales_voucher/view_details/') . $sales_voucher_id.'" target="_blank" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Voucher"><i class="fa fa-eye"></i></a></span>';
 
-                    $cols .= '<span><a href="' .base_url('sales_voucher/view_details/') . $sales_voucher_id.'" target="_blank" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Voucher"><i class="fa fa-eye"></i></a></span>';
-
-                    $cols .= '<span><form action="' .base_url('sales_ledger').'" method="POST" target="_blank"><input type="hidden" name="reference_id" value="'.$sales_voucher_id.'"> <a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" class="btn btn-app" title="View Ledger"><button type="submit" class="sales_action">' . '<i class="fa fa-eye" aria-hidden="true"></i></button></a></form></span>';
+                            $cols .= '<span><form action="' .base_url('sales_ledger').'" method="POST" target="_blank"><input type="hidden" name="reference_id" value="'.$sales_voucher_id.'"> <a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" class="btn btn-app" title="View Ledger"><button type="submit" class="sales_action">' . '<i class="fa fa-eye" aria-hidden="true"></i></button></a></form></span>';
+                        }
                     }
 
                     if (in_array($sales_module_id , $data['active_delete']))
@@ -380,8 +385,8 @@ class Sales extends MY_Controller{
         $advance_voucher_module_id         = $this->config->item('advance_voucher_module');
         $data['module_id']                 = $advance_voucher_module_id;
         $modules                           = $this->modules;
-        $privilege                         = "add_privilege";
-        $data['privilege']                 = "add_privilege";
+        $privilege                         = "view_privilege";
+        $data['privilege']                 = "view_privilege";
         $section_modules                   = $this->get_section_modules($advance_voucher_module_id, $modules, $privilege);
         $data  = array_merge($data , $section_modules);
         $sales_id = $this->encryption_url->decode($this->input->post('sales_id'));
@@ -448,6 +453,7 @@ class Sales extends MY_Controller{
         $data['shipping_sub_module_id']    = $this->config->item('shipping_sub_module');
         $data['charges_sub_module_id']     = $this->config->item('charges_sub_module');
         $data['accounts_sub_module_id']    = $this->config->item('accounts_sub_module');
+        $data['receipt_voucher_module_id'] = $this->config->item('receipt_voucher_module');
         $data['customer'] = $this->customer_call();
         $data['currency'] = $this->currency_call();
         $data['brands'] = $this->brand_call();
@@ -765,11 +771,11 @@ class Sales extends MY_Controller{
     public function get_sales_suggestions($term , $inventory_advanced , $item_access , $brand_id= '')
     {
         /*echo $term;*/
-        $sales_module_id   = $this->config->item('sales_module');
+        /*$sales_module_id   = $this->config->item('sales_module');
         $modules           = $this->modules;
         $privilege         = "add_privilege";
         $data['privilege'] = $privilege;
-        $section_modules   = $this->get_section_modules($sales_module_id , $modules , $privilege);
+        $section_modules   = $this->get_section_modules($sales_module_id , $modules , $privilege);*/
         //echo $inventory_access[0]->inventory_advanced;
         /*if ($inventory_advanced == "yes")
         {
@@ -794,7 +800,7 @@ class Sales extends MY_Controller{
         $modules           = $this->modules;
         $privilege         = "add_privilege";
         $data['privilege'] = $privilege;
-        $section_modules   = $this->get_section_modules($sales_module_id , $modules , $privilege);
+        /*$section_modules   = $this->get_section_modules($sales_module_id , $modules , $privilege);*/
         $item_code = explode("-" , $code);
         if ($item_code[1] == "service"){
             $service_data = $this->common->service_field($item_code[0]);
@@ -3016,10 +3022,10 @@ class Sales extends MY_Controller{
     }
 
     public function sales_voucher_entry($data_main , $js_data , $action , $branch){
-        $sales_voucher_module_id = $this->config->item('sales_voucher_module');
+        $sales_voucher_module_id = $this->config->item('sales_module');
         $module_id               = $sales_voucher_module_id;
         $modules                 = $this->get_modules();
-        $privilege               = "add_privilege";
+        $privilege               = "view_privilege";
         $section_modules         = $this->get_section_modules($sales_voucher_module_id , $modules , $privilege);
         
         $access_sub_modules    = $section_modules['access_sub_modules'];
@@ -3719,6 +3725,7 @@ class Sales extends MY_Controller{
         $id                          = $this->encryption_url->decode($id);
         $data                        = array();
         $data = $this->getSalesDetails($id);
+        $data['receipt_voucher_module_id'] = $this->config->item('receipt_voucher_module');
         $this->load->view('sales/view' , $data);
     }
 
@@ -3799,9 +3806,9 @@ class Sales extends MY_Controller{
         $data['pdf_results'] = json_decode($rep , true);
         if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath')){
             if($print_type == 'cash_invoice'){
-                    $html = $this->load->view('sales/half_pdf' , $data , true);
+                $html = $this->load->view('sales/half_pdf' , $data , true);
             }elseif($print_type == 'tabular'){
-                   $html = $this->load->view('sales/pdf' , $data , true); 
+                $html = $this->load->view('sales/pdf' , $data , true); 
             }elseif($print_type == 'hsn_summary'){
                 $html = $this->load->view('sales/pdf_hsn' , $data , true);
             }elseif($print_type == 'aodry_format'){
@@ -4626,7 +4633,7 @@ class Sales extends MY_Controller{
                 $email_sub_module = 1;
             }
         } 
-        
+        if($email_sub_module == 1){
             ob_start();
             $html                 = ob_get_clean();
             $html                 = utf8_encode($html);
@@ -4684,6 +4691,7 @@ class Sales extends MY_Controller{
             $data['data'][0]->firm_name = $data['branch'][0]->firm_name;
             $result = json_encode($data['data']);
             echo $result;
+        }
         
     }
 
@@ -4695,10 +4703,10 @@ class Sales extends MY_Controller{
                         'branch_id' => $this->session->userdata('SESS_BRANCH_ID') ));
         
         $data              = $this->get_default_country_state();
-        $sales_module_id   = $this->config->item('sales_module');
+        $sales_module_id   = $this->config->item('brand_module');
         $modules           = $this->modules;
-        $privilege         = "edit_privilege";
-        $data['privilege'] = "edit_privilege";
+        $privilege         = "view_privilege";
+        $data['privilege'] = "view_privilege";
         $section_modules   = $this->get_section_modules($sales_module_id , $modules , $privilege);
         /* presents all the needed */
         $data              = array_merge($data , $section_modules);
@@ -4725,7 +4733,7 @@ class Sales extends MY_Controller{
     }
 
     public function brand_sales(){
-        $sales_module_id        = $this->config->item('sales_module');
+        $sales_module_id        = $this->config->item('brand_module');
         $modules                = $this->modules;
         $privilege              = "view_privilege";
         $data['privilege']      = $privilege;

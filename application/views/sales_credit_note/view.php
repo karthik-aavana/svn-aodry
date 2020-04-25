@@ -829,14 +829,15 @@ $sales_credit_note_id = $this->encryption_url->encode($data[0]->sales_credit_not
                                                         <span class="hidden-sm hidden-xs">PDF</span>
                                                     </a>
                                                 </div>
-                                            <?php } ?>
+                                            <?php } 
+                                            if (in_array($sales_credit_note_module_id, $active_edit)) {?>
                                             <div class="btn-group">
                                                 <a class="tip btn btn-success" href="<?php echo base_url('sales_credit_note/edit/'); ?><?php echo $sales_credit_note_id; ?>" title="Edit" target="_blank">
                                                     <i class="fa fa-pencil"></i>
                                                     <span class="hidden-sm hidden-xs">Edit</span>
                                                 </a>
                                             </div>
-                                            <?php
+                                            <?php }
                                             /* if (in_array($email_module_id, $active_view))
                                               {
                                               if (in_array($email_sub_module_id, $access_sub_modules))

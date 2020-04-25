@@ -64,12 +64,13 @@ class GroupLedgers extends MY_Controller {
           $this->db->insert('tbl_ledgers',$insert_sub);
           }
           } */
-        $expense_module_id = $this->config->item('general_voucher_module');
-        $this->data['general_module_id'] = $expense_module_id;
+        $group_ledgers_module_id = $this->config->item('group_ledgers_module');
+        $this->data['group_ledgers_module_id'] = $group_ledgers_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $this->data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($expense_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($group_ledgers_module_id, $modules, $privilege);
+        $this->data=array_merge($this->data,$section_modules);
         /*$this->data['tds_section'] = $this->tds_section_call();*/
         $this->data['main_list'] = $this->groupledger_model->getAllMainGroup();
         /* presents all the needed */
@@ -195,6 +196,12 @@ class GroupLedgers extends MY_Controller {
     }
 
     public function updateLedgerInfo() {
+        $group_ledgers_module_id = $this->config->item('group_ledgers_module');
+        $this->data['group_ledgers_module_id'] = $group_ledgers_module_id;
+        $modules = $this->modules;
+        $privilege = "edit_privilege";
+        $this->data['privilege'] = $privilege;
+        $section_modules = $this->get_section_modules($group_ledgers_module_id, $modules, $privilege);
         $ledger_id = $this->input->post('ledger_id');
         $primary_sub_group = $this->input->post('primary_sub_group');
         $sec_sub_group = $this->input->post('sec_sub_group');
@@ -251,6 +258,12 @@ class GroupLedgers extends MY_Controller {
     }
 
     public function addNewLedgerGroup() {
+        $group_ledgers_module_id = $this->config->item('group_ledgers_module');
+        $this->data['group_ledgers_module_id'] = $group_ledgers_module_id;
+        $modules = $this->modules;
+        $privilege = "add_privilege";
+        $this->data['privilege'] = $privilege;
+        $section_modules = $this->get_section_modules($group_ledgers_module_id, $modules, $privilege);
         $ledger = $this->input->post('ledger');
         $main_grp_id = $this->input->post('main_grp_id');
         $primary_sub_group = $this->input->post('primary_sub_group');
@@ -320,6 +333,12 @@ class GroupLedgers extends MY_Controller {
     }
 
     public function updateLedgerStatus() {
+        $group_ledgers_module_id = $this->config->item('group_ledgers_module');
+        $this->data['group_ledgers_module_id'] = $group_ledgers_module_id;
+        $modules = $this->modules;
+        $privilege = "edit_privilege";
+        $this->data['privilege'] = $privilege;
+        $section_modules = $this->get_section_modules($group_ledgers_module_id, $modules, $privilege);
         $sub_grp_id = $this->input->post('sub_grp_id');
         $status = $this->input->post('status');
         $update = array('group_status' => $status);

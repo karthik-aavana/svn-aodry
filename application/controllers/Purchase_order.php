@@ -19,6 +19,7 @@ class Purchase_order extends MY_Controller {
         $access_common_settings = $section_modules['access_common_settings'];
         /* Modules Present */
         $data['purchase_order_module_id'] = $purchase_order_module_id;
+        $data['purchase_module_id'] = $this->config->item('purchase_module');
         $data['payment_voucher_module_id'] = $this->config->item('payment_voucher_module');
         $data['advance_voucher_module_id'] = $this->config->item('advance_voucher_module');
         $data['email_module_id'] = $this->config->item('email_module');
@@ -81,8 +82,8 @@ class Purchase_order extends MY_Controller {
                         $cols .= '<span><a href="' . base_url('purchase_order/view/') . $purchase_order_id . '" class="btn btn-app" data-placement="bottom" data-toggle="tooltip" title="View Purchase Order">
                                     <i class="fa fa-eye"></i>
                             </a></span>';
+                        $cols .= '<span><a href="' . base_url('purchase_order/pdf/') . $purchase_order_id .' "class="btn btn-app pdf_button" data-name="regular" data-toggle="tooltip" data-placement="bottom" title="Download PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a></span>';
                     }
-                    $cols .= '<span><a href="' . base_url('purchase_order/pdf/') . $purchase_order_id .' "class="btn btn-app pdf_button" data-name="regular" data-toggle="tooltip" data-placement="bottom" title="Download PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a></span>';
                     if (in_array($purchase_order_module_id, $data['active_edit'])) {
                         if($post->purchase_id == "" || $post->purchase_id == 0 || $post->purchase_id == null)
                         $cols .= '<span> <a href="' . base_url('purchase_order/edit/') . $purchase_order_id . '" class="btn btn-app" data-placement="bottom" data-toggle="tooltip" title="Edit Purchase Order">
@@ -90,9 +91,11 @@ class Purchase_order extends MY_Controller {
                             </a></span>';
                     }
                     if ($post->purchase_id == "" || $post->purchase_id == 0 || $post->purchase_id == null) {
-                        $cols .= '<span><a href="' . base_url('purchase_order/convert_purchase_order/') . $purchase_order_id . '" class="btn btn-app" data-placement="bottom" data-toggle="tooltip" title="Move to Purchase">
+                        if (in_array($data['purchase_module_id'], $data['active_add'])) {
+                            $cols .= '<span><a href="' . base_url('purchase_order/convert_purchase_order/') . $purchase_order_id . '" class="btn btn-app" data-placement="bottom" data-toggle="tooltip" title="Move to Purchase">
                                     <i class="fa fa-reply"></i>
                             </a></span>';
+                        }
                     }
 
                     /*if (in_array($data['email_module_id'], $data['active_view'])) {
@@ -102,8 +105,12 @@ class Purchase_order extends MY_Controller {
                             </a></span>';
                         }
                     }*/
-                    $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#composeMail" >
+                    if (in_array($data['email_module_id'], $data['active_view'])) {
+                        if (in_array($data['email_sub_module_id'], $data['access_sub_modules'])) {
+                            $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#composeMail" >
                         <a class="btn btn-app composeMail" data-id="' . $purchase_order_id . '" data-name="regular"  href="javascript:void(0);" class="btn btn-app" data-placement="bottom" data-toggle="tooltip" title="Email purchase Order"><i class="fa fa-envelope-o"></i></a></span>';
+                        }
+                    }
                     
                     if (in_array($purchase_order_module_id, $data['active_delete'])) {
                         $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal"><a class="btn btn-app delete_button" data-id="' . $purchase_order_id . '" data-path="purchase_order/delete" href="#" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?" data-placement="bottom" data-toggle="tooltip" title="Delete Purchase Order">
@@ -1211,10 +1218,10 @@ class Purchase_order extends MY_Controller {
     public function convert_purchase_order($id) {
         $id = $this->encryption_url->decode($id);
         $data = $this->get_default_country_state();
-        $purchase_module_id = $this->config->item('purchase_order_module');
+        $purchase_module_id = $this->config->item('purchase_module');
         $modules = $this->modules;
-        $privilege = "edit_privilege";
-        $data['privilege'] = "edit_privilege";
+        $privilege = "add_privilege";
+        $data['privilege'] = "add_privilege";
         $section_modules = $this->get_section_modules($purchase_module_id, $modules, $privilege);
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
@@ -1391,7 +1398,6 @@ class Purchase_order extends MY_Controller {
     public function delete() {
         $id = $this->input->post('delete_id');
         $id = $this->encryption_url->decode($id);
-        $purchase_order_module_id = $this->config->item('purchase_order_module');
         $purchase_order_module_id = $this->config->item('purchase_order_module');
         $data['module_id'] = $purchase_order_module_id;
         $modules = $this->modules;
@@ -1624,7 +1630,7 @@ class Purchase_order extends MY_Controller {
     public function purchase_order_return($id) {
         $id = $this->encryption_url->decode($id);
         $data = $this->get_default_country_state();
-        $purchase_order_return_module_id = $this->config->item('purchase_order_return_module');
+        $purchase_order_return_module_id = $this->config->item('purchase_return_module');/*purchase_order_return_module*/
         $data['module_id'] = $purchase_order_return_module_id;
         $modules = $this->modules;
         $privilege = "add_privilege";

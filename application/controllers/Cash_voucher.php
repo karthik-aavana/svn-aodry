@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-/*test*/
+
 class Cash_voucher extends MY_Controller
 {
 
@@ -18,7 +18,7 @@ class Cash_voucher extends MY_Controller
     function index()
     {
         $cash_voucher_module_id        = $this->config->item('cash_voucher_module');
-        $data['module_id']               = $cash_voucher_module_id;
+        $data['module_id'] = $cash_voucher_module_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
         $data['privilege']               = $privilege;
@@ -69,7 +69,11 @@ class Cash_voucher extends MY_Controller
                     $cash_voucher_id            = $this->encryption_url->encode($post->cash_voucher_id);
                     $nestedData['action'] = '<input type="checkbox" value="'.$cash_voucher_id.'" name="check_voucher" vtype="cash">';
                     $nestedData['voucher_date']   = date('d-m-Y', strtotime($post->voucher_date));
-                    $nestedData['voucher_number'] = '<a href="' . base_url('cash_voucher/view_details/') . $cash_voucher_id . '">' . $post->voucher_number . '</a>';
+                    $nestedData['voucher_number'] = $post->voucher_number;
+                    if (in_array($cash_voucher_module_id , $data['active_view']))
+                    {
+                        $nestedData['voucher_number'] = '<a href="' . base_url('cash_voucher/view_details/') . $cash_voucher_id . '">' . $post->voucher_number . '</a>';
+                    }
 
                     $nestedData['invoice_number'] = str_replace(",", ",<br/>", $post->reference_number);
                     $nestedData['grand_total']    = $post->currency_symbol . ' ' . $this->precise_amount(str_replace(",", ",<br/>", $post->receipt_amount),2);

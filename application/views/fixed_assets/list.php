@@ -32,7 +32,11 @@ $this->load->view('layout/header');
                     <div id="plus_btn">
                         <div class="box-header with-border">
                             <h3 class="box-title">Fixed Assets</h3>
+                            <?php
+                            if (in_array($fixed_assets_id, $active_add)) {
+                            ?>
                             <a class="btn btn-sm btn-info pull-right" href="<?php echo base_url('fixed_assets/add'); ?>">Add Fixed Assets</a>
+                            <?php } ?>
                         </div>
                     </div>
                     <div id="filter">

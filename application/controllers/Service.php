@@ -140,7 +140,11 @@ class Service extends MY_Controller
                         $cols .= '<a class="return_stock btn btn-xs btn-info" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#return_stock" data-id="' . $service_id . '" href="#" title="Return to Stock" ><span class="glyphicon glyphicon-circle-arrow-left"></span>Return to Stock</a>';
                     }
                     $cols .= '</div></div>';
-                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
+                    $disabled = '';
+                    if(!in_array($data['service_module_id'], $data['active_delete']) && !in_array($data['service_module_id'], $data['active_edit']) && ($post->service_damaged_quantity <= 0) && ($post->service_quantity <= 0)){
+                        $disabled = 'disabled';
+                    }
+                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal"'.$disabled.'>';
                     $send_data[] = $nestedData;
                 }
 
@@ -239,7 +243,7 @@ class Service extends MY_Controller
         $data['category_module_id']    = $this->config->item('category_module');
         $data['subcategory_module_id'] = $this->config->item('subcategory_module');
         $data['tax_module_id']         = $this->config->item('tax_module');
-
+        $data['uqc_module_id']         = $this->config->item('uqc_module');
  
         $data['service_category'] = $this->service_category_call();
         $data['tax_gst']              = $this->tax_call_type('GST');
@@ -628,10 +632,10 @@ class Service extends MY_Controller
 
     public function edit($id)
     {
-        $service_id                              = $this->encryption_url->decode($id);
-      $service_module_id          = $this->config->item('service_module');
+        $service_id                 = $this->encryption_url->decode($id);
+        $service_module_id          = $this->config->item('service_module');
         $modules                    = $this->modules;
-        $privilege                  = "add_privilege";
+        $privilege                  = "edit_privilege";
         $data['privilege']          = $privilege;
         $section_modules            = $this->get_section_modules($service_module_id, $modules, $privilege);
         /* presents all the needed */
@@ -644,6 +648,7 @@ class Service extends MY_Controller
         $data['category_module_id']    = $this->config->item('category_module');
         $data['subcategory_module_id'] = $this->config->item('subcategory_module');
         $data['tax_module_id']         = $this->config->item('tax_module');
+        $data['uqc_module_id']         = $this->config->item('uqc_module');
         $data['tds_section']      = $this->tds_section_call();
 
         $select                      = "s.*";
@@ -687,7 +692,7 @@ class Service extends MY_Controller
         {
         $service_module_id = $this->config->item('service_module');
         $modules           = $this->modules;
-        $privilege         = "add_privilege";
+        $privilege         = "view_privilege";
         $data['privilege'] = $privilege;
         $section_modules   = $this->get_section_modules($service_module_id, $modules, $privilege);
 
@@ -765,7 +770,7 @@ class Service extends MY_Controller
 
         $service_module_id          = $this->config->item('service_module');
         $modules                    = $this->modules;
-        $privilege                  = "add_privilege";
+        $privilege                  = "edit_privilege";
         $data['privilege']          = $privilege;
         $section_modules            = $this->get_section_modules($service_module_id, $modules, $privilege);
         /* presents all the needed */
@@ -830,11 +835,11 @@ class Service extends MY_Controller
 
     public function delete()
     {
-        $id                              = $this->input->post('delete_id');
-        $service_id                              = $this->encryption_url->decode($id);
+        $id                         = $this->input->post('delete_id');
+        $service_id                 = $this->encryption_url->decode($id);
         $service_module_id          = $this->config->item('service_module');
         $modules                    = $this->modules;
-        $privilege                  = "add_privilege";
+        $privilege                  = "delete_privilege";
         $data['privilege']          = $privilege;
         $section_modules            = $this->get_section_modules($service_module_id, $modules, $privilege);
         /* presents all the needed */

@@ -30,9 +30,13 @@ $this->load->view('layout/header');
                                         <select class="form-control select2" id="module_id" name="module_id">
                                             <option value="">Select</option>
                                             <?php
+                                            $disabled = '';
+                                            if (!in_array($module_id, $active_add)) {
+                                                $disabled = 'disabled';
+                                            }
                                             foreach ($modules as $module) {
                                                 ?>
-                                                <option value='<?php echo $module->module_id ?>'>
+                                                <option value='<?php echo $module->module_id ?>'<?= $disabled ?>>
                                                     <?php echo $module->module_name; ?>
                                                 </option>
                                                 <?php
@@ -45,7 +49,7 @@ $this->load->view('layout/header');
                                 <div class="col-md-2">
                                     <div class="form-group mt-30">
                                         <label>Add</label>
-                                        <input type="checkbox" checked="" id="add"  name="add">
+                                        <input type="checkbox" id="add"  name="add" class='is_report'>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
@@ -57,17 +61,17 @@ $this->load->view('layout/header');
                                 <div class="col-md-2">
                                     <div class="form-group mt-30">
                                         <label>Edit</label>
-                                        <input type="checkbox" id="edit"  name="edit">
+                                        <input type="checkbox" id="edit"  name="edit" class='is_report'>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group mt-30">
                                         <label>Delete</label>
-                                        <input type="checkbox" id="delete" name="delete">
+                                        <input type="checkbox" id="delete" name="delete" class='is_report'>
                                     </div>
                                 </div>
                                 <div class="col-md-1 mt-15">
-                                    <button type="submit" id="model_submit" class="btn btn-info">Add</button>
+                                    <button type="submit" id="model_submit" class="btn btn-info" <?= $disabled ?>>Add</button>
                                 </div>                                
                             </div>
                             <div class="row">
@@ -88,7 +92,9 @@ $this->load->view('layout/header');
                                             <th>Edit</th>
                                             <th>view</th>
                                             <th>Delete</th>
+                                            <?php if (in_array($module_id, $active_edit) || in_array($module_id, $active_delete)){ ?>
                                             <th>Action</th>
+                                            <?php } ?>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -103,10 +109,21 @@ $this->load->view('layout/header');
                                                     <td><?= $row->edit_privilege ?></td>
                                                     <td><?= $row->view_privilege ?></td>
                                                     <td><?= $row->delete_privilege ?></td>
+                                                    <?php if (in_array($module_id, $active_edit) || in_array($module_id, $active_delete)){ ?>
                                                     <td>
-                                                        <a data-toggle="modal" data-target="#update_privillege" data-id="<?= $id ?>" title="Update Privilege" class="privilege"><i class="fa fa-pencil"></i></a> | 
-                                                        <a data-toggle="modal" data-target="#delete_modal" data-id="<?= $id ?>" title="Delete" class="delete_record"><span class="fa fa-trash-o"></span></a>
+                                                        <?php
+                                                        $stripe = false;
+                                                        if (in_array($module_id, $active_edit) && in_array($module_id, $active_delete)){
+                                                            $stripe = true;
+                                                        }
+                                                        if($row->module_id != 37){
+                                                            if (in_array($module_id, $active_edit)){?>
+                                                                <a data-toggle="modal" data-target="#update_privillege" data-id="<?= $id ?>" title="Update Privilege" class="privilege"><i class="fa fa-pencil"></i></a> <?php } if($stripe){ ?>| <?php } if (in_array($module_id, $active_delete)){?>
+                                                                <a data-toggle="modal" data-target="#delete_modal" data-id="<?= $id ?>" title="Delete" class="delete_record"><span class="fa fa-trash-o"></span></a>
+                                                            <?php } 
+                                                        }?>
                                                     </td>
+                                                    <?php } ?>
                                                 </tr>
                                                 <?php
                                             }
@@ -128,6 +145,44 @@ $this->load->view('privileges/update_privillege_modal');
 ?>
 <script type="text/javascript">
     $(document).ready(function () {
+        $('select[name="module_id"]').change(function(){
+            var module_id=$(this).val();
+            var user_id = $('#user_id').val();
+            $.ajax({
+                url:'<?=base_url();?>privilege/get_module_group_assigned_privilege',
+                type:'post',
+                dataType:'json',
+                data:{module_id:module_id, user_id:user_id},
+                success:function(result){
+                    /*console.log(result);*/
+                    $('.is_report').attr('disabled',false);
+                    if(result[0].is_report == 1){
+                        $('.is_report').attr('disabled',true);
+                    }
+                    /*$(".is_report").css("display", "none");*/
+                    if(result[0].add_privilege == 1){
+                        $('#add').prop('checked',true);
+                    }else{
+                        $('#add').prop('checked',false);
+                    }
+                    if(result[0].edit_privilege == 1){
+                        $('#edit').prop('checked',true);
+                    }else{
+                        $('#edit').prop('checked',false);
+                    }
+                    if(result[0].view_privilege == 1){
+                        $('#view').prop('checked',true);
+                    }else{
+                        $('#view').prop('checked',false);
+                    }
+                    if(result[0].delete_privilege == 1){
+                        $('#delete').prop('checked',true);
+                    }else{
+                        $('#delete').prop('checked',false);
+                    }
+                }
+            });
+        })
         $("#model_submit").click(function (e) {
             var user_id = $("#user_id").text();
             var module_id = $("#module_id").val();

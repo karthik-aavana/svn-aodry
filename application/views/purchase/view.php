@@ -11,10 +11,12 @@ $this->load->view('layout/header');
                         <h3 class="box-title">Purchase Invoice</h3>
                         <?php
                         $purchase_id = $this->encryption_url->encode($data[0]->purchase_id);
+                        if(in_array($payment_voucher_module_id, $active_add)){
                         ?>
                         <a class="btn btn-sm btn-info pull-right" href="<?php
                         echo base_url('payment_voucher/add_purchase_payment/') . $purchase_id;
                         ?>" title="Pay Now">Pay Now</a>
+                        <?php } ?>
                         <a class="btn btn-sm btn-default pull-right back_button" id="cancel" onclick1="cancel('purchase')">Back</a>
                     </div>
                     <div class="box-body">

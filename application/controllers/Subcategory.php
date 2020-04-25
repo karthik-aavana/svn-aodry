@@ -78,8 +78,11 @@ class Subcategory extends MY_Controller {
                         }
                     }
                     $cols .= '</div></div>';
-
-                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
+                    $disabled = '';
+                    if(!in_array($data['subcategory_module_id'], $data['active_delete']) && !in_array($data['subcategory_module_id'], $data['active_edit'])){
+                        $disabled = 'disabled';
+                    }
+                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal"'.$disabled.'>';
                     $send_data[] = $nestedData;
                 }
             } $json_data = array(
@@ -94,15 +97,15 @@ class Subcategory extends MY_Controller {
     }
 
     public function get_category() {
-        $category_module_id = $this->config->item('category_module');
+        /*$category_module_id = $this->config->item('category_module');
         $data['module_id'] = $category_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = "view_privilege";
         $section_modules = $this->get_section_modules($category_module_id, $modules, $privilege);
 
-        /* presents all the needed */
-        $data = array_merge($data, $section_modules);
+         presents all the needed 
+        $data = array_merge($data, $section_modules);*/
 
         $category_data = $this->general_model->getRecords('*', 'category', array(
             'delete_status' => 0,
@@ -372,8 +375,8 @@ class Subcategory extends MY_Controller {
         $subcategory_module_id = $this->config->item('subcategory_module');
         $data['module_id'] = $subcategory_module_id;
         $modules = $this->modules;
-        $privilege = "view_privilege";
-        $data['privilege'] = "view_privilege";
+        $privilege = "edit_privilege";
+        $data['privilege'] = "edit_privilege";
         $section_modules = $this->get_section_modules($subcategory_module_id, $modules, $privilege);
 
         /* presents all the needed */

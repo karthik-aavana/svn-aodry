@@ -74,8 +74,11 @@ Class General_voucher extends MY_Controller
                     $general_voucher_id           = $this->encryption_url->encode($post->general_voucher_id);
                     $nestedData['action'] = '<input type="checkbox" value="'.$general_voucher_id.'" name="check_voucher" vtype="journal">';
                     $nestedData['voucher_date']   = date('d-m-Y', strtotime($post->voucher_date));
+                    $nestedData['voucher_number'] = $post->voucher_number;
+                    if (in_array($general_voucher_module_id , $data['active_view']))
+                    {
                     $nestedData['voucher_number'] = '<a href="' . base_url('general_voucher/view_details/') . $general_voucher_id . '">' . $post->voucher_number . '</a>';
-
+                    }
                     $nestedData['invoice_number'] = str_replace(",", ",<br/>", $post->reference_number);
                     $nestedData['grand_total']    = $post->currency_symbol . ' ' . $this->precise_amount(str_replace(",", ",<br/>", $post->receipt_amount),2);
                     $nestedData['from_account']   = $post->from_account;
@@ -317,9 +320,12 @@ Class General_voucher extends MY_Controller
             $this->session->set_userdata('bulk_error', $this->upload->display_errors());
         } else {
             $general_voucher_module_id       = $this->config->item('general_voucher_module');
+            if($this->voucher_type == 'contra') $general_voucher_module_id = $this->config->item('contra_voucher_module');
+            if($this->voucher_type == 'bank') $general_voucher_module_id = $this->config->item('bank_voucher_module');
+            if($this->voucher_type == 'cash') $general_voucher_module_id = $this->config->item('cash_voucher_module');
             $data['module_id']               = $general_voucher_module_id;
             $modules                         = $this->modules;
-            $privilege                       = "view_privilege";
+            $privilege                       = "add_privilege";
             $data['privilege']               = $privilege;
             $general_modules                 = $this->get_section_modules($general_voucher_module_id, $modules, $privilege);
             $data = array_merge($data,$general_modules);
@@ -585,6 +591,15 @@ Class General_voucher extends MY_Controller
 
     public function getVoucherDetail(){
         $voucher_type = $this->input->post('voucher_type');
+        $general_voucher_module_id       = $this->config->item('general_voucher_module');
+        if($voucher_type == 'contra') $general_voucher_module_id = $this->config->item('contra_voucher_module');
+        if($voucher_type == 'bank') $general_voucher_module_id = $this->config->item('bank_voucher_module');
+        if($voucher_type == 'cash') $general_voucher_module_id = $this->config->item('cash_voucher_module');
+        $data['module_id'] = $general_voucher_module_id;
+        $modules           = $this->modules;
+        $privilege         = "edit_privilege";
+        $data['privilege'] = $privilege;
+        $section_modules   = $this->get_section_modules($general_voucher_module_id, $modules, $privilege);
         $voucher_id =  $this->encryption_url->decode($this->input->post('voucher_id'));
         
         $prefix = $voucher_type;
@@ -611,6 +626,15 @@ Class General_voucher extends MY_Controller
 
     public function deleteVoucher(){
         $voucher_type = $this->input->post('voucher_type');
+        $general_voucher_module_id       = $this->config->item('general_voucher_module');
+        if($voucher_type == 'contra') $general_voucher_module_id = $this->config->item('contra_voucher_module');
+        if($voucher_type == 'bank') $general_voucher_module_id = $this->config->item('bank_voucher_module');
+        if($voucher_type == 'cash') $general_voucher_module_id = $this->config->item('cash_voucher_module');
+        $data['module_id'] = $general_voucher_module_id;
+        $modules           = $this->modules;
+        $privilege         = "delete_privilege";
+        $data['privilege'] = $privilege;
+        $section_modules   = $this->get_section_modules($general_voucher_module_id, $modules, $privilege);
         $voucher_id =  $this->encryption_url->decode($this->input->post('voucher_id'));
         
         $prefix = $voucher_type;
@@ -7076,8 +7100,8 @@ Class General_voucher extends MY_Controller
         $general_voucher_id              = $this->config->item('journal_voucher_module');
         $data['module_id']               = $general_voucher_id;
         $modules                         = $this->modules;
-        $privilege                       = "view_privilege";
-        $data['privilege']               = "view_privilege";
+        $privilege                       = "edit_privilege";
+        $data['privilege']               = "edit_privilege";
         $section_modules                 = $this->get_section_modules($general_voucher_id, $modules, $privilege);
         
         /* presents all the needed */
@@ -7162,7 +7186,7 @@ Class General_voucher extends MY_Controller
         $id                              = $this->input->post('delete_id');
         $id                              = $this->encryption_url->decode($id);
         $advance_voucher_table           = 'advance_voucher';
-       $journal_voucher_module_id         = $this->config->item('journal_voucher_module');
+        $journal_voucher_module_id       = $this->config->item('journal_voucher_module');
         $data['module_id']               = $journal_voucher_module_id;
         $modules                         = $this->modules;
         $privilege                       = "delete_privilege";

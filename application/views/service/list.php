@@ -44,10 +44,9 @@ $this->load->view('layout/header');
                             if (in_array($service_module_id, $active_add)) {
                                 ?>
                                 <a class="btn btn-sm btn-info pull-right" href="<?php echo base_url('service/add'); ?>">Add Service</a>
+                                <span><a data-toggle="tooltip" data-placement="bottom" data-custom-class="tooltip-primary" class="btn btn-sm btn-info upload_service_popup pull-right" data-original-title="Upload Service" class=""><i class="fa fa-cloud-upload"></i></a> </span>
                             <?php } ?>
                             <span><a href="<?php echo base_url("assets/excel/service_bulk_demo.csv") ?>"  class="btn btn-sm btn-info pull-right" data-toggle="tooltip" data-placement="bottom" data-custom-class="tooltip-primary" data-original-title="Download Service CSV Demo File" download><i class="fa fa-download"></i></a></span>
-
-                            <span><a data-toggle="tooltip" data-placement="bottom" data-custom-class="tooltip-primary" class="btn btn-sm btn-info upload_service_popup pull-right" data-original-title="Upload Service" class=""><i class="fa fa-cloud-upload"></i></a> </span>
                         </div>
                     </div>
                     <div id="filter">

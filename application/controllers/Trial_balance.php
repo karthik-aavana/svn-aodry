@@ -15,7 +15,7 @@ class Trial_balance extends MY_Controller {
     }
 
     function index(){
-    	$report_module_id         = $this->config->item('report_module');
+    	$report_module_id         = $this->config->item('trial_balance_report_module');
         $data['module_id']               = $report_module_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
@@ -32,6 +32,12 @@ class Trial_balance extends MY_Controller {
     }
 
     public function GetLedgersList(){
+        $report_module_id         = $this->config->item('trial_balance_report_module');
+        $data['module_id']               = $report_module_id;
+        $modules                         = $this->modules;
+        $privilege                       = "view_privilege";
+        $data['privilege']               = $privilege;
+        $section_modules                 = $this->get_section_modules($report_module_id, $modules, $privilege);
         $year_id = $this->input->post('year_id');
         /*$this->session->set_userdata('year_id',$year_id);*/
         
@@ -132,6 +138,12 @@ class Trial_balance extends MY_Controller {
     }
 
     public function downloadReportSheet(){
+        $report_module_id         = $this->config->item('trial_balance_report_module');
+        $data['module_id']               = $report_module_id;
+        $modules                         = $this->modules;
+        $privilege                       = "view_privilege";
+        $data['privilege']               = $privilege;
+        $section_modules                 = $this->get_section_modules($report_module_id, $modules, $privilege);
         $year_id = $this->input->post('year_id');
         $branch_id = $this->branch_id;
         /*$this->session->set_userdata('year_id',$year_id);*/

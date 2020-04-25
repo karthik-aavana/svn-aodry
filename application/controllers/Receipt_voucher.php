@@ -29,6 +29,7 @@ class Receipt_voucher extends MY_Controller
 
         $data['email_module_id']     = $this->config->item('email_module');
         $data['email_sub_module_id'] = $this->config->item('email_sub_module');
+        $sales_module_id = $this->config->item('sales_module');
 
         if (!empty($this->input->post()))
         {
@@ -78,19 +79,26 @@ class Receipt_voucher extends MY_Controller
                         $nestedData['voucher_number']            = '<a href="' . base_url('receipt_voucher/view_details/') . $receipt_id . '">' . $post->voucher_number . '</a>';
                         $nestedData['customer']                  = $post->customer_name;
                         $reference_number         = str_replace(",", ",<br/>", $post->reference_number);
-                        $nestedData['reference_number'] = ' <a href="' . base_url('sales/view/') . $sales_id . '">' . $reference_number . '</a>';
+                        $nestedData['reference_number'] = $reference_number;
+                        if(in_array($sales_module_id, $data['active_view'])){
+                            $nestedData['reference_number'] = ' <a href="' . base_url('sales/view/') . $sales_id . '">' . $reference_number . '</a>';
+                        }
                         $nestedData['amount']                    = $this->precise_amount($post->receipt_amount, $access_common_settings[0]->amount_precision); /*$post->currency_symbol ' ' . str_replace(",", ",<br/> " .  " ", $post->imploded_receipt_amount); */
                         /*$nestedData['currency_converted_amount'] = $this->precise_amount($post->converted_receipt_amount, $access_common_settings[0]->amount_precision);*/
                         $nestedData['from_account']              = $post->from_account;
                         $nestedData['added_user']                = $post->first_name . ' ' . $post->last_name;
                                             
                         $cols = '<div class="box-body hide action_button"><div class="btn-group">';
-                        $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Receipt Voucher" href="' . base_url('receipt_voucher/view_details/') . $receipt_id . '"><i class="fa fa-eye"></i></a></span>';
+                        if (in_array($receipt_voucher_module_id, $data['active_view'])){
+                            $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Receipt Voucher" href="' . base_url('receipt_voucher/view_details/') . $receipt_id . '"><i class="fa fa-eye"></i></a></span>';
+                            $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Download PDF" href="' . base_url('receipt_voucher/pdf/') . $receipt_id . '" target="_blank"><i class="fa fa-file-pdf-o"></i></a></span>';
+                        }
+                        
                         if (in_array($receipt_voucher_module_id, $data['active_edit']) && $post->voucher_status != "2")
                         {
                             $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Edit Receipt Voucher" href="' . base_url('receipt_voucher/edit/') . $receipt_id . '"><i class="fa fa-pencil"></i></a></span>';
                         }
-                        $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Download PDF" href="' . base_url('receipt_voucher/pdf/') . $receipt_id . '" target="_blank"><i class="fa fa-file-pdf-o"></i></a></span>';
+                        
                         if (in_array($data['email_module_id'], $data['active_view']))
                         {
                             if (in_array($data['email_sub_module_id'], $data['access_sub_modules'])){
@@ -1649,8 +1657,8 @@ class Receipt_voucher extends MY_Controller
         $receipt_voucher_module_id = $this->config->item('receipt_voucher_module');
         $data['module_id']         = $receipt_voucher_module_id;
         $modules                   = $this->modules;
-        $privilege                 = "edit_privilege";
-        $data['privilege']         = "edit_privilege";
+        $privilege                 = "add_privilege";
+        $data['privilege']         = "add_privilege";
         $section_modules           = $this->get_section_modules($receipt_voucher_module_id, $modules, $privilege);
 
         /* presents all the needed */

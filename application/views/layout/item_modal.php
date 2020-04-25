@@ -13,33 +13,36 @@
             <div class="modal-body" style="min-height: 60px">               
                 <form id="itemForm">                       
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <a href="" data-toggle="modal" data-target="#service_modal" class="open_service_modal">+ Add Service</a>
+                        <?php if (in_array($service_module_id, $active_add)) {?>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <a href="" data-toggle="modal" data-target="#service_modal" class="open_service_modal">+ Add Service</a>
+                                </div>
                             </div>
-                        </div>
-                        <?php
+                        <?php }
                         $service_modal = 1;
                         $product_modal = 0;
                         $product_inventory_modal = 0;
-                        if (isset($inventory_access) && $inventory_access == "yes") {
-                            $product_inventory_modal = 1;
-                            ?>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <a href="" data-toggle="modal" data-target="#product_inventory_modal" class="open_product_modal">+ Add Product</a>
+                        if (in_array($product_module_id, $active_add)) {
+                            if (isset($inventory_access) && $inventory_access == "yes") {
+                                $product_inventory_modal = 1;
+                                ?>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <a href="" data-toggle="modal" data-target="#product_inventory_modal" class="open_product_modal">+ Add Product</a>
+                                    </div>
                                 </div>
-                            </div>
-                            <?php
-                        } else {
-                            $product_modal = 1;
-                            ?>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <a href="" data-toggle="modal" data-target="#product_inventory_modal" class="open_product_modal">+ Add Product</a>
+                                <?php
+                            } else {
+                                $product_modal = 1;
+                                ?>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <a href="" data-toggle="modal" data-target="#product_inventory_modal" class="open_product_modal">+ Add Product</a>
+                                    </div>
                                 </div>
-                            </div>
-                        <?php } ?>
+                            <?php }
+                        } ?>
                     </div>
                 </form>
             </div>

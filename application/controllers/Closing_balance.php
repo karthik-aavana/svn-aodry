@@ -17,12 +17,12 @@ class Closing_balance extends MY_Controller {
     }
 
     function index() {
-        $general_module_id = $this->config->item('general_voucher_module');
-        $this->data['general_module_id'] = $general_module_id;
+        $closing_balance_module_id = $this->config->item('closing_balance_module');
+        $this->data['closing_balance_module_id'] = $closing_balance_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $this->data['privilege'] = $privilege;
-        $section_modules = $this->get_section_modules($general_module_id, $modules, $privilege);
+        $section_modules = $this->get_section_modules($closing_balance_module_id, $modules, $privilege);
         $this->data['main_list'] = $this->groupledger_model->getAllMainGroup();
         $this->db->select('balance_upto_date');
         $this->db->where('branch_id',$this->branch_id);
@@ -40,6 +40,12 @@ class Closing_balance extends MY_Controller {
     }
 
     public function updateDefaultBalance(){
+        $closing_balance_module_id = $this->config->item('closing_balance_module');
+        $this->data['closing_balance_module_id'] = $closing_balance_module_id;
+        $modules = $this->modules;
+        $privilege = "edit_privilege";
+        $this->data['privilege'] = $privilege;
+        $section_modules = $this->get_section_modules($closing_balance_module_id, $modules, $privilege);
         $id = $this->input->post('id');
         $ledger_id = $this->input->post('ledger_id');
         if($id > 0){
@@ -156,6 +162,12 @@ class Closing_balance extends MY_Controller {
     }
 
     public function getDefaultOpeningBalance(){
+        $closing_balance_module_id = $this->config->item('closing_balance_module');
+        $this->data['closing_balance_module_id'] = $closing_balance_module_id;
+        $modules = $this->modules;
+        $privilege = "view_privilege";
+        $this->data['privilege'] = $privilege;
+        $section_modules = $this->get_section_modules($closing_balance_module_id, $modules, $privilege);
         $table = 'tbl_ledgers l LEFT JOIN tbl_default_opening_balance d ON d.ledger_id= l.ledger_id';
         $primaryKey = 'id';
 
@@ -213,6 +225,12 @@ class Closing_balance extends MY_Controller {
     }
 
     public function updateDefaultStatus(){
+        $closing_balance_module_id = $this->config->item('closing_balance_module');
+        $this->data['closing_balance_module_id'] = $closing_balance_module_id;
+        $modules = $this->modules;
+        $privilege = "edit_privilege";
+        $this->data['privilege'] = $privilege;
+        $section_modules = $this->get_section_modules($closing_balance_module_id, $modules, $privilege);
         $id = $this->input->post('id');
         $ledger_id = $this->input->post('ledger_id');
         if($id > 0){
