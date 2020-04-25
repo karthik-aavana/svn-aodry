@@ -1044,8 +1044,8 @@ class Advance_voucher extends MY_Controller {
                             $ledger_entry[$cgst_tax_advance_ledger]["advance_voucher_id"] = $advance_id;
                             $ledger_entry[$cgst_tax_advance_ledger]["voucher_amount"] = $cgst_advance[$cgst_tax_advance_ledger];
                             $ledger_entry[$cgst_tax_advance_ledger]["converted_voucher_amount"] = 0;
-                            $ledger_entry[$cgst_tax_advance_ledger]["dr_amount"] = 0;
-                            $ledger_entry[$cgst_tax_advance_ledger]["cr_amount"] = $cgst_advance[$cgst_tax_advance_ledger];
+                            $ledger_entry[$cgst_tax_advance_ledger]["dr_amount"] = $cgst_advance[$cgst_tax_advance_ledger];
+                            $ledger_entry[$cgst_tax_advance_ledger]["cr_amount"] = 0;
                             $ledger_entry[$cgst_tax_advance_ledger]['ledger_id'] = $cgst_tax_advance_ledger;
 
                             /* Advance paid ends */
@@ -2135,8 +2135,8 @@ class Advance_voucher extends MY_Controller {
                             $ledger_entry[$cgst_tax_advance_ledger]["advance_voucher_id"] = $advance_id;
                             $ledger_entry[$cgst_tax_advance_ledger]["voucher_amount"] = $cgst_advance[$cgst_tax_advance_ledger];
                             $ledger_entry[$cgst_tax_advance_ledger]["converted_voucher_amount"] = 0;
-                            $ledger_entry[$cgst_tax_advance_ledger]["dr_amount"] = 0;
-                            $ledger_entry[$cgst_tax_advance_ledger]["cr_amount"] = $cgst_advance[$cgst_tax_advance_ledger];
+                            $ledger_entry[$cgst_tax_advance_ledger]["dr_amount"] = $cgst_advance[$cgst_tax_advance_ledger];
+                            $ledger_entry[$cgst_tax_advance_ledger]["cr_amount"] = 0;
                             $ledger_entry[$cgst_tax_advance_ledger]['ledger_id'] = $cgst_tax_advance_ledger;
 
                             /* Advance paid ends */

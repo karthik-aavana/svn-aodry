@@ -166,14 +166,14 @@ $(document).ready(function ()
                                 },
                                 beforeSend: function(){
                                     // Show image container
-                                    $("#loader_coco").show();
+                                    $("#subcategory_modal #loader").show();
                                 },
 
                         success: function (result){
 
+                         $("#subcategory_modal #loader").hide();
 
                             if(result == 'duplicate'){
-                                 $("#loader_coco").show();
                                 $("#err_subcategory_name").text("Sub Category is already exit");
                             }else{
                             var data = result.data;
