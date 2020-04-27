@@ -354,9 +354,94 @@ class MY_Controller extends CI_Controller
             }
             
         }
-
     }
 
+    public function check_privilege_section_modules($module_id, $modules, $privilege,$redirect ='')
+    {
+
+        if (in_array($module_id, $modules['user_active_modules']))
+        {
+
+            $check_value = "";
+
+            if ($privilege == "add_privilege")
+            {
+
+                if (in_array($module_id, $modules['user_active_add']))
+                {
+                    $check_value = "yes";
+                }
+
+            }
+            elseif ($privilege == "edit_privilege")
+            {
+
+                if (in_array($module_id, $modules['user_active_edit']))
+                {
+                    $check_value = "yes";
+                }
+
+            }
+            elseif ($privilege == "delete_privilege")
+            {
+
+                if (in_array($module_id, $modules['user_active_delete']))
+                {
+                    $check_value = "yes";
+                }
+
+            }
+            elseif ($privilege == "view_privilege")
+            {
+
+                if (in_array($module_id, $modules['user_active_view']))
+                {
+                    $check_value = "yes";
+                }
+
+            }
+           
+            if ($check_value != "yes")
+            {
+                return false;
+            }
+
+            $check_sub_modules = $this->check_sub_modules($module_id, $modules['sub_modules']);
+            $check_settings    = $this->check_settings($module_id, $modules['settings']);
+
+            // $data = array(
+
+            //         'modules'     => $modules,
+
+            //         'sub_modules' => $check_sub_modules,
+
+            //         'settings'    => $check_settings,
+            // );
+            $data                           = array();
+            $data['access_sub_modules']     = $check_sub_modules;
+            $data['access_settings']        = $check_settings;
+            $data['access_common_settings'] = $modules['common_settings'];
+
+            // echo "<pre>";
+
+            // print_r($check_sub_modules);
+
+            // exit;
+            //      $data['access_modules']     = $modules;
+            $data['active_modules'] = $modules['user_active_modules'];
+            $data['active_add']     = $modules['user_active_add'];
+            $data['active_edit']    = $modules['user_active_edit'];
+            $data['active_view']    = $modules['user_active_view'];
+            $data['active_delete']  = $modules['user_active_delete'];
+
+            return $data;
+        }
+        else
+        {
+            return false;
+            
+        }
+    }
     public function generate_invoice_number($access_settings, $primary_id, $table_name, $date_field_name, $current_date, $option = "",$brand = 0)
     {
         $financial_year = explode('-', $this->session->userdata('SESS_FINANCIAL_YEAR_TITLE'));
