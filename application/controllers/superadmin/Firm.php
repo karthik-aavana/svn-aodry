@@ -200,6 +200,14 @@ class Firm extends MY_Controller
 
 
 	        if($branch_id=$this->general_model->insertData('branch',$branch_data)){
+                $group_data                        = array(
+                    "name"        => 'admin',
+                    "description"       => 'Admin have all the privileges',
+                    "branch_id"         => $branch_id,
+                    "added_date"      => date('Y-m-d'),
+                    "added_user_id"   => '1');
+                $group_id = $this->general_model->insertData("groups", $group_data);
+
 	        	$warehouse_data = array(
 					"warehouse_name" => $this->input->post("name"),
 				 	"warehouse_address" => $this->input->post("branch_address"),
@@ -262,7 +270,6 @@ class Firm extends MY_Controller
                 $q = $this->db->select('m.*')->from('modules m')->where('m.delete_status', 0)->where('m.module_id IN (select module_id from active_modules where delete_status=0 and branch_id=' . $branch_id . ' )', NULL, FALSE)->get();
                 $modules_added = $q->result();
 
-            
                 foreach($modules_added as $module ){
                     $module_id = $module->module_id;
                     $id_module_branch = $this->general_model->insertData('active_modules',['module_id' => $module_id,'branch_id'=> $branch_id]);
@@ -302,7 +309,30 @@ class Firm extends MY_Controller
 						
 					}
 				}
-
+                $group_module = array_merge($modules_added, $modules);
+                $data_item = array();
+                foreach ($group_module as $key => $value) {
+                    $data_item[$key]['branch_id'] = $branch_id;
+                    $data_item[$key]['module_id'] = $value->module_id;
+                    $data_item[$key]['group_id'] = $group_id;
+                    if($value->is_report == 1){
+                        $data_item[$key]['add_privilege'] = 0;
+                        $data_item[$key]['edit_privilege'] = 0;
+                        $data_item[$key]['delete_privilege'] = 0;
+                        $data_item[$key]['view_privilege'] = 1;
+                    }else{
+                        $data_item[$key]['add_privilege'] = 1;
+                        $data_item[$key]['edit_privilege'] = 1;
+                        $data_item[$key]['delete_privilege'] = 1;
+                        $data_item[$key]['view_privilege'] = 1;
+                    }
+                    $data_item[$key]['delete_status'] = 0;
+                    $data_item[$key]['added_user_id'] = 1;
+                    $data_item[$key]['added_date'] = date("Y-m-d");
+                }
+                foreach ($data_item as $value) {
+                    $this->general_model->insertData("group_accessibility", $value);
+                }
 	            // $log_data = array(
 	            //             'user_id' => $this->session->userdata('SESS_USER_ID'),
 	            //             'table_id' => $branch_id,

@@ -42,24 +42,48 @@ class Users extends MY_Controller
 			'company' => $this->input->post('company'),
 			'phone' => $this->input->post('phone'),
 		);	
-		$group = $this->input->post("group");
+		/*$group = $this->input->post("group");*/
 		$branch_id=$this->input->post('branch_id');
+		$group  = $this->general_model->getRecords('id', 'groups', array(
+            'delete_status' => 0,
+            'name' => 'admin',
+        	'branch_id' => $branch_id));
 		$user_id = $this->ion_auth->register($branch_id,$identity,$password,$email,$additional_data);
 		
-		$group = $this->input->post("group");
+		$group = $group[0]->id;
 
 		$this->general_model->insertData("users_groups",["user_id" => $user_id,"group_id" =>$group]);
 
-		$active_modules = array();
+		$module_data = $this->sa_get_active_modules($group, $branch_id);
+        $data_item_user = array();
+        foreach ($module_data as $key => $value) {
+            
+            $data_item_user[$key]['branch_id'] = $branch_id;
+            $data_item_user[$key]['module_id'] = $value->module_id;
+            $data_item_user[$key]['user_id'] = $user_id;
+            if($value->is_report == 1){
+            	$data_item_user[$key]['add_privilege'] = "no";
+            	$data_item_user[$key]['edit_privilege'] = "no";
+            	$data_item_user[$key]['delete_privilege'] = "no";
+            	$data_item_user[$key]['view_privilege'] = "yes";
+            }else{
+            	$data_item_user[$key]['add_privilege'] = "yes";
+            	$data_item_user[$key]['edit_privilege'] = "yes";
+            	$data_item_user[$key]['delete_privilege'] = "yes";
+            	$data_item_user[$key]['view_privilege'] = "yes";
+            }
+            $data_item_user[$key]['delete_status'] = 0;
+        }
+		/*$active_modules = array();
 
 		$modules=$this->sa_get_modules($user_id,$branch_id);
 		foreach ($modules['modules'] as $key => $value){
 			if(!in_array($value, $active_modules) && $value != ""){
 			 	$active_modules[]=$value->module_id;
 			}
-		}
+		}*/
 
-		$modules_assigned_section=$this->config->item('modules_assigned_section');
+		/*$modules_assigned_section=$this->config->item('modules_assigned_section');
 		$add_modules_assigned_section=$this->config->item('add_modules_assigned_section');
 		$edit_modules_assigned_section=$this->config->item('edit_modules_assigned_section');
 		$delete_modules_assigned_section=$this->config->item('delete_modules_assigned_section');
@@ -72,9 +96,9 @@ class Users extends MY_Controller
     		$edit_section=$edit_modules_assigned_section['admin'];
     		$delete_section=$delete_modules_assigned_section['admin'];
     		$view_section=$view_modules_assigned_section['admin'];
-    	}
+    	}*/
 
-    	if($group==$this->config->item('members_group')){
+    	/*if($group==$this->config->item('members_group')){
     		$module_section=$modules_assigned_section['members'];
     		$add_section=array();
     		$edit_section=array();
@@ -112,9 +136,9 @@ class Users extends MY_Controller
     		$edit_section=$edit_modules_assigned_section['accountant'];
     		$delete_section=$delete_modules_assigned_section['accountant'];
     		$view_section=$view_modules_assigned_section['accountant'];
-    	}
+    	}*/
 	
-		$data_item = array();
+		/*$data_item = array();
        	foreach ($active_modules as $key => $value){
        		$data_item[$key]['branch_id']=$this->session->userdata('SESS_BRANCH_ID');
        		$data_item[$key]['user_id']=$user_id;
@@ -124,7 +148,7 @@ class Users extends MY_Controller
        		$data_item[$key]['delete_privilege']="yes";
        		$data_item[$key]['view_privilege']="yes";
 
-       		/*if(in_array($value, $add_section)){
+       		if(in_array($value, $add_section)){
        			$data_item[$key]['add_privilege']="yes";
        		}else{
        			$data_item[$key]['add_privilege']="no";
@@ -146,10 +170,10 @@ class Users extends MY_Controller
        			$data_item[$key]['view_privilege']="yes";
        		}else{
        			$data_item[$key]['view_privilege']="no";
-       		} */
-       	}
+       		} 
+       	}*/
 
-        foreach ($data_item as $value){
+        foreach ($data_item_user as $value){
           $this->general_model->insertData("user_accessibility",$value);
 		}
 		

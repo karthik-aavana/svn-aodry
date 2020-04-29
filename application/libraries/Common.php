@@ -6324,13 +6324,16 @@ class Common
         );
         return $data;
     }
-    public function assigned_module_list_field($group_id)
+    public function assigned_module_list_field($group_id, $branch_id = "")
     {
         $string = "*";
         $table  = "group_accessibility";
+        if($branch_id == ""){
+            $branch_id = $this->ci->session->userdata('SESS_BRANCH_ID');
+        }
         $where = array(
             'delete_status'     => 0,
-            'branch_id'         => $this->ci->session->userdata('SESS_BRANCH_ID'),
+            'branch_id'         => $branch_id,
             'group_id '  => $group_id
         );
         $filter = array(

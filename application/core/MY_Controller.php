@@ -175,6 +175,12 @@ class MY_Controller extends CI_Controller
         return $data;
     }
 
+    public function sa_get_active_modules($group, $branch_id){
+        $list_data           = $this->common->assigned_module_list_field($group, $branch_id);
+        $data               = $this->general_model->getPageJoinRecords($list_data);
+        return $data;
+    }
+    
     public function sa_getOnly_modules($user_id,$branch_id){
         $sess_user_id = $this->session->userdata('SESS_SA_USER_ID');
         $module_data = $this->common->sa_autoModule_field($branch_id);
