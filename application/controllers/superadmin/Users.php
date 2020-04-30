@@ -53,24 +53,33 @@ class Users extends MY_Controller
 		$group = $group[0]->id;
 
 		$this->general_model->insertData("users_groups",["user_id" => $user_id,"group_id" =>$group]);
-
 		$module_data = $this->sa_get_active_modules($group, $branch_id);
+		
         $data_item_user = array();
         foreach ($module_data as $key => $value) {
             
             $data_item_user[$key]['branch_id'] = $branch_id;
             $data_item_user[$key]['module_id'] = $value->module_id;
             $data_item_user[$key]['user_id'] = $user_id;
-            if($value->is_report == 1){
-            	$data_item_user[$key]['add_privilege'] = "no";
-            	$data_item_user[$key]['edit_privilege'] = "no";
-            	$data_item_user[$key]['delete_privilege'] = "no";
-            	$data_item_user[$key]['view_privilege'] = "yes";
-            }else{
-            	$data_item_user[$key]['add_privilege'] = "yes";
-            	$data_item_user[$key]['edit_privilege'] = "yes";
-            	$data_item_user[$key]['delete_privilege'] = "yes";
-            	$data_item_user[$key]['view_privilege'] = "yes";
+            if ($value->add_privilege == 1) {
+                $data_item_user[$key]['add_privilege'] = "yes";
+            } else {
+                $data_item_user[$key]['add_privilege'] = "no";
+            }
+            if ($value->edit_privilege == 1) {
+                $data_item_user[$key]['edit_privilege'] = "yes";
+            } else {
+                $data_item_user[$key]['edit_privilege'] = "no";
+            }
+            if ($value->delete_privilege == 1) {
+                $data_item_user[$key]['delete_privilege'] = "yes";
+            } else {
+                $data_item_user[$key]['delete_privilege'] = "no";
+            }
+            if ($value->view_privilege == 1) {
+                $data_item_user[$key]['view_privilege'] = "yes";
+            } else {
+                $data_item_user[$key]['view_privilege'] = "no";
             }
             $data_item_user[$key]['delete_status'] = 0;
         }

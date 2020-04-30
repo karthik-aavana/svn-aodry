@@ -2002,6 +2002,7 @@ class Auth extends MY_Controller {
     public function create_new_user() {
         $user_module_id = $this->config->item('user_module');
         $privilege = "add_privilege";
+        $modules = $this->get_modules();
         $data['module_id'] = $user_module_id;
         $data['privilege'] = $privilege;
         $section_modules = $this->get_section_modules($user_module_id, $modules, $privilege);
