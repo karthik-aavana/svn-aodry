@@ -21,6 +21,14 @@ $this->load->view('layout/header');
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header with-border">
+                        <?php
+                            if($this->session->userdata('SESS_PACKAGE_STATUS') == '0'){ ?>
+                            <div class="">
+                                <div class="alert alert-danger">
+                                    <strong>Ooops!</strong> Your free trial has been expired please contact us to purchase the software.
+                                </div>
+                            </div>
+                        <?php } ?>
                         <h3 class="box-title">Company Setting</h3>
                     </div>
                     <div class="box-body">

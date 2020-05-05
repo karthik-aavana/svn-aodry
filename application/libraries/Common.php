@@ -43,6 +43,10 @@ class Common
         {
             $where['financial_year_id'] = $this->ci->session->userdata('SESS_FINANCIAL_YEAR_ID');
         }
+        if($table_name == 'receipt_voucher')
+            $where['is_main_receipt'] = 1;
+        if($table_name == 'payment_voucher')
+            $where['is_main_payment'] = 1;
         if ($count_condition != "")
         {
             $cond = explode("=>", $count_condition);
@@ -641,14 +645,15 @@ class Common
             "users u"      => "rv.added_user_id = u.id"];
         
         if($order_ser =='' || $dir == ''){
-                $order = [ 'rv.receipt_id' => 'desc' ];
-            }else{
-                $order = [ $order_ser => $dir ];
-            }
+            $order = [ 'rv.receipt_id' => 'desc' ];
+        }else{
+            $order = [ $order_ser => $dir ];
+        }
         $where = array(
             'rv.delete_status'     => 0,
-            'rv.branch_id'         => $this->ci->session->userdata('SESS_BRANCH_ID')
-            //'rv.financial_year_id' => $this->ci->session->userdata('SESS_FINANCIAL_YEAR_ID'
+            'rv.is_main_receipt'   => 1,
+            'rv.branch_id'         => $this->ci->session->userdata('SESS_BRANCH_ID'),
+            'rv.financial_year_id' => $this->ci->session->userdata('SESS_FINANCIAL_YEAR_ID')
         );
         if (isset($id) && $id != 0 && $id != "")
         {
@@ -1119,7 +1124,8 @@ class Common
     }
 
     public function receipt_voucher_details($receipt_voucher_id){
-        $string = "rv.voucher_number,rv.voucher_date,rv.reference_number,rv.receipt_amount,rv.converted_receipt_amount,rv.reference_id,av.accounts_receipt_id,av.cr_amount,av.dr_amount,l.ledger_name,av.voucher_amount,av.converted_voucher_amount,av.receipt_voucher_id";
+        $string = "rv.voucher_number,rv.voucher_date,rv.reference_number,rv.receipt_amount,rv.converted_receipt_amount,rv.reference_id,av.accounts_receipt_id,av.cr_amount,av.dr_amount,l.ledger_name,av.voucher_amount,av.converted_voucher_amount,av.receipt_voucher_id,l.ledger_id";
+        
         $table  = "accounts_receipt_voucher av";
         $join   = [
             'receipt_voucher rv' => 'rv.receipt_id = av.receipt_voucher_id',
@@ -1138,7 +1144,7 @@ class Common
     }
 
     public function payment_voucher_details($payment_voucher_id) {
-        $string = "rv.voucher_number,rv.voucher_date,rv.reference_number,rv.receipt_amount,rv.converted_receipt_amount,rv.reference_id,av.accounts_payment_id,av.cr_amount,av.dr_amount,l.ledger_name,av.voucher_amount,av.converted_voucher_amount,av.payment_voucher_id";
+        $string = "rv.voucher_number,rv.voucher_date,rv.reference_number,rv.receipt_amount,rv.converted_receipt_amount,rv.reference_id,av.accounts_payment_id,av.cr_amount,av.dr_amount,l.ledger_name,av.voucher_amount,av.converted_voucher_amount,av.payment_voucher_id,l.ledger_id";
         $table  = "accounts_payment_voucher av";
         $join   = [
             'payment_voucher rv' => 'rv.payment_id = av.payment_voucher_id',

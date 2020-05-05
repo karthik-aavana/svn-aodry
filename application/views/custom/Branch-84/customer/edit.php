@@ -168,11 +168,11 @@ $this->load->view('layout/header');
                                         </select> <span class="validation-color" id="err_city"></span>
                                     </div>
                                 </div>
-                                <!--                                <div class="form-group col-md-4">
-                                                                    <label for="gst">Zip Code</label>
-                                                                    <input type="text"  class="form-control" id="gst_number" name="gst_number" maxlength="15" value="<?php echo $data[0]->customer_gstin_number; ?>">
-                                                                    <span class="validation-color" id="err_gstin"><?php echo form_error('gstin'); ?></span>
-                                                                </div>-->
+                                <!--<div class="form-group col-md-4">
+                                    <label for="gst">Zip Code</label>
+                                    <input type="text"  class="form-control" id="gst_number" name="gst_number" maxlength="15" value="<?php echo $data[0]->customer_gstin_number; ?>">
+                                    <span class="validation-color" id="err_gstin"><?php echo form_error('gstin'); ?></span>
+                                </div>-->
                                 <div class="form-group col-md-4">
                                     <label for="address">Address<span class="validation-color">*</span>
                                     </label>
@@ -225,6 +225,12 @@ $this->load->view('layout/header');
                                     <label for="food_ln">Food Licence Number</label>
                                     <input class="form-control" type="text" name="food_ln" id="food_ln"  value="<?php echo $data[0]->food_licence_number; ?>" />
                                     <span class="validation-color" id="err_food_ln"><?php echo form_error('food_ln'); ?></span>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="opening_balance">Opening Balance</label>
+                                    <input class="form-control" type="text" name="opening_balance" id="opening_balance"  value="<?=$opening_balance?>" <?=($opening_balance_editable == '1' ? '' : 'disabled="disabled"')?>/>
+                                    <input type="hidden" name="opening_balance_id" value="<?=$opening_balance_id;?>">
+                                    <span class="validation-color" id="err_opening_balance"><?php echo form_error('opening_balance'); ?></span>
                                 </div>
                             </div>
                             <div class="row">

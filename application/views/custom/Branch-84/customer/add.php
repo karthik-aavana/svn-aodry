@@ -197,6 +197,11 @@ $this->load->view('layout/header');
                                     <input class="form-control" type="text" name="food_ln" id="food_ln"  />
                                     <span class="validation-color" id="err_food_ln"><?php echo form_error('food_ln'); ?></span>
                                 </div>
+                                <div class="form-group col-md-4">
+                                    <label for="opening_balance">Opening Balance</label>
+                                    <input class="form-control" type="text" name="opening_balance" id="opening_balance"  />
+                                    <span class="validation-color" id="err_opening_balance"><?php echo form_error('opening_balance'); ?></span>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-4">

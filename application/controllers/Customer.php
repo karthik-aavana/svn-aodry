@@ -1002,7 +1002,28 @@ class Customer extends MY_Controller {
           $where                        = array(
           'ct.state_id' => $data['contact_person'][0]->contact_person_state_id );
           $data['contact_person_city']  = $this->general_model->getRecords($string, $table, $where); */
-
+        $data['opening_balance'] = 0;
+        $data['opening_balance_id'] = 0;
+        $data['opening_balance_editable'] = 1;
+        if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath')){
+            $this->db->select('id,amount');
+            $this->db->where('ledger_id',$data['data'][0]->ledger_id);
+            $this->db->from('tbl_default_opening_balance');
+            $default_blnc = $this->db->get();
+            $blnc_result = $default_blnc->result();
+            if(!empty($blnc_result)){
+                $data['opening_balance'] = $blnc_result[0]->amount;
+                $data['opening_balance_id'] = $blnc_result[0]->id;
+                $this->db->select('id');
+                $this->db->where('delete_status',0);
+                $this->db->where('ledger_id',$data['data'][0]->ledger_id);
+                $opn_qry = $this->db->get('received_opening_balance');
+                $opening_balance = $opn_qry->result();
+                if(!empty($opening_balance)){
+                    $data['opening_balance_editable'] = 0;
+                }
+            }
+        }
         $data['additional_info'] = $additional_info = $this->general_model->getRecords('*', 'customer_additional_info', array(
             'customer_id' => $id));
         $data['additional_info_count'] = count($additional_info);
@@ -1164,7 +1185,38 @@ class Customer extends MY_Controller {
 
                 $this->db->insert_batch('customer_additional_info', $data);
             }
-
+            if($this->input->post('opening_balance')){
+                if($this->input->post('opening_balance') > 0){
+                    $id = $this->input->post('opening_balance_id');
+                    if($id <= 0){
+                        $this->db->select('id');
+                        $this->db->where('ledger_id',$ledger_id);
+                        $this->db->from('tbl_default_opening_balance');
+                        $default_blnc = $this->db->get();
+                        $blnc_result = $default_blnc->result();
+                        if(!empty($blnc_result))
+                            $id = $blnc_result[0]->id;
+                    }
+                    if($id > 0){
+                        $update = array('amount' => ('' != $this->input->post('opening_balance') ? $this->input->post('opening_balance') : 0), 'amount_type' => 'DR','updated_by' => $this->session->userdata('SESS_USER_ID'),'updated_ts' => date('Y-m-d H:i:s'));
+                        $this->db->set($update);
+                        $this->db->where('id',$id);
+                        $this->db->update('tbl_default_opening_balance');
+                    }else{
+                        $insert  = array('branch_id' => $this->session->userdata('SESS_BRANCH_ID'),'ledger_id' => $ledger_id,'amount' => ('' != $this->input->post('opening_balance') ? $this->input->post('opening_balance') : 0), 'amount_type' => 'DR','created_by' => $this->session->userdata('SESS_USER_ID'),'created_ts' => date('Y-m-d H:i:s'));
+                        $this->db->insert('tbl_default_opening_balance',$insert);
+                    }
+                    $log_data = array(
+                        'user_id' => $this->session->userdata('SESS_USER_ID'),
+                        'table_id' => 0,
+                        'table_name' => 'tbl_default_opening_balance',
+                        'financial_year_id' => $this->session->userdata('SESS_FINANCIAL_YEAR_ID'),
+                        'branch_id' => $this->session->userdata('SESS_BRANCH_ID'),
+                        'message' => 'Default Opening Balance Updated');
+                        $log_table = $this->config->item('log_table');
+                        $this->general_model->insertData($log_table , $log_data);
+                }
+            }
             /* $contact_person_data = array(
               "contact_person_name"        => $this->input->post('contact_person_name'),
               "contact_person_code"        => $this->input->post('contact_person_code'),
@@ -1359,6 +1411,35 @@ class Customer extends MY_Controller {
 
                 $this->db->insert_batch('customer_additional_info', $data);
             }
+
+            if($this->input->post('opening_balance')){
+                if($this->input->post('opening_balance') > 0){
+                    $this->db->select('id');
+                    $this->db->where('ledger_id',$customer_ledger_id);
+                    $this->db->from('tbl_default_opening_balance');
+                    $default_blnc = $this->db->get();
+                    $blnc_result = $default_blnc->result();
+                    if(!empty($blnc_result)){
+                        $id = $blnc_result[0]->id;
+                        $update = array('amount' => ('' != $this->input->post('opening_balance') ? $this->input->post('opening_balance') : 0), 'amount_type' => 'DR','updated_by' => $this->session->userdata('SESS_USER_ID'),'updated_ts' => date('Y-m-d H:i:s'));
+                        $this->db->set($update);
+                        $this->db->where('id',$id);
+                        $this->db->update('tbl_default_opening_balance');
+                    }else{
+                        $insert  = array('branch_id' => $this->session->userdata('SESS_BRANCH_ID'),'ledger_id' => $customer_ledger_id,'amount' => ('' != $this->input->post('opening_balance') ? $this->input->post('opening_balance') : 0), 'amount_type' => 'DR','created_by' => $this->session->userdata('SESS_USER_ID'),'created_ts' => date('Y-m-d H:i:s'));
+                        $this->db->insert('tbl_default_opening_balance',$insert);
+                    }
+                    $log_data = array(
+                        'user_id' => $this->session->userdata('SESS_USER_ID'),
+                        'table_id' => 0,
+                        'table_name' => 'tbl_default_opening_balance',
+                        'financial_year_id' => $this->session->userdata('SESS_FINANCIAL_YEAR_ID'),
+                        'branch_id' => $this->session->userdata('SESS_BRANCH_ID'),
+                        'message' => 'Default Opening Balance Updated');
+                        $log_table = $this->config->item('log_table');
+                        $this->general_model->insertData($log_table , $log_data);
+                }
+            }
         }else{
             $errorMsg = 'Customer Add Unsuccessful';
             $this->session->set_flashdata('customer_error',$errorMsg);
@@ -1530,6 +1611,34 @@ class Customer extends MY_Controller {
             }
             $table = "shipping_address";
             $this->general_model->insertData($table, $shipping_address_data);
+            if($this->input->post('opening_balance')){
+                if($this->input->post('opening_balance') > 0){
+                    $this->db->select('id');
+                    $this->db->where('ledger_id',$customer_ledger_id);
+                    $this->db->from('tbl_default_opening_balance');
+                    $default_blnc = $this->db->get();
+                    $blnc_result = $default_blnc->result();
+                    if(!empty($blnc_result)){
+                        $id = $blnc_result[0]->id;
+                        $update = array('amount' => ('' != $this->input->post('opening_balance') ? $this->input->post('opening_balance') : 0), 'amount_type' => 'DR','updated_by' => $this->session->userdata('SESS_USER_ID'),'updated_ts' => date('Y-m-d H:i:s'));
+                        $this->db->set($update);
+                        $this->db->where('id',$id);
+                        $this->db->update('tbl_default_opening_balance');
+                    }else{
+                        $insert  = array('branch_id' => $this->session->userdata('SESS_BRANCH_ID'),'ledger_id' => $customer_ledger_id,'amount' => ('' != $this->input->post('opening_balance') ? $this->input->post('opening_balance') : 0), 'amount_type' => 'DR','created_by' => $this->session->userdata('SESS_USER_ID'),'created_ts' => date('Y-m-d H:i:s'));
+                        $this->db->insert('tbl_default_opening_balance',$insert);
+                    }
+                    $log_data = array(
+                        'user_id' => $this->session->userdata('SESS_USER_ID'),
+                        'table_id' => 0,
+                        'table_name' => 'tbl_default_opening_balance',
+                        'financial_year_id' => $this->session->userdata('SESS_FINANCIAL_YEAR_ID'),
+                        'branch_id' => $this->session->userdata('SESS_BRANCH_ID'),
+                        'message' => 'Default Opening Balance Updated');
+                        $log_table = $this->config->item('log_table');
+                        $this->general_model->insertData($log_table , $log_data);
+                }
+            }
             $table = "log";
             $log_data = array(
                 'user_id' => $this->session->userdata('SESS_USER_ID'),

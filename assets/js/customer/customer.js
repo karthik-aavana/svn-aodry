@@ -103,6 +103,7 @@ $(document).ready(function() {
         var email = $('#email_address').val() ? $('#email_address').val() : "";
         var contact_person = $('#txt_contact_person').val() ? $('#txt_contact_person').val() : "";
         var due_days = $('#due_days').val() ? $('#due_days').val() : "";
+        var opening_balance = $('#opening_balance').val() ? $('#opening_balance').val() : "";
         var dl_no = $('#dl_no').val();
         var num_regex = /^[0-9]+$/;
         var alpa_regex = /^[a-zA-Z ]+$/;
@@ -673,6 +674,7 @@ $(document).ready(function() {
                     'panno': $('#txt_pan_number').val(),
                     'tanno': $('#txt_tan_number').val(),
                     'due': $('#due_days').val(),
+                    'opening_balance': $('#opening_balance').val(),
                     'department' : $('#department').val(),
                     'address': $("#address").val(),
                     'country': $("#cmb_country").val(),

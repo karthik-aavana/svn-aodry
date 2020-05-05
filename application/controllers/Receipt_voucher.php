@@ -131,6 +131,143 @@ class Receipt_voucher extends MY_Controller
 
     }
 
+    public function multi_receipt_list(){
+        $receipt_voucher_module_id         = $this->config->item('receipt_voucher_module');
+        $data['receipt_voucher_module_id'] = $receipt_voucher_module_id;
+        $modules                           = $this->modules;
+        $privilege                         = "view_privilege";
+        $data['privilege']                 = $privilege;
+        $section_modules                   = $this->get_section_modules($receipt_voucher_module_id, $modules, $privilege);
+
+        $access_common_settings = $section_modules['access_common_settings'];
+        $data = array_merge($data, $section_modules);
+        $columns = array(
+            0 => 'receipt_id',
+            1 => 'rv.voucher_date',
+            2 => 'rv.voucher_number',
+            3 => 'c.customer_name',
+            4 => 'rv.reference_number',
+            5 => 'rv.receipt_amount'
+        );
+        $limit               = $this->input->post('length');
+        $start               = $this->input->post('start');
+        $order               = $columns[$this->input->post('order')[0]['column']];
+        $dir                 = $this->input->post('order')[0]['dir'];
+        $list_data           = $this->common->receipt_voucher_list_field_1($id=0, $order, $dir);
+        $list_data['search'] = 'all';
+
+        $totalData     = $this->general_model->getPageJoinRecordsCount($list_data);
+        $totalFiltered = $totalData;
+        $cust_list = $this->customer_call();
+        $cust_ids = array();
+        foreach ($cust_list as $key => $value) {
+            $cust_ids[$value->customer_id] = $value->customer_name;
+        }
+        if (empty($this->input->post('search')['value']))
+        {
+            $list_data['limit']  = $limit;
+            $list_data['start']  = $start;
+            $list_data['search'] = 'all';
+            $posts               = $this->general_model->getPageJoinRecords($list_data);
+        }
+        else
+        {
+            $search              = $this->input->post('search')['value'];
+            $list_data['limit']  = $limit;
+            $list_data['start']  = $start;
+            $list_data['search'] = $search;
+            $posts               = $this->general_model->getPageJoinRecords($list_data);
+            $totalFiltered       = $this->general_model->getPageJoinRecordsCount($list_data);
+        }
+
+        $send_data = array();
+        $receipt_ids = array();
+        if (!empty($posts)) {
+            foreach ($posts as $post) {
+                if(!in_array($post->receipt_id, $receipt_ids)){
+                    array_push($receipt_ids, $post->receipt_id);
+                    $receipt_id = $this->encryption_url->encode($post->receipt_id);
+                    $sales_ids = explode(',', $post->reference_id);
+                    $references = explode(',', $post->reference_number);
+                    $reference_numbers = '';
+                    foreach ($sales_ids as $key => $sales_id) {
+                        if($sales_id != 'excess_amount' && $sales_id != 'opening_balance'){
+                            $sales_id = $this->encryption_url->encode($sales_id);
+                            if(@$references[$key])$reference_numbers .= ' <a href="' . base_url('sales/view/') . $sales_id . '">' . $references[$key] . '</a>, ';
+                        }else{
+                            $reference_numbers .= $sales_id.', ';
+                        }
+                    }
+                    /*$sales_id = $this->encryption_url->encode($post->reference_id);*/
+                    $related_post = $this->allReceipts($post->receipt_id);
+                    $customers = $post->customer_name;
+                    /*$reference_number = str_replace(",", ",<br/>", $post->reference_number);*/
+                    $receipt_amount = $this->precise_amount($post->receipt_amount, $access_common_settings[0]->amount_precision);
+                    if(!empty($related_post)){
+                        foreach ($related_post as $key => $value) {
+                            if($value->receipt_id != $post->receipt_id){
+                                $customers .= "<br>".$cust_ids[$value->party_id];
+                                
+                                $receipt_amount .= "<br>".$this->precise_amount($value->receipt_amount, $access_common_settings[0]->amount_precision);
+                                $sales_ids = explode(',', $value->reference_id);
+                                $references = explode(',', $value->reference_number);
+                                $reference_numbers .= "<br>";
+                                foreach ($sales_ids as $key => $sales_id) {
+                                    if($sales_id != 'excess_amount' && $sales_id != 'opening_balance'){
+                                        $sales_id = $this->encryption_url->encode($sales_id);
+                                        $reference_numbers .= ' <a href="' . base_url('sales/view/') . $sales_id . '">' . $references[$key] . '</a>, ';
+                                    }else{
+                                        $reference_numbers .= $sales_id.', ';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    $nestedData['voucher_date']              = date('d-m-Y', strtotime($post->voucher_date));
+                    $nestedData['voucher_number']            = '<a href="' . base_url('receipt_voucher/view_details/') . $receipt_id . '">' . $post->voucher_number . '</a>';
+                    $nestedData['customer']                  = $customers;
+                    $nestedData['reference_number'] = $reference_numbers;
+                    $nestedData['amount']                    = $receipt_amount;
+                    
+                    if($post->is_main_receipt == '1'){                   
+                        $cols = '<div class="box-body hide action_button"><div class="btn-group">';
+                        $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Receipt Voucher" href="' . base_url('receipt_voucher/view_details/') . $receipt_id . '"><i class="fa fa-eye"></i></a></span>';
+                        if (in_array($receipt_voucher_module_id, $data['active_edit']) && $post->voucher_status != "2")
+                        {
+                            $cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Edit Receipt Voucher" href="' . base_url('receipt_voucher/multi_edit/') . $receipt_id . '"><i class="fa fa-pencil"></i></a></span>';
+                        }
+                        /*$cols .= '<span><a class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Download PDF" href="' . base_url('receipt_voucher/pdf/') . $receipt_id . '" target="_blank"><i class="fa fa-file-pdf-o"></i></a></span>';*/
+                        /*if (@$data['email_module_id'] && in_array($data['email_module_id'], $data['active_view']))
+                        {
+                            if (in_array($data['email_sub_module_id'], $data['access_sub_modules'])){
+                                $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#composeMail"><a href="#" class="btn btn-app composeMail" data-toggle="tooltip"  data-id="' . $receipt_id . '" data-name="regular"  data-placement="bottom" title="Email Receipt Voucher"> <i class="fa fa-envelope-o"></i></a></span>';
+                            }
+                        }   */            
+                        if (in_array($receipt_voucher_module_id, $data['active_delete']))
+                        {
+                            $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal"><a data-id="' . $receipt_id . '" data-path="receipt_voucher/multi_delete" data-toggle="tooltip" data-placement="bottom" title="Delete Receipt Voucher" href="#" class="btn btn-app delete_button" ><i class="fa fa-trash"></i></a></span>';
+                        }
+                        $cols .= '</div></div>';
+                        $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">'; 
+                    }else{
+                        $nestedData['action'] = ''; 
+                    }
+
+                    $send_data[]          = $nestedData;
+                }
+            }
+        }
+
+        $json_data = array(
+            "draw"            => intval($this->input->post('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $send_data);
+        echo json_encode($json_data);
+    
+    }
+
     public function add()
     {
         $receipt_voucher_module_id = $this->config->item('receipt_voucher_module');
@@ -304,6 +441,182 @@ class Receipt_voucher extends MY_Controller
         $this->load->view('receipt_voucher/edit', $data);
     }
 
+    public function multi_edit($id){
+        $id                        = $this->encryption_url->decode($id);
+       
+        $receipt_voucher_module_id = $this->config->item('receipt_voucher_module');
+        $data['module_id']         = $receipt_voucher_module_id;
+        $modules                   = $this->modules;
+        $privilege                 = "edit_privilege";
+        $data['privilege']         = "edit_privilege";
+        $section_modules           = $this->get_section_modules($receipt_voucher_module_id, $modules, $privilege);
+
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
+        $data['customer'] = $this->customer_call();
+        /* bank default ledger title for payment mode*/
+        $bank_ledger = $this->config->item('bank_ledger');
+        $default_bank_id = $bank_ledger['bank'];
+        $bank_led = $this->ledger_model->getDefaultLedgerId($default_bank_id);
+        $ledger_title = 'Acc@{{BANK}}';
+        if(!empty($bank_led)){
+            $ledger_title = $bank_led->ledger_name;
+        }
+        $data['default_ledger_title'] = $ledger_title;
+
+        $data['receipt_voucher_module_id'] = $receipt_voucher_module_id;
+        $data['customer_module_id']        = $this->config->item('customer_module');
+        $data['bank_account_module_id']    = $this->config->item('bank_account_module');
+        $data['accounts_module_id']        = $this->config->item('accounts_module');
+        $data['notes_module_id']           = $this->config->item('notes_module');
+
+        $data['notes_sub_module_id']    = $this->config->item('notes_sub_module');
+        $data['accounts_sub_module_id'] = $this->config->item('accounts_sub_module');
+
+        /*$data['customer'] = $this->customer_call();*/
+
+        /*$data['currency'] = $this->currency_call();*/
+        /*$this->db->select('r.*');
+        $this->db->from('receipt_voucher r');
+        $this->db->where('r.receipt_id',$id);
+        $this->db->or_where('(r.parent_receipt_id='.$id.' AND delete_status=0)');
+        $d = $this->db->get();*/
+        $data['receipt_ids'] = $this->allReceipts($id);
+        $service = 0;
+        $bank_exist = 0;
+        if ($data['receipt_ids'][0]->payment_mode != "" && $data['receipt_ids'][0]->payment_mode != "cash" && $data['receipt_ids'][0]->payment_mode != "other payment mode" && $data['receipt_ids'][0]->payment_mode != "bank"){
+                $bank_exist = 1;
+        }
+        $data['sales_data'] = array();
+        foreach ($data['receipt_ids'] as $k => $receipt_id) {
+            $r_id = $receipt_id->receipt_id;
+            $this->db->select('r.*,rv.receipt_invoice_id,rv.reference_id,rv.exchange_gain_loss,rv.exchange_gain_loss_type,rv.discount,rv.other_charges,rv.round_off,rv.round_off_icon,rv.receipt_amount as invoice_receipt_amount,rv.Invoice_pending,rv.Invoice_total_received,receipt_total_paid,c.customer_name,c.customer_mobile');
+            $this->db->from('receipt_voucher r');
+            $this->db->join('receipt_invoice_reference rv','r.receipt_id=rv.receipt_id','left');
+            $this->db->join('customer c','r.party_id=c.customer_id','left');
+            $this->db->where('r.receipt_id',$r_id);
+            $d = $this->db->get();
+            
+            $data['data'][$r_id] = $d->result();
+            $data['data'][0] = $data['data'][$r_id][0];
+            /*$data['data']     = $this->general_model->getRecords('*', 'receipt_voucher', array(
+                'receipt_id' => $id));*/
+            
+            if(!empty($data['data'][$r_id])){
+                
+                /*foreach ($data['receipt_ids'] as $key => $value) {*/
+                    $customer_id = $receipt_id->party_id;
+                    $this->db->select('*,customer_payable_amount as sales_grand_total');
+                    $this->db->where('sales_party_id',$customer_id);
+                    $s_data = $this->db->get('sales');
+                    $s_data = $s_data->result();
+                    /*$data['sales_data'] = $s_data;*/
+                    
+                    $sales_data = array();
+                    foreach ($s_data as $key => $value) {
+                        $sales_data['sales_'.$value->sales_id] = $value;
+                    }
+                    $data['sales_data'] = array_merge($data['sales_data'],$sales_data);
+                /*}*/
+            }
+
+            $sales_data_1 = array();
+            if(!empty($sales_data)){
+                foreach ($data['data'][$r_id] as $key => $value) {
+                    
+                    if(array_key_exists('sales_'.$value->reference_id, $sales_data)){
+                        $sales_invoice = $sales_data['sales_'.$value->reference_id];
+                        $this->db->select('receipt_id,Invoice_pending,Invoice_total_received');
+                        $this->db->from('receipt_invoice_reference');
+                        $this->db->where('reference_id',$value->reference_id);
+                        $this->db->order_by('receipt_invoice_id','DESC');
+                        $this->db->limit(1);
+                        $last_re = $this->db->get();
+                        $last_receipt = $last_re->result();
+
+                        $invoice_total = $sales_invoice->customer_payable_amount;
+                        $paid_amount = ($sales_invoice->sales_paid_amount - $value->receipt_total_paid);
+                        if($value->exchange_gain_loss_type == 'minus'){
+                            $paid_amount -= $value->exchange_gain_loss;
+                        }
+
+                        if($value->round_off_icon == 'plus'){
+                            $paid_amount -= $value->round_off;
+                        }
+                        /*$paid_amount = ($sales_invoice->sales_paid_amount - $value->receipt_amount);*/
+                        $pending_amount = $invoice_total - $paid_amount - $value->receipt_total_paid;
+                        /*$pending_amount = $invoice_total - $paid_amount - $value->receipt_amount;*/
+                        $data['data'][$r_id][$key]->invoice_total = $invoice_total;
+                        $data['data'][$r_id][$key]->invoice_paid_amount = $paid_amount;
+                        $data['data'][$r_id][$key]->invoice_pending = $pending_amount;
+                        $data['data'][$r_id][$key]->reference_number = ($sales_invoice->sales_brand_invoice_number != '' ? $sales_invoice->sales_brand_invoice_number : $sales_invoice->sales_invoice_number);
+                        $is_edit = 0;
+                        if($last_receipt[0]->receipt_id == $value->receipt_id && $pending_amount > 0)$is_edit = 1;
+                        if($value->reference_number == 'excess_amount' || $value->reference_id == '0') $is_edit = 1;
+                        if($is_edit == 0){
+                            $data['data'][$r_id][$key]->invoice_paid_amount = $value->Invoice_total_received;
+                            $data['data'][$r_id][$key]->invoice_pending = $value->Invoice_pending;
+                        }
+                        $data['data'][$r_id][$key]->is_edit = $is_edit;
+                    }
+                }
+            }
+
+            /* Get excess amount */
+            $this->db->select('*');
+            $this->db->where('receipt_id',$r_id);
+            $this->db->where('delete_status','0');
+            $excess_qry = $this->db->get('sales_excess_amount');
+            $excess_data = $excess_qry->result();
+            if(!empty($excess_data)){
+                $excess_data = array('excess_sales_id' =>  $excess_data[0]->sales_id,
+                                    'is_used' =>  $excess_data[0]->is_used,
+                                    'excess_amount' => $excess_data[0]->excess_amount);
+                $data['excess_data'][$r_id] = $excess_data;
+            }
+
+            /* Get opening amount */
+            $this->db->select('*');
+            $this->db->where('receipt_id',$r_id);
+            $this->db->where('delete_status',0);
+            $this->db->where('party_type','customer');
+            $this->db->where('party_id',$customer_id);
+            $opn_qry = $this->db->get('received_opening_balance');
+            $opening_balance = $opn_qry->result();
+            if(!empty($opening_balance)){
+                $paid = $opening_balance[0]->paid_amount;
+                $this->db->select('SUM(paid_amount) as paid_amount');
+                $this->db->where('party_id',$customer_id);
+                $this->db->where('party_type','customer');
+                $this->db->where('delete_status',0);
+                $this->db->from('received_opening_balance');
+                $total_paid = $this->db->get();
+                $total_paid = $total_paid->result();
+                if(!empty($total_paid)) $paid = $total_paid[0]->paid_amount;
+                $pending_amount = $opening_balance[0]->opening_balance - $paid + $opening_balance[0]->paid_amount;
+                $opening_ary = array('ledger_id' =>  $opening_balance[0]->ledger_id,
+                                    'id' =>  $opening_balance[0]->id,
+                                    'pending_amount' => $pending_amount,
+                                    'paid_amount' =>  $opening_balance[0]->paid_amount,
+                                    'opening_balance' => $opening_balance[0]->opening_balance);
+                $data['opening_balance'][$r_id] = $opening_ary;
+            }
+        }
+        /**/
+        $data['invoice_data'] = $sales_data_1;
+        $data['bank_exist'] = $bank_exist;
+
+        if (in_array($data['bank_account_module_id'], $data['active_modules']) || $bank_exist > 0){
+            $data['bank_account'] = $this->bank_account_call_new();
+        }
+        
+        $data['receipt_id'] = $id;
+        /*echo "<pre>";
+        print_r($data['opening_balance']);
+        exit();*/
+        $this->load->view('receipt_voucher/edit', $data);
+    }
+
     public function get_sales_invoice_number(){
         $customer_id    = $this->input->post('customer_id');
         $currency_id    = $this->input->post('currency_id');
@@ -315,6 +628,39 @@ class Receipt_voucher extends MY_Controller
         if ($reference_type == "sales"){
             $invoice_data = $this->common->get_customer_invoice_number_field($customer_id, $balance, $currency_id);
             $data['data'] = $this->general_model->getRecords($invoice_data['string'], $invoice_data['table'], $invoice_data['where'], $invoice_data['order']);
+            if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath')){
+                $this->db->select('ledger_id');
+                $this->db->where('customer_id',$customer_id);
+                $this->db->from('customer');
+                $customer_led = $this->db->get();
+                $customer_resp = $customer_led->result();
+                if(!empty($customer_resp)){
+                    $this->db->select('id,amount,ledger_id');
+                    $this->db->where('ledger_id',$customer_resp[0]->ledger_id);
+                    $this->db->from('tbl_default_opening_balance');
+                    $default_blnc = $this->db->get();
+                    $blnc_result = $default_blnc->result();
+                    if(!empty($blnc_result)){
+                        $data['ledger_id'] = $blnc_result[0]->ledger_id;
+                        $data['opening_balance'] = $blnc_result[0]->amount;
+                        $data['opening_balance_id'] = $blnc_result[0]->id;
+                        $data['paid_amount'] = 0;
+                        $this->db->select('SUM(paid_amount) as paid_amount');
+                        $this->db->where('ledger_id',$customer_resp[0]->ledger_id);
+                        $this->db->where('delete_status',0);
+                        $this->db->from('received_opening_balance');
+                        $total_paid = $this->db->get();
+                        $total_paid = $total_paid->result();
+                        if(!empty($total_paid)) $data['paid_amount'] = $total_paid[0]->paid_amount;
+                        $pending_amount = $data['opening_balance'] - $data['paid_amount'];
+                        $data['pending_amount'] = $pending_amount;
+                        if($pending_amount <= 0){
+                            unset($data['opening_balance']);
+                            unset($data['opening_balance_id']);
+                        }
+                    }
+                }
+            }
         }
 
         echo json_encode($data);
@@ -571,6 +917,286 @@ class Receipt_voucher extends MY_Controller
             redirect('receipt_voucher', 'refresh');
         }
         exit;
+    }
+
+    public function add_multi_customer_receipt()
+    {
+        /*echo "<pre>";
+        print_r($this->input->post());
+        exit;*/
+        $all_reference = $this->input->post('invoice_data');
+        $cust_invoice_data = json_decode($all_reference,true);
+        $receipt_voucher_module_id = $this->config->item('receipt_voucher_module');
+        $data['module_id']         = $receipt_voucher_module_id;
+        $modules                   = $this->modules;
+        $privilege                 = "add_privilege";
+        $section_modules           = $this->get_section_modules($receipt_voucher_module_id, $modules, $privilege);
+
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
+        $data['receipt_voucher_module_id'] = $receipt_voucher_module_id;
+        $data['bank_account_module_id'] = $this->config->item('bank_account_module');
+        $data['accounts_module_id']     = $this->config->item('accounts_module');
+        $data['notes_module_id']        = $this->config->item('notes_module');
+        $data['notes_sub_module_id']    = $this->config->item('notes_sub_module');
+        $data['accounts_sub_module_id'] = $this->config->item('accounts_sub_module');
+        $access_settings = $section_modules['access_settings'];
+        $currency = $this->input->post('currency_id');
+
+        if ($access_settings[0]->invoice_creation == "automatic"){
+
+            if ($this->input->post('voucher_number') != $this->input->post('voucher_number_old')){
+                $primary_id      = "receipt_id";
+                $table_name      = $this->config->item('receipt_voucher_table');
+                $date_field_name = "voucher_date";
+                $current_date    = date('Y-m-d', strtotime($this->input->post('voucher_date')));
+                $voucher_number  = $this->generate_invoice_number($access_settings, $primary_id, $table_name, $date_field_name, $current_date);
+            } else{
+                $voucher_number = $this->input->post('voucher_number');
+            }
+        }else{
+            $voucher_number = $this->input->post('voucher_number');
+        }
+
+        if ($this->input->post('payment_mode') != "cash" && $this->input->post('payment_mode') != "bank" && $this->input->post('payment_mode') != "other payment mode") {
+            $bank_acc_payment_mode = explode("/", $this->input->post('payment_mode'));
+            $payment_mode          = $bank_acc_payment_mode[0];
+            /*$ledger_bank_acc       = $this->general_model->getRecords('ledger_id', 'bank_account', array(
+                'bank_account_id' => $payment_mode[0]));*/
+            /*$ledger_from = $ledger_bank_acc[0]->ledger_id;*/
+            $from_acc    = $bank_acc_payment_mode[1];
+        } else{
+            $ledger_from  = $this->ledger_model->getDefaultLedger($this->input->post('payment_mode'));
+            $payment_mode = $this->input->post('payment_mode');
+            $from_acc     = $this->input->post('payment_mode');
+        }
+
+        $cheque_date = ($this->input->post('cheque_date') != '' ? date('Y-m-d',strtotime($this->input->post('cheque_date'))) : '');
+
+        if (!$cheque_date) {
+            $cheque_date = null;
+        }
+        $is_main_receipt = 1;
+        $parent_receipt_id = 0;
+        /*print_r($invoice_data);*/
+        if(!empty($cust_invoice_data)){
+            foreach ($cust_invoice_data as $k => $inv_data) {
+                $receipt_amount_arr  = $receipt_grand_total = 0;
+                $reference_numbers = $reference_number_text = $receipt_amount =$remaining_amount= $paid_amount=$invoice_total = array();
+                $invoice_data = $inv_data['data_item'];
+
+                foreach ($invoice_data as $key => $value) {
+                    if($value['reference_number'] != 'excess_amount'){
+                        /*$invoice_data[$key]['paid_amount'] +=(@$value['receipt_amount'] ? $value['receipt_amount'] : 0);*/
+                        $invoice_data[$key]['paid_amount'] +=(@$value['receipt_total_paid'] ? $value['receipt_total_paid'] : 0);
+                        array_push($reference_number_text, (@$value['reference_number_text'] ? $value['reference_number_text'] : ''));
+                        array_push($remaining_amount, (@$value['pending_amount'] ? $value['pending_amount'] : 0));
+                        array_push($paid_amount, (@$value['paid_amount'] ? $value['paid_amount'] : 0));
+                        array_push($invoice_total, (@$value['invoice_total'] ? $value['invoice_total'] : 0));
+                    }
+                    array_push($reference_numbers, $value['reference_number']);
+                    array_push($receipt_amount, $value['receipt_amount']);
+                    $receipt_grand_total += $value['receipt_amount'];
+                }
+
+                $customer = $this->general_model->getRecords('ledger_id,customer_name', 'customer', array('customer_id' => $inv_data['customer_id']));
+
+                $customer_name = $customer[0]->customer_name;
+                $customer_ledger_id = $customer[0]->ledger_id;
+                /*$ledger_to   = $customer[0]->ledger_id;*/
+
+                $receipt_data = array(
+                    "voucher_date"            => date('Y-m-d',strtotime($this->input->post('voucher_date'))),
+                    "voucher_number"          => $voucher_number,
+                    "party_id"                => $inv_data['customer_id'],
+                    "party_type"              => 'customer',
+                    "reference_id"            => implode(",", $reference_numbers),
+                    "reference_type"          => $this->input->post('reference_type'),
+                    "reference_number"        => implode(",", $reference_number_text),
+                    "from_account"            => $from_acc,
+                    "to_account"              => 'customer-' . $customer[0]->customer_name,
+                    "imploded_receipt_amount" => implode(",", $receipt_amount),
+                    "invoice_balance_amount"  => implode(",", $remaining_amount),
+                    "invoice_paid_amount"     => implode(",", $paid_amount),
+                    "invoice_total"           => implode(",", $invoice_total),
+                    "receipt_amount"          => $receipt_grand_total,
+                    "payment_mode"            => $payment_mode,
+                    "payment_via"             => $this->input->post('payment_via'),
+                    "reff_number"             => $this->input->post('ref_number'),
+                    "financial_year_id"       => $this->session->userdata('SESS_FINANCIAL_YEAR_ID'),
+                    "bank_name"               => $this->input->post('bank_name'),
+                    "cheque_number"           => $this->input->post('cheque_number'),
+                    "cheque_date"             => $cheque_date,
+                    "description"             => $this->input->post('description'),
+                    "added_date"              => date('Y-m-d'),
+                    "added_user_id"           => $this->session->userdata('SESS_USER_ID'),
+                    "branch_id"               => $this->session->userdata('SESS_BRANCH_ID'),
+                    "currency_id"             => $this->input->post('currency_id'),
+                    "updated_date"            => "",
+                    "updated_user_id"         => "",
+                    "is_main_receipt"         => $is_main_receipt,
+                    "parent_receipt_id"       => $parent_receipt_id,
+                    "note1"                   => $this->input->post('note1'),
+                    "note2"                   => $this->input->post('note2'));
+
+                if ($this->session->userdata('SESS_DEFAULT_CURRENCY') == $this->input->post('currency_id')) {
+                    $receipt_data['converted_receipt_amount']          = $receipt_grand_total;
+                    $receipt_data['imploded_converted_receipt_amount'] = $receipt_grand_total;
+                }else {
+                    $receipt_data['converted_receipt_amount']          = 0;
+                    $receipt_data['imploded_converted_receipt_amount'] = 0;
+                }
+
+                if ($payment_mode == "cash"){
+                    $receipt_data['voucher_status'] = "0";
+                } else{
+                    $receipt_data['voucher_status'] = "1";
+                }
+
+                $data_main = array_map('trim', $receipt_data);
+
+                $receipt_voucher_table = $this->config->item('receipt_voucher_table');
+                $sub_receipt_total = 0;
+                
+                if ($receipt_id = $this->general_model->insertData($receipt_voucher_table, $data_main)) {
+                    $parent_receipt_id = $receipt_id;
+                    $is_main_receipt = 0;
+                    $reference_data = array();
+                    
+                    foreach ($invoice_data as $key7 => $value7) {
+                        if ($data_main['reference_type'] == 'sales' && $value7['reference_number'] != 'excess_amount' && $value7['reference_number'] != 'opening_balance') {
+                           
+                            $sales_paid_amount = $value7['paid_amount'];
+                            $paid_amount       = array('sales_paid_amount' => $sales_paid_amount);
+                            if($value7['pending_amount'] <= 0){
+                                $paid_amount['is_edit'] = '0';
+                            }
+
+                            if ($this->session->userdata('SESS_DEFAULT_CURRENCY') == $this->input->post('currency_id')){
+                                $sales_converted_paid_amount          = $value['paid_amount'];//
+                                $paid_amount['converted_paid_amount'] = $sales_paid_amount;//$total_converted_paid_amount;
+                            }
+                            
+                            $reference_data[] = array('receipt_id' => $receipt_id,
+                                                    'reference_id' => $value7['reference_number'],
+                                                    'receipt_amount' => $value7['receipt_amount'],
+                                                    'Invoice_total_received' => ($sales_paid_amount-$value7['receipt_total_paid']),
+                                                    'Invoice_pending' => $value7['pending_amount'],
+                                                    'exchange_gain_loss' => $value7['gain_loss_amount'],
+                                                    'exchange_gain_loss_type' => $value7['gain_loss_amount_icon'],
+                                                    'discount' => $value7['discount'],
+                                                    'other_charges' => $value7['other_charges'],
+                                                    'round_off' => $value7['round_off'],
+                                                    'round_off_icon' => $value7['icon_round_off'],
+                                                    'receipt_total_paid' => $value7['receipt_total_paid']
+                                                );
+                            
+                            $where = array('sales_id' => $value7['reference_number']);
+                            $sales_table = $this->config->item('sales_table');
+                            $this->general_model->updateData($sales_table, $paid_amount, $where);
+
+                        }elseif($value7['reference_number'] == 'excess_amount'){
+                            $excess_sales_id = $value7['excess_sales_id'];
+
+                            if($excess_sales_id){
+                                $excess = array('sales_id' => $excess_sales_id,
+                                                'receipt_id' => $receipt_id,
+                                                'excess_amount' => $value7['receipt_amount'],
+                                                'created_at' => date('Y-m-d'),
+                                                'created_by' => $this->session->userdata('SESS_USER_ID'));
+
+                                $this->db->insert('sales_excess_amount',$excess);
+                            }
+                        }elseif($value7['reference_number'] == 'opening_balance'){
+                            $opening_balance_id = $value7['opening_balance_id'];
+
+                            if($opening_balance_id){
+                                /* Total paid amount */
+                                $this->db->select('SUM(paid_amount) as paid_amount');
+                                $this->db->where('party_id',$inv_data['customer_id']);
+                                $this->db->where('delete_status',0);
+                                $this->db->where('party_type','customer');
+                                $this->db->from('received_opening_balance');
+                                $op_paid_amnt = $this->db->get();
+                                $opn_paid_amount = $op_paid_amnt->result();
+                                $opening_balance_paid  = 0;
+                                if(!empty($opn_paid_amount))
+                                $opening_balance_paid = $opn_paid_amount[0]->paid_amount;
+                                $opn_paid_amnt = $opening_balance_paid + $value7['receipt_amount'];
+                                $pending_amount = $value7['opening_balance'] - $opn_paid_amnt;
+                                $opening_ary = array('party_id' => $inv_data['customer_id'],
+                                                'party_type' => 'customer',
+                                                'receipt_id' => $receipt_id,
+                                                'ledger_id' => $value7['ledger_id'],
+                                                'opening_balance' => $value7['opening_balance'],
+                                                'paid_amount' => $value7['receipt_amount'],
+                                                'added_date' => date('Y-m-d'),
+                                                'added_id' => $this->session->userdata('SESS_USER_ID')
+                                            );
+                                $this->db->insert('received_opening_balance',$opening_ary);
+                                $reference_data[] = array('receipt_id' => $receipt_id,
+                                                    'reference_id' => 'opening_balance',
+                                                    'receipt_amount' => $value7['receipt_amount'],
+                                                    'Invoice_total_received' => $opn_paid_amnt,
+                                                    'Invoice_pending' => $pending_amount,
+                                                    'exchange_gain_loss' => 0,
+                                                    'exchange_gain_loss_type' => '',
+                                                    'discount' => 0,
+                                                    'other_charges' => 0,
+                                                    'round_off' => 0,
+                                                    'round_off_icon' => '',
+                                                    'receipt_total_paid' =>$value7['receipt_amount']
+                                                );
+                            }
+                        }
+
+                        $sub_receipt_total += $value7['receipt_amount'];
+                    }
+                    
+                    if(!empty($reference_data))$this->db->insert_batch('receipt_invoice_reference',$reference_data);
+                    $successMsg = 'Receipt Voucher Added Successfully';
+                    $this->session->set_flashdata('receipt_voucher_success',$successMsg);
+                    $log_data = array(
+                        'user_id'           => $this->session->userdata('SESS_USER_ID'),
+                        'table_id'          => $receipt_id,
+                        'table_name'        => $receipt_voucher_table,
+                        'financial_year_id' => $this->session->userdata('SESS_FINANCIAL_YEAR_ID'),
+                        'branch_id'         => $this->session->userdata('SESS_BRANCH_ID'),
+                        'message'           => 'Receipt Voucher Inserted');
+                    $data_main['receipt_id'] = $receipt_id;
+                    $data_main['sub_receipt_total'] = $sub_receipt_total;
+                    $log_table               = $this->config->item('log_table');
+                    $this->general_model->insertData($log_table, $log_data);
+
+                    if (in_array($data['accounts_module_id'], $data['active_add'])){
+
+                        if (in_array($data['accounts_sub_module_id'], $data['access_sub_modules'])){
+                            
+                            $this->VoucherEntry($data_main,$reference_data,$customer_name , "add",$customer_ledger_id);
+                        }
+                    }
+                }
+            }
+
+            if ($this->session->userdata('cat_type') != "" && $this->session->userdata('cat_type') != null && $this->session->userdata('cat_type') == 'customer' && $payment_mode != "cash"){
+                $this->session->unset_userdata('cat_type');
+
+                if ($currency == $this->session->userdata('SESS_DEFAULT_CURRENCY')){
+                    redirect('bank_statement/bank_group', 'refresh');
+                }
+            }
+
+            if($this->input->post('section_area') != ''){
+                redirect($this->input->post('section_area'), 'refresh');
+            }else{
+                redirect('receipt_voucher', 'refresh');
+            }
+            
+        }else{
+            $errorMsg = 'Receipt Voucher Add Unsuccessful';
+            $this->session->set_flashdata('receipt_voucher_error',$errorMsg);
+            redirect('receipt_voucher', 'refresh');
+        }
     }
 
     public function VoucherEntry($data_main,$reference_data,$customer_name,$operation,$customer_ledger_id){
@@ -1075,6 +1701,15 @@ class Receipt_voucher extends MY_Controller
 
     }
 
+    public function allReceipts($id){
+        $this->db->select('r.*');
+        $this->db->from('receipt_voucher r');
+        $this->db->where('r.receipt_id',$id);
+        $this->db->or_where('(r.parent_receipt_id='.$id.' AND delete_status=0)');
+        $d = $this->db->get();
+        return $d->result();
+    }
+
     public function edit_receipt(){
         $all_reference = $this->input->post('invoice_data');
         $invoice_data = json_decode($all_reference,true);
@@ -1361,6 +1996,518 @@ class Receipt_voucher extends MY_Controller
         }
     }
 
+    public function edit_multi_receipt(){
+        /*echo "<pre>";
+        print_r($this->input->post());
+        exit();*/
+        $all_reference = $this->input->post('invoice_data');
+        $cust_invoice_data = json_decode($all_reference,true);
+        $receipt_voucher_module_id = $this->config->item('receipt_voucher_module');
+        $data['module_id']         = $receipt_voucher_module_id;
+        $modules                   = $this->modules;
+        $privilege                 = "edit_privilege";
+        $section_modules           = $this->get_section_modules($receipt_voucher_module_id, $modules, $privilege);
+        $parent_receipt_id = $this->input->post('parent_receipt_id');
+        $receipt_voucher_table = $this->config->item('receipt_voucher_table');
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
+
+        $data['receipt_voucher_module_id'] = $receipt_voucher_module_id;
+        $data['bank_account_module_id'] = $this->config->item('bank_account_module');
+        $data['accounts_module_id']     = $this->config->item('accounts_module');
+        $data['notes_module_id']        = $this->config->item('notes_module');
+        $data['notes_sub_module_id']    = $this->config->item('notes_sub_module');
+        $data['accounts_sub_module_id'] = $this->config->item('accounts_sub_module');
+        $access_settings = $section_modules['access_settings'];
+        $access_common_settings = $section_modules['access_common_settings'];
+        $currency = $this->input->post('currency_id');
+
+        if ($access_settings[0]->invoice_creation == "automatic") {
+
+            if ($this->input->post('voucher_number') != $this->input->post('voucher_number_old')) {
+                $primary_id      = "receipt_id";
+                $table_name      = $this->config->item('receipt_voucher_table');
+                $date_field_name = "voucher_date";
+                $current_date    = date('Y-m-d',strtotime($this->input->post('voucher_date')));
+                $voucher_number  = $this->generate_invoice_number($access_settings, $primary_id, $table_name, $date_field_name, $current_date);
+            } else{
+                $voucher_number = $this->input->post('voucher_number');
+            }
+        }else{
+            $voucher_number = $this->input->post('voucher_number');
+        }
+
+        if ($this->input->post('payment_mode') != "cash" && $this->input->post('payment_mode') != "bank" && $this->input->post('payment_mode') != "other payment mode"){
+            $bank_acc_payment_mode = explode("/", $this->input->post('payment_mode'));
+            $payment_mode          = $bank_acc_payment_mode[0];
+            /*$ledger_bank_acc       = $this->general_model->getRecords('ledger_id', 'bank_account', array(
+                'bank_account_id' => $payment_mode[0]));
+            $ledger_from = $ledger_bank_acc[0]->ledger_id;*/
+            $from_acc    = $bank_acc_payment_mode[1];
+        } else {
+            $ledger_from  = $this->ledger_model->getDefaultLedger($this->input->post('payment_mode'));
+            $payment_mode = $this->input->post('payment_mode');
+            $from_acc     = $this->input->post('payment_mode');
+        }
+        $cheque_date = ($this->input->post('cheque_date') != '' ? date('Y-m-d',strtotime($this->input->post('cheque_date'))) : '');
+        if (!$cheque_date){
+            $cheque_date = null;
+        }
+
+        /*$this->db->select('r.*');
+        $this->db->from('receipt_voucher r');
+        $this->db->where('r.receipt_id',$parent_receipt_id);
+        $this->db->or_where('r.parent_receipt_id',$parent_receipt_id);
+        $d = $this->db->get();*/
+        $old_receipts = $this->allReceipts($parent_receipt_id);
+        $old_receipt_ids = array();
+        foreach ($old_receipts as $key => $value) {
+            array_push($old_receipt_ids, $value->receipt_id);
+        }
+
+        foreach ($cust_invoice_data as $key => $ref_data) {
+            /*echo "<pre>";
+            print_r($ref_data);*/
+            $invoice_data = $ref_data['data_item'];
+            
+            $receipt_id  = (@$ref_data['receipt_id'] ? $ref_data['receipt_id'] : 0);
+            if (($key = array_search($receipt_id, $old_receipt_ids)) !== false) {
+                unset($old_receipt_ids[$key]);
+            }
+            
+            $receipt_grand_total = 0;
+            $reference_numbers = $reference_number_text = $receipt_amount =$remaining_amount= $paid_amount=$invoice_total = array();
+
+            if(!empty($invoice_data)){
+               
+                foreach ($invoice_data as $key => $value) {
+                    $invoice_data[$key]['paid_amount'] +=(@$value['receipt_total_paid'] ? $value['receipt_total_paid'] : 0);
+                    if($value['reference_number'] != 'excess_amount'){
+                        array_push($reference_number_text, (@$value['reference_number_text'] ? $value['reference_number_text'] : ''));
+                        array_push($remaining_amount, (@$value['pending_amount'] ? $value['pending_amount'] : ''));
+                        array_push($paid_amount, (@$value['paid_amount'] ? $value['paid_amount'] : ''));
+                        array_push($invoice_total, (@$value['invoice_total'] ? $value['invoice_total'] : ''));
+                    }
+                    array_push($reference_numbers, $value['reference_number']);
+                    array_push($receipt_amount, $value['receipt_amount']);
+                    $receipt_grand_total += $value['receipt_amount'];
+                }
+            }
+
+            $receipt_amount_old           = (@$ref_data['receipt_amount_old'] ? $ref_data['receipt_amount_old'] : 0);
+            $converted_receipt_amount_old = (@$ref_data['receipt_amount_old'] ? $ref_data['receipt_amount_old'] : 0);
+
+            $customer = $this->general_model->getRecords('ledger_id,customer_name', 'customer', array(
+                'customer_id' => $ref_data['customer_id']));
+            $ledger_to   = $customer[0]->ledger_id;
+            $customer_name = $customer[0]->customer_name;
+            $customer_ledger_id = $customer[0]->ledger_id;
+        
+            $receipt_data = array(
+                "voucher_date"            => date('Y-m-d',strtotime($this->input->post('voucher_date'))),
+                "voucher_number"          => $voucher_number,
+                "party_id"                => $ref_data['customer_id'],
+                "party_type"              => 'customer',
+                "reference_id"            => implode(",", $reference_numbers),
+                "reference_type"          => $this->input->post('reference_type'),
+                "reference_number"        => implode(",", $reference_number_text),
+                "from_account"            => $from_acc,
+                "to_account"              => 'customer-' . $customer[0]->customer_name,
+                "imploded_receipt_amount" => implode(",", $receipt_amount),
+                "invoice_balance_amount"  => implode(",", $remaining_amount),
+                "invoice_paid_amount"     => implode(",", $paid_amount),
+                "invoice_total"           => implode(",", $invoice_total),
+                "payment_mode"            => $payment_mode,
+                "receipt_amount"          => $receipt_grand_total,
+                "financial_year_id"       => $this->session->userdata('SESS_FINANCIAL_YEAR_ID'),
+                "payment_via"             => $this->input->post('payment_via'),
+                "reff_number"             => $this->input->post('reff_number'),
+                "bank_name"               => $this->input->post('bank_name'),
+                "cheque_number"           => $this->input->post('cheque_number'),
+                "cheque_date"             => $cheque_date,
+                "description"             => $this->input->post('description'),
+                "updated_date"            => date('Y-m-d'),
+                "updated_user_id"         => $this->session->userdata('SESS_USER_ID'),
+                "note1"                   => $this->input->post('note1'),
+                "note2"                   => $this->input->post('note2'),
+                "branch_id"               => $this->session->userdata('SESS_BRANCH_ID'),
+                "currency_id"             => $this->input->post('currency_id')
+            );
+
+            $receipt_data['converted_receipt_amount']          = 0;
+            $receipt_data['imploded_converted_receipt_amount'] = 0;
+            if ($this->session->userdata('SESS_DEFAULT_CURRENCY') == $this->input->post('currency_id')){
+                $receipt_data['converted_receipt_amount']          = $receipt_grand_total;
+                $receipt_data['imploded_converted_receipt_amount'] = implode(",", $this->input->post('receipt_amount'));
+            }
+
+            $receipt_data['voucher_status'] = "1";
+
+            if ($payment_mode == "cash"){
+                $receipt_data['voucher_status'] = "0";
+            }
+
+            $where = array( 'receipt_id' => $receipt_id);
+            
+            $data_main             = array_map('trim', $receipt_data);
+            if($receipt_id != '' && $receipt_id != 0){
+                $action = 'edit';
+                $this->general_model->updateData($receipt_voucher_table, $data_main, $where);
+            }else{
+                $data_main['parent_receipt_id'] = $parent_receipt_id;
+                $data_main['is_main_receipt'] = 0;
+                $data_main['added_date'] = date('Y-m-d');
+                $data_main['added_user_id'] = $this->session->userdata('SESS_USER_ID');
+                $data_main['updated_date'] = '';
+                $data_main['updated_user_id'] = '';
+                $action = 'add';
+                $receipt_id = $this->general_model->insertData($receipt_voucher_table, $data_main);
+            }
+            
+            if ($receipt_id != 0){
+                $sales_id_data       = $reference_numbers;
+                $this->db->select('*');
+                $this->db->where('delete_status',0);
+                $this->db->where('receipt_id',$receipt_id);
+                $old_sales_qry = $this->db->get('receipt_invoice_reference');
+                $old_salse_data = $old_sales_qry->result();
+                $old_sales = array();
+                if(!empty($old_salse_data)){
+                    foreach ($old_salse_data as $key => $value) {
+                        $old_sales['sales_'.$value->reference_id] = $value;
+                    }
+                }
+
+                $voucher_data = array();
+                $sub_receipt_total = 0;
+
+                /* delete old excess amount */
+                $this->db->where('receipt_id',$receipt_id);
+                $this->db->where('delete_status','0');
+                $this->db->delete('sales_excess_amount');
+                
+                /* delete old opeing balance */
+                $this->db->where('receipt_id',$receipt_id);
+                $this->db->where('delete_status','0');
+                $this->db->delete('received_opening_balance');
+
+                foreach ($invoice_data as $key => $value) {
+                    
+                    if($action == 'add'){
+                        $value['is_edit'] = 1;   
+                    }
+                    if($value['reference_number'] != 'excess_amount'  && $value['reference_number'] != 'opening_balance'){
+                        $sales_paid_amount = $value['paid_amount'];
+                        $paid_amount       = array('sales_paid_amount' => $sales_paid_amount);
+                        if($sales_paid_amount <= 0) $value['is_edit'] = 0;
+                        if ($this->session->userdata('SESS_DEFAULT_CURRENCY') == $this->input->post('currency_id')){
+                            $sales_converted_paid_amount          = $value['paid_amount'];
+                            $paid_amount['converted_paid_amount'] = $sales_paid_amount;
+                        }
+
+                        $reference_data = array('receipt_id' => $receipt_id,
+                                                'reference_id' => $value['reference_number'],
+                                                'receipt_amount' => $value['receipt_amount'],
+                                                'Invoice_total_received' => ($sales_paid_amount-$value['receipt_amount']),
+                                                'Invoice_pending' => $value['pending_amount'],
+                                                'exchange_gain_loss' => $value['gain_loss_amount'],
+                                                'exchange_gain_loss_type' => $value['gain_loss_amount_icon'],
+                                                'discount' => $value['discount'],
+                                                'other_charges' => $value['other_charges'],
+                                                'round_off' => $value['round_off'],
+                                                'round_off_icon' => $value['icon_round_off'],
+                                                'receipt_total_paid' => $value['receipt_total_paid']
+                                            );
+                        $voucher_data[] = $reference_data;
+                        $k = 'sales_'.$value['reference_number'];
+                        
+                        if(array_key_exists($k, $old_sales)){
+                            if($value['is_edit'] != '0'){
+                                $this->db->set($reference_data);
+                                $this->db->where('receipt_invoice_id',$old_sales[$k]->receipt_invoice_id);
+                                $this->db->update('receipt_invoice_reference');
+                            }
+                            unset($old_sales[$k]);
+                        }else{
+                            $this->db->insert('receipt_invoice_reference',$reference_data);
+                        }
+                        if($value['is_edit'] != '0'){
+                            $where = array('sales_id' => $value['reference_number']);
+                            $sales_table = $this->config->item('sales_table');
+                            $this->general_model->updateData($sales_table, $paid_amount, $where);
+                        }
+
+                    }elseif($value['reference_number'] == 'excess_amount'){
+                        $excess_sales_id = $value['excess_sales_id'];
+                        
+                        if($excess_sales_id){
+                            $excess = array('sales_id' => $excess_sales_id,
+                                            'receipt_id' => $receipt_id,
+                                            'excess_amount' => $value['receipt_amount'],
+                                            'created_at' => date('Y-m-d'),
+                                            'created_by' => $this->session->userdata('SESS_USER_ID'));
+
+                            $this->db->insert('sales_excess_amount',$excess);
+                        }
+                    }elseif($value['reference_number'] == 'opening_balance'){
+                        $opening_balance_id = $value['opening_balance_id'];
+
+                        if($opening_balance_id){
+                            /* Total paid amount */
+                            $this->db->select('SUM(paid_amount) as paid_amount');
+                            $this->db->where('party_id',$ref_data['customer_id']);
+                            $this->db->where('delete_status',0);
+                            $this->db->where('party_type','customer');
+                            $this->db->from('received_opening_balance');
+                            $op_paid_amnt = $this->db->get();
+                            $opn_paid_amount = $op_paid_amnt->result();
+                            $opening_balance_paid  = 0;
+                            if(!empty($opn_paid_amount))
+                            $opening_balance_paid = $opn_paid_amount[0]->paid_amount;
+                            $opn_paid_amnt = $opening_balance_paid + $value['receipt_amount'];
+                            $pending_amount = $value['opening_balance'] - $opn_paid_amnt;
+                            $opening_ary = array('party_id' => $ref_data['customer_id'],
+                                            'party_type' => 'customer',
+                                            'receipt_id' => $receipt_id,
+                                            'ledger_id' => $value['ledger_id'],
+                                            'opening_balance' => $value['opening_balance'],
+                                            'paid_amount' => $value['receipt_amount'],
+                                            'added_date' => date('Y-m-d'),
+                                            'added_id' => $this->session->userdata('SESS_USER_ID')
+                                        );
+                            /*echo "<pre>";
+                            print_r($opening_ary);*/
+                            $this->db->insert('received_opening_balance',$opening_ary);
+                            $reference_data[] = array('receipt_id' => $receipt_id,
+                                                'reference_id' => 'opening_balance',
+                                                'receipt_amount' => $value['receipt_amount'],
+                                                'Invoice_total_received' => $opn_paid_amnt,
+                                                'Invoice_pending' => $pending_amount,
+                                                'exchange_gain_loss' => 0,
+                                                'exchange_gain_loss_type' => '',
+                                                'discount' => 0,
+                                                'other_charges' => 0,
+                                                'round_off' => 0,
+                                                'round_off_icon' => '',
+                                                'receipt_total_paid' =>$value['receipt_amount']
+                                            );
+                        }
+                    }
+                    
+                    $sub_receipt_total += $value['receipt_amount'];
+                }
+
+                if(!empty($old_sales)){
+                    foreach ($old_sales as $key => $value) {
+                        
+                        /* revert paid amount from sales invoice */
+                        if($value->reference_id != '0'){
+                            $receipt_total_paid = $value->receipt_total_paid;
+                            $sales_data = $this->general_model->getRecords('*', 'sales', array(
+                                'sales_id' => $value->reference_id));
+                            $sales_paid_amount = bcsub($sales_data[0]->sales_paid_amount, $receipt_total_paid, $section_modules['access_common_settings'][0]->amount_precision);
+                            
+                            $paid_amount = array('sales_paid_amount' => $sales_paid_amount);
+
+                            if ($this->session->userdata('SESS_DEFAULT_CURRENCY') == $this->input->post('currency_id')){
+                                $sales_converted_paid_amount          = bcsub($sales_data[0]->converted_paid_amount, $receipt_total_paid, $section_modules['access_common_settings'][0]->amount_precision);
+                               
+                                $paid_amount['converted_paid_amount'] = $sales_converted_paid_amount;
+                            }
+                            
+                            $where = array('sales_id' => $value->reference_id);
+                            $sales_table = $this->config->item('sales_table');
+                            $this->general_model->updateData($sales_table, $paid_amount, $where);
+                        }
+                        /* update status delete */
+                        $refer_sts = array('delete_status'=>1);
+                        $where = array('receipt_invoice_id',$value->receipt_invoice_id);
+                        try {
+                            $this->general_model->updateData('receipt_invoice_reference',$refer_sts,$where);
+                        } catch (Exception $e) {
+                            
+                        }
+
+                    }
+                }
+                $successMsg = 'Receipt Voucher Updated Successfully';
+                $this->session->set_flashdata('receipt_voucher_success',$successMsg);
+                $log_data = array(
+                    'user_id'           => $this->session->userdata('SESS_USER_ID'),
+                    'table_id'          => $receipt_id,
+                    'table_name'        => $receipt_voucher_table,
+                    'financial_year_id' => $this->session->userdata('SESS_FINANCIAL_YEAR_ID'),
+                    'branch_id'         => $this->session->userdata('SESS_BRANCH_ID'),
+                    'message'           => 'Receipt Voucher Updated');
+                $data_main['receipt_id'] = $receipt_id;
+                $data_main['sub_receipt_total'] = $sub_receipt_total;
+                $log_table               = $this->config->item('log_table');
+                $this->general_model->insertData($log_table, $log_data);
+
+                /*if (in_array($data['accounts_module_id'], $data['active_add'])){
+
+                    if (in_array($data['accounts_sub_module_id'], $data['access_sub_modules'])){
+                        $this->voucher_entry($receipt_id, $ledger_from, $ledger_to, $data_main['receipt_amount'], "edit", $currency);
+                    }
+                }*/
+
+                if (in_array($data['accounts_module_id'], $data['active_add'])){
+
+                    if (in_array($data['accounts_sub_module_id'], $data['access_sub_modules'])){
+                        /*$this->voucher_entry($receipt_id, $ledger_from, $ledger_to, $data_main['receipt_amount'], "add", $currency);*/
+
+                        $this->VoucherEntry($data_main,$voucher_data,$customer_name , $action,$customer_ledger_id);
+                    }
+                }
+            }
+        }
+
+        if(!empty($old_receipt_ids)){
+            
+            foreach ($old_receipt_ids as $key => $receipt_id) {
+                $receipt_data = $this->general_model->getRecords('*', $receipt_voucher_table, array('receipt_id' => $receipt_id));
+
+                $receipt_invoice_data = $this->general_model->getRecords('*', 'receipt_invoice_reference', array(
+                    'receipt_id' => $receipt_id));
+                /* delete voucher from payment table */
+
+                $this->general_model->deleteCommonVoucher(array('table' => 'receipt_voucher', 'where' => array('receipt_id' =>$receipt_id)),array('table' => 'accounts_receipt_voucher', 'where' => array('receipt_voucher_id' =>$receipt_id)));
+                
+
+                if ($this->general_model->updateData($receipt_voucher_table, array(
+                    'delete_status' => 1), array(
+                    'receipt_id' => $receipt_id))){
+
+                    foreach ($receipt_data as $key => $value) {
+                        
+                        foreach ($receipt_invoice_data as $key => $value7) {
+                            if ($value->reference_type == "sales")
+                            {
+                                $sales_data = $this->general_model->getRecords('*', 'sales', array(
+                                    'sales_id' => $value7->reference_id));
+                                $sales_paid_amount = bcsub($sales_data[0]->sales_paid_amount, $value7->receipt_total_paid);
+                                $data              = array(
+                                    'sales_paid_amount' => $this->precise_amount($sales_paid_amount, $access_common_settings[0]->amount_precision));
+
+                                $where = array(
+                                    'sales_id' => $value7->reference_id);
+                                $sales_table = 'sales';
+                                $this->general_model->updateData($sales_table, $data, $where);
+                            }
+                        }
+                        /* delete sales receipt invoice records */
+                        $this->db->reset_query();
+                        $this->db->where('receipt_id',$receipt_id);
+                        $this->db->delete('receipt_invoice_reference');
+                        /* delete sales excess invoice records */
+                        $this->db->reset_query();
+                        $this->db->set('delete_status','1');
+                        $this->db->where('receipt_id',$receipt_id);
+                        $this->db->update('sales_excess_amount');
+                        /* delete opening amount records */
+                        $this->db->reset_query();
+                        $this->db->set('delete_status','1');
+                        $this->db->where('receipt_id',$receipt_id);
+                        $this->db->where('party_type','customer');
+                        $this->db->update('received_opening_balance');
+                    }
+                    
+                    $log_data = array(
+                        'user_id'           => $this->session->userdata('SESS_USER_ID'),
+                        'table_id'          => $receipt_id,
+                        'table_name'        => 'receipt_voucher',
+                        'financial_year_id' => $this->session->userdata('SESS_FINANCIAL_YEAR_ID'),
+                        "branch_id"         => $this->session->userdata('SESS_BRANCH_ID'),
+                        'message'           => 'Receipt Voucher Deleted');
+                    $this->general_model->insertData('log', $log_data);
+                    
+                }
+            }
+        }
+        
+        redirect('receipt_voucher', 'refresh');
+    }
+
+    public function multi_delete()
+    {
+        $id                        = $this->input->post('delete_id');
+        $receipt_id                = $this->encryption_url->decode($id);
+        $receipt_voucher_table     = $this->config->item('receipt_voucher_table');
+        $receipt_voucher_module_id = $this->config->item('receipt_voucher_module');
+        $data['module_id']         = $receipt_voucher_module_id;
+        $modules                   = $this->modules;
+        $privilege                 = "delete_privilege";
+        $data['privilege']         = "delete_privilege";
+        $section_modules           = $this->get_section_modules($receipt_voucher_module_id, $modules, $privilege);
+
+        /* presents all the needed */
+        $data                   = array_merge($data, $section_modules);
+        $access_common_settings = $section_modules['access_common_settings'];
+        $all_receipts = $this->allReceipts($receipt_id);
+        foreach ($all_receipts as $key => $value) {
+            $receipt_id = $value->receipt_id;
+
+            $receipt_data = $this->general_model->getRecords('*', $receipt_voucher_table, array(
+                'receipt_id' => $receipt_id));
+
+            $receipt_invoice_data = $this->general_model->getRecords('*', 'receipt_invoice_reference', array(
+                'receipt_id' => $receipt_id));
+            /* delete voucher from payment table */
+            
+            
+            $this->general_model->deleteCommonVoucher(array('table' => 'receipt_voucher', 'where' => array('receipt_id' =>$receipt_id)),array('table' => 'accounts_receipt_voucher', 'where' => array('receipt_voucher_id' =>$receipt_id)));
+            
+
+            if ($this->general_model->updateData($receipt_voucher_table, array(
+                'delete_status' => 1), array(
+                'receipt_id' => $receipt_id))){
+
+                foreach ($receipt_data as $key => $value) {
+                    
+                    foreach ($receipt_invoice_data as $key => $value7) {
+                        if ($value->reference_type == "sales"){
+                            $sales_data = $this->general_model->getRecords('*', 'sales', array(
+                                'sales_id' => $value7->reference_id));
+                            $sales_paid_amount = bcsub($sales_data[0]->sales_paid_amount, $value7->receipt_total_paid);
+                            $data              = array(
+                                'sales_paid_amount' => $this->precise_amount($sales_paid_amount, $access_common_settings[0]->amount_precision));
+
+                            $where = array(
+                                'sales_id' => $value7->reference_id);
+                            $sales_table = 'sales';
+                            $this->general_model->updateData($sales_table, $data, $where);
+                        }
+                    }
+                    /* delete sales receipt invoice records */
+                    $this->db->where('receipt_id',$value->receipt_id);
+                    $this->db->delete('receipt_invoice_reference');
+                    /* delete sales excess invoice records */
+                    $this->db->set('delete_status','1');
+                    $this->db->where('receipt_id',$value->receipt_id);
+                    $this->db->update('sales_excess_amount');
+                    /* delete opening amount records */
+                    $this->db->reset_query();
+                    $this->db->set('delete_status','1');
+                    $this->db->where('party_type','customer');
+                    $this->db->where('receipt_id',$value->receipt_id);
+                    $this->db->update('received_opening_balance');
+                }
+                
+                $log_data = array(
+                    'user_id'           => $this->session->userdata('SESS_USER_ID'),
+                    'table_id'          => $receipt_id,
+                    'table_name'        => 'receipt_voucher',
+                    'financial_year_id' => $this->session->userdata('SESS_FINANCIAL_YEAR_ID'),
+                    "branch_id"         => $this->session->userdata('SESS_BRANCH_ID'),
+                    'message'           => 'Receipt Voucher Deleted');
+                $this->general_model->insertData('log', $log_data);
+            }
+        }
+        $successMsg = 'Receipt Voucher Deleted Successfully';
+        $this->session->set_flashdata('receipt_voucher_success',$successMsg);
+        redirect('receipt_voucher', 'refresh');
+    }
+    
     public function delete()
     {
         $id                        = $this->input->post('delete_id');
@@ -1803,17 +2950,40 @@ class Receipt_voucher extends MY_Controller
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
 
-        // $email_sub_module_id             = $this->config->item('email_sub_module');
-        /*echo $receipt_voucher_id;*/
-        $voucher_details = $this->common->receipt_voucher_details($receipt_voucher_id);
+        if($this->config->item('Sanath') == $this->session->userdata('SESS_BRANCH_ID')){
+            $all_receipts = $this->allReceipts($receipt_voucher_id);
+            $receipts = array();
+            
+            foreach ($all_receipts as $key => $value) {
+                $receipt_id = $value->receipt_id;
+                $voucher_details = $this->common->receipt_voucher_details($receipt_id);
 
-        $data['data']    = $this->general_model->getJoinRecords($voucher_details['string'], $voucher_details['table'], $voucher_details['where'], $voucher_details['join']);
-       /* print_r($this->db->last_query());*/
-        /*SELECT `rv`.`voucher_number`, `rv`.`voucher_date`, `rv`.`reference_number`, `rv`.`receipt_amount`, `rv`.`converted_receipt_amount`, `rv`.`reference_id`, `av`.`accounts_receipt_id`, `av`.`cr_amount`, `av`.`dr_amount`, `l`.`ledger_title` as `from_name`, `lr`.`ledger_title` as `to_name`, `av`.`converted_voucher_amount`, `av`.`receipt_voucher_id` FROM `accounts_receipt_voucher` `av` JOIN `receipt_voucher` `rv` ON `rv`.`receipt_id` = `av`.`receipt_voucher_id` JOIN `ledgers` `l` ON `l`.`ledger_id` = `av`.`ledger_from` JOIN `ledgers` `lr` ON `lr`.`ledger_id`=`av`.`ledger_to` WHERE `av`.`receipt_voucher_id` = '180' AND `av`.`delete_status` = 0*/
-          /*echo "<pre>";
+                $receipts[] = $this->general_model->getJoinRecords($voucher_details['string'], $voucher_details['table'], $voucher_details['where'], $voucher_details['join']);
+            }
+            $invoices = $ref_number = array();
+            $voucher_amount = 0;
+            foreach ($receipts as $key => $value) {
+                array_push($ref_number, $value[0]->reference_number);
+                $voucher_amount += $value[0]->voucher_amount;
+                $data['voucher_date'] = $value[0]->voucher_date;
+                $data['voucher_number'] = $value[0]->voucher_number;
+                foreach ($value as $k => $v) {
+                    if(array_key_exists($v->ledger_id, $invoices)){
+                        $invoices[$v->ledger_id]->voucher_amount += $v->voucher_amount;
+                    }else{
+                        $invoices[$v->ledger_id] = $v;
+                    }
+                }
+            }
+            $data['reference_number'] = $ref_number;
+            $data['voucher_amount'] = $voucher_amount;
+            $data['data'] = $invoices;
 
-         print_r($data['data']);
-         exit;*/
+        }else{
+            $voucher_details = $this->common->receipt_voucher_details($receipt_voucher_id);
+
+            $data['data']    = $this->general_model->getJoinRecords($voucher_details['string'], $voucher_details['table'], $voucher_details['where'], $voucher_details['join']);
+        }
         $this->load->view('receipt_voucher/view_details', $data);
     }
 

@@ -226,7 +226,7 @@ $this->load->view('layout/header');
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="product_price">Purchase Price</label>
-                                        <input type="number" class="form-control" id="product_price" name="product_price" value="" >
+                                        <input type="text" class="form-control float_number" id="product_price" name="product_price" value="">
                                         <span class="validation-color" id="product_price"></span>
                                     </div>
                                 </div>
@@ -247,14 +247,14 @@ $this->load->view('layout/header');
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="product_selling_price">Selling Price</label>
-                                        <input type="number" class="form-control" id="product_selling_price" name="product_selling_price" value="" >
+                                        <input type="text" class="form-control float_number" id="product_selling_price" name="product_selling_price" value="">
                                         <span class="validation-color" id="product_selling"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="product_mrp">MRP </label>
-                                        <input type="number" class="form-control" id="product_mrp" name="product_mrp" value="" >
+                                        <input type="text" class="form-control float_number" id="product_mrp" name="product_mrp" value="" >
                                         <span class="validation-color" id="product_mrp_code"></span>
                                     </div>
                                 </div>

@@ -151,12 +151,12 @@ $(document).ready(function () {
         } else {
             $("#err_product_name").text("");
         }
-        if (!name.match(name_regex)) {
+        /*if (!name.match(name_regex)) {
             $('#err_product_name').text("Please Enter Valid Product Name ");
             return false;
         } else {
             $("#err_product_name").text("");
-        }
+        }*/
         if (product_type == "") {
             $("#err_product_type").text("Select the Product Type.");
             return false;
@@ -333,12 +333,12 @@ $(document).ready(function () {
         } else {
             $("#err_product_name").text("");
         }
-        if (!product_name.match(name_regex)) {
+        /*if (!product_name.match(name_regex)) {
             $('#err_product_name').text("Please Enter Valid Product Name ");
             return false;
         } else {
             $("#err_product_name").text("");
-        }
+        }*/
 
         $.ajax({
             url: base_url + 'product/get_check_product',
@@ -394,12 +394,12 @@ $(document).ready(function () {
         } else {
             $("#err_product_name").text("");
         }
-        if (!product_name.match(name_regex)) {
+        /*if (!product_name.match(name_regex)) {
             $('#err_product_name').text("Please Enter Valid Product Name ");
             return false;
         } else {
             $("#err_product_name").text("");
-        }
+        }*/
         $('#product_modal_submit').attr('disabled',false);
         proXhr = $.ajax({
             url: base_url + 'product/get_check_product',
