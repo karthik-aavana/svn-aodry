@@ -79,7 +79,7 @@ class DefaultPrivilege_script extends MY_Controller {
         $result_branch = $res->result();
         foreach ($result_branch as $key => $value) {
             
-
+            $branch_id = $value->branch_id;
             // get all users in branch
             $this->db->select('id as user_id');
             $this->db->from('users');
@@ -99,7 +99,9 @@ class DefaultPrivilege_script extends MY_Controller {
 
             }
              // insert active modules
-            $this->db->insert_batch("active_modules", $active_module);
+            if(!empty($active_module)){
+                $this->db->insert_batch("active_modules", $active_module);
+            }
 
            
         }
@@ -114,21 +116,20 @@ class DefaultPrivilege_script extends MY_Controller {
         $result_branch = $res->result();
         foreach ($result_branch as $key => $value) {
             // get all users in branch
+            $branch_id = $value->branch_id;
             $this->db->select('id as user_id');
             $this->db->from('users');
             $this->db->where('branch_id',$branch_id);
             $this->db->where('delete_status',0);
             $res = $this->db->get();
             $result = $res->result();
-           
-            // get all remaining modules
-            $q = $this->db->select('m.*')->from('modules m')->where('m.delete_status', 0)->where('m.module_id NOT IN (select module_id from active_modules where delete_status=0 and branch_id=' . $branch_id . ' )', NULL, FALSE)->get();
-            $remain_module = $q->result();
             
-
-            $data_item_user = array();
             if(!empty($result)){
                 foreach ($result as $key => $va) {
+                     // get all remaining modules in user accessibility
+                    $q = $this->db->select('m.*')->from('modules m')->where('m.delete_status', 0)->where('m.module_id NOT IN (select module_id from user_accessibility where delete_status=0 and branch_id=' . $branch_id . ' and user_id='.$va->user_id.' )', NULL, FALSE)->get();
+                    $remain_module = $q->result();
+                    $data_item_user = array();
                     foreach ($remain_module as $keys => $user_insert) {
 
                         $data_item_user[$keys]['branch_id'] = $branch_id;
@@ -148,7 +149,9 @@ class DefaultPrivilege_script extends MY_Controller {
                         $data_item_user[$keys]['delete_status'] = 0;  
                     }
                     // insert user accessibility
-                    $this->db->insert_batch("user_accessibility",$data_item_user);
+                    if(!empty($data_item_user)){
+                   $this->db->insert_batch("user_accessibility",$data_item_user);
+                }
                 }
             }
         }
