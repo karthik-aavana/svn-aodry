@@ -27,21 +27,21 @@ $this->load->view('layout/header');
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="product_price">Purchase Price</label>
-                                    <input type="number" class="form-control" id="product_price" name="product_price" value="<?php echo precise_amount($products_detail->product_price); ?>" >
+                                    <input type="text" class="form-control float_number" id="product_price" name="product_price" value="<?php echo precise_amount($products_detail->product_price); ?>" >
                                     <span class="validation-color" id="product_price"></span>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="profit_margin">Profit Margin(%)</label>
-                                    <input type="text" class="form-control" id="profit_margin" name="profit_margin" value="<?php echo (float)($products_detail->product_profit_margin); ?>" pattern="\d*" maxlength="5">
+                                    <input type="text" class="form-control float_number" id="profit_margin" name="profit_margin" value="<?php echo (float)($products_detail->product_profit_margin); ?>" maxlength="5">
                                     <span class="validation-color" id="profit_margin"></span>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="product_selling_price">Selling Price</label>
-                                    <input type="number" class="form-control" id="product_selling_price" name="product_selling_price" value="<?=precise_amount($products_detail->product_selling_price,2);?>">
+                                    <input type="text" class="form-control float_number" id="product_selling_price" name="product_selling_price" value="<?=precise_amount($products_detail->product_selling_price,2);?>" >
                                     <span class="validation-color" id="product_selling"></span>
                                 </div>
                             </div>
@@ -51,7 +51,7 @@ $this->load->view('layout/header');
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="product_mrp">MRP <span class="validation-color">*</span></label>
-                                    <input type="number" class="form-control" id="product_mrp" name="product_mrp" value="<?=precise_amount($products_detail->product_mrp_price,2);?>" >
+                                    <input type="text" class="form-control float_number" id="product_mrp" name="product_mrp" value="<?=precise_amount($products_detail->product_mrp_price,2);?>" >
                                     <span class="validation-color" id="err_product_mrp"></span>
                                 </div>
                             </div>

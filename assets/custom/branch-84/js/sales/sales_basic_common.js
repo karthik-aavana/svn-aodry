@@ -657,7 +657,7 @@ function add_row(data) {
         var product_batch = data[0].product_batch;
         /*var item_tds_type = data[0].module_type;*/
         var item_tds_type = 'TCS';
-        var product_quantity = data[0]. product_quantity;
+        var product_quantity = data[0].product_quantity;
         var equal_unit_number = data[0].equal_unit_number;
         var equal_uom_id = data[0].equal_uom_id;
         var stock = parseFloat(+data[0].product_quantity) + parseFloat(+data[0].product_opening_quantity);

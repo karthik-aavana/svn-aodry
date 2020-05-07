@@ -50,6 +50,7 @@ Changes after final demo on 03-04-2020
 - Product bulk import need to check
 - Brand '+' icon need to add
 
+- multiple UOM In product
 
 ---------------------- Sanath----------------------
 
@@ -199,3 +200,81 @@ ALTER TABLE `quotation_item` ADD `quotation_item_mrp_price` DECIMAL(25,5) NOT NU
 ALTER TABLE `quotation_item` ADD `quotation_item_free_quantity` INT NOT NULL AFTER `quotation_item_quantity`;
 ALTER TABLE `quotation_item` ADD `quotation_item_cash_discount_amount` DECIMAL(25,5) NOT NULL AFTER `quotation_item_discount_amount`;
 ALTER TABLE `sales_item` CHANGE `sales_item_cash_discount_amount` `sales_item_cash_discount_amount` DECIMAL(25,5) NOT NULL;
+
+bugs
+
+Assets
+js/brnad/brand.js
+custom/js/sales/basic_common.js
+
+view
+  custom
+    sales/add
+    sales/edit
+    sales/pdf_hsn
+    product/inve modal
+
+Controller
+  customer
+  quotation
+  sales
+  purchase
+
+  ALTER TABLE `receipt_voucher` ADD `is_main_receipt` TINYINT NOT NULL DEFAULT '1' AFTER `voucher_status`;
+  ALTER TABLE `receipt_voucher` ADD `parent_receipt_id` INT NOT NULL AFTER `is_main_receipt`;
+  ALTER TABLE `payment_voucher` ADD `is_main_payment` TINYINT NOT NULL DEFAULT '1' AFTER `voucher_status`;
+  ALTER TABLE `payment_voucher` ADD `parent_payment_id` INT NOT NULL AFTER `is_main_payment`;
+
+
+CREATE TABLE `received_opening_balance` (
+  `id` int(11) NOT NULL,
+  `receipt_id` int(11) NOT NULL,
+  `party_id` int(11) NOT NULL,
+  `party_type` varchar(100) NOT NULL,
+  `ledger_id` int(11) NOT NULL,
+  `opening_balance` bigint(20) NOT NULL,
+  `paid_amount` bigint(20) NOT NULL,
+  `added_id` int(11) NOT NULL,
+  `added_date` date NOT NULL,
+  `updated_id` int(11) NOT NULL,
+  `updated_date` date NOT NULL,
+  `delete_status` tinyint(4) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+--
+-- Indexes for table `received_opening_balance`
+--
+ALTER TABLE `received_opening_balance`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `received_opening_balance`
+--
+ALTER TABLE `received_opening_balance`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
+Controller
+  receipt
+  payment
+  supplier
+  customer
+
+view
+  custom folder
+
+Library
+  common
+
+Core
+  MY_controller
+
+assets 
+  custom
+    JS
+  js
+    customer

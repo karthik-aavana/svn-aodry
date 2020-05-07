@@ -278,7 +278,7 @@ $this->load->view('layout/header');
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="product_price">Purchase Price</label>
-                                            <input type="number" class="form-control" id="product_price" name="product_price" value="<?php echo precise_amount($data[0]->product_price); ?>" >
+                                            <input type="text" class="form-control float_number" id="product_price" name="product_price" value="<?php echo precise_amount($data[0]->product_price); ?>" >
                                             <span class="validation-color" id="product_price"></span>
                                         </div>
                                     </div>
@@ -299,14 +299,14 @@ $this->load->view('layout/header');
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="product_selling_price">Selling Price</label>
-                                            <input type="number" class="form-control" id="product_selling_price" name="product_selling_price" value="<?php echo precise_amount($data[0]->product_selling_price); ?>" >
+                                            <input type="text" class="form-control float_number" id="product_selling_price" name="product_selling_price" value="<?php echo precise_amount($data[0]->product_selling_price); ?>" >
                                             <span class="validation-color" id="product_selling"></span>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="product_mrp">MRP </label>
-                                            <input type="number" class="form-control" id="product_mrp" name="product_mrp" value="<?php echo precise_amount($data[0]->product_mrp_price,2); ?>" >
+                                            <input type="text" class="form-control float_number" id="product_mrp" name="product_mrp" value="<?php echo precise_amount($data[0]->product_mrp_price,2); ?>" >
                                             <span class="validation-color" id="product_mrp_code"></span>
                                         </div>
                                     </div>
