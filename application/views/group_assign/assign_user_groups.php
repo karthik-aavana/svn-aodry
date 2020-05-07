@@ -85,7 +85,8 @@ $(document).ready(function () {
         'paging':false,
         'search':false,
         'info':false,
-        'filter':false
+        'filter':false,
+        "columnDefs": [ { 'orderable': false, 'targets': [0,1,2,3,4,5] }]
 });
     $(document).on('click','#search_module',function(){
         var module_name = $('#cmb_group').val();

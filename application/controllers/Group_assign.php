@@ -78,7 +78,10 @@ class Group_assign extends MY_Controller
 	        }
         }
         else{
-        	$assigned_module_id = array_column($assigned_data, 'module_id');
+        	/*$assigned_module_id = array_column($assigned_data, 'module_id');*/
+            foreach ($assigned_data as $key => $value) {
+                $assigned_module_id[] = $value->module_id;
+            }
         	$assigned_data_key = array();
         	foreach ($assigned_data as $value_assign) {
      			$assigned_data_key[$value_assign->module_id]['add'] = $value_assign->add_privilege;

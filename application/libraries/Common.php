@@ -6286,7 +6286,7 @@ class Common
         $order = [
             "id" => "desc"];
         $filter = array(
-            'group_name',
+            'name',
             'description'
             );
         $data = array(
