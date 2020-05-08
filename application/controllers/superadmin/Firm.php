@@ -454,6 +454,14 @@ class Firm extends MY_Controller
 
                     if($branch_id=$this->general_model->insertData('branch',$branch_data)){
                         $package_id=0;
+                        $group_data                        = array(
+                            "name"        => 'admin',
+                            "description"       => 'Admin have all the privileges',
+                            "branch_id"         => $branch_id,
+                            "added_date"      => date('Y-m-d'),
+                            "added_user_id"   => '1');
+                        $group_id = $this->general_model->insertData("groups", $group_data);
+
                         if(@$this->input->post('payment')){
                             $payment = $this->input->post('payment');
                             if(strtolower($payment) == 'trial'){
@@ -559,15 +567,15 @@ class Firm extends MY_Controller
 
                         $identity = $email = $this->input->post('email');
                         $password = '';
-                        $group = 1; //Admin 
+                        /*$group = 1; //Admin */
                         
                         $user_id = $this->ion_auth->register($branch_id,$identity,$password,$email,$additional_data);
                         
-                        $this->general_model->insertData("users_groups",["user_id" => $user_id,"group_id" =>$group]);
+                        $this->general_model->insertData("users_groups",["user_id" => $user_id,"group_id" =>$group_id]);
 
                         $active_modules = array();
                         $modules=$this->sa_getOnly_modules($user_id,$branch_id);
-                        foreach ($modules['modules'] as $key => $value){
+                        /*foreach ($modules['modules'] as $key => $value){
                             if(!in_array($value, $active_modules) && $value != ""){
                                 $active_modules[]=$value->module_id;
                             }
@@ -625,25 +633,51 @@ class Firm extends MY_Controller
                             $edit_section=$edit_modules_assigned_section['accountant'];
                             $delete_section=$delete_modules_assigned_section['accountant'];
                             $view_section=$view_modules_assigned_section['accountant'];
-                        }
+                        }*/
                     
                         $data_item = array();
-                        foreach ($active_modules as $key => $value){
-                            $data_item[$key]['branch_id']=$this->session->userdata('SESS_BRANCH_ID');
+                        $data_item_group = array();
+                        foreach ($modules['modules'] as $key => $value){
+                            $data_item[$key]['branch_id']= $branch_id;
                             $data_item[$key]['user_id']=$user_id;
-                            $data_item[$key]['module_id']=$value;
-                            $data_item[$key]['add_privilege']="yes";
-                            $data_item[$key]['edit_privilege']="yes";
-                            $data_item[$key]['delete_privilege']="yes";
-                            $data_item[$key]['view_privilege']="yes";
+                            $data_item[$key]['module_id']=$value->module_id;
+                            $data_item_group[$key]['branch_id'] = $branch_id;
+                            $data_item_group[$key]['module_id'] = $value->module_id;
+                            $data_item_group[$key]['group_id'] = $group_id;
+                            if($value->is_report == 1){
+                                $data_item_group[$key]['add_privilege'] = 0;
+                                $data_item_group[$key]['edit_privilege'] = 0;
+                                $data_item_group[$key]['delete_privilege'] = 0;
+                                $data_item_group[$key]['view_privilege'] = 1;
+                                $data_item[$key]['add_privilege']="no";
+                                $data_item[$key]['edit_privilege']="no";
+                                $data_item[$key]['delete_privilege']="no";
+                                $data_item[$key]['view_privilege']="yes";
+                            }else{
+                                $data_item_group[$key]['add_privilege'] = 1;
+                                $data_item_group[$key]['edit_privilege'] = 1;
+                                $data_item_group[$key]['delete_privilege'] = 1;
+                                $data_item_group[$key]['view_privilege'] = 1;
+                                $data_item[$key]['add_privilege']="yes";
+                                $data_item[$key]['edit_privilege']="yes";
+                                $data_item[$key]['delete_privilege']="yes";
+                                $data_item[$key]['view_privilege']="yes";
+                            }
+                            $data_item_group[$key]['delete_status'] = 0;
+                            $data_item_group[$key]['added_user_id'] = 1;
+                            $data_item_group[$key]['added_date'] = date("Y-m-d");
                         }
 
                         /*foreach ($data_item as $value){
                             $this->general_model->insertData(,$value);
                         }*/
                         $this->db->insert_batch("user_accessibility", $data_item);
+
+                        $this->db->insert_batch("group_accessibility", $data_item_group);
+
                         $modules = $this->general_model->getActiveRemianingModules($user_id,$branch_id);
                         $access_array = array();
+                        $access_array_group = array();
 
                         foreach($modules as $module ){
                             $module_id = $module->module_id;
@@ -655,9 +689,24 @@ class Firm extends MY_Controller
                                                     "view_privilege" => 'yes',  
                                                     "module_id" => $module_id,
                                                 );
+                            $access_array_group[] = array("branch_id" => $branch_id,
+                                                    "group_id" => $group_id,
+                                                    "add_privilege" => 1,
+                                                    "edit_privilege" => 1,   
+                                                    "delete_privilege" => 1,    
+                                                    "view_privilege" => 1,  
+                                                    "module_id" => $module_id,
+                                                    "added_user_id" => 1,
+                                                    "added_date" => date("Y-m-d"),
+                                                );
                             /*$id =  $this->general_model->insertData('user_accessibility',$access_array);*/
                         }
-                        $this->db->insert_batch("user_accessibility", $access_array);
+                        if(!empty($access_array)){
+                            $this->db->insert_batch("user_accessibility", $access_array);
+                        }
+                        if(!empty($access_array_group)){
+                           $this->db->insert_batch("group_accessibility", $access_array_group); 
+                        }
                         if($package_id){
                             $payment = $this->input->post('payment');
                             if(strtolower($payment) == 'trial'){

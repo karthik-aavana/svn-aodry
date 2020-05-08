@@ -14,7 +14,8 @@ $(document).ready(function () {
         var mobile = $('#phone').val();
         var password = $('#password').val();
         var password_confirm = $('#password_confirm').val();   
-        var mobile_regex = /^[1-9][0-9]{9,14}$/;    
+        var mobile_regex = /^[1-9][0-9]{9,14}$/;
+        var group_name = $('#cmb_group').val();  
         //First name
         if (first_name == null || first_name == "")
         {
@@ -110,6 +111,14 @@ $(document).ready(function () {
         {
             $('#err_password_confirm').text('Password Not matching');
             return false;
+        }
+        if (group_name == null || group_name == "")
+        {
+            $("#err_user_group").text("Please Select User Group.");
+            return false;
+        } else
+        {
+            $("#err_user_group").text("");
         }
     });
 

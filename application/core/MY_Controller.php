@@ -184,8 +184,8 @@ class MY_Controller extends CI_Controller
     public function sa_getOnly_modules($user_id,$branch_id){
         $sess_user_id = $this->session->userdata('SESS_SA_USER_ID');
         $module_data = $this->common->sa_autoModule_field($branch_id);
-        $module      = $this->general_model->getRecords($module_data['string'], $module_data['table'], $module_data['where']);
-        
+        $module      = $this->general_model->getJoinRecords($module_data['string'], $module_data['table'], $module_data['where'], $module_data['join']);
+
         foreach ($module as $key => $value) {
             $sub_module_data               = $this->common->sub_module_field($value->module_id, $branch_id);
             $sub_module[$value->module_id] = $this->general_model->getRecords($sub_module_data['string'], $sub_module_data['table'], $sub_module_data['where']);

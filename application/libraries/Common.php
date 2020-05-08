@@ -2630,16 +2630,18 @@ class Common
 
     public function sa_autoModule_field($branch_id)
     {
-        $string = "am.module_id";
+        $string = "am.module_id,m.is_report";
         $table = "active_modules am";
-        
+        $join  = [
+            'modules m' => 'm.module_id = am.module_id'];
         $where = array(
             'am.branch_id'     => $branch_id,
             'am.delete_status' => 0);
         $data = array(
             'string' => $string,
             'table'  => $table,
-            'where'  => $where
+            'where'  => $where,
+            'join'   => $join
         );
         return $data;
     }
