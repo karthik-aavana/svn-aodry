@@ -36,12 +36,21 @@ $this->load->view('layout/header');
                         <h3 class="box-title">Bank Voucher</h3>
                         <div id="filter" style="display: block; float: right">
                             <div class="box-header box-body filter_body">
-                                <div class="btn-group">             
-                                    <span><a data-toggle="tooltip" data-placement="bottom" class="btn btn-app edit_voucher" data-custom-class="tooltip-primary" data-original-title="Edit Bank Voucher" style="display: none;"><i class="fa fa-pencil"></i></a></span>
-                                    <span><a data-toggle="tooltip" data-placement="bottom" class="btn btn-app delete_voucher" data-custom-class="tooltip-primary" data-original-title="Delete Bank Voucher" style="display: none;"><i class="fa fa-trash-o"></i></a></span>                                      
-                                    <span><a data-toggle="tooltip" data-placement="bottom" class="btn btn-app add_voucher" data-value="bank" data-custom-class="tooltip-primary" data-original-title="Add Bank Voucher"><i class="fa fa-plus"></i></a></span>
-                                    <span><a href="<?php echo base_url("assets/excel/voucher_with_ledgers_demo.csv") ?>"  class="btn btn-app" data-toggle="tooltip" data-placement="bottom" data-custom-class="tooltip-primary" data-original-title="Download Bank Voucher with ledgers CSV demo file" download><i class="fa fa-download"></i></a></span>
-                                    <span><a data-toggle="tooltip" data-placement="bottom" data-custom-class="tooltip-primary" class="btn btn-app upload_voucher_popup" data-original-title="Upload Bank Voucher" class=""><i class="fa fa-cloud-upload"></i></a> </span>
+                                <div class="btn-group">
+                                    <?php
+                                        if (in_array($module_id, $active_edit)) {
+                                    ?>
+                                        <span><a data-toggle="tooltip" data-placement="bottom" class="btn btn-app edit_voucher" data-custom-class="tooltip-primary" data-original-title="Edit Bank Voucher" style="display: none;"><i class="fa fa-pencil"></i></a></span>
+                                    <?php } 
+                                    if (in_array($module_id, $active_delete)) {?>
+                                        <span><a data-toggle="tooltip" data-placement="bottom" class="btn btn-app delete_voucher" data-custom-class="tooltip-primary" data-original-title="Delete Bank Voucher" style="display: none;"><i class="fa fa-trash-o"></i></a></span>
+                                    <?php } 
+                                    if (in_array($module_id, $active_add)) {
+                                    ?>
+                                        <span><a data-toggle="tooltip" data-placement="bottom" class="btn btn-app add_voucher" data-value="bank" data-custom-class="tooltip-primary" data-original-title="Add Bank Voucher"><i class="fa fa-plus"></i></a></span>
+                                        <span><a data-toggle="tooltip" data-placement="bottom" data-custom-class="tooltip-primary" class="btn btn-app upload_voucher_popup" data-original-title="Upload Bank Voucher" class=""><i class="fa fa-cloud-upload"></i></a> </span>
+                                    <?php } ?>
+                                    <span><a href="<?php echo base_url("assets/excel/voucher_with_ledgers_demo.csv") ?>"  class="btn btn-app download_voucher" data-toggle="tooltip" data-placement="bottom" data-custom-class="tooltip-primary" data-original-title="Download Bank Voucher with ledgers CSV demo file" download><i class="fa fa-download"></i></a></span>
                                    <!--  <span><a href="<?= base_url(); ?>upload_voucher" data-toggle="tooltip" data-placement="bottom" class="btn btn-app" data-custom-class="tooltip-primary" data-original-title="Upload Bulk Voucher"><i class="fa fa-cloud-upload"></i></a> </span> -->
                                 </div>
                             </div>
