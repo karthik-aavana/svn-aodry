@@ -66,7 +66,7 @@
                 border: 0;
             }
             #rotate{
-                 min-height: 70px;
+                 min-height: 50px;
             }
             #rotate div {
                 font-size: 22px;   
@@ -75,24 +75,43 @@
             }      
 
             .footer-copyright {
-                font-weight: 600;
-                position: fixed;
-                bottom: 25px;
+                background: #fff;
+                box-shadow: 0 2px 6px 0 rgba(0,0,0,.12), inset 0 -1px 0 0 #dadce0;
+                transition: transform .4s,background .4s;
+                z-index: 100;
+                float: left;
+                width: 100%;
+                height: auto;            
+                padding: 15px;
                 text-align: center;
-                width: 80%;
             }
 
             .footer-copyright a{
                 color: #333;
             }
+            .footer_pd{
+                padding-right:0px!important;
+                padding-left:0px!important;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+            }
+            .footer_content a{
+                color: #012b72;
+                font-size: 15px;
+                font-weight: 600;
+            }
         </style>
     </head>
+     <?php
+            $this->load->view('layout/login_header');
+        ?>
     <body class="hold-transition login-page">
-        <div class="container">
+        <div class="container" style="margin-bottom: 84px;">
             <div class="row">
                 <div class="col-sm-7">
                     <div class="left-side-bar">
-                        <img src = "<?= base_url('assets/images/aodry-black-logo.png') ?>">
+                       <!--  <img src = "<?= base_url('assets/images/aodry-black-logo.png') ?>"> -->
 <!--                        <h4><small>Billing | Accounting | Taxation</small></h4>-->
 <!--                        <h1 class="mb-4"><small> Welcome to</small> <span>Aodry</span></h1>-->
                         <div id="rotate"> 
@@ -114,7 +133,7 @@
                         <hr>
                         <div class="call_us">
                             <h4 class="box-title">
-                                <a class="link_style" href="https://calendly.com/pavan-hv/" target="_blank">Click here</a> to request a personalized demo
+                                <a class="link_style" href="https://calendly.com/harsha-rajaiah/" target="_blank">Click here</a> to request a personalized demo
                             </h4>
                         </div>                    
                     </div>
@@ -127,13 +146,22 @@
                             <h4><small>Billing | Accounting | Taxation</small></h4>
                         </div>
                         <div class="login-box-body">
-                            <h4 class="box-title">Login</h4>
-                            <p class="login-box-msg text-left">This is a secure system and you will need to provide your login details to access the site.</p>
-                            <div id="infoMessage" style="color: red;"><?php echo $message; ?></div>
+                            <h4 class="box-title">Sign In</h4>
+                            <span style="color: #000000;font-weight: 500;">Don't have an account? <a href="signup" style="color: #012b72;font-weight: 500">Sign up</a></span>
+                            <!-- <p class="login-box-msg text-left">This is a secure system and you will need to provide your login details to access the site.</p> -->
+                            <?php
+                                if(@$message){
+                                    if(strtolower(trim($message)) == 'password successfully changed'){ ?>
+                                        <div id="infoMessage" style="color: green;margin-top: 10px;"><?php echo $message; ?></div>
+                                    <?php }else{ ?>
+                                        <div id="infoMessage" style="color: red;margin-top: 10px;"><?php echo $message; ?></div>
+                                    <?php }
+                                }
+                            ?>
                             <!-- <form action="../../index2.html" method="post"> -->
                             <?php echo form_open("auth/login"); ?>
                             <!-- input type="text" class="form-control" placeholder="company_code" -->
-                            <div class="form-group has-feedback">
+                            <div class="form-group has-feedback" style="margin-top: 13px;">
                                 <!-- <input type="email" class="form-control" placeholder="Email"> -->
                                 <!--                                <label>User Code</label>-->
                                 <?php echo form_input($branch_code, '', 'class="form-control" placeholder="User Code"'); ?>
@@ -152,7 +180,7 @@
                                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                             </div>
                             <div class="row">
-                                <div class="col-xs-8">
+                                <div class="col-xs-8" style="margin-bottom: 15px;">
                                     <div class="checkbox icheck">
                                         <label>
                                             Remember Me <?php echo form_checkbox('remember', '1', FALSE, 'id="remember"'); ?>
@@ -161,23 +189,32 @@
                                 </div>                           
                                 <div class="col-xs-4">
                                     <!-- <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button> -->
-                                    <?php echo form_submit('submit', lang('login_submit_btn'), 'class="btn btn-primary btn-block btn-flat"'); ?>
+                                   <!--  <?php echo form_submit('submit', lang('login_submit_btn'), 'class="btn btn-primary btn-block btn-flat"'); ?> -->
+                                   <input type="submit" name="submit" value="Next" class="btn btn-primary btn-block btn-flat">
                                 </div>
                             </div>
                             <?php echo form_close(); ?>
-                            <a href="forgot_password">Forgot your password?</a><br><br>
-                            <span>Don't have account? </span><a href="signup">Register Now</a>
+                            <a href="forgot_password" style="line-height:2.5">Forgot your password?</a><br>
+                            <!-- <span>Don't have account? </span><a href="signup" style="color: #012b72">Sign up</a> -->
                         </div>
-                    </div>
-                </div>
-            </div>        
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="footer-copyright text-center">© 2019 Copyright. Aodry is a product by <a href="https://www.aavana.in" target="_blank"> Aavana Corporate Solutions PVT LTD </a>
                     </div>
                 </div>
             </div>
         </div>
+            <div class="container-fluid footer_pd" style="">
+                <div class="footer-copyright">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="footer_content">© 2019 Copyright. Aodry is a product by <a href="https://www.aavana.in" target="_blank" style=""> Aavana Corporate Solutions PVT LTD, </a> 
+                                <a href="http://aodry.com/privacy-policy.php" target="_blank" style="padding-right: 4px;padding-left:5px;">Privacy Policy,</a> 
+                                <a href="http://aodry.com/terms.php" target="_blank">Terms & Conditions</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>    
+             </div>
+
+    
         <script src="<?php echo base_url(); ?>assets/plugins/jQuery/jquery-2.2.3.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/bootstrap/js/bootstrap.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/plugins/iCheck/icheck.min.js"></script>

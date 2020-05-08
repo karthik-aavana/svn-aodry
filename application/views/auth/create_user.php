@@ -117,24 +117,6 @@ $this->load->view('layout/header');
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="user_group">
-                                           User Group<span class="validation-color">*</span>
-                                        </label>
-                                         <select class="form-control select2" id="cmb_group" class="group" name="cmb_group" style="width: 100%;">
-                                                <option value="">Select User Group</option>
-                                                <?php
-                                                foreach ($groups as $key) {
-                                                    ?>
-                                                    <option value='<?php echo $key->id ?>' ><?php echo $key->name; ?> </option>
-                                                <?php } ?>
-                                            </select>
-                                        <span class="validation-color" id="err_user_group"></span>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="row" style="display: none">
                                 <?php
                                 $i = 1;                                

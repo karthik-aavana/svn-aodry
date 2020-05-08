@@ -24,21 +24,13 @@ $this->load->view('layout/header');
                     <div class="box-header with-border">
                         <div id="plus_btn">
                             <h3 class="box-title">Users</h3>
-                            <?php
-                            if (in_array($user_module_id, $active_add)) {
-                            ?>
                             <a class="btn btn-sm btn-info pull-right" href="<?php echo base_url('auth/create_user'); ?>">Add User</a>
-                            <?php } ?>
                         </div>
                         <div id="filter">
                             <div class="box-header box-body filter_body">
                                 <div class="btn-group">
-                                    <?php if (in_array($user_module_id, $active_edit)) { ?>
-                                        <span><a href="javascript:void(0);" class="btn btn-app edit" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit User" > <i class="fa fa-pencil"></i> </a></span>
-                                    <?php } 
-                                    if (in_array($privilege_module_id, $active_view)) { ?>
-                                        <span><a href="javascript:void(0);" class="btn btn-app update" data-toggle="tooltip" data-placement="bottom" data-original-title="Update Privilege" > <i class="fa fa-user"></i> </a></span>
-                                    <?php } ?>
+                                    <span><a href="javascript:void(0);" class="btn btn-app edit" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit User" > <i class="fa fa-pencil"></i> </a></span>
+                                    <span><a href="javascript:void(0);" class="btn btn-app update" data-toggle="tooltip" data-placement="bottom" data-original-title="Update Privilege" > <i class="fa fa-user"></i> </a></span>
                                 </div>
                             </div>
                         </div>  
@@ -62,11 +54,9 @@ $this->load->view('layout/header');
                                    <!-- <th>
                                         Groups
                                     </th> -->
-                                    <?php if (in_array($user_module_id, $active_edit)) { ?>
                                     <th>
                                         Status
-                                    </th>
-                                    <?php } ?>                                    
+                                    </th>                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -76,11 +66,7 @@ $this->load->view('layout/header');
                                     ?>
                                     <tr>
                                         <td>
-                                            <?php if (!in_array($user_module_id, $active_edit) && !in_array($privilege_module_id, $active_edit)) { ?>
-                                                <input type="checkbox" name="check_user" class="form-check-input" value="<?= $user_id; ?>" disabled>
-                                            <?php } else { ?>
                                             <input type="checkbox" name="check_user" class="form-check-input" value="<?= $user_id; ?>">
-                                            <?php } ?>
                                             <input type="hidden" name="edit" value="<?php echo base_url('auth/edit_user/'); ?><?php echo $user_id; ?>">
                                             <input type="hidden" name="update" value="<?php echo base_url('privilege/update_user/'); ?><?php echo $user_id; ?>">
                                             <!-- <a href="<?php echo base_url('auth/edit_user/'); ?><?php echo $user_id; ?>" title="Edit" class="btn btn-xs btn-info"><span class="glyphicon glyphicon-edit"></span></a>
@@ -93,9 +79,7 @@ $this->load->view('layout/header');
                                                 <?php echo htmlspecialchars($group->name, ENT_QUOTES, 'UTF-8'); ?><br />
                                             <?php endforeach ?>
                                         </td> -->
-                                        <?php if (in_array($user_module_id, $active_edit)) { ?>
-                                        <td><?php echo ($user->active) ? anchor("auth/deactivate/" . $user_id, lang('index_active_link')) : anchor("auth/activate/" . $user_id, lang('index_inactive_link')); ?></td>    
-                                        <?php } ?>                                    
+                                        <td><?php echo ($user->active) ? anchor("auth/deactivate/" . $user_id, lang('index_active_link')) : anchor("auth/activate/" . $user_id, lang('index_inactive_link')); ?></td>                                        
                                     </tr>
                                     <?php
                                 }

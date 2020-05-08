@@ -4,9 +4,10 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>AODRY | Log in</title>
+        <title>AODRY | Reset Password</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="shortcut icon" type="image/png" href="<?php echo base_url('assets/images/favicon.png'); ?>" />
         <!-- Bootstrap 3.3.6 -->
         <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bootstrap/css/bootstrap.min.css">
         <!-- Font Awesome -->
@@ -49,15 +50,31 @@
             }
 
             .footer-copyright {
-                font-weight: 600;
-                position: fixed;
-                bottom: 25px;
+                background: #fff;
+                box-shadow: 0 2px 6px 0 rgba(0,0,0,.12), inset 0 -1px 0 0 #dadce0;
+                transition: transform .4s,background .4s;
+                z-index: 100;
+                float: left;
+                width: 100%;
+                height: auto;            
+                padding: 15px;
                 text-align: center;
-                width: 80%;
             }
 
-            .footer-copyright a {
+            .footer-copyright a{
                 color: #333;
+            }
+            .footer_pd{
+                padding-right:0px!important;
+                padding-left:0px!important;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+            }
+            .footer_content a{
+                color: #012b72;
+                font-size: 15px;
+                font-weight: 600;
             }
         </style>
     </head>
@@ -104,10 +121,16 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="footer-copyright text-center">© 2019 Copyright. Aodry is a product by <a href="https://www.aavana.in" target="_blank"> Aavana Corporate Solutions PVT LTD </a>
-                </div>
-            </div>
-        </div>
+        <div class="container-fluid footer_pd" style="">
+                <div class="footer-copyright">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="footer_content">© 2019 Copyright. Aodry is a product by <a href="https://www.aavana.in" target="_blank" style=""> Aavana Corporate Solutions PVT LTD, </a> 
+                                <a href="http://aodry.com/privacy-policy.php" target="_blank" style="padding-right: 4px;padding-left:5px;">Privacy Policy,</a> 
+                                <a href="http://aodry.com/terms.php" target="_blank">Terms & Conditions</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>    
+             </div>
         <?php echo form_close(); ?>

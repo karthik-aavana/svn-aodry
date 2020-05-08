@@ -55,10 +55,10 @@
                 padding-bottom: 8px;
                 line-height: 1.5;
                 color: #000;
-                font-weight: 600;
+                font-weight: 400;
             }
             #rotate{
-                 min-height: 70px;
+                 min-height: 50px;
             }
             #rotate div {
                 font-size: 22px;   
@@ -66,24 +66,44 @@
                 font-weight: 600;
             }      
             .footer-copyright {
-                font-weight: 600;
-                position: fixed;
-                bottom: 25px;
+                background: #fff;
+                box-shadow: 0 2px 6px 0 rgba(0,0,0,.12), inset 0 -1px 0 0 #dadce0;
+                transition: transform .4s,background .4s;
+                z-index: 100;
+                float: left;
+                width: 100%;
+                height: auto;            
+                padding: 15px;
                 text-align: center;
-                width: 80%;
             }
 
             .footer-copyright a{
                 color: #333;
             }
+            .footer_pd{
+                padding-right:0px!important;
+                padding-left:0px!important;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+            }
+            .footer_content a{
+                color: #012b72;
+                font-size: 15px;
+                font-weight: 600;
+            }
             .register-box{
                 max-width: 100% !important;
-                margin: 25% auto;
+                margin: 5% auto;
+            }
+            .register-box .boxfont_color{
+                color: #012b72;
+                font-weight: 500;
             }
             .register-box .btn-primary{
-                background: #FFEB3B !important;
-                color: #000000;
-                font-weight: 500;
+                    background: #012b72 !important;
+                    font-weight: 500;
+                    border-radius: 4px;
             }
             .p_l_0{padding-left: 0px;}
             #infoMessage{color: #006500;
@@ -97,14 +117,23 @@
             }
             #infoMessage.error{color: red; background: #ffc7c7;}
             .downBtn{opacity: 0.7; pointer-events: none;}
+            .hold-transition .register-box .register-box-body .box-title-body{
+                font-weight: 500!important;
+                color: #000000 !important;
+                font-family: 'Google Sans',arial,sans-serif!important;
+            }
+         
         </style>
+        <?php
+            $this->load->view('layout/login_header');
+        ?>
     </head>
     <body class="hold-transition login-page">
         <div class="container">
             <div class="row">
                 <div class="col-sm-7">
                     <div class="left-side-bar">
-                        <img src = "<?= base_url('assets/images/aodry-black-logo.png') ?>">
+                       <!--  <img src = "<?= base_url('assets/images/aodry-black-logo.png') ?>"> -->
                         <div id="rotate"> 
                             <div>Complicated accounting made simple</div>
                             <div>Your trusted source for automated accounting</div>
@@ -124,7 +153,7 @@
                         <hr>
                         <div class="call_us">
                             <h4 class="box-title">
-                                <a class="link_style" href="https://calendly.com/pavan-hv/" target="_blank">Click here</a> to request a personalized demo
+                                <a class="link_style" href="https://calendly.com/harsha-rajaiah/" target="_blank">Click here</a> to request a personalized demo
                             </h4>
                         </div>                    
                     </div>
@@ -132,14 +161,15 @@
                 <div class="col-sm-5">
                     <div class="register-box">                       
                         <div class="register-box-body">
-                            <h4 class="box-title">Registration</h4>
+                            <h3 class="box-title-body">Create your Aodry Account</h3>
+                                <p class="box-title boxfont_color">Continue to Accounting</p>
                             <?php if (@$error_message) { ?>
                                 <div id="infoMessage" class="error" style="color: red;"><?=($error_message);?></div>
                             <?php } ?>
                             <?php if (@$message) { ?>
                                 <div id="infoMessage" style="color: green;"><?=($message);?></div>
                             <?php } ?>
-                            <p class="register-box-msg text-left">This is a secure system and you will need to provide your company details to try the Aodry trial.</p>
+                            <!-- <p class="register-box-msg text-left">This is a secure system and you will need to provide your company details to try the Aodry trial.</p> -->
                             
                             <!-- <form action="../../index2.html" method="post"> -->
                             <?php echo form_open("superadmin/firm/autoSignup"); ?>
@@ -158,8 +188,8 @@
                                 </div> -->
 
                                 <div class="form-group has-feedback col-sm-12">
-                                    <label for="name">Firm Name <span class="validation-color"> *</span></label>
-                                    <?php echo form_input('name', (@$name ? $name : ''), 'class="form-control" placeholder="Firm Name"'); ?>
+                                    <label for="name">Company / Firm Name <span class="validation-color"> *</span></label>
+                                    <?php echo form_input('name', (@$name ? $name : ''), 'class="form-control" placeholder="Company / Firm Name"'); ?>
                                     <input type="hidden" name="payment" value="trial">
                                     <span class="glyphicon glyphicon-user form-control-feedback"></span>
                                     <span class="validation-color" id="err_name"></span>
@@ -251,26 +281,49 @@
                             <div class="row" >
                                  <div class="col-xs-9">
                                     <div class="checkbox icheck">
-                                        <?php echo form_close(); ?>Already have an account? <a href="login">Login</a>
+                                        <?php echo form_close(); ?><!-- Already have an account?  --><a href="login" style="color: #012b72;font-weight: 500">Sign in instead</a>
                                     </div>
                                 </div>                      
                                 <div class="col-xs-3">
                                     <!-- <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button> -->
-                                    <?php echo form_submit('register', 'Register', 'class="btn btn-primary btn-block btn-flat"'); ?>
+                                    <?php echo form_submit('register', 'Next', 'class="btn btn-primary btn-block btn-flat"'); ?>
                                 </div>
                             </div>
-                           
+                           <p style="margin-top: 13px;border-bottom:1px solid #e7dede;text-align: center;padding-bottom: 10px;">By creating an Aodry account, you're agreeing to accept the <b style="color: #000000">Aodry</b> <strong><a href="http://aodry.com/terms.php" target="_blank">Customer Terms of Service.</a></strong> </p>
+                           <p style="text-align:justify;">
+                               We&#39;re committed to your privacy. Aodry uses the information you provide to us to contact you about
+                                our relevant content, products, and services. You may unsubscribe from these communications at any
+                                time. For more information, check out our <b><a href="http://aodry.com/privacy-policy.php" target="_blank">Privacy policy.</a></b>
+                           </p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="footer-copyright text-center">© 2019 Copyright. Aodry is a product by <a href="https://www.aavana.in" target="_blank"> Aavana Corporate Solutions PVT LTD </a>
-                    </div>
-                </div>
-            </div>
         </div>
+         <div class="container-fluid footer_pd" style="">
+                <div class="footer-copyright">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="footer_content">© 2019 Copyright. Aodry is a product by <a href="https://www.aavana.in" target="_blank" style=""> Aavana Corporate Solutions PVT LTD, </a> 
+                             <a href="http://aodry.com/privacy-policy.php" target="_blank" style="padding-right: 4px;padding-left:5px;">Privacy Policy,</a> 
+                                <a href="http://aodry.com/terms.php" target="_blank">Terms & Conditions</a>   
+                            </div>
+                        </div>
+                    </div>
+                </div>    
+             </div>
+             <!-- <div class="container-fluid" style="padding-right:0px!important; padding-left:0px!important;">
+                <div class="footer-copyright">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div>© 2019 Copyright. Aodry is a product by <a href="https://www.aavana.in" target="_blank" style="color: #012b72;font-size: 15px;font-weight: 600;"> Aavana Corporate Solutions PVT LTD, </a> 
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>    
+             </div> 
+         -->
         <script src="<?php echo base_url(); ?>assets/plugins/jQuery/jquery-2.2.3.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/bootstrap/js/bootstrap.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/plugins/iCheck/icheck.min.js"></script>
@@ -357,13 +410,13 @@
             $('[name=name]').on('keyup',function(){
                 var name = $('[name=name]').val();
                 if (name == null || name == "") {
-                    $("#err_name").text('Please Enter Name.');
+                    $("#err_name").text('Please Enter Company / Firm Name');
                     
                 } else if (!name.match(name_regex_spl)) {
-                    $('#err_name').text("Please Enter Valid Name");
+                    $('#err_name').text("Please Enter Valid Company / Firm Name");
                     
                 } else if (name.length < 3) {
-                    $('#err_name').text("Please Enter Name Minimun 3 Character");
+                    $('#err_name').text("Please Enter Minimun 3 Character");
                     
                 } else {
                     $("#err_name").text("");
@@ -406,20 +459,20 @@
                     $("#err_registration_type").text("");
                 }*/
                 if (name == null || name == "") {
-                    $("#err_name").text('Please Enter Name.');
+                    $("#err_name").text('Please Enter Company / Firm Name');
                     return false;
                 } else {
                     $("#err_name").text("");
                 }
                 
                 if (!name.match(name_regex_spl)) {
-                    $('#err_name').text("Please Enter Valid Name");
+                    $('#err_name').text("Please Enter Valid Company / Firm Name");
                     return false;
                 } else {
                     $("#err_name").text("");
                 }
                 if (name.length < 3) {
-                    $('#err_name').text("Please Enter Name Minimun 3 Character");
+                    $('#err_name').text("Please Enter Minimun 3 Character");
                     return false;
                 } else {
                     $("#err_name").text("");
