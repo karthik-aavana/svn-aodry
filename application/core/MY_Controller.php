@@ -266,11 +266,11 @@ class MY_Controller extends CI_Controller
 
     public function get_section_modules($module_id, $modules, $privilege,$redirect ='')
     {
-        if($this->session->userdata('SESS_PACKAGE_STATUS') == '0' && $module_id != 36 && $module_id != 37){
+        if($this->session->userdata('SESS_PACKAGE_STATUS') == '0' && $module_id != 56 && $module_id != 37){
             redirect('auth/unauthorized', 'refresh');
         }
 
-        if($this->session->userdata('SESS_DETAILS_UPDATED') == '0' && $module_id != 36 && $module_id != 37){
+        if($this->session->userdata('SESS_DETAILS_UPDATED') == '0' && $module_id != 56 && $module_id != 37){
             redirect('company_setting', 'refresh');
         }
 
