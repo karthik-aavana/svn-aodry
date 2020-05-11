@@ -15,7 +15,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <a href="<?=base_url('service/add');?>">+ Add Service</a>
+                                <a href="<?=base_url('service/add');?>" target="_blank">+ Add Service</a>
                             </div>
                         </div>
                         <?php

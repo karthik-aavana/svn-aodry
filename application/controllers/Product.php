@@ -3749,11 +3749,15 @@ class Product extends MY_Controller
        $combination_data = $this->general_model->getRecords('*', 'product_combinations', array(
                 'product_code'   => $product_code,
                 'branch_id'     => $this->session->userdata("SESS_BRANCH_ID") ));
-
+        $LeatherCraft_id = $this->config->item('LeatherCraft');
+        $check_product = '';
+        if($LeatherCraft_id == $this->session->userdata("SESS_BRANCH_ID") ){
+            $check_product = 'checked';
+        }
        foreach ($combination_data as $com) {
             $nestedData['product_code'] = $com->product_code;
             $nestedData['name'] = $com->combinations;
-            $nestedData['action'] = '<input type="checkbox" name="combination[]" value="'.$com->combination_id.'">';
+            $nestedData['action'] = '<input type="checkbox" name="combination[]" value="'.$com->combination_id.'"'.$disabled.'>';
             $send[] = $nestedData;
        }
         $data_fin = array('data'=>$send);
