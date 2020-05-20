@@ -2472,7 +2472,7 @@ class Product extends MY_Controller
                         }else{
                            $all_product_id =  $product_id;
                         }
-            $sql_update = "UPDATE products SET delete_status = 1  WHERE product_id IN (" . $all_product_id . ")";
+            $sql_update = "UPDATE products SET delete_status = 1  WHERE product_id = " . $product_id . " OR product_id IN (" . $all_product_id . ")";
             $delete_id = $this->db->query($sql_update);
         }else{
            $delete_id = $this->general_model->updateData('products', array(
