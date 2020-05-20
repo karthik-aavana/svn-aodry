@@ -621,7 +621,7 @@ class Report_model extends CI_Model
 
         $bank_result = $resp->result_array();
 
-        $resp = $this->db->query("SELECT *,'cash' as type FROM `accounts_cash_voucher` ts  JOIN (SELECT cash_voucher_id as sales_voucher_id FROM accounts_cash_voucher WHERE ledger_id='{$dt['ledger_id']}') as t ON t.sales_voucher_id=ts.cash_voucher_id JOIN cash_voucher v ON ts.cash_voucher_id=v.cash_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0'  AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+        $resp = $this->db->query("SELECT *,'cash' as type FROM `accounts_cash_voucher` ts  JOIN (SELECT cash_voucher_id as sales_voucher_id FROM accounts_cash_voucher WHERE ledger_id='{$dt['ledger_id']}') as t ON t.sales_voucher_id=ts.cash_voucher_id JOIN cash_voucher v ON ts.cash_voucher_id=v.cash_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}'  AND ts.delete_status='0' AND '{$dt['to_date']}') ");
 
         $cash_result = $resp->result_array();
 
