@@ -349,7 +349,7 @@ $this->load->view('layout/header');
                                 </div>                           
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label for="product_brand">Product Brand</label>
+                                        <label for="product_brand">Product Brand<span class="validation-color">*</span></label>
                                         <div class="input-group">
                                             
                                             <div class="input-group-addon">

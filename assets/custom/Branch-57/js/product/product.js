@@ -129,12 +129,12 @@ $(document).ready(function () {
             $("#err_product_hsn_sac_code").text("");
         }
 
-        /*if (product_brand == "" || product_brand==null) {
+        if (product_brand == "" || product_brand==null) {
             $("#err_product_brand").text("Select the Brand.");
             return false;
         } else {
             $("#err_product_brand").text("");
-        }*/
+        }
         
     });
     
@@ -222,7 +222,12 @@ $(document).ready(function () {
         } else {
             $("#err_product_hsn_sac_code").text("");
         }
-
+        if (product_brand == "" || product_brand==null) {
+            $("#err_product_brand").text("Select the Brand.");
+            return false;
+        } else {
+            $("#err_product_brand").text("");
+        }
         if($("#product_image").val() != ''){
             if (!regex.test(fileUpload.val().toLowerCase())) {
                 lblError.html("Please upload files having extensions: <b>" + allowedFiles.join(', ') + "</b> only.");

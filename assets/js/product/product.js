@@ -377,6 +377,12 @@ $(document).ready(function () {
     $("#product_category").on("change", function (event) {
          var product_code = $('#product_code').val();
          var category_id = $('#product_category').val();
+        if(category_id != "" || category_id != 0){
+            $('#subcategory_disable').removeClass('disable_div');
+        }
+        else {
+            $('#subcategory_disable').addClass('disable_div');
+        }
           $.ajax({
             url: base_url + 'product/get_product_sku',
             dataType: 'JSON',

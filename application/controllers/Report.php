@@ -3711,7 +3711,7 @@ class Report extends MY_Controller {
     }
 
     public function all_reports() {
-        $report_module_id = $this->config->item('report_module');
+        $report_module_id = $this->config->item('layout_module');
         $data['module_id'] = $report_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";

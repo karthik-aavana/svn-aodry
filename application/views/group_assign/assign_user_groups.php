@@ -48,7 +48,7 @@ $this->load->view('layout/header');
                         <table id="module_group_list" class="custom_datatable table table-bordered table-striped table-hover table-responsive" >
                             <thead>
                                <tr>
-                                    <th width="14%">Select</th>
+                                    <th width="14%">Selcet Module</th>
                                     <th width="20%">Module Name</th> 
                                     <th width="14%">View</th>                                  
                                     <th width="14%">Add</th>

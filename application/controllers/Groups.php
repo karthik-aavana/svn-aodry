@@ -155,6 +155,7 @@ class Groups extends MY_Controller
         $data=array_merge($data,$section_modules);
         $data  = $this->general_model->getRecords('count(*) as group_count', 'groups', array(
             'delete_status' => 0,
+            'branch_id' => $this->session->userdata("SESS_BRANCH_ID"),
             'name' => $group_name,
         	'id!='  => $id));
         $result = array();

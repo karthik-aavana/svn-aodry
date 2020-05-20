@@ -68,7 +68,11 @@ class Bank_voucher extends MY_Controller
                 foreach ($posts as $post)
                 {
                     $bank_voucher_id            = $this->encryption_url->encode($post->bank_voucher_id);
-                    $nestedData['action'] = '<input type="checkbox" value="'.$bank_voucher_id.'" name="check_voucher" vtype="bank">';
+                    $disabled = '';
+                    if(!in_array($bank_voucher_module_id, $data['active_delete']) && !in_array($bank_voucher_module_id, $data['active_edit'])){
+                        $disabled = 'disabled';
+                    }
+                    $nestedData['action'] = '<input type="checkbox" value="'.$bank_voucher_id.'" name="check_voucher" vtype="bank"'.$disabled.'>';
                     $nestedData['voucher_date']   = date('d-m-Y', strtotime($post->voucher_date));
                     $nestedData['voucher_number'] = $post->voucher_number;
                     if (in_array($bank_voucher_module_id , $data['active_view']))

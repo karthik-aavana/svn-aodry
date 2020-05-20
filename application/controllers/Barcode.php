@@ -164,7 +164,7 @@ class Barcode extends MY_Controller{
         $inventory_access = $this->general_model->getRecords('inventory_advanced', 'common_settings', array(
             'branch_id'     => $this->session->userdata('SESS_BRANCH_ID'),
             'delete_status' => 0));
-        $string = "pr.product_id,pr.product_code,pr.product_name,pr.product_barcode,pr.product_combination_id,c.varient_value_id,U.uom as product_unit,pr.product_mrp_price,pr.mfg_date,B.brand_name,CT.category_name";
+        $string = "pr.product_id,pr.product_code,pr.product_name,pr.product_barcode,pr.product_combination_id,pi.purchase_item_quantity,c.varient_value_id,U.uom as product_unit,pr.product_mrp_price,pr.mfg_date,B.brand_name,CT.category_name";
         $table  = "purchase_item pi";
         $join   = [            
             'products pr' => 'pi.item_id = pr.product_id',

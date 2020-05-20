@@ -334,6 +334,7 @@ class Purchase extends MY_Controller {
         $data['tax_module_id'] = $this->config->item('tax_module');
         $data['discount_module_id'] = $this->config->item('discount_module');
         $data['accounts_module_id'] = $this->config->item('accounts_module');
+        $data['uqc_module_id']        = $this->config->item('uqc_module');
         /* Sub Modules Present */
         $data['payment_voucher_module_id'] = $this->config->item('payment_voucher_module');
         $data['notes_sub_module_id'] = $this->config->item('notes_sub_module');
@@ -3236,6 +3237,7 @@ class Purchase extends MY_Controller {
         $data['tax_module_id'] = $this->config->item('tax_module');
         $data['discount_module_id'] = $this->config->item('discount_module');
         $data['accounts_module_id'] = $this->config->item('accounts_module');
+        $data['uqc_module_id']        = $this->config->item('uqc_module');
         /* Sub Modules Present */
         $data['notes_sub_module_id'] = $this->config->item('notes_sub_module');
         $data['transporter_sub_module_id'] = $this->config->item('transporter_sub_module');

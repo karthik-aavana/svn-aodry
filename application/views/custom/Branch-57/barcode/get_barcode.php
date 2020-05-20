@@ -143,6 +143,7 @@
         var item_name = data.product_name;
         var item_barcode_symbology = data.product_barcode;
         var item_code = data.product_code;
+        var item_quantity = data.purchase_item_quantity;
         var temp = {
             "item_id": item_id,
             'item_code' : item_code,
@@ -165,7 +166,7 @@
         cols += "<td>" + item_name + "</td>";
         cols += "<td>" +  item_barcode_symbology + "</td>";
 
-        cols += "<td>" + "<input type='text' class='form-control form-fixer text-center float_number' value='1' data-rule='quantity' name='item_quantity'>" + "</td>";
+        cols += "<td>" + "<input type='text' class='form-control form-fixer text-center float_number' value='"+item_quantity+"' data-rule='quantity' name='item_quantity'>" + "</td>";
 
         cols += "</tr>";
 

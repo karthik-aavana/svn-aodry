@@ -56,18 +56,22 @@ class Group_assign extends MY_Controller
                         $module_edit_checkbox = '';
                         $module_delete_checkbox = '';
                     }elseif($module_id == 37){
-                        $module_name_checkbox = "<input type='checkbox' class='reset-check' name='module' data-modulename='{$module_name}' data-id='id_{$module_id}' value='{$module_id}' checked disabled>". '</br>';
-                        $module_add_checkbox = "<input type='checkbox' class='reset-check' name='add' data-id='id_{$module_id}' value='{$module_id}' checked disabled>". '</br>';
-                        $module_edit_checkbox = "<input type='checkbox' class='reset-check' name='edit' data-id='id_{$module_id}' value='{$module_id}' checked disabled>". '</br>';
-                        $module_view_checkbox = "<input type='checkbox' class='reset-check' name='view' data-id='id_{$module_id}' value='{$module_id}' checked disabled>". '</br>';
-                        $module_delete_checkbox = "<input type='checkbox' class='reset-check' name='delete' data-id='id_{$module_id}' value='{$module_id}' checked disabled>". '</br>';
+                        $module_name_checkbox = "<input type='checkbox' class='hide-check' name='module' data-modulename='{$module_name}' data-id='id_{$module_id}' value='{$module_id}' checked disabled>". '</br>';
+                        $module_add_checkbox = "<input type='checkbox' class='hide-check' name='add' data-id='id_{$module_id}' value='{$module_id}' checked disabled>". '</br>';
+                        $module_edit_checkbox = "<input type='checkbox' class='hide-check' name='edit' data-id='id_{$module_id}' value='{$module_id}' checked disabled>". '</br>';
+                        $module_view_checkbox = "<input type='checkbox' class='hide-check' name='view' data-id='id_{$module_id}' value='{$module_id}' checked disabled>". '</br>';
+                        $module_delete_checkbox = "<input type='checkbox' class='hide-check' name='delete' data-id='id_{$module_id}' value='{$module_id}' checked disabled>". '</br>';
                     }else{
                         $module_add_checkbox = "<input type='checkbox' class='reset-check' name='add' data-id='id_{$module_id}' value='{$module_id}'>". '</br>';
                         $module_edit_checkbox = "<input type='checkbox' class='reset-check' name='edit' data-id='id_{$module_id}' value='{$module_id}'>". '</br>';
                         $module_view_checkbox = "<input type='checkbox' class='reset-check' name='view' data-id='id_{$module_id}' value='{$module_id}'>". '</br>';
                         $module_delete_checkbox = "<input type='checkbox' class='reset-check' name='delete' data-id='id_{$module_id}' value='{$module_id}'>". '</br>';
                     }
-                    $tr .=  '<tr class="main_tr" data-id="'.$module_id.'">';
+                    if($module_id == 37){
+                        $tr .=  '<tr class="main_tr" data-id="'.$module_id.'" style="display:none;">';
+                    }else{
+                        $tr .=  '<tr class="main_tr" data-id="'.$module_id.'">';
+                    }
                     $tr .= "<td>{$module_name_checkbox}</td>";
                     $tr .= "<td>{$module_name}</td>";
                     $tr .= "<td>{$module_view_checkbox}</td>";
@@ -99,7 +103,7 @@ class Group_assign extends MY_Controller
         		$edit_check = '';
         		$delete_check = '';
         		$view_check = '';
-                $static_privilege = '';
+                $static_privilege = 'reset-check';
         		if(in_array($module_id, $assigned_module_id)){
         			$modal_check = 'checked';
 	        		if($assigned_data_key[$module_id]['add'] == 1){
@@ -116,27 +120,30 @@ class Group_assign extends MY_Controller
 	        		}
         		}
                 if($module_id == 37){
-                    $static_privilege = 'disabled';
+                    $static_privilege = 'hide-check';
                     $modal_check = 'checked';
                     $add_check = 'checked';
                     $edit_check = 'checked';
                     $delete_check = 'checked';
                     $view_check = 'checked';
                 }
-                $module_name_checkbox = "<input type='checkbox' class='reset-check' name='module' data-modulename='{$module_name}' data-id='id_{$module_id}' value='{$module_id}' {$modal_check} {$static_privilege}>". '</br>';
+                $module_name_checkbox = "<input type='checkbox' class='{$static_privilege}' name='module' data-modulename='{$module_name}' data-id='id_{$module_id}' value='{$module_id}' {$modal_check}>". '</br>';
                 if($value_post->is_report == 1){
                     $module_add_checkbox = '';
                     $module_edit_checkbox = '';
                     $module_delete_checkbox = '';
-                    $module_view_checkbox = "<input type='checkbox' class='reset-check' name='view' data-id='id_{$module_id}' value='{$module_id}' {$view_check}>". '</br>';
+                    $module_view_checkbox = "<input type='checkbox' class='{$static_privilege}' name='view' data-id='id_{$module_id}' value='{$module_id}' {$view_check}>". '</br>';
                 }else{
-                    $module_add_checkbox = "<input type='checkbox' class='reset-check' name='add' data-id='id_{$module_id}' value='{$module_id}' {$add_check} {$static_privilege}>". '</br>';
-                    $module_edit_checkbox = "<input type='checkbox' class='reset-check' name='edit' data-id='id_{$module_id}' value='{$module_id}' {$edit_check} {$static_privilege}>". '</br>';
-                    $module_view_checkbox = "<input type='checkbox' class='reset-check' name='view' data-id='id_{$module_id}' value='{$module_id}' {$view_check} {$static_privilege}>". '</br>';
-                    $module_delete_checkbox = "<input type='checkbox' class='reset-check' name='delete' data-id='id_{$module_id}' value='{$module_id}' {$delete_check} {$static_privilege}>".'</br>';
+                    $module_add_checkbox = "<input type='checkbox' class='{$static_privilege}' name='add' data-id='id_{$module_id}' value='{$module_id}' {$add_check}>". '</br>';
+                    $module_edit_checkbox = "<input type='checkbox' class='{$static_privilege}' name='edit' data-id='id_{$module_id}' value='{$module_id}' {$edit_check}>". '</br>';
+                    $module_view_checkbox = "<input type='checkbox' class='{$static_privilege}' name='view' data-id='id_{$module_id}' value='{$module_id}' {$view_check}>". '</br>';
+                    $module_delete_checkbox = "<input type='checkbox' class='{$static_privilege}' name='delete' data-id='id_{$module_id}' value='{$module_id}' {$delete_check}>".'</br>';
                 } 
-				
-        		$tr .=  '<tr class="main_tr" data-id="'.$module_id.'">';
+				if($module_id == 37){
+                    $tr .=  '<tr class="main_tr" data-id="'.$module_id.'" style="display:none;">';
+                }else{
+                    $tr .=  '<tr class="main_tr" data-id="'.$module_id.'">';
+                }
         		$tr .= "<td>{$module_name_checkbox}</td>";
 		        $tr .= "<td>{$module_name}</td>";
 		        $tr .= "<td>{$module_view_checkbox}</td>";

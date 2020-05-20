@@ -14814,7 +14814,8 @@ public function tds_report_sales_list(){
                 ];
         $where = array(
             'pr.branch_id'     => $this->ci->session->userdata('SESS_BRANCH_ID'),
-            'PI.purchase_id' => $id
+            'PI.purchase_id' => $id,
+            'PI.delete_status' => 0
         );
         $order = ["PI.item_id" => "asc"];
         $filter = array();

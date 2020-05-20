@@ -30,8 +30,9 @@ $this->load->view('layout/header');
             </div>
 
             <div class="info">
-                <h2>Something is wrong</h2>
-                <p>The page you are looking for was moved, removed, renamed or might never existed.</p>
+                <h2>Access denied. Contact your administrator</h2>
+                <!-- <h2>Something is wrong</h2>
+                <p>The page you are looking for was moved, removed, renamed or might never existed.</p> -->
                 <a href="<?php echo base_url()?>auth/dashboard" class="btn">Go Home</a>
             </div>        
         <!-- <footer id="footer">

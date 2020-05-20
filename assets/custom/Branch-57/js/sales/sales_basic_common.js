@@ -221,12 +221,16 @@ $(document).ready(function () {
                 dataType: "json",
                 success: function (data) {
                     var suggestions = [];
+                    var count_item = 0;
+                    var j = 0;
                     for (var i = 0; i < data.length; ++i) {
                         var quantity = 0;
                         var product_quantity = (data[i].product_quantity == null) ? 0 : data[i].product_quantity;
                         var product_opening_quantity = (data[i].product_opening_quantity == null) ? 0 : data[i].product_opening_quantity;
                         quantity = parseFloat(product_quantity) + parseFloat(product_opening_quantity);
                         if(quantity > 0){
+                            j = i;
+                            count_item++;
                             var kv = data[i].item_code + " " + data[i].item_name+ ' ' + data[i].product_batch
                             suggestions.push(kv);
                             kv = kv.replace(/ /g, "_"); 
@@ -245,8 +249,8 @@ $(document).ready(function () {
                     
                     //console.log(term);
                     //&& isnum == true
-                    if (i == 1 && term.length > 9 ) {
-                        var k =  data[i].item_code + " " + data[i].item_name+ ' ' + data[i].product_batch;
+                    if (count_item == 1 && term.length > 9 ) {
+                        var k =  data[j].item_code + " " + data[j].item_name+ ' ' + data[j].product_batch;
                         k = k.replace(/ /g, "_");
                         $.ajax({
                             url: base_url +

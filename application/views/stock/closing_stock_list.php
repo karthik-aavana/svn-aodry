@@ -72,6 +72,7 @@ $(document).ready(function() {
             "processing": true,
             "serverSide": true,
             "scrollX": true,
+            "lengthMenu": [ [10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, "All"] ],
             "ajax": {
                 "url": base_url + "stock/closing_stock",
                 "dataType": "json",

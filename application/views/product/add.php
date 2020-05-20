@@ -140,7 +140,7 @@ $this->load->view('layout/header');
                                     </div>
                                 </div>
                                 <div class="col-md-3 product_subcategory">
-                                    <div class="form-group ">
+                                    <div id='subcategory_disable' class="form-group disable_div">
                                         <label for="product_subcategory">Subcategory</label>
                                         <div class="input-group">       
                                             <div class="input-group-addon">

@@ -72,7 +72,11 @@ Class General_voucher extends MY_Controller
                 foreach ($posts as $post)
                 {
                     $general_voucher_id           = $this->encryption_url->encode($post->general_voucher_id);
-                    $nestedData['action'] = '<input type="checkbox" value="'.$general_voucher_id.'" name="check_voucher" vtype="journal">';
+                    $disabled = '';
+                    if(!in_array($general_voucher_module_id, $data['active_delete']) && !in_array($general_voucher_module_id, $data['active_edit'])){
+                        $disabled = 'disabled';
+                    }
+                    $nestedData['action'] = '<input type="checkbox" value="'.$general_voucher_id.'" name="check_voucher" vtype="journal"'.$disabled.'>';
                     $nestedData['voucher_date']   = date('d-m-Y', strtotime($post->voucher_date));
                     $nestedData['voucher_number'] = $post->voucher_number;
                     if (in_array($general_voucher_module_id , $data['active_view']))
