@@ -617,3 +617,6 @@ table.dataTable.dtr-inline.collapsed>tbody>tr>th:first-child:before {
 .remove_atyle_body{
     margin-left: 278px;
 }
+ .show { 
+            display:block; 
+        } 

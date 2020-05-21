@@ -112,9 +112,9 @@ Main Components
   .cd-dropdown-trigger.dropdown-is-active {
     background-color: #012b72;
   }
-  .no-touch .cd-dropdown-trigger.dropdown-is-active:hover {
+  /*.no-touch .cd-dropdown-trigger.dropdown-is-active:hover {
     background-color: #012b72;
-  }
+  }*/
   .cd-dropdown-trigger.dropdown-is-active::before, .cd-dropdown-trigger.dropdown-is-active::after {
     /* transform the arrow into a 'X' */
     width: 14px;
@@ -576,7 +576,7 @@ Main Components
   }
   .cd-dropdown-content .cd-secondary-dropdown {
     overflow: hidden;
-    width: 555px;
+    width: 590px;
   }
   .cd-secondary-dropdown.spl-hgt, .cd-secondary-dropdown.spl-rpt-hgt{
     height: 500px;
@@ -594,7 +594,7 @@ Main Components
   .cd-dropdown-content .cd-secondary-dropdown > li > a {
     color: #012b72;
     font-size: 1.6rem;
-    margin-bottom: 10px;
+    margin-bottom: 7px;
     line-height: 30px;
     height: 30px;
     pointer-events: none;
@@ -730,6 +730,7 @@ Main Components
     background: #ffffff url('../images/bg-megha-menu.png') no-repeat;
     background-size: 100px;
     background-position: right bottom;
+    
   }
   .cd-dropdown-content > .has-children > ul.is-active {
     /* when hover over .cd-dropdown-content items - show subnavigation */

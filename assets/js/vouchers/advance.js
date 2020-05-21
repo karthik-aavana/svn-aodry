@@ -586,7 +586,6 @@ function add_row(data) {
                     "-" +
                     parseFloat(data.tax[a].tax_value) +
                     '" ' +
-                    selected +
                     " >" +
                     parseFloat(data.tax[a].tax_value) +
                     "%</option>";
@@ -618,7 +617,6 @@ function add_row(data) {
                     "-" +
                     parseFloat(data.tax[a].tax_value) +
                     '" ' +
-                    selected +
                     " >" +
                     parseFloat(data.tax[a].tax_value) +
                     "%</option>";

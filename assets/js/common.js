@@ -14,7 +14,7 @@ var mobile_regex = /^\d{10}$/;
 var land_line = /^[0-9-+\s()]*$/;
 var email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 var date_regex = /^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4}$/;
-var account_no_regex = /^[0-9]{8,16}$/;
+var account_no_regex = /^[0-9]{8,20}$/;
 
 var pan_regex = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
 //first 5 characters // 4 digit // 1 characters
