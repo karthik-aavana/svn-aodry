@@ -45,7 +45,7 @@
                 $("#err_add_groups").text("");
             }
             if (!group_name.match(name_regex)){
-                $('#err_add_groups').text("Please Enter Valid Group Name.");
+                $('#err_add_groups').text("Please Enter Valid Gruop Name.");
                 return !1
             } else {
                 $("#err_add_groups").text("")

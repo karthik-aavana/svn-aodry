@@ -198,6 +198,11 @@ $this->load->view('layout/header');
                                         <input type="text" class="form-control" id="order_number" name="order_number" value="" >
                                     </div>
                                 </div>
+                                <div class="form-group col-md-3">
+                                    <label for="due_days">Credit Period</label>
+                                    <input class="form-control" type="number" name="due_days" id="due_days" min = '0' max = '365' />
+                                    <span class="validation-color" id="err_due_days"><?php echo form_error('due_days'); ?></span>
+                                </div>
                             </div>
 
                             <div class="default_hide">

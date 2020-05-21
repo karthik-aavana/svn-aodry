@@ -20,7 +20,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group">
-                            <label for="description_edit">Description<span class="validation-color">*</span></label>
+                            <label for="description_edit">Description</span></label>
                             <textarea class="form-control" id="description_edit" name="description_edit" maxlength="200" value="<?php echo set_value('description_edit'); ?>"></textarea>
                             <span class="validation-color" id="err_description_edit"><?php echo form_error('err_description_edit'); ?></span>
                         </div>

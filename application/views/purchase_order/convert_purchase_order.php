@@ -61,7 +61,7 @@ $this->load->view('layout/header');
                                         <?php
                                         ?>
                                         <input type="text" class="form-control" id="invoice_number" name="invoice_number" value="<?php
-                                        echo $data[0]->purchase_order_invoice_number;
+                                        echo $invoice_number;
                                         ?>"  <?php
                                                if ($access_settings[0]->invoice_readonly == 'yes') {
                                                    echo "readonly";

@@ -189,7 +189,7 @@ if (!function_exists('precise_amount')) {
                                         <?php if(in_array($this->config->item('quotation_module'), $active_modules) || in_array($this->config->item('sales_module'), $active_modules) || in_array($this->config->item('sales_credit_note_module'), $active_modules) || in_array($this->config->item('sales_debit_note_module'), $active_modules)){
                                         ?>
                                         <a href="">Sales</a>
-                                        <ul class="is-hidden">
+                                        <ul class="is-hidden" style="padding-bottom: 9px;">
                                             <?php
                                                 if (in_array($this->config->item('quotation_module'), $active_modules))
                                                 {
@@ -232,7 +232,7 @@ if (!function_exists('precise_amount')) {
                                         <?php }
                                         if(in_array($this->config->item('expense_module'), $active_modules) || in_array($this->config->item('expense_bill_module'), $active_modules)){ ?>
                                         <a href="">Expense</a>
-                                        <ul class="is-hidden">
+                                        <ul class="is-hidden" >
                                             <?php
                                                 if (in_array($this->config->item('expense_module'), $active_modules))
                                                 {
@@ -322,9 +322,20 @@ if (!function_exists('precise_amount')) {
                                                     <span>Delivery Challan
                                                     </span>
                                                 </a>
-                                            </li>
+                                            </li>                                            
                                             <?php }
+                                                if (in_array($this->config->item('BOE_module'), $active_modules))
+                                                {
                                             ?>
+                                            <li>
+                                                <a href="<?= base_url(); ?>boe">
+                                                    <i class="">
+                                                    </i>BOE (Bill of Entry)
+                                                </a>
+                                            </li> 
+                                            <?php }
+                                                ?>       
+
                                         </ul>
                                     </li>
                                     <?php }
@@ -436,7 +447,7 @@ if (!function_exists('precise_amount')) {
                                         <?php if(in_array($this->config->item('product_module'), $active_modules) || in_array($this->config->item('service_module'), $active_modules))
                                         { ?>
                                         <a href="">Items & Services</a>
-                                        <ul class="is-hidden"> 
+                                        <ul class="is-hidden" style="padding-bottom: 9px;"> 
                                             <?php
                                             if (in_array($this->config->item('product_module'), $active_modules)){?>                              
                                                 <li> 
@@ -791,12 +802,22 @@ if (!function_exists('precise_amount')) {
                                         <a href="">GST Register</a>
                                         <ul class="is-hidden">
                                             <?php
+                                                if (in_array($this->config->item("gstr1_report_module"),$active_modules)) {
+                                                    
+                                                }
+                                             ?>   
+                                            <li>
+                                                <a href="<?= base_url(); ?>report/all_reports"> 
+                                                    <!-- <i class="fa fa-file-excel-o" aria-hidden="true"></i> -->
+                                                        Compliance Register </a>
+                                            </li>
+                                            <?php
                                                 if (in_array($this->config->item('gstr1_report_module'), $active_modules))
                                                 {
-                                            ?>
+                                            ?>                                            
                                             <li>
                                                 <a href="<?php echo base_url('gst_report'); ?>">
-                <!--                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>-->
+                                <!--                             <i class="fa fa-file-excel-o" aria-hidden="true"></i>-->
                                                     GSTR1 Register
                                                 </a>
                                             </li>
@@ -960,7 +981,7 @@ if (!function_exists('precise_amount')) {
                                     </li>
                                     <?php }
                                     if(in_array($this->config->item('closing_balance_module'), $active_modules) || in_array($this->config->item('ledger_view_report_module'), $active_modules) || in_array($this->config->item('trial_balance_report_module'), $active_modules) || in_array($this->config->item('profit_loss_report_module'), $active_modules) || in_array($this->config->item('balance_sheet_report_module'), $active_modules)){?>
-                                    <li class="has-children">
+                                    <li class="has-children" style="margin-top: 36px;">
                                         <a href="">Accounting Reports</a>
                                         <ul class="is-hidden">
                                             <?php
@@ -1142,7 +1163,7 @@ if (!function_exists('precise_amount')) {
                                     <li class="has-children">
                                         <?php if(in_array($this->config->item('tax_module'), $active_modules) || in_array($this->config->item('discount_module'), $active_modules) || in_array($this->config->item('uqc_module'), $active_modules) || in_array($this->config->item('varients_module'), $active_modules) || in_array($this->config->item('barcode_module'), $active_modules)){ ?>
                                         <a href="">Features</a>
-                                        <ul class="is-hidden">
+                                        <ul class="is-hidden" style="padding-bottom: 7px;">
                                             <?php
                                             if (in_array($this->config->item('tax_module'), $active_modules))
                                             {
@@ -1192,6 +1213,14 @@ if (!function_exists('precise_amount')) {
                                                     <span>Barcode</span>
                                                 </a>
                                             </li>
+                                            <?php }
+                                                if (in_array($this->config->item('hsn_module'), $active_modules))
+                                                {?>
+                                                <li> 
+                                                    <a href="<?= base_url(); ?>hsn">
+                                                        HSN
+                                                    </a>
+                                                </li>
                                             <?php } ?>
                                         </ul>
                                         <?php } 
@@ -1465,7 +1494,7 @@ if (!function_exists('precise_amount')) {
                 </div>
             </div>
         </div>
-        <aside class="main-sidebar">
+        <!-- <aside class="main-sidebar">
             <section class="sidebar <?=($this->session->userdata('SESS_PACKAGE_STATUS') == '0' ? 'disable_menu' : '');?>">
                 <ul class="sidebar-menu tree" data-widget="tree">
                     <?php
@@ -1691,8 +1720,8 @@ if (!function_exists('precise_amount')) {
                             ?>
                             <li>
                                 <a href="<?= base_url('advance_voucher'); ?>">
-<!--                                    <i class="fa fa-fw fa-group">
-                                    </i> -->
+                                 -->    <!-- <i class="fa fa-fw fa-group">
+                                    </i>
                                     <span>Advance Voucher
                                     </span>
                                 </a>
@@ -1702,10 +1731,10 @@ if (!function_exists('precise_amount')) {
                                 {
                             ?>
                             <li>
-                                <a href="<?= base_url('refund_voucher'); ?>">
+                                <a href="<?= base_url('refund_voucher'); ?>"> -->
 <!--                                    <i class="fa fa-fw fa-group">
                                     </i> -->
-                                    <span>Refund Voucher
+                                    <!-- <span>Refund Voucher
                                     </span>
                                 </a>
                             </li>
@@ -1714,10 +1743,10 @@ if (!function_exists('precise_amount')) {
                                 {
                             ?>
                             <li>
-                                <a href="<?= base_url('receipt_voucher'); ?>">
+                                <a href="<?= base_url('receipt_voucher'); ?>"> -->
 <!--                                    <i class="fa fa-fw fa-group">
                                     </i> -->
-                                    <span>Receipt voucher
+                                   <!--  <span>Receipt voucher
                                     </span>                                                                                 
                                 </a>
                             </li>
@@ -1726,10 +1755,10 @@ if (!function_exists('precise_amount')) {
                                 {
                             ?>                            
                             <li>
-                                <a href="<?php echo base_url("general_voucher"); ?>">
+                                <a href="<?php echo base_url("general_voucher"); ?>"> -->
 <!--                                    <i class="fa fa-fw fa-file-text-o" aria-hidden="true">
                                     </i>-->
-                                    Journal Voucher
+                                    <!-- Journal Voucher
                                 </a>
                             </li>
                             <?php }
@@ -1737,10 +1766,10 @@ if (!function_exists('precise_amount')) {
                                 {
                             ?>
                             <li>
-                                <a href="<?php echo base_url("bank_voucher"); ?>">
+                                <a href="<?php echo base_url("bank_voucher"); ?>"> -->
 <!--                                    <i class="fa fa-fw fa-file-text-o" aria-hidden="true">
                                     </i> -->
-                                    Bank Voucher
+                                   <!--  Bank Voucher
                                 </a>
                             </li>
                             <?php }
@@ -1748,10 +1777,10 @@ if (!function_exists('precise_amount')) {
                                 {
                             ?>
                             <li>
-                                <a href="<?php echo base_url("cash_voucher"); ?>">
+                                <a href="<?php echo base_url("cash_voucher"); ?>"> -->
 <!--                                    <i class="fa fa-fw fa-file-text-o" aria-hidden="true">
                                     </i> -->
-                                    Cash Voucher
+                                   <!--  Cash Voucher
                                 </a>
                             </li>
                             <?php }
@@ -1759,10 +1788,10 @@ if (!function_exists('precise_amount')) {
                                 {
                             ?>
                             <li>
-                                <a href="<?php echo base_url("contra_voucher"); ?>">
+                                <a href="<?php echo base_url("contra_voucher"); ?>"> -->
 <!--                                    <i class="fa fa-fw fa-file-text-o" aria-hidden="true">
                                     </i>-->
-                                    Contra Voucher
+                                   <!--  Contra Voucher
                                 </a>
                             </li>
                             <?php }
@@ -1788,10 +1817,10 @@ if (!function_exists('precise_amount')) {
                             {
                         ?>                            
                             <li> 
-                                <a href="<?= base_url(); ?>sales_ledger">
+                                <a href="<?= base_url(); ?>sales_ledger"> -->
 <!--                                    <i class="fa fa-fw fa-calendar-plus-o" aria-hidden="true">
                                     </i>-->                              
-                                    Sales Ledger
+                                    <!-- Sales Ledger
                                 </a>
                             </li>
                         <?php }
@@ -1799,10 +1828,10 @@ if (!function_exists('precise_amount')) {
                             {
                         ?>
                             <li> 
-                                <a href="<?= base_url(); ?>sales_credit_ledgers">
+                                <a href="<?= base_url(); ?>sales_credit_ledgers"> -->
 <!--                                    <i class="fa fa-fw fa-calendar-plus-o" aria-hidden="true">
                                     </i>-->
-                                    Sales Credit Note Ledger
+                                    <!-- Sales Credit Note Ledger
                                 </a>
                             </li>
                         <?php }
@@ -1810,10 +1839,10 @@ if (!function_exists('precise_amount')) {
                             {
                         ?>
                             <li> 
-                                <a href="<?= base_url(); ?>sales_debit_ledgers">
+                                <a href="<?= base_url(); ?>sales_debit_ledgers"> -->
 <!--                                    <i class="fa fa-fw fa-calendar-plus-o" aria-hidden="true">
                                     </i>-->
-                                    Sales Debit Note Ledger 
+                                   <!--  Sales Debit Note Ledger 
                                 </a>
                             </li>
                         <?php }
@@ -1821,10 +1850,10 @@ if (!function_exists('precise_amount')) {
                             {
                         ?>
                             <li> 
-                                <a href="<?php echo base_url('purchase_ledger'); ?>">
+                                <a href="<?php echo base_url('purchase_ledger'); ?>"> -->
 <!--                                    <i class="fa fa-fw fa-gg" aria-hidden="true">
                                     </i>-->
-                                    Purchase Ledger
+                                   <!--  Purchase Ledger
                                 </a>
                             </li>
                         <?php }
@@ -1832,10 +1861,10 @@ if (!function_exists('precise_amount')) {
                             {
                         ?>
                             <li> 
-                                <a href="<?php echo base_url('purchase_credit_ledger'); ?>">
+                                <a href="<?php echo base_url('purchase_credit_ledger'); ?>"> -->
 <!--                                    <i class="fa fa-fw fa-gg" aria-hidden="true">
                                     </i>-->
-                                    Purchase Credit Note Ledger 
+                                   <!--  Purchase Credit Note Ledger 
                                 </a>
                             </li>
                         <?php }
@@ -1843,10 +1872,10 @@ if (!function_exists('precise_amount')) {
                             {
                         ?>
                             <li> 
-                                <a href="<?php echo base_url('purchase_debit_ledger'); ?>">
+                                <a href="<?php echo base_url('purchase_debit_ledger'); ?>"> -->
 <!--                                    <i class="fa fa-fw fa-gg" aria-hidden="true">
                                     </i>-->
-                                    Purchase Debit Note Ledger
+                                    <!-- Purchase Debit Note Ledger
                                 </a>
                             </li>
                         <?php }
@@ -1872,9 +1901,9 @@ if (!function_exists('precise_amount')) {
                                 {
                             ?>
                             <li>
-                                <a href="<?php echo base_url("advance_ledger"); ?>">
+                                <a href="<?php echo base_url("advance_ledger"); ?>"> -->
 <!--                                    <i class="fa fa-fw fa-file-text-o" aria-hidden="true"></i>-->
-                                    Advance Ledger
+                                    <!-- Advance Ledger
                                 </a>
                             </li>
                             <?php }
@@ -1882,10 +1911,10 @@ if (!function_exists('precise_amount')) {
                                 {
                             ?>
                             <li> 
-                                <a href="<?php echo base_url('payment_ledger'); ?>">
+                                <a href="<?php echo base_url('payment_ledger'); ?>"> -->
 <!--                                    <i class="fa fa-fw fa-gg" aria-hidden="true">
                                     </i>-->
-                                    Payment Ledger
+                                    <!-- Payment Ledger
                                 </a>
                             </li> 
                             <?php }
@@ -1893,10 +1922,10 @@ if (!function_exists('precise_amount')) {
                                 {
                             ?>
                             <li>
-                                <a href="<?php echo base_url("general_ledger"); ?>">
+                                <a href="<?php echo base_url("general_ledger"); ?>"> -->
 <!--                                    <i class="fa fa-fw fa-file-text-o" aria-hidden="true">
                                     </i>-->
-                                    Journal Ledger
+                                   <!--  Journal Ledger
                                 </a>
                             </li>
                             <?php }
@@ -1904,10 +1933,10 @@ if (!function_exists('precise_amount')) {
                                 {
                             ?>
                             <li>
-                                <a href="<?php echo base_url("bank_ledger"); ?>">
+                                <a href="<?php echo base_url("bank_ledger"); ?>"> -->
 <!--                                    <i class="fa fa-fw fa-file-text-o" aria-hidden="true">
                                     </i>-->
-                                    Bank Ledger
+                                   <!--  Bank Ledger
                                 </a>
                             </li>
                             <?php }
@@ -1915,10 +1944,10 @@ if (!function_exists('precise_amount')) {
                                 {
                             ?>
                             <li>
-                                <a href="<?php echo base_url("cash_ledger"); ?>">
+                                <a href="<?php echo base_url("cash_ledger"); ?>"> -->
 <!--                                    <i class="fa fa-fw fa-file-text-o" aria-hidden="true">
                                     </i>-->
-                                    Cash Ledger
+                                   <!--  Cash Ledger
                                 </a>
                             </li>
                             <?php }
@@ -1926,10 +1955,10 @@ if (!function_exists('precise_amount')) {
                                 {
                             ?>
                             <li>
-                                <a href="<?php echo base_url("contra_ledger"); ?>">
+                                <a href="<?php echo base_url("contra_ledger"); ?>"> -->
 <!--                                    <i class="fa fa-fw fa-file-text-o" aria-hidden="true">
                                     </i>-->
-                                    Contra Ledger
+                                   <!--  Contra Ledger
                                 </a>
                             </li>
                             <?php }
@@ -1937,10 +1966,10 @@ if (!function_exists('precise_amount')) {
                                 {
                             ?>
                             <li>
-                                <a href="<?php echo base_url("refund_ledger"); ?>">
+                                <a href="<?php echo base_url("refund_ledger"); ?>"> -->
 <!--                                    <i class="fa fa-fw fa-file-text-o" aria-hidden="true">
                                     </i> -->
-                                    Refund Ledger
+                                   <!--  Refund Ledger
                                 </a>
                             </li>
                             <?php }
@@ -1957,17 +1986,17 @@ if (!function_exists('precise_amount')) {
                                 {
                             ?>
                             <li> 
-                                <a href="<?php echo base_url('receipt_ledgers'); ?>">
+                                <a href="<?php echo base_url('receipt_ledgers'); ?>"> -->
 <!--                                    <i class="fa fa-fw fa-file-text-o" aria-hidden="true">
                                     </i>-->
-                                    Receipt Ledger
+                                   <!--  Receipt Ledger
                                 </a>
                             </li> 
                             <?php } ?>                          
                         </ul>
                     </li>
                     <?php } ?> 
-                    </li> 
+                    </li>  -->
 
                     <!-- <li class="treeview">
                         <a href="javascript:void();">
@@ -2018,7 +2047,7 @@ if (!function_exists('precise_amount')) {
                             </li>
                         </ul>
                     </li> -->
-                    <?php 
+                    <!-- <?php 
                     if(in_array($this->config->item('sales_stock_report'), $active_modules) ||in_array($this->config->item('purchase_stock_report'), $active_modules) || in_array($this->config->item('closing_stock_report'), $active_modules) || in_array($this->config->item('product_stock_report'), $active_modules) || in_array($this->config->item('damaged_stock_module'), $active_modules) || in_array($this->config->item('missing_stock_module'), $active_modules) || in_array($this->config->item('product_module'), $active_modules)){?>
                         <li>
                             <a href="javascript:void();">
@@ -2154,80 +2183,80 @@ if (!function_exists('precise_amount')) {
                             <ul class="treeview-menu" id="report-menu-items">
                                 <?php if (in_array($this->config->item('sales_report_module'), $active_modules) || in_array($this->config->item('sales_credit_note_report_module'), $active_modules) || in_array($this->config->item('sales_debit_note_report_module'), $active_modules) || in_array($this->config->item('purchase_report_module'), $active_modules) || in_array($this->config->item('purchase_credit_note_report_module'), $active_modules) || in_array($this->config->item('purchase_debit_note_report_module'), $active_modules) || in_array($this->config->item('expense_bill_report_module'), $active_modules) || in_array($this->config->item('advance_voucher_report_module'), $active_modules) || in_array($this->config->item('refund_voucher_report_module'), $active_modules) || in_array($this->config->item('receipt_voucher_report_module'), $active_modules) || in_array($this->config->item('payment_voucher_report_module'), $active_modules)) { ?>
                                     <li>
-                                        <a href="<?= base_url(); ?>report/all_reports">
+                                        <a href="<?= base_url(); ?>report/all_reports"> -->
                                             <!--                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>-->
-                                            Compliance Register </a>
+                                           <!--  Compliance Register </a>
                                     </li>
                                 <?php }
                                 if (in_array($this->config->item('gstr1_report_module'), $active_modules)){ ?>
                                     <li>
-                                        <a href="<?php echo base_url('gst_report'); ?>">
+                                        <a href="<?php echo base_url('gst_report'); ?>"> -->
                                             <!--                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>-->
-                                            GSTR1 Register
+                                           <!--  GSTR1 Register
                                         </a>
                                     </li>
                                 <?php }
                                 if (in_array($this->config->item('tds_sales_report_module'), $active_modules)){ ?>
                                     <li>
-                                        <a href="<?php echo base_url('report/tds_report_sales'); ?>">
+                                        <a href="<?php echo base_url('report/tds_report_sales'); ?>"> -->
                                             <!--                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>-->
-                                            TDS Sales Register
+                                           <!--  TDS Sales Register
                                         </a>
                                     </li>
                                 <?php }
                                 if (in_array($this->config->item('tcs_sales_report_module'), $active_modules)){?>
                                     <li>
-                                        <a href="<?php echo base_url('report/tcs_report_sales'); ?>">
+                                        <a href="<?php echo base_url('report/tcs_report_sales'); ?>"> -->
                                             <!--                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>-->
-                                            TCS Sales Register
+                                            <!-- TCS Sales Register
                                         </a>
                                     </li>
                                 <?php }
                                 if (in_array($this->config->item('tcs_purchase_report_module'), $active_modules)){?>
                                     <li>
-                                        <a href="<?php echo base_url('report/tcs_report_purchase'); ?>">
+                                        <a href="<?php echo base_url('report/tcs_report_purchase'); ?>"> -->
                                             <!--                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>-->
-                                            TCS Purchase Register
+                                           <!--  TCS Purchase Register
                                         </a>
                                     </li>
                                 <?php }
                                 if (in_array($this->config->item('tds_expense_report_module'), $active_modules)){?>
                                     <li>
-                                        <a href="<?php echo base_url('report/tds_report_expense'); ?>">
+                                        <a href="<?php echo base_url('report/tds_report_expense'); ?>"> -->
                                             <!--                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>-->
-                                            TDS Expense Register
+                                           <!--  TDS Expense Register
                                         </a>
                                     </li>
                                 <?php }
                                 if (in_array($this->config->item('gst_report'), $active_modules)){?>
                                     <li>
-                                        <a href="<?php echo base_url('report/gst_report'); ?>">
+                                        <a href="<?php echo base_url('report/gst_report'); ?>"> -->
                                             <!--                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>-->
-                                            GST Register
+                                           <!--  GST Register
                                         </a>
                                     </li>
                                 <?php }
                                 if (in_array($this->config->item('gst_sales_credit_note_report'), $active_modules)){?>
                                     <li>
-                                        <a href="<?php echo base_url('report/gst_credit_note_report'); ?>">
+                                        <a href="<?php echo base_url('report/gst_credit_note_report'); ?>"> -->
                                             <!--                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>-->
-                                            GST Register (Sales CN)
+                                            <!-- GST Register (Sales CN)
                                         </a>
                                     </li>
                                 <?php }
                                 if (in_array($this->config->item('gst_sales_debit_note_report'), $active_modules)){?>
                                     <li>
-                                        <a href="<?php echo base_url('report/gst_debit_note_report'); ?>">
+                                        <a href="<?php echo base_url('report/gst_debit_note_report'); ?>"> -->
                                             <!--                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>-->
-                                            GST Register (Sales DN)
+                                           <!--  GST Register (Sales DN)
                                         </a>
                                     </li>
                                 <?php }
                                 if (in_array($this->config->item('hsn_report_module'), $active_modules)){?>
                                     <li>
-                                        <a href="<?php echo base_url('report/hsn_report'); ?>">
+                                        <a href="<?php echo base_url('report/hsn_report'); ?>"> -->
                                             <!--                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>-->
-                                            HSN Register
+                                            <!-- HSN Register
                                         </a>
                                     </li>
                                 <?php } ?> 
@@ -2246,41 +2275,41 @@ if (!function_exists('precise_amount')) {
                                 <?php
                                 if (in_array($this->config->item('closing_balance_module'), $active_modules)) {?>
                                     <li>
-                                        <a href="<?php echo base_url('closing_balance'); ?>">
+                                        <a href="<?php echo base_url('closing_balance'); ?>"> -->
                                         <!--<i class="fa fa-file-excel-o" aria-hidden="true"></i>-->
-                                            Closing Balance
+                                           <!--  Closing Balance
                                         </a>
                                     </li> 
                                 <?php }
                                 if (in_array($this->config->item('ledger_view_report_module'), $active_modules)) {?>                         
                                     <li>
-                                        <a href="<?php echo base_url('ledger_view'); ?>">
+                                        <a href="<?php echo base_url('ledger_view'); ?>"> -->
                                             <!--                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>-->
-                                            Ledger View
+                                           <!--  Ledger View
                                         </a>
                                     </li>
                                 <?php }
                                 if (in_array($this->config->item('trial_balance_report_module'), $active_modules)){?>
                                     <li>
-                                        <a href="<?php echo base_url('trial_balance'); ?>">
+                                        <a href="<?php echo base_url('trial_balance'); ?>"> -->
                                         <!--                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>-->
-                                            Trial Balance
+                                           <!--  Trial Balance
                                         </a>
                                     </li>
                                 <?php }
                                 if (in_array($this->config->item('profit_loss_report_module'), $active_modules)) {?>
                                     <li>
-                                        <a href="<?php echo base_url('profit_loss'); ?>">
+                                        <a href="<?php echo base_url('profit_loss'); ?>"> -->
                                         <!--                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>-->
-                                            Profit & Loss
+                                            <!-- Profit & Loss
                                         </a>
                                     </li>
                                 <?php }
                                 if (in_array($this->config->item('balance_sheet_report_module'), $active_modules)){?>   
                                     <li>
-                                        <a href="<?php echo base_url('balance_sheet'); ?>">
+                                        <a href="<?php echo base_url('balance_sheet'); ?>"> -->
                                         <!--                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>-->
-                                            Balance Sheet
+                                           <!--  Balance Sheet
                                         </a>
                                     </li>
                                 <?php }
@@ -2619,4 +2648,4 @@ if (!function_exists('precise_amount')) {
                     <?php } ?>                                                                          
                 </ul>
             </section>
-        </aside>
+        </aside> -->

@@ -170,10 +170,15 @@ if (isset($fin_data[0]) && isset($fin_data[1])) {
                     });
                 });
 
-                $(".cd-dropdown-content").mouseleave(function() {
+                /*$(".cd-dropdown-content").mouseleave1(function() {
+                    $('.cd-dropdown-trigger').trigger('click');
+                });*/
+
+                $(".backdrop").click(function() {
+                    // console.log(111111111);
                     $('.cd-dropdown-trigger').trigger('click');
                 });
-
+               
             });
             $(document).on("click", ".date .input-group-addon", function () {
                 $(this).parent().find('.datepicker').trigger('focus');

@@ -137,14 +137,14 @@ function precise_amount($val) {
                             "\r\n",
                             "\\r\\n",
                             "\n",
-                            "\\n"), "<br>", $data[0]->supplier_address);
+                            "\\n"), "<br>", $data[0]->supplier_address . ", " . $data[0]->city_name . ", "  . $data[0]->state_name  . " - " . $data[0]->supplier_postal_code);
                     } else {
                         echo "<br/>";
                         echo str_replace(array(
                             "\r\n",
                             "\\r\\n",
                             "\n",
-                            "\\n"), "<br>", $data[0]->shipping_address);
+                            "\\n"), "<br>", $data[0]->shipping_address . ", " . $data[0]->shipping_city . ", "  . $data[0]->shipping_state  . " - " . $data[0]->address_pin_code);
                     }
                     ?>
                     <?php
@@ -216,7 +216,7 @@ function precise_amount($val) {
                                 "\r\n",
                                 "\\r\\n",
                                 "\n",
-                                "\\n"), "<br>", $data[0]->shipping_address);
+                                "\\n"), "<br>", $data[0]->shipping_address . ", " . $data[0]->shipping_city . ", "  . $data[0]->shipping_state . " - " . $data[0]->address_pin_code);
                         }
                     }
                     if (isset($data[0]->shipping_gstin)) {

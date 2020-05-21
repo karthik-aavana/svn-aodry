@@ -181,6 +181,68 @@ $this->load->view('layout/header');
     </div>
 </div>
 
+<div id="e_way_bill_modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    &times;
+                </button>
+                <h4 class="modal-title">E Way Bill</h4>
+            </div>
+            <div class="modal-body">
+                <div id="loader">
+                        <h1 class="ml8">
+                            <span class="letters-container">
+                                <span class="letters letters-left">
+                                    <img src="<?php echo base_url('assets/'); ?>images/loader-icon.png" width="40px">
+                                </span>
+                            </span>
+                            <span class="circle circle-white"></span>
+                            <span class="circle circle-dark"></span>
+                            <span class="circle circle-container">
+                                <span class="circle circle-dark-dashed"></span>
+                            </span></h1>
+                    </div>
+                <div class="table-responsive">
+                    <table id="excess_table" class="table custom_datatable table-bordered table-striped table-hover" >
+                        <thead>
+                        <th>E Way Bill Date </th>
+                        <th>E Way Bill Number</th>
+                        </thead>
+                        <tbody>
+                            <td>
+                               <div class="input-group date">
+                                    <input type="text" class="form-control datepicker" id="sales_e_way_bill_date" name="sales_e_way_bill_date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                </div> 
+                                    <span class="validation-color" id="err_date"></span>
+                            </td>
+                            <td>
+                               <div class="input-group">
+                                    <input type="text" class="form-control" size="30" name="sales_e_way_bill_number" id="sales_e_way_bill_number">
+                                </div>
+                                <span class="validation-color" id="err_number"></span> 
+                            </td>
+                        </tbody>
+                    </table>
+                    <div class="modal-footer">
+                <button type="button" id="e_way_bill_submit" data-id="sales_id" name="e_way_bill_submit" class="btn btn-info">
+                    Submit
+                </button>
+                <button type="button" class="btn btn-info" class="close" data-dismiss="modal">
+                    Cancel
+                </button>
+            </div>
+                </div>
+            </div>           
+        </div>
+    </div>
+</div>
+
+
 <div id="excess_amount_modal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -252,6 +314,7 @@ $this->load->view('general/delete_modal');
 $this->load->view('recurrence/recurrence_invoice_modal');
 $this->load->view('sales/compose_mail');
 ?>
+<script src="<?php echo base_url('assets/js/') ?>icon-loader.js"></script>
 <script>
     $(document).ready(function () {
         var salesTable = GetAllSales();
@@ -411,6 +474,62 @@ $this->load->view('sales/compose_mail');
                 }
             });
         });
+        $(document).on('click', '.e_way_bill', function () {
+                var sales_id = $(this).attr('data-id');
+                var e_way_bill_date = $(this).attr('e_way_bill_date');
+                var e_way_bill_number = $(this).attr('e_way_bill_number');
+                $('#e_way_bill_modal').modal('show');
+                $('#sales_e_way_bill_date').val(e_way_bill_date);
+                $('#sales_e_way_bill_number').val(e_way_bill_number);
+                console.log(sales_e_way_bill_date);
+        });
+
+            $('#e_way_bill_submit').click(function(){
+
+                var sales_id = $('.e_way_bill').attr('data-id');
+                var sales_e_way_bill_date = $('#sales_e_way_bill_date').val();
+                var sales_e_way_bill_number = $('#sales_e_way_bill_number').val();
+
+
+                   if (sales_e_way_bill_date == '' || sales_e_way_bill_number == null) {
+                        $('#err_date').text('Please enter your E way bill date');
+                        return false;
+                    } else {
+                        $('#err_date').text('');
+                    }
+
+                    if (sales_e_way_bill_number == '' || sales_e_way_bill_number == null) {
+                        $('#err_number').text('Please enter your way bill number');
+                        return false;
+                    } else {
+                        $('#err_number').text('');
+                    }
+                    $.ajax({
+                        type:'POST',
+                        url: base_url + 'sales/update_e_way_bill',
+                        dataType:'JSON',
+                        data: {
+                            'sales_id' : sales_id,
+                            'sales_e_way_bill_date' : sales_e_way_bill_date , 
+                            'sales_e_way_bill_number' : sales_e_way_bill_number     
+                        },
+                        beforeSend: function(){
+                            // Show image container
+                            $("#e_way_bill_modal #loader").show();
+                        },
+                        success : function(data) {
+                            $("#e_way_bill_modal #loader").hide();
+                            $('#e_way_bill_modal').modal('hide');
+                            $('.e_way_bill').attr('e_way_bill_date', sales_e_way_bill_date);
+                            $('.e_way_bill').attr('e_way_bill_number', sales_e_way_bill_number);
+                            $('#sales_e_way_bill_date').val('');
+                            $('#sales_e_way_bill_number').val('');
+                            $(document).find('[name=check_item]').trigger('change');
+                        }
+
+                    });
+            });
+
 
         $(document).on('click', '.get_excess', function () {
             var c_id = $(this).parent().find('[name=customer_id]').val();

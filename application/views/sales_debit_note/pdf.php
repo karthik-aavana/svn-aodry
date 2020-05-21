@@ -18,7 +18,7 @@ if(@$converted_rate) $convert_rate = $converted_rate;
     <title>
             <?= (@$title ? $title : 'Sales debit note Invoice'); ?>
     </title>
-	 <!-- <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>css/common_pdf.css">-->
+   <!-- <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>css/common_pdf.css">-->
     <style><?php $this->load->view('common/common_pdf');?></style>
     </head>
   <body>
@@ -142,13 +142,13 @@ if(@$converted_rate) $convert_rate = $converted_rate;
             /*if($data[0]->shipping_address_id != $data[0]->billing_address_id){*/
                 if(!empty($billing_address)){
                     echo "<br/>";
-                    echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>", $billing_address[0]->shipping_address);
+                    echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>", $billing_address[0]->shipping_address.', '. $billing_address[0]->city_name . ', ' . $billing_address[0]->state_name . ' - ' . $billing_address[0]->address_pin_code);
                 }elseif (isset($data[0]->customer_address) && $data[0]->customer_address != "") {
                     echo "<br/>";
-                    echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>", $data[0]->customer_address);
+                    echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>", $data[0]->customer_address . ', ' . $data[0]->customer_city_name . ', ' . $data[0]->customer_state_name . ' - ' . $data[0]->customer_postal_code);
                 } else {
                     echo "<br/>";
-                    echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>", $data[0]->shipping_address);
+                    echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>", $data[0]->shipping_address . ', ' . $data[0]->city_name . ", " . $data[0]->state_name . " - " . $data[0]->address_pin_code);
                 }
             /*}*/
           ?>
@@ -165,6 +165,23 @@ if(@$converted_rate) $convert_rate = $converted_rate;
                   echo '<br>E-mail : ' . $data[0]->customer_email;
               }
           }
+                    ?>
+                    <?php
+                    $date = $data[0]->sales_debit_note_e_way_bill_date;
+                    $date_for_e_bill = date('d-m-Y', strtotime($date));?>
+                    <?php
+                    if (isset($data[0]->sales_debit_note_e_way_bill_date)) {
+                        if ($data[0]->sales_debit_note_e_way_bill_date != "") {
+                            echo '<br>E Way Bill Date : ' . $date_for_e_bill;
+                        }
+                    }
+                    ?>
+                     <?php
+                    if (isset($data[0]->sales_debit_note_e_way_bill_number)) {
+                        if ($data[0]->sales_debit_note_e_way_bill_number != "") {
+                            echo '<br>E Way Bill Number : ' . $data[0]->sales_debit_note_e_way_bill_number;
+                        }
+                    }
                     ?>
                     <?php
                     if (isset($billing_address[0]->department)) {
@@ -216,7 +233,7 @@ if(@$converted_rate) $convert_rate = $converted_rate;
                                 "\r\n",
                                 "\\r\\n",
                                 "\n",
-                                "\\n"), "<br>", $data[0]->shipping_address);
+                                "\\n"), "<br>", $data[0]->shipping_address . ', ' . $data[0]->city_name . ", " . $data[0]->state_name . " - " . $data[0]->address_pin_code);
               }
           }
                     if (isset($data[0]->shipping_gstin)) {

@@ -303,6 +303,10 @@ $this->load->view('layout/header');
                                         ?>">
                                     </div>
                                 </div>
+                                 <div class="form-group col-md-3">
+                                    <label for="due_days">Credit Period</label>
+                                    <input class="form-control" type="number" name="due_days" id="due_days" min = '0' max = '365' value="<?php echo $data[0]->due_days; ?>"/> <span class="validation-color" id="err_due_days"><?php echo form_error('due_days'); ?></span>
+                                </div>
                             </div>
                             <?php
                             if (in_array($transporter_sub_module_id, $access_sub_modules)) {

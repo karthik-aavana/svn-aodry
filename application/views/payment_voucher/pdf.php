@@ -166,7 +166,7 @@ function formatinr($input){
                             "\r\n",
                             "\\r\\n",
                             "\n",
-                            "\\n"), "<br>", $data[0]->supplier_address);
+                            "\\n"), "<br>", $data[0]->supplier_address. ', ' .$data[0]->city_name . ' ,' . $data[0]->state_name . ' - ' . $data[0]->supplier_postal_code);
                     } else {
                         echo "<br/>";
                         echo str_replace(array(

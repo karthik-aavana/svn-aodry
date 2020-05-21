@@ -154,7 +154,12 @@ $this->load->view('layout/header');
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">                                
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        <label for="due_days">Credit Period</label>
+                                        <input class="form-control" type="number" name="due_days" id="due_days" min = '0' max = '365' />
+                                        <span class="validation-color" id="err_due_days"><?php echo form_error('due_days'); ?></span>
+                                    </div>                                  
                                     <div class="col-sm-3">
                                         <div class="form-group">
                                             <label for="Grn_no">GR Number</label>
