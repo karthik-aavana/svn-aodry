@@ -689,9 +689,9 @@ class General extends MY_Controller
                     }
                     $closing_balance = number_format(abs($final_ary['closing_balance']),2);
                     //End For closing balance
-                    if(!in_array($value['ledger_id'], $bank_array_check)){
+                    /*if(!in_array($value['ledger_id'], $bank_array_check)){*/
                         $option1 .= '<option value="'.$value['ledger_id'].'" closing_balance ="'.$closing_balance.' '.$option_type.'">'.$value['ledger_name'].'</option>';
-                    }   
+                    /*} */  
                 }
             }   
         }

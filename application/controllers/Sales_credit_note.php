@@ -155,6 +155,10 @@ class Sales_credit_note extends MY_Controller
                     {
                         $cols .= '<span data-backdrop="static" data-keyboard="false" class="delete_button" data-toggle="modal" data-target="#delete_modal" data-id="' . $sales_credit_note_id . '" data-path="sales_credit_note/delete" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"><a data-placement="bottom" class="btn btn-app" data-toggle="tooltip" data-toggle="tooltip" title="Delete Sales Credit Note"><i class="fa fa-trash-o"></i></a></span>';
                     }
+                    $e_way_bill_date =  date('d-m-Y', strtotime($post->sales_credit_note_e_way_bill_date));
+                    $e_way_bill_number = $post->sales_credit_note_e_way_bill_number;
+
+                    $cols .= '<span><a href="javascript:void(0);" data-target="#e_way_bill_modal" class="btn btn-app credit_note_e_way_bill" data-toggle="tooltip" data-id="' . $sales_credit_note_id  . '"credit_note_e_way_bill_date="' . $e_way_bill_date . '" credit_note_e_way_bill_number="' . $e_way_bill_number . '"  data-placement="bottom" title="E Way Bill"><i class="fa fa-road"></i></a></span>';
                     $cols .= '</div></div>';                   
  					$nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';                    
                     /*$this->db->select('sales_voucher_id');
@@ -3802,6 +3806,26 @@ class Sales_credit_note extends MY_Controller
         $dompdf->stream($data['data'][0]->sales_credit_note_invoice_number, array(
             'Attachment' => 0));
 
+    }
+
+     public function update_e_way_bill() 
+    {
+
+            $sales_credit_note_id = $this->encryption_url->decode($this->input->post('sales_credit_note_id'));
+            $converted_date = date('Y-m-d', strtotime($this->input->post('sales_credit_note_e_way_bill_date')));
+
+            $data_update = array(
+
+                "sales_credit_note_id" => $this->encryption_url->decode($this->input->post('sales_credit_note_id')),
+                "sales_credit_note_e_way_bill_date" => $converted_date,
+                "sales_credit_note_e_way_bill_number" => $this->input->post('sales_credit_note_e_way_bill_number')
+            );
+           echo json_encode($data_update);
+
+            $this->db->set($data_update);
+            $this->db->where('sales_credit_note_id' , $sales_credit_note_id);
+            $this->db->update('sales_credit_note');
+            redirect('sales_credit_note' , 'refresh');
     }
 
     public function email($id){

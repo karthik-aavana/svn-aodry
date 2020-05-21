@@ -1250,6 +1250,12 @@ class Purchase_order extends MY_Controller {
 
         $data['data'] = $this->general_model->getRecords('*', 'purchase_order', array(
             'purchase_order_id' => $id));
+        
+        $primary_id = "purchase_id";
+        $table_name = $this->config->item('purchase_table');
+        $date_field_name = "purchase_date";
+        $current_date = date('Y-m-d');
+        $data['invoice_number'] = $this->generate_invoice_number($data['access_settings'], $primary_id, $table_name, $date_field_name, $current_date);
 
         $data['shipping_address'] = $this->general_model->getRecords('*', 'shipping_address', array(
             'shipping_party_id' => $data['data'][0]->purchase_order_party_id,

@@ -1046,16 +1046,19 @@ class Report extends MY_Controller {
             // $list_data['string'] = "sum(s.sales_taxable_value*s.currency_converted_rate) as tot_sales_taxable_value, sum(s.sales_igst_amount*s.currency_converted_rate) as tot_sales_igst_amount, sum(s.sales_cgst_amount*s.currency_converted_rate) as tot_sales_cgst_amount, sum(s.sales_sgst_amount*s.currency_converted_rate) as tot_sales_sgst_amount, sum(s.sales_grand_total*s.currency_converted_rate) as tot_sales_grand_total, sum(s.credit_note_amount*s.currency_converted_rate) as tot_credit_note_amount, sum(s.debit_note_amount*s.currency_converted_rate) as tot_debit_note_amount, (sum(s.sales_grand_total*s.currency_converted_rate)+sum(s.credit_note_amount*s.currency_converted_rate)-sum(s.debit_note_amount*s.currency_converted_rate)) as tot_grand_total, sum(s.sales_paid_amount*s.currency_converted_rate) as tot_sales_paid_amount, (sum(s.sales_grand_total*s.currency_converted_rate)+sum(s.credit_note_amount*s.currency_converted_rate)-sum(s.debit_note_amount*s.currency_converted_rate)-sum(s.sales_paid_amount*s.currency_converted_rate)) as tot_sales_pending_amount";
             // $total_list_record = $this->general_model->getPageJoinRecordsCount1($list_data);
             // $list_data['string'] = $string;
-
-            if (empty($this->input->post('search')['value'])) {
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
+            }
+            if (empty($this->input->post('search')['value'])) {
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -1330,15 +1333,19 @@ class Report extends MY_Controller {
             $list_data['section'] = 'purchase';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
-            if (empty($this->input->post('search')['value'])) {
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
+            }
+            if (empty($this->input->post('search')['value'])) {
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -1618,15 +1625,19 @@ class Report extends MY_Controller {
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
 
             $totalFiltered = $totalData;
-            if (empty($this->input->post('search')['value'])) {
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
+            }
+            if (empty($this->input->post('search')['value'])) {
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -1842,15 +1853,19 @@ class Report extends MY_Controller {
             $list_data['section'] = 'credit_note';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
-            if (empty($this->input->post('search')['value'])) {
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
+            }
+            if (empty($this->input->post('search')['value'])) {
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -2070,15 +2085,19 @@ class Report extends MY_Controller {
             $list_data['section'] = 'debit_note';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
-            if (empty($this->input->post('search')['value'])) {
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
+            }
+            if (empty($this->input->post('search')['value'])) {
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -2308,15 +2327,19 @@ class Report extends MY_Controller {
             $list_data['section'] = 'purchase_debit_note';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
-            if (empty($this->input->post('search')['value'])) {
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
+            }
+            if (empty($this->input->post('search')['value'])) {
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -2566,15 +2589,19 @@ class Report extends MY_Controller {
             $list_data['section'] = 'purchase_credit_note';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
-            if (empty($this->input->post('search')['value'])) {
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
+            }
+            if (empty($this->input->post('search')['value'])) {
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -2832,15 +2859,19 @@ class Report extends MY_Controller {
             $list_data['section'] = 'advance_voucher';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
-            if (empty($this->input->post('search')['value'])) {
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
+            }
+            if (empty($this->input->post('search')['value'])) {
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -3045,15 +3076,19 @@ class Report extends MY_Controller {
             $list_data['section'] = 'recipt_voucher';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
-            if (empty($this->input->post('search')['value'])) {
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
+            }
+            if (empty($this->input->post('search')['value'])) {
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -3261,15 +3296,19 @@ class Report extends MY_Controller {
             $list_data['section'] = 'payment_voucher';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
-            if (empty($this->input->post('search')['value'])) {
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
+            }
+            if (empty($this->input->post('search')['value'])) {
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -3529,15 +3568,19 @@ class Report extends MY_Controller {
             $list_data['section'] = 'refund_voucher';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
-            if (empty($this->input->post('search')['value'])) {
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
+            }
+            if (empty($this->input->post('search')['value'])) {
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -4257,16 +4300,19 @@ class Report extends MY_Controller {
             $list_data['section'] = 'sales_gst';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
-
-            if (empty($this->input->post('search')['value'])) {
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
+            }
+            if (empty($this->input->post('search')['value'])) {
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -4467,15 +4513,19 @@ class Report extends MY_Controller {
             $list_data['section'] = 'tcs_sales_payable';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
-            if (empty($this->input->post('search')['value'])) {
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
+            }
+            if (empty($this->input->post('search')['value'])) {
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -4585,15 +4635,19 @@ class Report extends MY_Controller {
             $list_data['section'] = 'tds_sales_payable';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
-            if (empty($this->input->post('search')['value'])) {
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
+            }
+            if (empty($this->input->post('search')['value'])) {
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -4698,15 +4752,19 @@ class Report extends MY_Controller {
             $list_data['section'] = 'tcs_purcahse_recievable';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
-            if (empty($this->input->post('search')['value'])) {
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
+            }
+            if (empty($this->input->post('search')['value'])) {
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -4805,15 +4863,19 @@ class Report extends MY_Controller {
             $list_data['section'] = 'tds_expense_recievable';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
-            if (empty($this->input->post('search')['value'])) {
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
+            }
+            if (empty($this->input->post('search')['value'])) {
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -4945,16 +5007,19 @@ class Report extends MY_Controller {
             $list_data['section'] = 'sales_credit_note_gst';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
-
-            if (empty($this->input->post('search')['value'])) {
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
+            }
+            if (empty($this->input->post('search')['value'])) {
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -5182,16 +5247,19 @@ class Report extends MY_Controller {
             $list_data['section'] = 'sales_debit_note_gst';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
-
-            if (empty($this->input->post('search')['value'])) {
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
+            }
+            if (empty($this->input->post('search')['value'])) {
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -5404,16 +5472,20 @@ class Report extends MY_Controller {
             $list_data['section'] = 'sales_hsn';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
-            /*print_r($this->db->last_query());*/
-            if (empty($this->input->post('search')['value'])) {
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
+            }
+            /*print_r($this->db->last_query());*/
+            if (empty($this->input->post('search')['value'])) {
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                $list_data['limit'] = $limit;
-                $list_data['start'] = $start;
+                // $list_data['limit'] = $limit;
+                // $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);

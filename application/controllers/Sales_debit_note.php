@@ -146,6 +146,10 @@ class Sales_debit_note extends MY_Controller {
                     if (in_array($sales_debit_note_module_id, $data['active_delete'])) {
                         $cols .= '<span data-backdrop="static" data-keyboard="false" class="delete_button" data-toggle="modal" data-target="#delete_modal" data-id="' . $sales_debit_note_id . '" data-path="sales_debit_note/delete" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"><a class="btn btn-app"  href="#" data-toggle="tooltip" data-placement="bottom" title="Delete Sales Debit Note" ><i class="fa fa-trash-o"></i></a></span>';
                     }
+                    $e_way_bill_date =  date('d-m-Y', strtotime($post->sales_debit_note_e_way_bill_date));
+                    $e_way_bill_number = $post->sales_debit_note_e_way_bill_number;
+
+                    $cols .= '<span><a href="javascript:void(0);" data-target="#e_way_bill_modal" class="btn btn-app debit_note_e_way_bill" data-toggle="tooltip" data-id="' . $sales_debit_note_id  . '"debit_note_e_way_bill_date="' . $e_way_bill_date . '" debit_note_e_way_bill_number="' . $e_way_bill_number . '"  data-placement="bottom" title="E Way Bill"><i class="fa fa-road"></i></a></span>';
                     $cols .= '</div></div>';
                     $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
                     $send_data[] = $nestedData;
@@ -3527,6 +3531,25 @@ class Sales_debit_note extends MY_Controller {
         $data = $this->sales_debit_details($this->encryption_url->encode($id));
 
         $this->load->view('sales_debit_note/view', $data);
+    }
+    public function update_e_way_bill() 
+    {
+
+            $sales_debit_note_id = $this->encryption_url->decode($this->input->post('sales_debit_note_id'));
+            $converted_date = date('Y-m-d', strtotime($this->input->post('sales_debit_note_e_way_bill_date')));
+
+            $data_update = array(
+
+                "sales_debit_note_id" => $this->encryption_url->decode($this->input->post('sales_debit_note_id')),
+                "sales_debit_note_e_way_bill_date" => $converted_date,
+                "sales_debit_note_e_way_bill_number" => $this->input->post('sales_debit_note_e_way_bill_number')
+            );
+           echo json_encode($data_update);
+
+            $this->db->set($data_update);
+            $this->db->where('sales_debit_note_id' , $sales_debit_note_id);
+            $this->db->update('sales_debit_note');
+            redirect('sales_debit_note' , 'refresh');
     }
 
     public function pdf($id) {
