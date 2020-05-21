@@ -184,8 +184,8 @@ class MY_Controller extends CI_Controller
     public function sa_getOnly_modules($user_id,$branch_id){
         $sess_user_id = $this->session->userdata('SESS_SA_USER_ID');
         $module_data = $this->common->sa_autoModule_field($branch_id);
-        $module      = $this->general_model->getJoinRecords($module_data['string'], $module_data['table'], $module_data['where'], $module_data['join']);
-
+        $module      = $this->general_model->getJoinRecords($module_data['string'], $module_data['table'], $module_data['where'], $module_data['join']);    
+        
         foreach ($module as $key => $value) {
             $sub_module_data               = $this->common->sub_module_field($value->module_id, $branch_id);
             $sub_module[$value->module_id] = $this->general_model->getRecords($sub_module_data['string'], $sub_module_data['table'], $sub_module_data['where']);
@@ -2530,12 +2530,17 @@ public function generate_branch_number($access_settings, $primary_id, $table_nam
             'sales_id' => $data['data'][0]->sales_id));
 
         if(!empty($sales_data)){
-            $this->db->select('shipping_address,country_name,department,contact_person');
+            $this->db->select('shipping_address,country_name,department,contact_person,city_name,state_name,    address_pin_code');
             $this->db->from('shipping_address s');
             $this->db->join('countries c','s.country_id=c.country_id','left');
+            $this->db->join(' cities city' ,'s.city_id=city.city_id' ,'left');
+            $this->db->join(' states sta' ,'s.state_id=sta.state_id' ,'left');  
             $this->db->where('shipping_address_id',$sales_data[0]->billing_address_id);
             $billing_address = $this->db->get();
             $data['billing_address'] = $billing_address->result();
+            // echo '<pre>';
+            // print_r($data['billing_address'] );
+            // exit();
             $data['data'][0]->billing_address_id = $sales_data[0]->billing_address_id;
             
             $this->db->select('shipping_address,country_name');
@@ -2737,17 +2742,25 @@ public function generate_branch_number($access_settings, $primary_id, $table_nam
         $sales_debit_note_data = $this->common->sales_debit_note_list_field1($id);
         $data['sales_debit_note_module_id'] = $sales_debit_note_module_id;
         $data['data']           = $this->general_model->getJoinRecords($sales_debit_note_data['string'], $sales_debit_note_data['table'], $sales_debit_note_data['where'], $sales_debit_note_data['join']);
+        // echo '<pre>';
+        // print_r($data);
+        // exit;
 
         $sales_data = $this->general_model->getRecords('shipping_address_id,billing_address_id', 'sales', array(
             'sales_id' => $data['data'][0]->sales_id));
 
         if(!empty($sales_data)){
-            $this->db->select('shipping_address,country_name,department,contact_person');
+            $this->db->select('shipping_address,country_name,department,contact_person,city_name,state_name,    address_pin_code');
             $this->db->from('shipping_address s');
             $this->db->join('countries c','s.country_id=c.country_id','left');
+            $this->db->join(' cities city' ,'s.city_id=city.city_id' ,'left');
+            $this->db->join(' states sta' ,'s.state_id=sta.state_id' ,'left');
             $this->db->where('shipping_address_id',$sales_data[0]->billing_address_id);
             $billing_address = $this->db->get();
             $data['billing_address'] = $billing_address->result();
+            // echo '<pre>';
+            // print_r( $data['billing_address']);
+            // exit();
             $data['data'][0]->billing_address_id = $sales_data[0]->billing_address_id;
 
             $this->db->select('shipping_address,country_name');
@@ -3108,6 +3121,9 @@ public function generate_branch_number($access_settings, $primary_id, $table_nam
         
         $branch_data                 = $this->common->branch_field();
         $data['branch']              = $this->general_model->getJoinRecords($branch_data['string'] , $branch_data['table'] , $branch_data['where'] , $branch_data['join'] , $branch_data['order']);
+        // echo '<pre>';
+        // print_r($data['branch'] );
+        // exit;
         $sales_module_id             = $this->config->item('sales_module');
         $data['email_module_id']     = $this->config->item('email_module');
         /* Sub Modules Present */
@@ -3130,9 +3146,11 @@ public function generate_branch_number($access_settings, $primary_id, $table_nam
         print_r($data['data']);
         exit;*/
 
-        $this->db->select('shipping_address,country_name,department,contact_person');
+        $this->db->select('shipping_address,country_name,department,contact_person,city_name,state_name,    address_pin_code');
         $this->db->from('shipping_address s');
         $this->db->join('countries c','s.country_id=c.country_id','left');
+        $this->db->join(' cities city' ,'s.city_id=city.city_id' ,'left');
+        $this->db->join(' states sta' ,'s.state_id=sta.state_id' ,'left');
         $this->db->where('shipping_address_id',$data['data'][0]->billing_address_id);
         $billing_address = $this->db->get();
         $data['billing_address'] = $billing_address->result();
@@ -3321,14 +3339,18 @@ public function generate_branch_number($access_settings, $primary_id, $table_nam
         $data['currency'] = $this->currency_call();
         $quotation_data   = $this->common->quotation_list_field1($id);
         $data['data']     = $this->general_model->getJoinRecords($quotation_data['string'], $quotation_data['table'], $quotation_data['where'], $quotation_data['join']);
-
-        $this->db->select('shipping_address,country_name,department,contact_person');
+        // echo "<pre>";
+        // print_r($data['data']);
+        // exit;
+        $this->db->select('shipping_address,country_name,department,contact_person,city_name,state_name,    address_pin_code');
         $this->db->from('shipping_address s');
         $this->db->join('countries c','s.country_id=c.country_id','left');
+        $this->db->join(' cities city' ,'s.city_id=city.city_id' ,'left');
+        $this->db->join(' states sta' ,'s.state_id=sta.state_id' ,'left');
         $this->db->where('shipping_address_id',$data['data'][0]->billing_address_id);
         $billing_address = $this->db->get();
         $data['billing_address'] = $billing_address->result();
-       /* echo '<pre>'; print_r($data['data'] );exit();*/
+        // echo '<pre>'; print_r($data['data'] );exit();
         
         $item_types = $this->general_model->getRecords('item_type,quotation_item_description', 'quotation_item', array(
             'quotation_id' => $id));

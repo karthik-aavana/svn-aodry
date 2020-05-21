@@ -683,13 +683,15 @@ class Common
     }
 
     public function receipt_voucher_list_field($id = 0){
-        $string = "rv.*,c.customer_name,c.customer_address,c.customer_mobile,c.customer_email,c.customer_postal_code,c.customer_gstin_number,c.customer_tan_number,c.customer_pan_number,u.first_name,u.last_name,rr.receipt_amount as given_receipt_amount, rr.exchange_gain_loss, rr.exchange_gain_loss_type, rr.discount, rr.other_charges,rr.round_off,rr.round_off_icon,rr.Invoice_total_received,rr.Invoice_pending,s.sales_invoice_number,s.sales_id,s.sales_grand_total,rr.receipt_total_paid,rv.receipt_amount as main_receipt_amount, CASE rr.exchange_gain_loss_type when 'minus' THEN rr.exchange_gain_loss*-1 End as minus_gain_loss , CASE rr.exchange_gain_loss_type when 'plus' THEN rr.exchange_gain_loss End as plus_gain_loss, CASE rr.round_off_icon when 'minus' THEN rr.round_off*-1 End as minus_round_off, CASE rr.round_off_icon when 'plus' THEN rr.round_off End as plus_round_off,s.customer_payable_amount";// cur.currency_symbol, cur.currency_code, cur.currency_text
+        $string = "rv.*,c.customer_name,c.customer_address,c.customer_mobile,c.customer_email,c.customer_gstin_number,c.customer_tan_number,c.customer_postal_code , c.customer_pan_number,u.first_name,u.last_name,ci.city_name , st.state_name, rr.receipt_amount as given_receipt_amount, rr.exchange_gain_loss, rr.exchange_gain_loss_type, rr.discount, rr.other_charges,rr.round_off,rr.round_off_icon,rr.Invoice_total_received,rr.Invoice_pending,s.sales_invoice_number,s.sales_id,s.sales_grand_total,rr.receipt_total_paid,rv.receipt_amount as main_receipt_amount, CASE rr.exchange_gain_loss_type when 'minus' THEN rr.exchange_gain_loss*-1 End as minus_gain_loss , CASE rr.exchange_gain_loss_type when 'plus' THEN rr.exchange_gain_loss End as plus_gain_loss, CASE rr.round_off_icon when 'minus' THEN rr.round_off*-1 End as minus_round_off, CASE rr.round_off_icon when 'plus' THEN rr.round_off End as plus_round_off,s.customer_payable_amount";// cur.currency_symbol, cur.currency_code, cur.currency_text
         $table  = "receipt_voucher rv";
         $join   = [
             "customer c"   => "rv.party_id = c.customer_id",
             "receipt_invoice_reference rr" => "rv.receipt_id = rr.receipt_id",
             'sales s' => 's.sales_id = rr.reference_id',
-            "users u"      => "rv.added_user_id = u.id"];
+            "users u"      => "rv.added_user_id = u.id",
+            "cities ci"  => 'c.customer_city_id=ci.city_id' . '#' . 'left',
+            " states st" => 'c.customer_state_id=st.state_id' . '#' . 'left',];
         $order = [
             "rv.receipt_id" => "desc"];
         $where = array(
@@ -2066,7 +2068,7 @@ class Common
 
     public function payment_voucher_list_field($id = 0)
     {
-        $string = "pv.*,s.supplier_name,s.supplier_address,s.supplier_mobile,s.supplier_email,s.supplier_postal_code,s.supplier_gstin_number,s.supplier_tan_number,s.supplier_pan_number,u.first_name,u.last_name, cur.currency_name, pr.exchange_gain_loss, pr.exchange_gain_loss_type, pr.discount, pr.other_charges,pr.round_off,pr.round_off_icon,pr.Invoice_total_paid,pr.Invoice_pending,pr.payment_amount,pr.reference_type as reference_voucher_type, CASE pr.reference_type when 'purchase' Then p.purchase_invoice_number when 'expense' Then e.expense_bill_invoice_number 
+        $string = "pv.*,s.supplier_name,s.supplier_address,s.supplier_mobile,s.supplier_email,s.supplier_gstin_number,s.supplier_tan_number,ci.city_name,st.state_name, s.supplier_pan_number ,s.supplier_postal_code ,u.first_name,u.last_name, cur.currency_name, pr.exchange_gain_loss, pr.exchange_gain_loss_type, pr.discount, pr.other_charges,pr.round_off,pr.round_off_icon,pr.Invoice_total_paid,pr.Invoice_pending,pr.payment_amount,pr.reference_type as reference_voucher_type, CASE pr.reference_type when 'purchase' Then p.purchase_invoice_number when 'expense' Then e.expense_bill_invoice_number 
              when 'excess_amount' Then 'Excess Amount' END as purchase_invoice_number, CASE pr.reference_type when 'purchase' Then p.purchase_grand_total when 'expense' Then e.supplier_receivable_amount   when 'excess_amount' Then 0 END as invoice_amount, , CASE pr.reference_type when 'purchase' Then p.purchase_id when 'expense' Then e.expense_bill_id END as purchase_id, CASE pr.exchange_gain_loss_type when 'minus' THEN pr.exchange_gain_loss*-1 End as minus_gain_loss , CASE pr.exchange_gain_loss_type when 'plus' THEN pr.exchange_gain_loss End as plus_gain_loss, CASE pr.round_off_icon when 'minus' THEN pr.round_off*-1 End as minus_round_off, CASE pr.round_off_icon when 'plus' THEN pr.round_off End as plus_round_off,CASE pr.reference_type when 'purchase' Then p.purchase_grand_total-pr.Invoice_pending when 'expense' Then e.supplier_receivable_amount-pr.Invoice_pending   when 'excess_amount' Then 0 END as total_received_amount";
  
         $table  = "payment_voucher pv";
@@ -2076,7 +2078,9 @@ class Common
             "purchase p" => 'p.purchase_id = pr.reference_id'. '#' .'left',
             "expense_bill e" => 'e.expense_bill_id = pr.reference_id'. '#' .'left',
             'currency cur' => 'pv.currency_id = cur.currency_id'. '#' .'left',
-            "users u"      => "pv.added_user_id = u.id"];
+            "users u"      => "pv.added_user_id = u.id",
+            'cities ci'  => 's.supplier_city_id=ci.city_id' . '#' .'left',
+            'states st' => 's.supplier_state_id=st.state_id' . '#' . 'left'];
         $order = [
             "pv.payment_id" => "desc"];
         $where = array(
@@ -2453,6 +2457,11 @@ class Common
                    sa.shipping_gstin,
                    sa.contact_person,
                    sa.department,
+                   sa.address_pin_code,
+                   ct.city_name ,
+                   st.state_name,
+                   cti.city_name as shipping_city ,
+                   sta.state_name as shipping_state,
                    s.supplier_name,
                    s.supplier_address,
                    s.supplier_mobile,
@@ -2468,7 +2477,11 @@ class Common
             
             'supplier s'          => 'po.purchase_order_party_id = s.supplier_id',
             'states st1'          => 'po.purchase_order_billing_state_id = st1.state_id' . '#' . 'left',
-            'shipping_address sa' => 'sa.shipping_address_id = po.shipping_address_id' . '#' . 'left'];
+            'shipping_address sa' => 'sa.shipping_address_id = po.shipping_address_id' . '#' . 'left',
+            'cities ct'          =>  's.supplier_city_id= ct.city_id' . '#' . 'left',
+            'states st'          =>  's.supplier_state_id = st.state_id' . '#' . 'left',
+            'cities cti'          =>  'sa.city_id= cti.city_id' . '#' . 'left',
+            'states sta'          =>  'sa.state_id= sta.state_id' . '#' . 'left',];
            /* 'shipping_address sa' => 's.supplier_id = sa.shipping_party_id' . '#' . 'left'];*/
         $where['po.purchase_order_id'] = $purchase_order_id;//'currency cur'        => 'cur.currency_id = po.currency_id',
         /* $where = array(
@@ -2524,6 +2537,11 @@ class Common
                    sa.shipping_gstin,
                    sa.contact_person,
                    sa.department,
+                   sa.address_pin_code,
+                   ct.city_name ,
+                   st.state_name,
+                   cti.city_name as shipping_city ,
+                   sta.state_name as shipping_state,
                    s.supplier_name,
                    s.supplier_address,
                    s.supplier_mobile,
@@ -2540,7 +2558,11 @@ class Common
             'states st1'          => 'p.purchase_billing_state_id = st1.state_id' . '#' . 'left',
             'countries co'        => 'p.purchase_billing_country_id = co.country_id' . '#' . 'left',
 
-           'shipping_address sa' => 'sa.shipping_address_id = p.shipping_address_id' . '#' . 'left'];
+           'shipping_address sa' => 'sa.shipping_address_id = p.shipping_address_id' . '#' . 'left',
+            'cities ct'          =>  's.supplier_city_id= ct.city_id' . '#' . 'left',
+            'states st'          =>  's.supplier_state_id = st.state_id' . '#' . 'left',
+            'cities cti'          =>  'sa.city_id= cti.city_id' . '#' . 'left',
+            'states sta'          =>  'sa.state_id= sta.state_id' . '#' . 'left',];
 
         $where['p.purchase_id'] = $purchase_id;
         $data = array(
@@ -2630,18 +2652,16 @@ class Common
 
     public function sa_autoModule_field($branch_id)
     {
-        $string = "am.module_id,m.is_report";
+        $string = "am.module_id";
         $table = "active_modules am";
-        $join  = [
-            'modules m' => 'm.module_id = am.module_id'];
+        
         $where = array(
             'am.branch_id'     => $branch_id,
             'am.delete_status' => 0);
         $data = array(
             'string' => $string,
             'table'  => $table,
-            'where'  => $where,
-            'join'   => $join
+            'where'  => $where
         );
         return $data;
     }
@@ -2785,7 +2805,7 @@ class Common
     }
     public function branch_field($firm_id = "")
     {
-        $string = "f.*,br.*,com.*,con.country_name as branch_country_name,sta.state_name as branch_state_name,sta.state_code as branch_state_code,cit.city_name as branch_city_name,sta.state_short_code";
+        $string = "f.*,br.*,com.*,con.country_name as branch_country_name,sta.state_name as branch_state_name,sta.state_code as branch_state_code,cit.city_name as branch_city_name,sta.state_short_code,CONCAT(br.branch_address , ' ,' ,cit.city_name,' ,',sta.state_name , ' - ',br.branch_postal_code) AS branch_address";
         $table  = "branch br";
         $where  = array(
             'br.delete_status' => 0);
@@ -4323,7 +4343,12 @@ class Common
                    sa.shipping_gstin,
                    sa.department,
                    sa.contact_person,
+                   cti.city_name,
+                   sta.state_name,
+                   sa.address_pin_code,
                    c.customer_name,
+                   ct.city_name as customer_city_name,
+                   st.state_name as customer_state_name,
                    c.customer_address,
                    c.customer_mobile,
                    c.customer_email,
@@ -4340,7 +4365,11 @@ class Common
             'currency cur'        => 'cur.currency_id = q.currency_id',
             'customer c'          => 'q.quotation_party_id = c.customer_id',
             'states st1'          => 'q.quotation_billing_state_id = st1.state_id' . '#' . 'left',
-            'shipping_address sa' => 'sa.shipping_address_id = q.shipping_address_id' . '#' . 'left'];
+            'shipping_address sa' => 'sa.shipping_address_id = q.shipping_address_id' . '#' . 'left',
+            'cities cti'          =>  'sa.city_id= cti.city_id' . '#' . 'left',
+            'states sta'          =>  'sa.state_id= sta.state_id' . '#' . 'left',
+            'cities ct'           =>  'c.customer_city_id=ct.city_id' . '#' . 'left',
+            'states st'          =>  'c.customer_state_id=st.state_id' . '#' . 'left',];
         $where['q.quotation_id'] = $quotation_id;
         $data = array(
             'string' => $string,
@@ -4392,6 +4421,9 @@ class Common
                    sa.contact_person,
                    sa.shipping_gstin,
                    sa.department,
+                   sa.address_pin_code,
+                   cti.city_name ,
+                   sta.state_name,
                    c.customer_name,
                    c.due_days,
                    c.customer_address,
@@ -4418,6 +4450,8 @@ class Common
             'countries co'        => 's.sales_billing_country_id = co.country_id' . '#' . 'left',
             'shipping_address sa' => 'sa.shipping_address_id = s.shipping_address_id' . '#' . 'left',
             'states st2'          => 'c.customer_state_id = st2.state_id' . '#' . 'left',
+            'cities cti'          =>  'sa.city_id= cti.city_id' . '#' . 'left',
+            'states sta'          =>  'sa.state_id= sta.state_id' . '#' . 'left',
         ];
         $where['s.sales_id'] = $sales_id;
         $data = array(
@@ -4450,7 +4484,7 @@ class Common
             'cities ct'    => 'c.customer_city_id = ct.city_id' . '#' . 'left',
             'states cs'    => 'c.customer_state_id = cs.state_id' . '#' . 'left',
             'countries cu' => 'c.customer_country_id = cu.country_id' . '#' . 'left',
-            'states st1'   => 'd.delivery_challan_billing_state_id = st1.state_id' . '#' . 'left'];
+            'states st1'   => 'd.delivery_challan_billing_state_id = st1.state_id' . '#' . 'left',];
             //'currency cur' => 'cur.currency_id = d.currency_id',
         $where['d.delivery_challan_id'] = $delivery_challan_id;
         $data = array(
@@ -5244,6 +5278,9 @@ class Common
                    sa.shipping_gstin,
                    sa.department,
                    sa.contact_person,
+                   sa.address_pin_code,
+                   cti.city_name ,
+                   sta.state_name,
                    c.customer_name,
                    c.customer_address,
                    c.customer_mobile,
@@ -5252,6 +5289,8 @@ class Common
                    c.customer_gstin_number,
                    c.customer_state_id,
                    c.customer_tan_number,
+                   ct.city_name as customer_city_name,
+                   st2.state_name as customer_state_name,
                    c.customer_pan_number
                    ";
         $table = "sales_credit_note sc";
@@ -5260,7 +5299,11 @@ class Common
             'customer c'          => 'sc.sales_credit_note_party_id = c.customer_id',
             'states st1'          => 'sc.sales_credit_note_billing_state_id = st1.state_id' . '#' . 'left',
             'countries co'        => 'sc.sales_credit_note_billing_country_id = co.country_id' . '#' . 'left',
-            'shipping_address sa' => 'sa.shipping_address_id = sc.shipping_address_id' . '#' . 'left'];
+            'shipping_address sa' => 'sa.shipping_address_id = sc.shipping_address_id' . '#' . 'left',
+            'cities cti'          =>  'sa.city_id= cti.city_id' . '#' . 'left',
+            'states sta'          =>  'sa.state_id= sta.state_id' . '#' . 'left',
+            'cities ct'           => 'c.customer_city_id=ct.city_id' . '#' . 'left',
+            'states st2'          =>  'c.customer_state_id=st2.state_id' . '#' . 'left',];
         $where['sc.sales_credit_note_id'] = $sales_credit_note_id;
         $data = array(
             'string' => $string,
@@ -5381,8 +5424,13 @@ class Common
                    cur.*,
                    sa.shipping_address as shipping_address,
                    sa.shipping_gstin,
+                   sa.address_pin_code,
+                   cti.city_name ,
+                   sta.state_name,
                    sa.department,
                    sa.contact_person,
+                   ct1.city_name as customer_city_name,
+                   st2.state_name as customer_state_name,
                    c.customer_name,
                    c.customer_address,
                    c.customer_mobile,
@@ -5399,7 +5447,11 @@ class Common
             'customer c'          => 'sd.sales_debit_note_party_id = c.customer_id',
             'states st1'          => 'sd.sales_debit_note_billing_state_id = st1.state_id' . '#' . 'left',
             'countries co'        => 'sd.sales_debit_note_billing_country_id = co.country_id' . '#' . 'left',
-            'shipping_address sa' => 'sa.shipping_address_id = sd.shipping_address_id' . '#' . 'left'];
+            'shipping_address sa' => 'sa.shipping_address_id = sd.shipping_address_id' . '#' . 'left',
+            'cities cti'          =>  'sa.city_id= cti.city_id' . '#' . 'left',
+            'states sta'          =>  'sa.state_id= sta.state_id' . '#' . 'left',
+            'cities ct1'          =>  'c.customer_country_id=ct1.city_id' . '#' . 'left',
+            'states st2'          => 'c.customer_state_id=st2.state_id' . '#' . 'left',];
         $where['sd.sales_debit_note_id'] = $sales_debit_note_id;
         $data = array(
             'string' => $string,
@@ -5483,6 +5535,11 @@ class Common
                    sa.shipping_gstin,
                    sa.contact_person,
                    sa.department,
+                   sa.address_pin_code,
+                   ct.city_name ,
+                   st.state_name,
+                   cti.city_name as shipping_city ,
+                   sta.state_name as shipping_state,
                    s.supplier_name,
                    s.supplier_address,
                    s.supplier_mobile,
@@ -5498,7 +5555,11 @@ class Common
             'supplier s'          => 'p.purchase_credit_note_party_id = s.supplier_id',
             'states st1'          => 'p.purchase_credit_note_billing_state_id = st1.state_id' . '#' . 'left',
             'countries co'        => 'p.purchase_credit_note_billing_country_id = co.country_id' . '#' . 'left',
-           'shipping_address sa' => 'sa.shipping_address_id = p.shipping_address_id' . '#' . 'left'];
+           'shipping_address sa' => 'sa.shipping_address_id = p.shipping_address_id' . '#' . 'left',
+            'cities ct'          =>  's.supplier_city_id= ct.city_id' . '#' . 'left',
+            'states st'          =>  's.supplier_state_id = st.state_id' . '#' . 'left',
+            'cities cti'          =>  'sa.city_id= cti.city_id' . '#' . 'left',
+            'states sta'          =>  'sa.state_id= sta.state_id' . '#' . 'left',];
 
         $where['p.purchase_credit_note_id'] = $purchase_credit_note_id;
 
@@ -5584,6 +5645,11 @@ class Common
                    sa.shipping_gstin,
                    sa.contact_person,
                    sa.department,
+                   sa.address_pin_code,
+                   ct.city_name ,
+                   st.state_name,
+                   cti.city_name as shipping_city ,
+                   sta.state_name as shipping_state,
                    s.supplier_name,
                    s.supplier_address,
                    s.supplier_mobile,
@@ -5599,7 +5665,11 @@ class Common
             'supplier s'          => 'p.purchase_debit_note_party_id = s.supplier_id',
             'states st1'          => 'p.purchase_debit_note_billing_state_id = st1.state_id' . '#' . 'left',
             'countries co'        => 'p.purchase_debit_note_billing_country_id = co.country_id' . '#' . 'left',
-            'shipping_address sa' => 'sa.shipping_address_id = p.shipping_address_id' . '#' . 'left'];
+            'shipping_address sa' => 'sa.shipping_address_id = p.shipping_address_id' . '#' . 'left',
+            'cities ct'          =>  's.supplier_city_id= ct.city_id' . '#' . 'left',
+            'states st'          =>  's.supplier_state_id = st.state_id' . '#' . 'left',
+            'cities cti'          =>  'sa.city_id= cti.city_id' . '#' . 'left',
+            'states sta'          =>  'sa.state_id= sta.state_id' . '#' . 'left',];
             //'currency cur'        => 'p.currency_id = cur.currency_id',
         $where['p.purchase_debit_note_id'] = $purchase_debit_note_id;
     
@@ -6294,7 +6364,7 @@ class Common
         $order = [
             "id" => "desc"];
         $filter = array(
-            'name',
+            'group_name',
             'description'
             );
         $data = array(
@@ -14814,8 +14884,7 @@ public function tds_report_sales_list(){
                 ];
         $where = array(
             'pr.branch_id'     => $this->ci->session->userdata('SESS_BRANCH_ID'),
-            'PI.purchase_id' => $id,
-            'PI.delete_status' => 0
+            'PI.purchase_id' => $id
         );
         $order = ["PI.item_id" => "asc"];
         $filter = array();
