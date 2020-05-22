@@ -380,11 +380,11 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                     <th width="2%">
                                                         <img src="<?= base_url(); ?>assets/images/bin1.png" />
                                                     </th>
-                                                    <th class="span2">Items</th>
+                                                    <th class="span2" width="15%">Items</th>
                                                     <?php if ($access_settings[0]->description_visible == 'yes') { ?>
-                                                        <th class="span2">Description</th>
+                                                        <th class="span2" width="10%">Description</th>
                                                     <?php } ?>
-                                                    <th class="span2" width="6%">Quantity</th>
+                                                    <th class="span2">Quantity</th>
                                                     <th class="span2" width="8%">Unit</th>
                                                     <th class="span2" width="8%">Rate</th>
                                                     <?php if ($access_settings[0]->discount_visible == 'yes') { ?>
@@ -397,21 +397,21 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                     if ($access_settings[0]->tax_type == 'gst' || $access_settings[0]->tax_type == 'single_tax') {
                                                         if ($access_settings[0]->discount_visible == 'yes') {
                                                             ?>
-                                                            <th class="span2" width="11%">Taxable Value</th>
+                                                            <th class="span2" width="8%">Taxable Value</th>
                                                             <?php
                                                         }
                                                     }
                                                     ?>
                                                     <?php if ($access_settings[0]->tds_visible == 'yes') { ?>
-                                                        <th class="span2" width="9%">TDS/TCS(%)</th>
+                                                        <th class="span2" width="8%">TDS/TCS(%)</th>
                                                     <?php } ?>
                                                     <?php if ($access_settings[0]->tax_type == 'gst' || $access_settings[0]->tax_type == 'single_tax') { ?>
-                                                        <th class="span2" width="9%">GST(%)</th>
-                                                        <th class="span2" width="9%">Cess(%)</th>
+                                                        <th class="span2" width="8%">GST(%)</th>
+                                                        <th class="span2" width="8%">Cess(%)</th>
                                                     <?php } ?>
-                                                    <th class="span2" width="12%">HSN Code</th>
-                                                    <th class="span2" width="12%">Category</th>
-                                                    <th class="span2" width="12%">Total</th>
+                                                    <th class="span2" width="9%">HSN Code</th>
+                                                    <th class="span2" width="8%">Category</th>
+                                                    <th class="span2" width="9%">Total</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="sales_table_body">
@@ -602,7 +602,7 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                                 <div class="input-group-addon">
                                                                     <a href="" data-toggle="modal" data-target="#hsn_modal" class="pull-right"><span class="fa fa-eye hsn"></span></a>
                                                                 </div>
-                                                                <input type="text" class="form-control form-fixer text-right float_number" name="product_hsn_sac_code" value='<?php echo $key->product_hsn_sac_code ? $key->product_hsn_sac_code : ""; ?>'>
+                                                                <input type="text" class="form-control form-fixer text-left float_number" name="product_hsn_sac_code" value='<?php echo $key->product_hsn_sac_code ? $key->product_hsn_sac_code : ""; ?>'>
                                                                 <span class="validation-color" id="err_product_hsn_sac_code"><?php echo form_error('product_hsn_sac_code'); ?></span>
                                                             </div>
                                                         </td>
@@ -651,7 +651,7 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                     </td>
                                                     <td>
                                                         <input type="hidden" name="item_name" value="">
-                                                        <input id="input_sales_code" class="form-control" type="text" name="input_sales_code" placeholder="Enter Product/Service Code/Name" >
+                                                        <input id="input_sales_code" class="form-control" type="text" name="input_sales_code" placeholder="Enter Product Code/Name" >
                                                     </td>
                                                     <?php
                                                     if ($access_settings[0]->description_visible == 'yes') {
@@ -751,7 +751,7 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                             <div class="input-group-addon">
                                                                 <a href="" data-toggle="modal" data-target="#hsn_modal" class="pull-right"><span class="fa fa-eye hsn"></span></a>
                                                             </div>
-                                                            <input type="text" class="form-control form-fixer text-right float_number" name="product_hsn_sac_code" value="<?php echo set_value('service_hsn_sac_code'); ?>">
+                                                            <input type="text" class="form-control form-fixer text-left float_number" name="product_hsn_sac_code" value="<?php echo set_value('service_hsn_sac_code'); ?>">
                                                             <span class="validation-color" id="err_product_hsn_sac_code"><?php echo form_error('product_hsn_sac_code'); ?></span>
                                                         </div>
                                                     </td>
@@ -1109,8 +1109,8 @@ $this->load->view('sub_modules/shipping_address_modal');
     var settings_item_editable = "<?= $access_settings[0]->item_editable ?>";
 
 </script>
-<script src="<?php echo base_url('assets/custom/Branch-'.$this->session->userdata('SESS_BRANCH_ID').'/js/sales/'); ?>sales.js"></script>
-<script src="<?php echo base_url('assets/custom/Branch-'.$this->session->userdata('SESS_BRANCH_ID').'/js/sales/'); ?>sales_basic_common.js"></script>
+<script src="<?php echo base_url('assets/custom/branch-'.$this->session->userdata('SESS_BRANCH_ID').'/js/sales/'); ?>sales.js"></script>
+<script src="<?php echo base_url('assets/custom/branch-'.$this->session->userdata('SESS_BRANCH_ID').'/js/sales/'); ?>sales_basic_common.js"></script>
 
 <script type="text/javascript">
 $(document).ready(function () {

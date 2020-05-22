@@ -109,7 +109,16 @@
 			                            				<img class="barcode_image" width="100%" src="<?=base_url() . $value['barcode'];?>">
 			                            			</div>
 			                            			<div class="col-sm-12" style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 100%;">
-			                            				<div class="col-sm-6 p_0 f_left" style="position: relative;min-height: 1px;float: left;width: 50%;text-align: left;padding: 0px;"> Unit : One Pair</div>
+			                            				<div class="col-sm-6 p_0 f_left" style="position: relative;min-height: 1px;float: left;width: 50%;text-align: left;padding: 0px;"> Unit : 
+			                            					<?php 
+			                            						if(strtoupper($value['unit']) == 'PCS'){
+			                            							echo "PIECE";
+			                            						}elseif (strtoupper($value['unit']) == 'PRS') {
+			                            							echo "PAIR";
+			                            						}else{
+			                            							echo strtoupper($value['unit']);
+			                            						}
+			                            					?></div>
 			                            				<div class="col-sm-6 p_0 f_right" style="position: relative;min-height: 1px;float: left;width: 50%;text-align: right;padding: 0px;"><?=$value['barcode_number'];?></div>
 			                            			</div>
 			                            			<div class="col-sm-12" style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 100%;">

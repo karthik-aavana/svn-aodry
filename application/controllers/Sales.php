@@ -352,7 +352,11 @@ class Sales extends MY_Controller{
                             $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-id="' . $sales_id . '" data-path="sales/delete" class="delete_button" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?" ><a  href="javascript:void(0);" class="btn btn-app " data-toggle="tooltip" data-placement="bottom" title="Delete Sales"><i class="fa fa-trash-o"></i></a></span>';
                         }
                     }
-                    $e_way_bill_date =  date('d-m-Y', strtotime($post->sales_e_way_bill_date));
+                    $e_way_bill_date = '';
+                    if($post->sales_e_way_bill_date != '' && $post->sales_e_way_bill_date != '0000-00-00'){
+
+                        $e_way_bill_date =  date('d-m-Y', strtotime($post->sales_e_way_bill_date));
+                    }
                     $e_way_bill_number = $post->sales_e_way_bill_number;
                     $cols .= '<span><a href="javascript:void(0);" data-target="#e_way_bill_modal" class="btn btn-app e_way_bill" data-toggle="tooltip"  data-id="' . $sales_id . '"e_way_bill_date="' . $e_way_bill_date . '" e_way_bill_number="' . $e_way_bill_number . '"  data-placement="bottom" title="E Way Bill"><i class="fa fa-road"></i></a></span>'; 
 
@@ -841,8 +845,10 @@ class Sales extends MY_Controller{
 
     public function add_sales()
     {
-        /*echo "<pre>";
-        print_r($this->input->post());
+        /*$sales_item_data       = $this->input->post('table_data');
+            $js_data               = json_decode($sales_item_data);
+        echo "<pre>";
+        print_r($js_data);
         exit;*/
 
         $data            = $this->get_default_country_state();
@@ -1086,6 +1092,7 @@ class Sales extends MY_Controller{
                         $product_data = array(
                             "product_code"           => $product_code,
                             "product_name"           => $value->item_name,
+                            "product_batch"          => 'BATCH-01',
                             "product_category_id"    => $value->item_category,
                             "product_subcategory_id" => 0,
                             "product_quantity"       => $value->item_quantity,
@@ -3568,6 +3575,7 @@ class Sales extends MY_Controller{
                         $product_data = array(
                             "product_code"           => $product_code,
                             "product_name"           => $value->item_name,
+                            "product_batch"          => 'BATCH-01',
                             "product_category_id"    => $value->item_category,
                             "product_subcategory_id" => 0,
                             "product_quantity"       => $value->item_quantity,
