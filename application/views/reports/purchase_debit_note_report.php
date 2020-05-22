@@ -1222,8 +1222,14 @@ div.dataTables_wrapper div.dataTables_filter {
                             $('#purchase_debit_report_select_columns').modal('show');
                         }
                         
-                    }]
+                    }
+                    ],
+                'language': {
+                'loadingRecords': '&nbsp;',
+                'processing': ' <h1 class="ml8"><span class="letters-container"> <span class="letters letters-left"><img src="<?php echo base_url('assets/'); ?>images/loader-icon.png" width="30px"></span></span><span class="circle circle-white"></span><span class="circle circle-dark"></span><span class="circle circle-container"><span class="circle circle-dark-dashed"></span></span></h1>'
+                },
             });
+            anime.timeline({loop:!0}).add({targets:".ml8 .circle-white",scale:[0,3],opacity:[1,0],easing:"easeInOutExpo",rotateZ:360,duration:8e3}),anime({targets:".ml8 .circle-dark-dashed",rotateZ:360,duration:8e3,easing:"linear",loop:!0});
             $("#loader").hide();
             return true;
         }
