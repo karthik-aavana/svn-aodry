@@ -17,7 +17,7 @@
                                 <thead>
                                     <tr>
                                         <!-- <th>Store</th>-->
-                                        <th>Store Name</th> 
+                                        <th>Vendor Name</th> 
                                         <th>Store Location</th> 
                                         <!-- <th>Department</th>
                                         <th>Sub Department</th> -->
@@ -41,6 +41,7 @@
                                         <th>Selling Price</th>
                                         <th>Cost Price</th>
                                         <th>MRP</th>
+                                        <th>Ages</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -104,7 +105,8 @@ $(document).ready(function() {
                 {"data": "gst"},
                 {"data": "selling_price"},
                 {"data": "cost_price"},
-                {"data": "mrp"}
+                {"data": "mrp"},
+                {"data": "ages"}
             ],
             "columnDefs": [{
                 "targets": "_all",

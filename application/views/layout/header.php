@@ -186,7 +186,7 @@ if (!function_exists('precise_amount')) {
                                     <?php if(in_array($this->config->item('quotation_module'), $active_modules) || in_array($this->config->item('sales_module'), $active_modules) || in_array($this->config->item('sales_credit_note_module'), $active_modules) || in_array($this->config->item('sales_debit_note_module'), $active_modules) || in_array($this->config->item('expense_module'), $active_modules) || in_array($this->config->item('expense_bill_module'), $active_modules)){
                                     ?>
                                     <li class="has-children">
-                                        <?php if(in_array($this->config->item('quotation_module'), $active_modules) || in_array($this->config->item('sales_module'), $active_modules) || in_array($this->config->item('sales_credit_note_module'), $active_modules) || in_array($this->config->item('sales_debit_note_module'), $active_modules)){
+                                        <?php if(in_array($this->config->item('quotation_module'), $active_modules) || in_array($this->config->item('sales_module'), $active_modules) || in_array($this->config->item('sales_credit_note_module'), $active_modules) || in_array($this->config->item('sales_debit_note_module'), $active_modules) || in_array($this->config->item('delivery_challan_module'), $active_modules)){
                                         ?>
                                         <a href="">Sales</a>
                                         <ul class="is-hidden" style="padding-bottom: 9px;">
@@ -227,6 +227,16 @@ if (!function_exists('precise_amount')) {
                                                 </a>
                                             </li>
                                             <?php }
+                                            if (in_array($this->config->item('delivery_challan_module'), $active_modules)){
+                                                if($this->config->item('LeatherCraft') == $this->session->userdata("SESS_BRANCH_ID")){
+                                            ?>
+                                            <li>
+                                                <a href="<?php echo base_url('delivery_challan'); ?>">
+                                                    <span>Delivery Challan
+                                                    </span>
+                                                </a>
+                                            </li>                                            
+                                            <?php }}
                                             ?>
                                         </ul>
                                         <?php }
@@ -314,8 +324,8 @@ if (!function_exists('precise_amount')) {
                                                 </a>
                                             </li>
                                             <?php }
-                                                if (in_array($this->config->item('delivery_challan_module'), $active_modules))
-                                                {
+                                                if (in_array($this->config->item('delivery_challan_module'), $active_modules)){
+                                                    if($this->config->item('LeatherCraft') != $this->session->userdata("SESS_BRANCH_ID")){
                                             ?>
                                             <li>
                                                 <a href="<?php echo base_url('delivery_challan'); ?>">
@@ -323,7 +333,7 @@ if (!function_exists('precise_amount')) {
                                                     </span>
                                                 </a>
                                             </li>                                            
-                                            <?php }
+                                            <?php }}
                                                 if (in_array($this->config->item('BOE_module'), $active_modules))
                                                 {
                                             ?>

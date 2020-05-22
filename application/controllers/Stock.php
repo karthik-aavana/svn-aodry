@@ -309,7 +309,8 @@ class Stock extends MY_Controller {
                 12 => 'product_quantity',
                 13 => 'map',
                 14 => 'gst',
-                15 => 'selling_price'
+                15 => 'selling_price',
+                16 => 'ages'
             );
 
  
@@ -420,6 +421,19 @@ class Stock extends MY_Controller {
                     $nestedData['product_batch'] = $post->product_batch;
                     $nestedData['cost_price'] = $this->precise_amount($purchase_price,$access_common_settings[0]->amount_precision);
                     $nestedData['mrp'] = $this->precise_amount($post->product_mrp_price,$access_common_settings[0]->amount_precision);
+                    $purchase_date = $post->purchase_date;
+                    if(!empty($purchase_date)){
+                        $present_date =date('Y-m-d');
+                        $diff_days = abs(strtotime($present_date) - strtotime($purchase_date));
+                        $days = floor(($diff_days / (60*60*24)));
+                        $nestedData['ages'] = $days;
+                        /*$purchase_date =date_create($purchase_date);
+                        $present_date =date_create(date('Y-m-d'));
+                        $date_difference = date_diff($purchase_date, $present_date);
+                        $nestedData['ages'] = $date_difference->format("%a");*/
+                    }else{
+                        $nestedData['ages'] = '-';
+                    }
                     $send_data[] = $nestedData;
                     
                 }
