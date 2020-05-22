@@ -72,7 +72,7 @@ if (!function_exists('precise_amount')) {
         <link rel="stylesheet" href="<?php echo base_url('assets/plugins/autocomplite/') ?>jquery.auto-complete.css">
         <link href="<?php echo base_url('assets/'); ?>dist/css/pnotify.custom.min.css" media="all" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>plugins/tagsinput/bootstrap-tagsinput.css">
-         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+        <link href="<?php echo base_url('assets/'); ?>css/font_files/font.css" rel="stylesheet">
         <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>css/custom.css">       
         <style type="text/css">
             #menu {
@@ -1117,6 +1117,7 @@ if (!function_exists('precise_amount')) {
                                                     Group and Ledgers
                                                 </a>
                                             </li>
+                                            
                                             <?php }
                                             if (in_array($this->config->item('file_manager_module'), $active_modules))
                                             {
@@ -1133,6 +1134,20 @@ if (!function_exists('precise_amount')) {
                                             <li> 
                                                 <a href="<?= base_url(); ?>auth">Users</a>
                                             </li>
+                                             <?php }
+                                            if (in_array($this->config->item('groups_module'), $active_modules))
+                                                {
+                                            ?>
+                                                <li> 
+                                                    <a href="<?= base_url(); ?>groups">
+                                                        Groups
+                                                    </a>
+                                                </li>
+                                                <li> 
+                                                    <a href="<?= base_url(); ?>Group_assign">
+                                                        Group Assign
+                                                    </a>
+                                                </li>
                                             <?php }
                                             if (in_array($this->config->item('customer_module'), $active_modules))
                                             {
