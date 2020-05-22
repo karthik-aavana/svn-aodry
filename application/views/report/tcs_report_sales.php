@@ -481,7 +481,7 @@ $this->load->view('layout/footer');
                 "serverSide": true,
                 "scrollX": true,
                 "iDisplayLength": 50,
-                "lengthMenu": [ [10, 25, 50, 100], [10, 25, 50, 100] ],
+                "lengthMenu": [ [10, 25, 50,100, -1], [10, 25, 50,100, "All"] ],
                 "ajax": {
                     "url": base_url + "report/tcs_report_sales",
                     "dataType": "json",

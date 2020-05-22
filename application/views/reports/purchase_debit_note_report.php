@@ -1011,7 +1011,7 @@ div.dataTables_wrapper div.dataTables_filter {
                 "serverSide": true,
                 "scrollX": true,
                 "iDisplayLength": 50,
-                "lengthMenu": [ [10, 25, 50, 100], [10, 25, 50, 100] ],
+                "lengthMenu": [ [10, 25, 50,100, -1], [10, 25, 50,100, "All"] ],
                 "ajax": {
                     "url": base_url + "report/purchase_debit_note_report",
                     "dataType": "json",

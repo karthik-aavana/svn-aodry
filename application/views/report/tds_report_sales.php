@@ -612,7 +612,7 @@ $this->load->view('layout/header');
             "processing": true,
             "serverSide": true,
             "iDisplayLength": 50,
-            "lengthMenu": [ [10, 25, 50, 100], [10, 25, 50, 100] ],
+            "lengthMenu": [ [10, 25, 50,100, -1], [10, 25, 50,100, "All"] ],
             "ajax": {
                 "url": base_url + "report/tds_report_sales",
                 "dataType": "json",
