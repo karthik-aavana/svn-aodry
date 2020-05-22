@@ -181,7 +181,7 @@ $(document).ready(function () {
     // changes in rows
     $("#sales_table_body").on(
         "change blur",
-        'input[name="item_price"],input[name="item_description"],input[name="item_quantity"],select[name="item_discount"],select[name="item_tax"],select[name="item_tax_cess"]',
+        'input[name="item_price"],input[name="item_description"],input[name="item_quantity"],select[name="item_discount"],select[name="item_tax"],select[name="item_tax_cess"],select[name="item_uom"],select[name="category_name"],input[name="product_hsn_sac_code"]',
         function (event) {
             console.log('chnage');
             var newRow = $(this).closest("tr");

@@ -845,8 +845,10 @@ class Sales extends MY_Controller{
 
     public function add_sales()
     {
-        /*echo "<pre>";
-        print_r($this->input->post());
+        /*$sales_item_data       = $this->input->post('table_data');
+            $js_data               = json_decode($sales_item_data);
+        echo "<pre>";
+        print_r($js_data);
         exit;*/
 
         $data            = $this->get_default_country_state();
@@ -1090,6 +1092,7 @@ class Sales extends MY_Controller{
                         $product_data = array(
                             "product_code"           => $product_code,
                             "product_name"           => $value->item_name,
+                            "product_batch"          => 'BATCH-01',
                             "product_category_id"    => $value->item_category,
                             "product_subcategory_id" => 0,
                             "product_quantity"       => $value->item_quantity,
@@ -3572,6 +3575,7 @@ class Sales extends MY_Controller{
                         $product_data = array(
                             "product_code"           => $product_code,
                             "product_name"           => $value->item_name,
+                            "product_batch"          => 'BATCH-01',
                             "product_category_id"    => $value->item_category,
                             "product_subcategory_id" => 0,
                             "product_quantity"       => $value->item_quantity,

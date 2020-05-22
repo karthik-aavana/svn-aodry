@@ -73,8 +73,23 @@
                     success: function (result) {
                         //$('[name=product_hsn_sac_code]').val(result[0].hsn_code)
                         $(aaa).val(result[0].hsn_code)
+                        hsn_call(result);
                     }
                 });            
             });
+
+
+            function hsn_call(result){
+            $("#sales_table_body")
+                .find('input[name^="product_hsn_sac_code"]')
+                .each(function () {
+                    var rows = $(this).closest("tr");
+                    var aaa = rows.find('[name=product_hsn_sac_code]');
+                    //rows.find('[name=product_hsn_sac_code]').val(result[0].hsn_code);
+                    //aaa.val(result[0].hsn_code);
+                    console.log('hsn-chng')
+                    calculateTable(rows);
+                });
+            }
       });
 </script>
