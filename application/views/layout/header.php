@@ -1,7 +1,7 @@
 ﻿<?php
 $val = sales_notification();
 foreach ($val as $sales) {
-    
+
 }
 $Purchse = purchase_notification();
 foreach ($Purchse as $pur) {
@@ -40,10 +40,10 @@ if (!function_exists('precise_amount')) {
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>lib/font-awesome/4.5.0/css/font-awesome.min.css">
-        <link href="<?php echo base_url('assets/'); ?>dist/css/jquery.mCustomScrollbar.css" media="all" rel="stylesheet" type="text/css" />
+        <link href="<?php echo base_url('assets/'); ?>dist/css/jquery.mCustomScrollbar.css" media="all" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>css/moving-letters.css">
         <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>lib/ionicons/css/ionicons.min.css">
-        <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css">
+        <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>css/icon-font.min.css">
         <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>plugins/fullcalendar/fullcalendar.min.css">
         <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>plugins/fullcalendar/fullcalendar.print.css" media="print">
         <!-- daterange picker -->
@@ -66,12 +66,13 @@ if (!function_exists('precise_amount')) {
         <link rel="stylesheet" href="<?php echo base_url(); ?>assets/plugins/datatables/fixedHeader.dataTables.min.css">       
         <link href="<?php echo base_url(); ?>assets/plugins/datatables/responsive.bootstrap.min.css" media="all" type="text/css" rel="stylesheet"/>
         <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>dist/css/skins/_all-skins.min.css">
-        <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>dist/css/AdminLTE.min.css"><link rel="stylesheet" href="<?php echo base_url('assets/'); ?>plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+        <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>dist/css/AdminLTE.min.css">
+        <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
         <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>documentation/style.css">
         <link rel="stylesheet" href="<?php echo base_url('assets/plugins/autocomplite/') ?>jquery.auto-complete.css">
         <link href="<?php echo base_url('assets/'); ?>dist/css/pnotify.custom.min.css" media="all" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>plugins/tagsinput/bootstrap-tagsinput.css">
-        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+        <link href="<?php echo base_url('assets/'); ?>css/font_files.css" rel="stylesheet">
         <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>css/custom.css">       
         <style type="text/css">
             #menu {
@@ -163,7 +164,7 @@ if (!function_exists('precise_amount')) {
         </div>
         <div class="wrapper">
             <header class="main-header">
-                <a href="javascript:void(0);" class="logo">
+                <a href="<?php echo base_url('auth/dashboard'); ?>" class="logo">
                     <img style='width: 135px;float: left; padding: 4px;' src = "<?= base_url('assets/images/Aodry- white-09.svg') ?>" class="add_style_image remove_style_image">
                 </a>
                 <div class="cd-dropdown-wrapper">                   
@@ -178,6 +179,11 @@ if (!function_exists('precise_amount')) {
                              </li> -->
                             <?php if(in_array($this->config->item('quotation_module'), $active_modules) || in_array($this->config->item('sales_module'), $active_modules) || in_array($this->config->item('sales_credit_note_module'), $active_modules) || in_array($this->config->item('sales_debit_note_module'), $active_modules) || in_array($this->config->item('expense_module'), $active_modules) || in_array($this->config->item('expense_bill_module'), $active_modules) || in_array($this->config->item('purchase_order_module'), $active_modules) || in_array($this->config->item('purchase_module'), $active_modules) || in_array($this->config->item('purchase_credit_note_module'), $active_modules) || in_array($this->config->item('purchase_debit_note_module'), $active_modules) || in_array($this->config->item('purchase_return_module'), $active_modules) || in_array($this->config->item('delivery_challan_module'), $active_modules)){
                             ?>
+                            <li class="">
+                                <a href="<?php echo base_url('auth/dashboard'); ?>">
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
                             <li class="has-children">
                                 <a href="">Billing</a>
                                 <ul class="cd-secondary-dropdown is-hidden">

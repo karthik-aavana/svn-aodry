@@ -414,14 +414,14 @@ if (isset($fin_data[0]) && isset($fin_data[1])) {
 
     })
 </script>
-<script type="text/javascript">
+<!-- <script type="text/javascript">
     $(document).ready(function(){
         $(".add_style_image").click(function(){
             $(".main-sidebar").addClass("add_style_logo");
             $(".content-wrapper").addClass("add_atyle_body");
         });
     });
-</script>
+</script> -->
 
 <script src="<?php echo base_url('assets/js/') ?>common.js"></script>
 <script src="<?php echo base_url('assets/js/modules/') ?>settings.js"></script>
