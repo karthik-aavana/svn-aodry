@@ -20,6 +20,7 @@ class Sales extends MY_Controller{
     }
     
     function index(){
+        
         $sales_module_id        = $this->config->item('sales_module');
         $data['sales_module_id'] = $sales_module_id;
         $modules                = $this->modules;
