@@ -14603,16 +14603,16 @@ public function tds_report_sales_list(){
     }
 
     public function get_closing_stock_report(){
-        $string = "P.product_name, P.product_code, P.product_barcode, P.product_hsn_sac_code, P.product_id, P.product_basic_price, P.product_quantity, P.product_combination_id, (select SUM(SI.sales_item_quantity) from sales_item SI where P.product_id = SI.item_id and SI.item_type = 'product') as sales_qty, AVG(SI.sales_item_unit_price) as price, SUM(SI.sales_item_igst_amount) as igst, SUM(SI.sales_item_sgst_amount) as sgst, SUM(SI.sales_item_cgst_amount) as cgst, D.department_name, SD.sub_department_name, U.uom, CT.category_name, B.branch_name, B.branch_code, SC.sub_category_name, BD.brand_name, P.product_opening_quantity, (select SUM(PI.purchase_item_quantity) from purchase_item PI where `P`.`product_id` = `PI`.`item_id` and `PI`.`item_type` = 'product') as purchase_qty, PI.purchase_id, P.product_batch, C.supplier_name,C.supplier_code, sa.store_location, P.product_mrp_price, P.product_selling_price, P.product_price, AVG(PI.purchase_item_unit_price) as purchase_price, PU.purchase_date";
+       $string = "P.product_name, P.product_code, P.product_barcode, P.product_hsn_sac_code, P.product_id, P.product_basic_price, P.product_quantity, P.product_combination_id, (select SUM(SI.sales_item_quantity) from sales_item SI where P.product_id = SI.item_id and SI.item_type = 'product'  AND SI.delete_status = 0) as sales_qty, AVG(SI.sales_item_unit_price) as price, SUM(SI.sales_item_igst_amount) as igst, SUM(SI.sales_item_sgst_amount) as sgst, SUM(SI.sales_item_cgst_amount) as cgst, D.department_name, SD.sub_department_name, U.uom, CT.category_name, B.branch_name, B.branch_code, SC.sub_category_name, BD.brand_name, P.product_opening_quantity, (select SUM(PI.purchase_item_quantity) from purchase_item PI where `P`.`product_id` = `PI`.`item_id` and `PI`.`item_type` = 'product'  AND PI.delete_status = 0) as purchase_qty, PI.purchase_id, P.product_batch, C.supplier_name,C.supplier_code, sa.store_location, P.product_mrp_price, P.product_selling_price, P.product_price, AVG(PI.purchase_item_unit_price) as purchase_price, PU.purchase_date";
         $table  = "products P";
         $where = array(
             'P.branch_id' => $this->ci->session->userdata('SESS_BRANCH_ID'),
             'P.delete_status'  => 0,
             'P.product_combination_id != ' => NULL );
         $join = [
-             "purchase_item PI"  => "P.product_id = PI.item_id and PI.item_type = 'product'". "#" . "left" ,
-             "purchase PU"   => "PU.purchase_id = PI.purchase_id". "#" . "left",
-             "sales_item SI"  => "P.product_id = SI.item_id and SI.item_type = 'product'". "#" . "left" ,
+             "purchase_item PI"  => "P.product_id = PI.item_id and PI.item_type = 'product' AND PI.delete_status = 0". "#" . "left" ,
+             "purchase PU"   => "PU.purchase_id = PI.purchase_id AND PU.delete_status = 0". "#" . "left",
+             "sales_item SI"  => "P.product_id = SI.item_id and SI.item_type = 'product' AND SI.delete_status = 0". "#" . "left" ,
              "supplier C" => "C.supplier_id = PU.purchase_party_id". "#" . "left" ,
              "shipping_address sa" => "sa.shipping_party_id = C.supplier_id". "#" . "left" ,
              "department D"   => "D.department_id = PU.department_id". "#" . "left",
