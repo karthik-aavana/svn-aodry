@@ -355,10 +355,11 @@ class Sales extends MY_Controller{
                     $e_way_bill_date = '';
                     if($post->sales_e_way_bill_date != '' && $post->sales_e_way_bill_date != '0000-00-00'){
 
-                        $e_way_bill_date =  date('d-m-Y', strtotime($post->sales_e_way_bill_date));
+                    $e_way_bill_date =  date('d-m-Y', strtotime($post->sales_e_way_bill_date));
                     }
                     $e_way_bill_number = $post->sales_e_way_bill_number;
                     $cols .= '<span><a href="javascript:void(0);" data-target="#e_way_bill_modal" class="btn btn-app e_way_bill" data-toggle="tooltip"  data-id="' . $sales_id . '"e_way_bill_date="' . $e_way_bill_date . '" e_way_bill_number="' . $e_way_bill_number . '"  data-placement="bottom" title="E Way Bill"><i class="fa fa-road"></i></a></span>'; 
+                   
 
                     $cols .= '<input type="hidden" value="'.$post->customer_id.'" name="customer_id">';
                     $cols .= '<input type="hidden" value="'.$post->sales_id.'" name="sales_id">';
@@ -845,10 +846,8 @@ class Sales extends MY_Controller{
 
     public function add_sales()
     {
-        /*$sales_item_data       = $this->input->post('table_data');
-            $js_data               = json_decode($sales_item_data);
-        echo "<pre>";
-        print_r($js_data);
+        /*echo "<pre>";
+        print_r($this->input->post());
         exit;*/
 
         $data            = $this->get_default_country_state();
@@ -917,9 +916,9 @@ class Sales extends MY_Controller{
             "sales_nature_of_supply"                => $this->input->post('nature_of_supply') ,
             "sales_order_number"                    => $this->input->post('order_number') ,
             "sales_type_of_supply"                  => $this->input->post('type_of_supply') ,
-            "due_days"                              => $this->input->post('due_days'),
             "sales_gst_payable"                     => $this->input->post('gst_payable') ,
             "sales_billing_country_id"              => $this->input->post('billing_country') ,
+            "due_days"                              => $this->input->post('due_days'),
             "sales_billing_state_id"                => $this->input->post('billing_state') ,
             "added_date"                            => date('Y-m-d') ,
             "added_user_id"                         => $this->session->userdata('SESS_USER_ID') ,
@@ -1074,57 +1073,12 @@ class Sales extends MY_Controller{
                 $js_data1 = array();
                 foreach ($js_data as $key => $value)
                 {
-                    /*SK Customization*/
-                    if($value->item_id == 0){
-                        $product_module_id = $this->config->item('product_module');
-                        $data['module_id'] = $product_module_id;
-                        $modules           = $this->modules;
-                        $privilege         = "add_privilege";
-                        $data['privilege'] = "add_privilege";
-                        $section_modules   = $this->get_section_modules($product_module_id, $modules, $privilege);
-                        $access_settings          = $section_modules['access_settings'];
-                        $primary_id1               = "product_id";
-                        $table_name1               = "products";
-                        $date_field_name1          = "added_date";
-                        $current_date1             = date('Y-m-d');
-                        $product_code = $this->generate_invoice_number($access_settings, $primary_id1, $table_name1, $date_field_name1, $current_date1);
-
-                        $product_data = array(
-                            "product_code"           => $product_code,
-                            "product_name"           => $value->item_name,
-                            "product_batch"          => 'BATCH-01',
-                            "product_category_id"    => $value->item_category,
-                            "product_subcategory_id" => 0,
-                            "product_quantity"       => $value->item_quantity,
-                            "product_unit"           => $value->item_uom,
-                            "product_unit_id"        => $value->item_uom,
-                            "product_hsn_sac_code"   => $value->item_hsn_sac_code,
-                            "product_price"          => $value->item_price,
-                            "product_gst_id"         => $value->item_tax_id,
-                            "product_gst_value"      => $value->item_tax_percentage,
-                            "product_discount_id"    => $value->item_discount_id,
-                            "product_details"        => $value->item_description,
-                            "is_assets"              => 'N',
-                            "is_varients"            => 'N',
-                            "product_type"           => 'finishedgoods',
-                            "added_date"             => date('Y-m-d'),
-                            "added_user_id"          => $this->session->userdata('SESS_USER_ID'),
-                            "branch_id"              => $this->session->userdata('SESS_BRANCH_ID')
-                        );
-                        $product_id = $this->general_model->insertData('products', $product_data);
-                        //$item_data['item_id']  => $product_id;
-                        
-
-                    }
-                    /*SK Customization*/
-
-
                     if ($value != null && $value != '') {
                         $item_id   = $value->item_id;
                         $item_type = $value->item_type;
                         $quantity  = $value->item_quantity;
                         $item_data = array(
-                            "item_id"                    => ($value->item_id != 0) ?  $value->item_id : $product_id ,
+                            "item_id"                    => $value->item_id ,
                             "item_type"                  => $value->item_type ,
                             "sales_item_quantity"        => $value->item_quantity ? (float) $value->item_quantity : 0 ,
                             "sales_item_unit_price"      => $value->item_price ? (float) $value->item_price : 0 ,
@@ -3344,6 +3298,7 @@ class Sales extends MY_Controller{
             "sales_order_number"                    => $this->input->post('order_number') ,
             "sales_type_of_supply"                  => $this->input->post('type_of_supply') ,
             "sales_gst_payable"                     => $this->input->post('gst_payable') ,
+             "due_days"                              =>$this->input->post('due_days'),
             /*"department"                            => $this->input->post('department') ,*/
             "sales_billing_country_id"              => $this->input->post('billing_country') ,
             "sales_billing_state_id"                => $this->input->post('billing_state') ,
@@ -3367,7 +3322,6 @@ class Sales extends MY_Controller{
             "shipping_address_id"                   => $this->input->post('shipping_address') ,
             "warranty"                              => $this->input->post('warranty') ,
             "payment_mode"                          => $this->input->post('payment_mode') ,
-            "due_days"                              =>$this->input->post('due_days'),
             /*"billing_address_id" => $this->input->post('billing_address'),*/
             "freight_charge_amount"                 => $this->input->post('freight_charge_amount') ? (float) $this->input->post('freight_charge_amount') : 0 ,
             "freight_charge_tax_percentage"         => $this->input->post('freight_charge_tax_percentage') ? (float) $this->input->post('freight_charge_tax_percentage') : 0 ,
@@ -3557,57 +3511,12 @@ class Sales extends MY_Controller{
                 }
                 
                 foreach ($js_data as $key => $value) {
-                    /*SK Customization*/
-                    if($value->item_id == 0){
-                        $product_module_id = $this->config->item('product_module');
-                        $data['module_id'] = $product_module_id;
-                        $modules           = $this->modules;
-                        $privilege         = "add_privilege";
-                        $data['privilege'] = "add_privilege";
-                        $section_modules   = $this->get_section_modules($product_module_id, $modules, $privilege);
-                        $access_settings          = $section_modules['access_settings'];
-                        $primary_id1               = "product_id";
-                        $table_name1               = "products";
-                        $date_field_name1          = "added_date";
-                        $current_date1             = date('Y-m-d');
-                        $product_code = $this->generate_invoice_number($access_settings, $primary_id1, $table_name1, $date_field_name1, $current_date1);
-
-                        $product_data = array(
-                            "product_code"           => $product_code,
-                            "product_name"           => $value->item_name,
-                            "product_batch"          => 'BATCH-01',
-                            "product_category_id"    => $value->item_category,
-                            "product_subcategory_id" => 0,
-                            "product_quantity"       => $value->item_quantity,
-                            "product_unit"           => $value->item_uom,
-                            "product_unit_id"        => $value->item_uom,
-                            "product_hsn_sac_code"   => $value->item_hsn_sac_code,
-                            "product_price"          => $value->item_price,
-                            "product_gst_id"         => $value->item_tax_id,
-                            "product_gst_value"      => $value->item_tax_percentage,
-                            "product_discount_id"    => $value->item_discount_id,
-                            "product_details"        => $value->item_description,
-                            "is_assets"              => 'N',
-                            "is_varients"            => 'N',
-                            "product_type"           => 'finishedgoods',
-                            "added_date"             => date('Y-m-d'),
-                            "added_user_id"          => $this->session->userdata('SESS_USER_ID'),
-                            "branch_id"              => $this->session->userdata('SESS_BRANCH_ID')
-                        );
-                        $product_id = $this->general_model->insertData('products', $product_data);
-                        //$item_data['item_id']  => $product_id;
-                        
-
-                    }
-                    /*SK Customization*/
-
                     if ($value != null) {
-                        $item_id   = ($value->item_id != 0) ?  $value->item_id : $product_id;
-                        //$item_id   = $value->item_id;
+                        $item_id   = $value->item_id;
                         $item_type = $value->item_type;
                         $quantity  = $value->item_quantity;
                         $item_data = array(
-                            "item_id"                    => ($value->item_id != 0) ?  $value->item_id : $product_id ,
+                            "item_id"                    => $value->item_id ,
                             "item_type"                  => $value->item_type ,
                             "sales_item_quantity"        => $value->item_quantity ? (float) $value->item_quantity : 0 ,
                             "sales_item_free_quantity"   => (@$value->free_item_quantity ? (float) $value->free_item_quantity : 0),
@@ -3746,7 +3655,7 @@ class Sales extends MY_Controller{
                         if ($value->item_type == "product" || $value->item_type == 'product_inventory'){
                             $product_string = '*';
                             $product_table  = 'products';
-                            $product_where  = array('product_id' => $item_id );
+                            $product_where  = array('product_id' => $value->item_id );
                             $product        = $this->general_model->getRecords($product_string , $product_table , $product_where , $order          = "");
                             
                             if(@$value->free_item_quantity){
@@ -4564,22 +4473,6 @@ class Sales extends MY_Controller{
             redirect('sales' , 'refresh');
         }
     }
-
-    public function update_e_way_bill() {
-        $sales_id = $this->encryption_url->decode($this->input->post('sales_id'));
-        $converted_date = date('Y-m-d', strtotime($this->input->post('sales_e_way_bill_date')));
-
-        $data_update = array(
-            "sales_id" => $this->encryption_url->decode($this->input->post('sales_id')),
-            "sales_e_way_bill_date" => $converted_date,
-            "sales_e_way_bill_number" => $this->input->post('sales_e_way_bill_number')
-        );
-        $this->db->set($data_update);
-        $this->db->where('sales_id' , $sales_id);
-        $this->db->update('sales');
-        echo json_encode($data_update);
-    }
-
     public function email($id)
     {
         $id                              = $this->encryption_url->decode($id);
@@ -4672,6 +4565,25 @@ class Sales extends MY_Controller{
         } else {
             $this->load->view('sales' , $data);
         }
+    }
+    public function update_e_way_bill() {
+
+            $sales_id = $this->encryption_url->decode($this->input->post('sales_id'));
+            $converted_date = date('Y-m-d', strtotime($this->input->post('sales_e_way_bill_date')));
+
+            $data_update = array(
+
+                "sales_id" => $this->encryption_url->decode($this->input->post('sales_id')),
+                "sales_e_way_bill_date" => $converted_date,
+                "sales_e_way_bill_number" => $this->input->post('sales_e_way_bill_number')
+            );
+
+
+            $this->db->set($data_update);
+            $this->db->where('sales_id' , $sales_id);
+            $this->db->update('sales');
+           echo json_encode($data_update);
+        
     }
     public function convert_currency(){
         $id                 = $this->input->post('convert_currency_id');

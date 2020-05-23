@@ -146,7 +146,11 @@ class Sales_debit_note extends MY_Controller {
                     if (in_array($sales_debit_note_module_id, $data['active_delete'])) {
                         $cols .= '<span data-backdrop="static" data-keyboard="false" class="delete_button" data-toggle="modal" data-target="#delete_modal" data-id="' . $sales_debit_note_id . '" data-path="sales_debit_note/delete" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"><a class="btn btn-app"  href="#" data-toggle="tooltip" data-placement="bottom" title="Delete Sales Debit Note" ><i class="fa fa-trash-o"></i></a></span>';
                     }
-                    $e_way_bill_date =  date('d-m-Y', strtotime($post->sales_debit_note_e_way_bill_date));
+                     $e_way_bill_date = '';
+                        if($post->sales_debit_note_e_way_bill_date != '' && $post->sales_debit_note_e_way_bill_date != '0000-00-00'){
+
+                        $e_way_bill_date =  date('d-m-Y', strtotime($post->sales_debit_note_e_way_bill_date));
+                    }
                     $e_way_bill_number = $post->sales_debit_note_e_way_bill_number;
 
                     $cols .= '<span><a href="javascript:void(0);" data-target="#e_way_bill_modal" class="btn btn-app debit_note_e_way_bill" data-toggle="tooltip" data-id="' . $sales_debit_note_id  . '"debit_note_e_way_bill_date="' . $e_way_bill_date . '" debit_note_e_way_bill_number="' . $e_way_bill_number . '"  data-placement="bottom" title="E Way Bill"><i class="fa fa-road"></i></a></span>';

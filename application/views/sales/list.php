@@ -520,8 +520,8 @@ $this->load->view('sales/compose_mail');
                         success : function(data) {
                             $("#e_way_bill_modal #loader").hide();
                             $('#e_way_bill_modal').modal('hide');
-                            $('.e_way_bill').attr('e_way_bill_date', sales_e_way_bill_date);
-                            $('.e_way_bill').attr('e_way_bill_number', sales_e_way_bill_number);
+                            $(".e_way_bill[data-id=" + sales_id + "]").attr('e_way_bill_date', sales_e_way_bill_date);
+                            $(".e_way_bill[data-id=" + sales_id + "]").attr('e_way_bill_number', sales_e_way_bill_number);
                             $('#sales_e_way_bill_date').val('');
                             $('#sales_e_way_bill_number').val('');
                             $(document).find('[name=check_item]').trigger('change');
