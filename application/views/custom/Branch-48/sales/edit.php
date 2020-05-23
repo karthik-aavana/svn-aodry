@@ -671,6 +671,7 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                             }
                                                             ?>
                                                         </select>
+                                                        <span name="item_uom_err" class="pull-right validation-color"  style="color:red;"></span>
                                                     </td>
                                                     <td><input type="text" class="form-control form-fixer text-right float_number" name="item_price" value="0">
                                                     <span id="item_sub_total_lbl_0" class="pull-right">00.00</span><input type="hidden" class="form-control form-fixer text-right" style="" value="00.00" name="item_sub_total"></td>
@@ -747,17 +748,17 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                     </td>
                                                     <?php } ?>
                                                     <td>
-                                                        <div class="input-group" style="margin-bottom:0px !important;">
-                                                            <div class="input-group-addon">
+                                                        <div class="form-group" style="display: table;">
+                                                            <div class="input-group-addon" style="background-color: #d0e0fc;">
                                                                 <a href="" data-toggle="modal" data-target="#hsn_modal" class="pull-right"><span class="fa fa-eye hsn"></span></a>
                                                             </div>
-                                                            <input type="text" class="form-control form-fixer text-left float_number" name="product_hsn_sac_code" value="<?php echo set_value('service_hsn_sac_code'); ?>">
-                                                            <span class="validation-color" id="err_product_hsn_sac_code"><?php echo form_error('product_hsn_sac_code'); ?></span>
+                                                            <input type="text" style="height: 36px;" class="form-control form-fixer text-left float_number" name="product_hsn_sac_code" value="<?php echo set_value('service_hsn_sac_code'); ?>" >
                                                         </div>
+                                                        <span class="pull-right validation-color" style="color:red; margin: -12px 0 0 13px;" name="err_product_hsn_sac_code"></span>
                                                     </td>
                                                     <td style="text-align:center">
                                                         <input type="hidden" name="category_id" value="">
-                                                        <select class="form-control " name="category_name" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                                                        <select class="form-control " name="item_category" style="width: 100%;" tabindex="-1" aria-hidden="true">
                                                             <option value="">Select</option>
                                                             <?php
                                                             foreach ($product_category as $row) {
@@ -765,7 +766,7 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                             }
                                                             ?>
                                                         </select>
-                                                        <span id="item_category" class="pull-right validation-color"  style="color:red;"><?php echo form_error('category_name'); ?></span>
+                                                        <span name="category_name_err" class="pull-right validation-color"  style="color:red;"></span>
                                                     </td>
                                                     <td><input type="text" class="float_number form-control form-fixer text-right" name="item_grand_total"></td>
                                                 </tr>
