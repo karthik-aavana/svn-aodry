@@ -20,7 +20,7 @@ class Sales extends MY_Controller{
     }
     
     function index(){
-        
+
         $sales_module_id        = $this->config->item('sales_module');
         $data['sales_module_id'] = $sales_module_id;
         $modules                = $this->modules;
@@ -1091,6 +1091,7 @@ class Sales extends MY_Controller{
                         $product_data = array(
                             "product_code"           => $product_code,
                             "product_name"           => $value->item_name,
+                            "product_batch"          => 'BATCH-01',
                             "product_category_id"    => $value->item_category,
                             "product_subcategory_id" => 0,
                             "product_quantity"       => $value->item_quantity,
@@ -3573,6 +3574,7 @@ class Sales extends MY_Controller{
                         $product_data = array(
                             "product_code"           => $product_code,
                             "product_name"           => $value->item_name,
+                            "product_batch"          => 'BATCH-01',
                             "product_category_id"    => $value->item_category,
                             "product_subcategory_id" => 0,
                             "product_quantity"       => $value->item_quantity,
