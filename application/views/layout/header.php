@@ -43,7 +43,7 @@ if (!function_exists('precise_amount')) {
         <link href="<?php echo base_url('assets/'); ?>dist/css/jquery.mCustomScrollbar.css" media="all" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>css/moving-letters.css">
         <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>lib/ionicons/css/ionicons.min.css">
-        <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>css/icon-font.min.css">
+        <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css">
         <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>plugins/fullcalendar/fullcalendar.min.css">
         <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>plugins/fullcalendar/fullcalendar.print.css" media="print">
         <!-- daterange picker -->
@@ -72,8 +72,8 @@ if (!function_exists('precise_amount')) {
         <link rel="stylesheet" href="<?php echo base_url('assets/plugins/autocomplite/') ?>jquery.auto-complete.css">
         <link href="<?php echo base_url('assets/'); ?>dist/css/pnotify.custom.min.css" media="all" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>plugins/tagsinput/bootstrap-tagsinput.css">
-        <link href="<?php echo base_url('assets/'); ?>css/font_files/font.css" rel="stylesheet">
-        <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>css/custom.css">       
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+        <link rel="stylesheet" href="<?php echo base_url('assets/'); ?>css/custom.css">         
         <style type="text/css">
             #menu {
                 position: absolute;
