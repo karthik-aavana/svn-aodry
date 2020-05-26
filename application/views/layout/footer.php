@@ -28,7 +28,7 @@ if (isset($fin_data[0]) && isset($fin_data[1])) {
 
 <!-- <script src="<?php echo base_url(); ?>assets/lib/jquery-ui/jquery-ui.min.js"></script> -->
 <!-- Bootstrap 3.3.6 -->
-<script src="<?php echo base_url(); ?>assets/js/jquery.menu-aim.js"></script> <!-- menu aim -->
+<script  src="<?php echo base_url(); ?>assets/js/jquery.menu-aim.js"></script> <!-- menu aim -->
 <script src="<?php echo base_url(); ?>assets/js/main.js"></script> <!-- Resource jQuery -->
 <script src="<?php echo base_url(); ?>assets/bootstrap/js/bootstrap.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
