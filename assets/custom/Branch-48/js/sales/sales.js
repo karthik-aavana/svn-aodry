@@ -46,12 +46,6 @@ $(document).ready(function () {
             return !1
         }*/
 
-        if ($('#sales_table_body tr').find('#product_hsn_sac_code').val() == "") {
-            $('#err_product_hsn_sac_code').text("Please Select Category.");
-            $('#product_hsn_sac_code').focus();
-            return !1
-        }
-
         if ($('#invoice_date').val() == "" || $('#invoice_date').attr('valid') == '0') {
             $('#err_date').text("Please Select valid Date.");
             $('#invoice_date').focus();
@@ -104,14 +98,19 @@ $(document).ready(function () {
         }else {
             $("#err_product").text("")
         }
+
+        
+        row_validation();        
+
         var grand_total = +$('#total_grand_total').val();
         if (grand_total == "" || grand_total == null || grand_total <= 0) {
             $("#err_product").text("Total Amount Should be equal or greater than Zero.");
-            $('#input_sales_code').focus();
+            //$('#input_sales_code').focus();
             return !1
         } else {
             $("#err_product").text("")
         }
+        
     });
     $("#invoice_date").blur(function (event) {
         var date = $('#invoice_date').val();
@@ -222,3 +221,87 @@ function invoice_number_count() {
         }
     });
 }
+
+function row_validation(){
+$("#sales_table_body")
+    .find('input[name^="product_hsn_sac_code"]','select[name="item_category"]','select[name="item_uom"]')
+    .each(function () {
+        var rows = $(this).closest("tr");
+        
+        var item_uom = rows.find('select[name="item_uom"]').val();
+        if (item_uom == "" || item_uom == null) {
+            console.log('errorrrrrr')
+            rows.find('[name=item_uom_err]').text("Please Select Unit.");
+            rows.find('select[name="item_uom"]').focus();
+            return !1
+        }else {
+            rows.find('[name=item_uom_err]').text("")
+        }
+
+        if (rows.find('input[name=product_hsn_sac_code]').val() == "") {
+            console.log('errorrrrrr')
+            rows.find('[name=err_product_hsn_sac_code]').text("Please Select HSN.");
+            rows.find('input[name=product_hsn_sac_code]').focus();
+            return !1
+        }else {
+            rows.find('[name=err_product_hsn_sac_code]').text("")
+        }
+
+        if (rows.find('select[name="item_category"]').val() == "") {
+            console.log('errorrrrrr')
+            rows.find('[name=category_name_err]').text("Please Select Category.");
+            rows.find('select[name="item_category"]').focus();
+            return !1
+        }else {
+            rows.find('[name=category_name_err]').text("")
+        }
+        
+        if (rows.find('input[name=item_price]').val() == "") {
+            console.log('errorrrrrr')
+            rows.find('[name=item_amount_err]').text("Please enter amount.");
+            rows.find('input[name=item_price]').focus();
+            $("#err_product").text("Please enter amount.")
+            return !1
+        }else {
+            rows.find('[name=err_product_hsn_sac_code]').text("")
+        }
+
+    });
+}
+
+/*$("#sales_table_body")
+    .change('input[name^="product_hsn_sac_code"]','select[name="item_category"]','select[name="item_uom"]')
+    .each(function () {
+        var rows = $(this).closest("tr");
+
+        var item_uom = rows.find('select[name="item_uom"]').val();
+        if (item_uom == "") {
+            console.log('errorrrrrr')
+            rows.find('[name=item_uom_err]').text("Please Select Unit.");
+            return !1
+        }else {
+            rows.find('[name=item_uom_err]').text("")
+        }
+        
+        var product_hsn_sac_code = rows.find('input[name=product_hsn_sac_code]').val();
+        if (product_hsn_sac_code == "") {
+            console.log('errorrrrrr')
+            rows.find('[name=err_product_hsn_sac_code]').text("Please Select HSN.");
+            rows.find('input[name=product_hsn_sac_code]').focus();
+            return !1
+        }else {
+            rows.find('[name=err_product_hsn_sac_code]').text("")
+        }
+
+        var category_name = rows.find('select[name="item_category"]').val();
+        if (category_name == "") {
+            console.log('errorrrrrr')
+            rows.find('[name=category_name_err]').text("Please Select Category.");
+            rows.find('select[name="item_category"]').focus();
+            return !1
+        }else {
+            rows.find('[name=category_name_err]').text("")
+        }
+
+
+});*/

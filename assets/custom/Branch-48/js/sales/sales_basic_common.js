@@ -181,7 +181,7 @@ $(document).ready(function () {
     // changes in rows
     $("#sales_table_body").on(
         "change blur",
-        'input[name="item_price"],input[name="item_description"],input[name="item_quantity"],select[name="item_discount"],select[name="item_tax"],select[name="item_tax_cess"],select[name="item_uom"],select[name="category_name"],input[name="product_hsn_sac_code"]',
+        'input[name="item_price"],input[name="item_description"],input[name="item_quantity"],select[name="item_discount"],select[name="item_tax"],select[name="item_tax_cess"],select[name="item_uom"],select[name="item_category"],input[name="product_hsn_sac_code"]',
         function (event) {
             console.log('chnage');
             var newRow = $(this).closest("tr");
@@ -794,7 +794,7 @@ function add_row(data) {
         })
     }
 
-    var cat_select = '<select class="form-control form-fixer select2" name="category_name" style="width: 100%;">';
+    var cat_select = '<select class="form-control form-fixer select2" name="item_category" style="width: 100%;">';
         cat_select += '<option value="">Select</option>';
         //console.log(uom);
     if(product_category != ''){
@@ -1342,7 +1342,7 @@ function preciseRowAmount(row) {
 
 function generateJson(row) {
     var item_name = row.find('input[name^="input_sales_code"]').val();
-    var item_category = row.find('select[name="category_name"]').val();
+    var item_category = row.find('select[name="item_category"]').val();
     var item_hsn_sac_code = row.find('input[name^="product_hsn_sac_code"]').val();
     var item_uom = row.find('[name=item_uom]').val();
     var table_index = +row.find('input[name^="item_key_value"]').val();
