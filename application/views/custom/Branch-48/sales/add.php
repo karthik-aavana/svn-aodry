@@ -557,8 +557,8 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                     <?php } ?>
                                                     <td>
                                                         <div class="form-group" style="display: table;">
-                                                            <div class="input-group-addon" style="background-color: #d0e0fc;">
-                                                                <a href="" data-toggle="modal" data-target="#hsn_modal" class="pull-right"><span class="fa fa-eye hsn"></span></a>
+                                                            <div class="input-group-addon hsn" style="background-color: #d0e0fc;">
+                                                                <a href="" data-toggle="modal" data-target="#hsn_modal" class="pull-right"><span class="fa fa-eye"></span></a>
                                                             </div>
                                                             <input type="text" style="height: 36px;" class="form-control form-fixer text-left float_number" name="product_hsn_sac_code" value="<?php echo set_value('service_hsn_sac_code'); ?>" >
                                                         </div>

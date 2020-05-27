@@ -3,7 +3,7 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close s" data-dismiss="modal">&times;</button>
                 <h4>HSN Lookup</h4>
             </div>
             <div class="modal-body">
@@ -35,6 +35,7 @@
 <script src="<?php echo base_url('assets/js/service/') ?>sac_code.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+
         $('#sac_table').DataTable({
             "processing": true,
             "serverSide": true,
@@ -58,6 +59,7 @@
             });
              anime.timeline({loop:!0}).add({targets:".ml8 .circle-white",scale:[0,3],opacity:[1,0],easing:"easeInOutExpo",rotateZ:360,duration:8e3}),anime({targets:".ml8 .circle-dark-dashed",rotateZ:360,duration:8e3,easing:"linear",loop:!0});        
             $("#sac_table").on("click", "span.apply", function (event){
+
                 var row = $(this).closest("tr");
                 var s_code = +row.find('#hsn_id').text();
                 var aaa = $('#sales_table_body tr:last').find('[name=product_hsn_sac_code]');
@@ -72,24 +74,51 @@
                     method: 'POST',
                     success: function (result) {
                         //$('[name=product_hsn_sac_code]').val(result[0].hsn_code)
-                        $(aaa).val(result[0].hsn_code)
+                        //$(aaa).val(result[0].hsn_code)
                         hsn_call(result);
                     }
-                });            
+                }); 
+
+            });
+            
+
+            $("#sales_table_body").on(
+                "click",
+                '.hsn',
+                function (event) {
+                    $(this).next().addClass('active')
+                    //rows.addClass('active')
+                    console.log('fkjfj');
+                   
+            });
+            
+            function hsn_call(result){
+                $("#sales_table_body")
+                    .find('.active')
+                    .each(function () {
+                        $(this).val(result[0].hsn_code);
+                        //var rows = $(this).closest("tr");
+                        var rows = $(this).closest("tr");
+                       
+                        console.log('hsn-chng')
+                        calculateTable(rows);
+                        $(this).removeClass('active');
+                    });
+            }
+
+
+            $(document).on('click', '.s', function () {
+                console.log('hhhhhhh')
+                hsn_close();
             });
 
-
-            function hsn_call(result){
-            $("#sales_table_body")
-                .find('input[name^="product_hsn_sac_code"]')
-                .each(function () {
-                    var rows = $(this).closest("tr");
-                    var aaa = rows.find('[name=product_hsn_sac_code]');
-                    //rows.find('[name=product_hsn_sac_code]').val(result[0].hsn_code);
-                    //aaa.val(result[0].hsn_code);
-                    console.log('hsn-chng')
-                    calculateTable(rows);
+            function hsn_close(){
+                $("#sales_table_body")
+                    .find('.active')
+                    .each(function () {
+                        $(this).removeClass('active');
                 });
             }
-      });
+            
+    });
 </script>

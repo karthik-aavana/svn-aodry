@@ -447,6 +447,7 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                             <input type='hidden' name='item_taxable_value' value='<?= ($key->quotation_item_taxable_value ? $key->quotation_item_taxable_value : 0); ?>' >
                                                             <span id='item_taxable_value_lbl_<?= $i ?>'><?= $key->quotation_item_taxable_value ? precise_amount($key->quotation_item_taxable_value) : 0; ?></span>
                                                         </td>
+                                                        <?php if ($access_settings[0]->tds_visible == 'yes') { ?>
                                                         <td style='text-align:center'>
                                                             <?php
                                                             if ($key->tds_module_type == "" || $key->tds_module_type == null) {
@@ -494,6 +495,8 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                             <input type='hidden' name='item_tds_id' value='<?= $key->quotation_item_tds_id ? $key->quotation_item_tds_id : 0 ?>'><input type='hidden' name='item_tds_type' value='<?= $key->tds_module_type ? $key->tds_module_type : '' ?>'>
                                                             <input type='hidden' name='item_tds_amount' value='<?= $key->quotation_item_tds_amount ? precise_amount($key->quotation_item_tds_amount) : 0 ?>'><span id='item_tds_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?= $key->quotation_item_tds_amount ? precise_amount($key->quotation_item_tds_amount) : 0 ?></span>
                                                         </td>
+                                                        <?php } ?>
+                                                        <!-- tds area -->
                                                         <td><input type='hidden' name='item_tax_id' value='<?= $key->quotation_item_tax_id ? $key->quotation_item_tax_id : 0 ?>'>
                                                             <input type='hidden' name='item_tax_percentage' value='<?= $key->quotation_item_tax_percentage ? (float) ($key->quotation_item_tax_percentage) : 0 ?>'>
                                                             <input type='hidden' name='item_tax_amount' value='<?= $key->quotation_item_tax_amount ? precise_amount($key->quotation_item_tax_amount) : 0 ?>'>
@@ -685,8 +688,8 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                     <?php } ?>
                                                     <td>
                                                         <div class="form-group" style="display: table;">
-                                                            <div class="input-group-addon" style="background-color: #d0e0fc;">
-                                                                <a href="" data-toggle="modal" data-target="#hsn_modal" class="pull-right"><span class="fa fa-eye hsn"></span></a>
+                                                            <div class="input-group-addon hsn" style="background-color: #d0e0fc;">
+                                                                <a href="" data-toggle="modal" data-target="#hsn_modal" class="pull-right"><span class="fa fa-eye"></span></a>
                                                             </div>
                                                             <input type="text" style="height: 36px;" class="form-control form-fixer text-left float_number" name="product_hsn_sac_code" value="<?php echo set_value('service_hsn_sac_code'); ?>" >
                                                         </div>
