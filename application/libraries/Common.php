@@ -2871,15 +2871,31 @@ class Common
 
     public function customer_field()
     {
-        $string = "c.*,con.country_name as customer_country_name,sta.state_name as customer_state_name,sta.state_code as customer_state_code,cit.city_name as customer_city_name";
-        $table  = "customer c";
-        $where  = array(
-            'c.delete_status' => 0,
-            'c.branch_id'     => $this->ci->session->userdata('SESS_BRANCH_ID'));
-        $join = [
-            "countries con" => "c.customer_country_id = con.country_id" . "#" . "left",
-            "states sta"    => "c.customer_state_id = sta.state_id" . "#" . "left",
-            "cities cit"    => "c.customer_city_id = cit.city_id" . "#" . "left"];
+        if($this->ci->session->userdata('SESS_BRANCH_ID') == $this->ci->config->item('LeatherCraft')){
+            $string = "c.*,CONCAT(c.customer_name,'-', s.store_location) AS customer_name,con.country_name as customer_country_name,sta.state_name as customer_state_name,sta.state_code as customer_state_code,cit.city_name as customer_city_name";
+            $table  = "customer c";
+            $where  = array(
+                's.shipping_party_type' => 'customer',
+                's.primary_address' => 'yes',
+                'c.delete_status' => 0,
+                'c.branch_id'     => $this->ci->session->userdata('SESS_BRANCH_ID'));
+            $join = [
+                "shipping_address s" => "s.shipping_party_id = c.customer_id" . "#" . "left",
+                "countries con" => "c.customer_country_id = con.country_id" . "#" . "left",
+                "states sta"    => "c.customer_state_id = sta.state_id" . "#" . "left",
+                "cities cit"    => "c.customer_city_id = cit.city_id" . "#" . "left"];
+        }else{
+            $string = "c.*,con.country_name as customer_country_name,sta.state_name as customer_state_name,sta.state_code as customer_state_code,cit.city_name as customer_city_name";
+            $table  = "customer c";
+            $where  = array(
+                'c.delete_status' => 0,
+                'c.branch_id'     => $this->ci->session->userdata('SESS_BRANCH_ID'));
+            $join = [
+                "countries con" => "c.customer_country_id = con.country_id" . "#" . "left",
+                "states sta"    => "c.customer_state_id = sta.state_id" . "#" . "left",
+                "cities cit"    => "c.customer_city_id = cit.city_id" . "#" . "left"];
+        }
+
         $order = [
             "c.customer_name" => "asc"];
         $data = array(
@@ -5914,6 +5930,7 @@ class Common
         );
         return $data;
     }
+
     public function customer_list_field()
     {
         $string = 'cust.*,c.city_name,co.country_name,st.state_name,u.first_name,u.last_name';
@@ -5924,6 +5941,41 @@ class Common
         $join['countries co'] = 'cust.customer_country_id=co.country_id';
         $join['users u']      = 'cust.added_user_id=u.id';
         $where = array(
+            'cust.branch_id'     => $this->ci->session->userdata('SESS_BRANCH_ID'),
+            'cust.delete_status' => 0
+        );
+        $order = [
+            "cust.customer_id" => "desc"];
+        $filter = array(
+            'cust.customer_name',
+            'cust.customer_code',
+            'co.country_name',
+            'st.state_name',
+            'c.city_name'
+        );
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'join'   => $join,
+            'filter' => $filter,
+            'order'  => $order
+        );
+        return $data;
+    }
+    public function customer_location_list_field()
+    {
+        $string = 'cust.*,c.city_name,co.country_name,st.state_name,u.first_name,u.last_name,s.store_location';
+        $table  = 'customer cust';
+        // $join['contact_person cp']='cp.contact_person_id=cust.customer_contact_person_id';
+        $join['shipping_address s']     = 's.shipping_party_id=cust.customer_id' . '#' . 'left';
+        $join['cities c']     = 'cust.customer_city_id=c.city_id' . '#' . 'left';
+        $join['states st']    = 'cust.customer_state_id=st.state_id';
+        $join['countries co'] = 'cust.customer_country_id=co.country_id';
+        $join['users u']      = 'cust.added_user_id=u.id';
+        $where = array(
+            's.shipping_party_type' => 'customer',
+            's.primary_address' => 'yes',
             'cust.branch_id'     => $this->ci->session->userdata('SESS_BRANCH_ID'),
             'cust.delete_status' => 0
         );
@@ -6050,7 +6102,7 @@ class Common
         return $data;
     }
 
-     public function product_batchlist_field($order_ser,$dir){
+    public function product_batchlist_field($order_ser,$dir){
         $string             = "p.*,c.category_name,u.first_name,u.last_name,m.uom";
         $table              = "products p";
         $join['category c'] = "c.category_id=p.product_category_id";

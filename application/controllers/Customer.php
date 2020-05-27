@@ -153,6 +153,135 @@ class Customer extends MY_Controller {
         }
     }
 
+    public function customer_location_list(){
+        $customer_module_id = $this->config->item('customer_module');
+        $data['customer_module_id'] = $customer_module_id;
+        $modules = $this->modules;
+        $privilege = "view_privilege";
+        $data['privilege'] = $privilege;
+        $section_modules = $this->get_section_modules($customer_module_id, $modules, $privilege);
+
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
+        if (!empty($this->input->post())) {
+            $columns = array(
+                0 => 'action',
+                1 => 'customer_code',
+                2 => 'customer_name',
+                3 => 'country',
+                4 => 'state',
+                5 => 'city'
+            );
+            $limit = $this->input->post('length');
+            $start = $this->input->post('start');
+            $order = $columns[$this->input->post('order')[0]['column']];
+            $dir = $this->input->post('order')[0]['dir'];
+            $list_data = $this->common->customer_location_list_field();
+            $list_data['search'] = 'all';
+            $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
+            $totalFiltered = $totalData;
+            if (empty($this->input->post('search')['value'])) {
+                $list_data['limit'] = $limit;
+                $list_data['start'] = $start;
+                $list_data['search'] = 'all';
+                $posts = $this->general_model->getPageJoinRecords($list_data);
+            } else {
+                $search = $this->input->post('search')['value'];
+                $list_data['limit'] = $limit;
+                $list_data['start'] = $start;
+                $list_data['search'] = $search;
+                $posts = $this->general_model->getPageJoinRecords($list_data);
+                $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
+            } 
+            $send_data = array();
+            if (!empty($posts)) {
+                foreach ($posts as $post) {
+                    $customer_id = $this->encryption_url->encode($post->customer_id);
+                    $nestedData['customer_code'] = $post->customer_code;
+                    //$nestedData['reference_number'] = $post->reference_number;
+                    
+                    $nestedData['customer_name'] = $post->customer_name;
+                    $nestedData['location'] = $post->store_location;
+                    // $nestedData['contact_person'] = $post->contact_person_name;
+                    //$nestedData['phone']            = $post->customer_mobile;
+                    //$nestedData['email']            = $post->customer_email;
+                    $nestedData['country'] = $post->country_name;
+                    $nestedData['state'] = $post->state_name;
+                    if ($post->city_name == '') {
+                        $city_name = 'Others';
+                    } else {
+                        $city_name = $post->city_name;
+                    }
+                    $nestedData['city'] = $city_name;
+                    //$nestedData['added_user']       = $post->first_name . ' ' . $post->last_name;
+
+                    $cols = '<div class="box-body hide action_button">
+                        <div class="btn-group">';
+
+                    if (in_array($data['customer_module_id'], $data['active_edit'])) {
+                        $cols .= '<span><a href="' . base_url('customer/edit/') . $customer_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="btn btn-app"><i class="fa fa-pencil"></i></a></span>';
+                    }
+
+                    $advance_voucher = $this->general_model->getRecords('*', 'advance_voucher', array(
+                        'party_id' => $post->customer_id,
+                        'party_type' => 'customer',
+                        'delete_status' => 0,
+                        'branch_id' => $this->session->userdata('SESS_BRANCH_ID')));
+                    $refund_voucher = $this->general_model->getRecords('*', 'refund_voucher', array(
+                        'party_id' => $post->customer_id,
+                        'party_type' => 'customer',
+                        'delete_status' => 0,
+                        'branch_id' => $this->session->userdata('SESS_BRANCH_ID')));
+                    $receipt_voucher = $this->general_model->getRecords('*', 'receipt_voucher', array(
+                        'party_id' => $post->customer_id,
+                        'party_type' => 'customer',
+                        'delete_status' => 0,
+                        'branch_id' => $this->session->userdata('SESS_BRANCH_ID')));
+                    $quotation = $this->general_model->getRecords('*', 'quotation', array(
+                        'quotation_party_id' => $post->customer_id,
+                        'quotation_party_type' => 'customer',
+                        'delete_status' => 0,
+                        'branch_id' => $this->session->userdata('SESS_BRANCH_ID')));
+                    $sales = $this->general_model->getRecords('*', 'sales', array(
+                        'sales_party_id' => $post->customer_id,
+                        'sales_party_type' => 'customer',
+                        'delete_status' => 0,
+                        'branch_id' => $this->session->userdata('SESS_BRANCH_ID')));
+                    $sales_credit_note = $this->general_model->getRecords('*', 'sales_credit_note', array(
+                        'sales_credit_note_party_id' => $post->customer_id,
+                        'sales_credit_note_party_type' => 'customer',
+                        'delete_status' => 0,
+                        'branch_id' => $this->session->userdata('SESS_BRANCH_ID')));
+                    $sales_debit_note = $this->general_model->getRecords('*', 'sales_debit_note', array(
+                        'sales_debit_note_party_id' => $post->customer_id,
+                        'sales_debit_note_party_type' => 'customer',
+                        'delete_status' => 0,
+                        'branch_id' => $this->session->userdata('SESS_BRANCH_ID')));
+
+                    if (in_array($data['customer_module_id'], $data['active_delete'])) {
+                        if ($advance_voucher || $refund_voucher || $receipt_voucher || $quotation || $sales || $sales_credit_note || $sales_debit_note) {
+                            $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#false_delete_modal"><a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete_button btn btn-xs btn-app"><i class="fa fa-trash"></i></a></span>';
+                        } else {
+                            $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-id="' . $customer_id . '" data-path="customer/delete" data-toggle="tooltip" data-placement="bottom" title="Delete"> <i class="fa fa-trash-o"></i> </a></span>';
+                        }
+                    }
+                    $cols .= '</div></div>';
+                    $disabled = '';
+                    if(!in_array($data['customer_module_id'], $data['active_delete']) && !in_array($data['customer_module_id'], $data['active_edit'])){
+                        $disabled = 'disabled';
+                    }
+                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal"'.$disabled.'>';
+                    $send_data[] = $nestedData;
+                }
+            } $json_data = array(
+                "draw" => intval($this->input->post('draw')),
+                "recordsTotal" => intval($totalData),
+                "recordsFiltered" => intval($totalFiltered),
+                "data" => $send_data);
+            echo json_encode($json_data);
+        }
+    }
+
     public function add() {
         $data = $this->get_default_country_state();
         $customer_module_id = $this->config->item('customer_module');
@@ -632,21 +761,26 @@ class Customer extends MY_Controller {
                                             $customer_type = 'individual';
                                         }
                                         if($customer_name != '' && !empty($customer_name)){
-                                            $Customer_check = $this->Bulk_CustomerValidation($customer_name);
+                                            $Customer_check = $this->Bulk_CustomerValidation($customer_name,0,$store_location);
                                             if($Customer_check["rows"] <= 0){
+                                                $ledger_name = trim($row['B']);
+                                                if($store_location != ''){
+                                                    $ledger_name = $ledger_name.'-'.$store_location;
+                                                }
                                                 $customer_ary = array(
-                                                                'ledger_name' => trim($row['B']),
+                                                                'ledger_name' => $ledger_name,
                                                                 'second_grp' => '',
                                                                 'primary_grp' => 'Sundry Debtors',
                                                                 'main_grp' => 'Current Assets',
                                                                 'default_ledger_id' => 0,
-                                                                'default_value' => trim($row['B']),
+                                                                'default_value' => $ledger_name,
                                                                 'amount' => 0
                                                             );
+                                                
                                                 if(!empty($customer_ledger_name)){
                                                     $customer_ledger = $customer_ledger_name->ledger_name;
                                                     /*$customer_ledger = str_ireplace('{{SECTION}}',$section_name , $customer_ledger);*/
-                                                    $customer_ledger = str_ireplace('{{X}}',trim($row['B']), $customer_ledger);
+                                                    $customer_ledger = str_ireplace('{{X}}',$ledger_name, $customer_ledger);
                                                     $customer_ary['ledger_name'] = $customer_ledger;
                                                     $customer_ary['primary_grp'] = $customer_ledger_name->sub_group_1;
                                                     $customer_ary['second_grp'] = $customer_ledger_name->sub_group_2;
@@ -1124,12 +1258,16 @@ class Customer extends MY_Controller {
             $sales_ledger = $this->config->item('sales_ledger');
             $default_customer_id = $sales_ledger['CUSTOMER'];
             $customer_ledger_name = $this->ledger_model->getDefaultLedgerId($default_customer_id);
+            $ledger_name = $customer_name;
+            if($this->input->post('store_location')){
+                if($this->input->post('store_location') != '') $ledger_name = $customer_name.'-'.$this->input->post('store_location');
+            }
             if(!empty($customer_ledger_name)){
                 $customer_ledger = $customer_ledger_name->ledger_name;
-                $customer_name = str_ireplace('{{X}}',$customer_name, $customer_ledger);
+                $customer_name = str_ireplace('{{X}}',$ledger_name, $customer_ledger);
             }
             /* Update ledger name */
-            $this->db->query("UPDATE tbl_ledgers SET ledger_name='{$customer_name}' WHERE ledger_id='{$ledger_id}'");
+            $this->db->query("UPDATE tbl_ledgers SET ledger_name='{$ledger_name}' WHERE ledger_id='{$ledger_id}'");
 
             $this->general_model->deleteData('customer_additional_info', array('customer_id' => $id));
             $shipping_address_data = array(
@@ -1281,20 +1419,23 @@ class Customer extends MY_Controller {
         $sales_ledger = $this->config->item('sales_ledger');
         $default_customer_id = $sales_ledger['CUSTOMER'];
         $customer_ledger_name = $this->ledger_model->getDefaultLedgerId($default_customer_id);
-            
+        $ledger_name = $customer_name;
+        if($this->input->post('store_location')){
+            if($this->input->post('store_location') != '') $ledger_name = $customer_name.'-'.$this->input->post('store_location');
+        }
         $customer_ary = array(
-                        'ledger_name' => $customer_name,
+                        'ledger_name' => $ledger_name,
                         'second_grp' => '',
                         'primary_grp' => 'Sundry Debtors',
                         'main_grp' => 'Current Assets',
                         'default_ledger_id' => 0,
-                        'default_value' => $customer_name,
+                        'default_value' => $ledger_name,
                         'amount' => 0
                     );
         if(!empty($customer_ledger_name)){
             $customer_ledger = $customer_ledger_name->ledger_name;
             /*$customer_ledger = str_ireplace('{{SECTION}}',$section_name , $customer_ledger);*/
-            $customer_ledger = str_ireplace('{{X}}',$customer_name, $customer_ledger);
+            $customer_ledger = str_ireplace('{{X}}',$ledger_name, $customer_ledger);
             $customer_ary['ledger_name'] = $customer_ledger;
             $customer_ary['primary_grp'] = $customer_ledger_name->sub_group_1;
             $customer_ary['second_grp'] = $customer_ledger_name->sub_group_2;
@@ -1758,20 +1899,27 @@ class Customer extends MY_Controller {
 
     public function CustomerValidation(){
         $customer_name = trim($this->input->post('cust_name'));
+        $location = trim($this->input->post('location'));
         $branch_id = $this->session->userdata('SESS_BRANCH_ID');
         $id = $this->input->post('id');
-        
-        $rows = $this->db->query("SELECT customer_id FROM customer WHERE customer_name like '".$customer_name."' AND branch_id = '".$branch_id."' AND customer_id != '{$id}' ")->num_rows();
+        if($this->input->post('location')){
+            $rows = $this->db->query("SELECT customer_id FROM customer c JOIN shipping_address s ON c.customer_id=s.shipping_party_id WHERE s.shipping_party_type='customer' AND customer_name = '".$customer_name."' AND store_location = '".$location."' AND c.branch_id = '".$branch_id."' AND c.customer_id != '{$id}' ")->num_rows();
+        }else{
+            $rows = $this->db->query("SELECT customer_id FROM customer WHERE customer_name like '".$customer_name."' AND branch_id = '".$branch_id."' AND customer_id != '{$id}' ")->num_rows();
+        }
 
         $rows1 = $this->db->query("SELECT supplier_id FROM supplier WHERE branch_id = '".$branch_id."' AND supplier_name like '".$customer_name."' ")->num_rows();
 
         echo  json_encode(array('rows' => $rows + $rows1));
     }
 
-    public function Bulk_CustomerValidation($customer_name,$id = 0){
+    public function Bulk_CustomerValidation($customer_name,$id = 0,$location=''){
         $branch_id = $this->session->userdata('SESS_BRANCH_ID');
-        $rows = $this->db->query("SELECT customer_id FROM customer WHERE customer_name like '".$customer_name."' AND branch_id = '".$branch_id."' AND customer_id != '{$id}' ")->num_rows();
-
+        if($location != ''){
+            $rows = $this->db->query("SELECT customer_id FROM customer c JOIN shipping_address s ON c.customer_id=s.shipping_party_id WHERE s.shipping_party_type='customer' AND customer_name = '".$customer_name."' AND store_location = '".$location."' AND c.branch_id = '".$branch_id."' AND c.customer_id != '{$id}' ")->num_rows();
+        }else{
+            $rows = $this->db->query("SELECT customer_id FROM customer WHERE customer_name like '".$customer_name."' AND branch_id = '".$branch_id."' AND customer_id != '{$id}' ")->num_rows();
+        }
         $rows1 = $this->db->query("SELECT supplier_id FROM supplier WHERE branch_id = '".$branch_id."' AND supplier_name like '".$customer_name."' ")->num_rows();
 
         return array('rows' => $rows + $rows1);

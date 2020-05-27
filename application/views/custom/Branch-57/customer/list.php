@@ -66,6 +66,7 @@ $this->load->view('layout/header');
                                     <th width="9px">#</th>
                                     <th>Customer Code</th>
                                     <th>Store Name</th>
+                                    <th>Location</th>
                                     <th>Country</th>
                                     <th>State</th>
                                     <th>City</th>
@@ -90,7 +91,7 @@ $this->load->view('customer/customer_bulk_upload');
             "processing": true,
             "serverSide": true,
             "ajax": {
-                "url": base_url + "customer",
+                "url": base_url + "customer/customer_location_list",
                 "dataType": "json",
                 "type": "POST",
                 "data": {'<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'}
@@ -99,6 +100,7 @@ $this->load->view('customer/customer_bulk_upload');
                 {"data": "action"},
                 {"data": "customer_code"},
                 {"data": "customer_name"},
+                {"data": "location"},
                 {"data": "country"},
                 {"data": "state"},
                 {"data": "city"}

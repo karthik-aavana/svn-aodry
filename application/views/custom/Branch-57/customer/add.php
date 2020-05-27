@@ -273,9 +273,10 @@ $this->load->view('layout/header');
             $('[name=customer_name]').trigger('keyup');
         })
 
-        $('[name=customer_name]').on('keyup',function(){
+        $('[name=customer_name],[name=store_location]').on('keyup',function(){
             
             var cust_name= $(this).val();
+            var location= $('[namestore_location]').val();
             if (xhr && xhr.readyState != 4) {
                 xhr.abort();
             }
@@ -284,7 +285,7 @@ $this->load->view('layout/header');
             xhr = $.ajax({
                 url: '<?= base_url(); ?>customer/CustomerValidation',
                 type: 'post',
-                data: {cust_name:cust_name,id:0},
+                data: {cust_name:cust_name,id:0,location:location},
                 dataType: 'json',
                 success: function (json) {
                     if(json.rows > 0){
