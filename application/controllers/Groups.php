@@ -61,10 +61,18 @@ class Groups extends MY_Controller
                     $nestedData['group_name']         = $post->name;
                     $nestedData['description'] = $post->description;
                     $cols = '<div class="box-body hide action_button"><div class="btn-group">';
-				   	$cols.= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#edit_user_group_modal"><a data-id="' . $group_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="edit_groups btn btn-app"><i class="fa fa-pencil"></i></a></span>';
-				   	$cols.= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-id="' . $group_id . '" data-path="groups/delete" data-toggle="tooltip" data-placement="bottom" title="Delete"> <i class="fa fa-trash-o"></i> </a></span>';                  
+                    if(in_array($data['groups_module_id'], $data['active_edit'])){
+				   	    $cols.= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#edit_user_group_modal"><a data-id="' . $group_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="edit_groups btn btn-app"><i class="fa fa-pencil"></i></a></span>';
+                    }
+                    if(in_array($data['groups_module_id'], $data['active_delete'])){
+				   	    $cols.= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-id="' . $group_id . '" data-path="groups/delete" data-toggle="tooltip" data-placement="bottom" title="Delete"> <i class="fa fa-trash-o"></i> </a></span>';
+                    }                
 				   	$cols .= '</div></div>';
-                    $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';	
+                    $disabled = '';
+                    if(!in_array($data['groups_module_id'], $data['active_delete']) && !in_array($data['groups_module_id'], $data['active_edit'])){
+                        $disabled = 'disabled';
+                    }
+                    $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal"'.$disabled.'>';	
                    $send_data[]               = $nestedData;
                 }
             } $json_data = array(

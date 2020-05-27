@@ -697,6 +697,7 @@ Class General_voucher extends MY_Controller
         $data['transaction_purpose'] = $this->transaction_purpose_call();
         $data['privilege'] = $privilege;
         $data['customer_module_id']        = $this->config->item('customer_module');
+        $data['bank_account_module_id']    = $this->config->item('bank_account_module');
         $data['bank_account']     = $this->bank_account_call_new();
         $bank_ledger = $this->config->item('bank_ledger');
         $default_bank_id = $bank_ledger['bank'];
@@ -7333,10 +7334,14 @@ Class General_voucher extends MY_Controller
                     
                     $cols = '<div class="box-body hide action_button">
                         <div class="btn-group">';
-
-                    $cols .= '<span> <a href="' . base_url('general_voucher/edit/') . $general_voucher_id . '" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit General Voucher"> <i class="fa fa-pencil"></i> </a></span>';                   
-
-                    $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-id="' . $general_voucher_id . '" data-path="general_voucher/delete_general_voucher" data-toggle="tooltip" data-placement="bottom" title="Delete General Voucher"> <i class="fa fa-trash-o"></i> </a></span>';
+                    if (in_array($journal_voucher_module_id , $data['active_edit']))
+                    {
+                        $cols .= '<span> <a href="' . base_url('general_voucher/edit/') . $general_voucher_id . '" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit General Voucher"> <i class="fa fa-pencil"></i> </a></span>';
+                    }                 
+                    if (in_array($journal_voucher_module_id , $data['active_delete']))
+                    {
+                        $cols .= '<span data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#delete_modal" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app delete_button" data-id="' . $general_voucher_id . '" data-path="general_voucher/delete_general_voucher" data-toggle="tooltip" data-placement="bottom" title="Delete General Voucher"> <i class="fa fa-trash-o"></i> </a></span>';
+                    }
 
                  $cols .= '<span><a href="' .base_url('journal_voucher/view_details/') . $general_voucher_id.'" target="_blank" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Details"><i class="fa fa-eye"></i></a></span>';
 

@@ -91,7 +91,11 @@ class Loan extends MY_Controller {
                        
                     }
                     $cols .= '</div></div>';
-                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
+                    $disabled = '';
+                    if(!in_array($data['loan_module_id'], $data['active_delete']) && !in_array($data['loan_module_id'], $data['active_edit'])){
+                        $disabled = 'disabled';
+                    }
+                    $nestedData['action'] = $cols . '<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal"'.$disabled.'>';
                     $send_data[] = $nestedData;
                 }
             } $json_data = array(
