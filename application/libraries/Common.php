@@ -300,7 +300,7 @@ class Common
         return $data;
     }
     public function sales_list_field($order_ser='',$dir = ''){
-        $string = "s.*,bst.state_name as place_of_supply,c.customer_id, st.customer_id as ship_to_id,c.customer_name,st.customer_name as ship_to_name, c.customer_code, c.customer_gst_registration_type, c.customer_gstin_number, c.customer_pan_number, c.customer_tan_number, c.customer_address, c.customer_country_id, c.customer_state_id, c.customer_state_code, c.customer_city_id, c.customer_postal_code, c.customer_mobile, c.customer_email, c.customer_contact_person_id, c.ledger_id,u.first_name,u.last_name, cur.currency_name, cur.currency_symbol, cur.currency_code, sc.sales_credit_note_invoice_number, sd.  sales_debit_note_invoice_number, cur.currency_text,sa.shipping_address,ba.shipping_address as bill_to_address ,IFNULL(MAX(f.date), DATE_ADD(s.sales_date,INTERVAL c.due_days DAY)) as receivable_date,IFNULL(DATEDIFF(f.date, CONVERT_TZ(CURRENT_TIMESTAMP,'-07:00','+05:30')), DATEDIFF(DATE_ADD(s.sales_date,INTERVAL c.due_days DAY), CONVERT_TZ(CURRENT_TIMESTAMP,'-07:00','+05:30'))) as due,bst.is_utgst,CASE bst.is_utgst when '1' then s.sales_sgst_amount ELSE 0 END as utgst, CASE bst.is_utgst when '0' then s.sales_sgst_amount ELSE 0
+        $string = "s.*,bst.state_name as place_of_supply,c.customer_id, st.customer_id as ship_to_id,c.customer_name,st.customer_name as ship_to_name, c.customer_code, c.customer_gst_registration_type, c.customer_gstin_number, c.customer_pan_number, c.customer_tan_number, c.customer_address, c.customer_country_id, c.customer_state_id, c.customer_state_code, c.customer_city_id, c.customer_postal_code, c.customer_mobile, c.customer_email, c.customer_contact_person_id, c.ledger_id,u.first_name,u.last_name, cur.currency_name, cur.currency_symbol, cur.currency_code, sc.sales_credit_note_invoice_number, sd.  sales_debit_note_invoice_number, cur.currency_text,sa.shipping_address, sa.store_location, ba.shipping_address as bill_to_address ,IFNULL(MAX(f.date), DATE_ADD(s.sales_date,INTERVAL c.due_days DAY)) as receivable_date,IFNULL(DATEDIFF(f.date, CONVERT_TZ(CURRENT_TIMESTAMP,'-07:00','+05:30')), DATEDIFF(DATE_ADD(s.sales_date,INTERVAL c.due_days DAY), CONVERT_TZ(CURRENT_TIMESTAMP,'-07:00','+05:30'))) as due,bst.is_utgst,CASE bst.is_utgst when '1' then s.sales_sgst_amount ELSE 0 END as utgst, CASE bst.is_utgst when '0' then s.sales_sgst_amount ELSE 0
                 END as sgst";
         $table  = "sales s";
         $join   = [
@@ -2187,12 +2187,13 @@ class Common
   
     public function quotation_list_field($order_ser='',$dir = '')
     {
-        $string = "q.*,c.customer_name,u.first_name,u.last_name,cur.currency_name, cur.currency_symbol, cur.currency_code, cur.currency_text";
+        $string = "q.*,c.customer_name,u.first_name,u.last_name,cur.currency_name, cur.currency_symbol, cur.currency_code, cur.currency_text, sa.store_location";
         $table  = "quotation q";
         $join   = [
             'currency cur' => 'q.currency_id = cur.currency_id',
             "customer c"   => "q.quotation_party_id = c.customer_id",
-            "users u"      => "q.added_user_id = u.id"];
+            "users u"      => "q.added_user_id = u.id",
+            'shipping_address sa' => 'sa.shipping_party_id = q.quotation_party_id' . '#' . 'left'];
         if($order_ser =='' || $dir == ''){
                 $order = [ 'q.quotation_id' => 'desc' ];
             }else{
