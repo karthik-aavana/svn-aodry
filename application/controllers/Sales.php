@@ -88,6 +88,9 @@ class Sales extends MY_Controller{
                     $sales_invoice_number = $post->sales_invoice_number;
                     if($post->sales_brand_invoice_number != '') $sales_invoice_number = $post->sales_brand_invoice_number;
                     $nestedData['customer']    = $post->customer_name . ' (<a href="' . base_url('sales/view/') . $sales_id . '">' . $sales_invoice_number . '</a>)<br> ';
+                    if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('LeatherCraft')){
+                        $nestedData['customer']    = $post->customer_name .' - '.$post->store_location . ' (<a href="' . base_url('sales/view/') . $sales_id . '">' . $sales_invoice_number . '</a>)<br> ';
+                    }
                     $nestedData['grand_total'] = $currency_symbol . ' ' . $this->precise_amount($post->sales_grand_total , $access_common_settings[0]->amount_precision) . ' (INV)';
                     if ($post->credit_note_amount > 0) {
                         $nestedData['grand_total'] .= '<br>' . $currency_symbol . ' ' . $this->precise_amount($post->credit_note_amount , $access_common_settings[0]->amount_precision) . ' (CN)';

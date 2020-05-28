@@ -78,17 +78,17 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                 if ($key->customer_id == $data[0]->sales_party_id) {
                                                     $store_location = $shipping_address[0]->store_location;
                                                     $shipping_code = $shipping_address[0]->shipping_code;
-                                                    if($shipping_code != '' && $store_location != ''){ ?>
+                                                    if($key->customer_code != '' && $store_location != ''){ ?>
                                                     <option value='<?php
                                                     echo $key->customer_id;
                                                     ?>' selected>
-                                                        <?php echo $shipping_code.' - '.$key->customer_name.' - '.$store_location; ?></option>
+                                                        <?php echo $key->customer_code.' - '.$key->customer_name.' - '.$store_location; ?></option>
                                                     <?php
-                                                    }elseif($shipping_code != ''){ ?>
+                                                    }elseif($key->customer_code != ''){ ?>
                                                         <option value='<?php
                                                     echo $key->customer_id;
                                                     ?>' selected>
-                                                        <?php echo $shipping_code.' - '.$key->customer_name; ?></option>
+                                                        <?php echo $key->customer_code.' - '.$key->customer_name; ?></option>
                                                     <?php
                                                     }elseif($store_location != ''){?>
                                                         <option value='<?php
