@@ -2805,7 +2805,7 @@ class Common
     }
     public function branch_field($firm_id = "")
     {
-        $string = "f.*,br.*,com.*,con.country_name as branch_country_name,sta.state_name as branch_state_name,sta.state_code as branch_state_code,cit.city_name as branch_city_name,sta.state_short_code,CONCAT(br.branch_address , ' ,' ,cit.city_name,' ,',sta.state_name , ' - ',br.branch_postal_code) AS branch_address";
+        $string = "f.*,br.*,com.*,con.country_name as branch_country_name,sta.state_name as branch_state_name,sta.state_code as branch_state_code,cit.city_name as branch_city_name,sta.state_short_code,br.branch_address as address,CONCAT(br.branch_address , ' ,' ,cit.city_name,' ,',sta.state_name , ' - ',br.branch_postal_code) AS branch_address";
         $table  = "branch br";
         $where  = array(
             'br.delete_status' => 0);

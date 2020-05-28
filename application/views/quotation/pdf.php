@@ -134,13 +134,13 @@ if (@$converted_rate)
                     if ($data[0]->shipping_address_id != $data[0]->billing_address_id) {
                         if (!empty($billing_address)) {
                             echo "<br/>";
-                            echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>", $billing_address[0]->shipping_address);
+                            echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>", $billing_address[0]->shipping_address .', '. $billing_address[0]->city_name . ', ' . $billing_address[0]->state_name . ' - ' . $billing_address[0]->address_pin_code);
                         } elseif (isset($data[0]->customer_address) && $data[0]->customer_address != "") {
                             echo "<br/>";
-                            echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>", $data[0]->customer_address);
+                            echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>", $data[0]->customer_address . ' ,' . $data[0]->customer_city_name . ' ,' . $data[0]->customer_state_name . ' - ' . $data->customer_postal_code);
                         } else {
                             echo "<br/>";
-                            echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>", $data[0]->shipping_address);
+                            echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>", $data[0]->shipping_address .', '. $data[0]->city_name . ', ' . $data[0]->state_name . ' - ' . $data[0]->address_pin_code);
                         }
                     }elseif ($data[0]->shipping_address_id == $data[0]->billing_address_id){
                         echo "<br/>";
@@ -207,7 +207,7 @@ if (@$converted_rate)
                     }
                     if (isset($data[0]->shipping_address)) {
                         if ($data[0]->shipping_address != "" || $data[0]->shipping_address != null) {
-                            echo '<br><br><b>Shipping Address</b><br>' . str_replace(array("\r\n", "\\r\\n", "\n", "\\n", "\\"), "", $data[0]->shipping_address);
+                            echo '<br><br><b>Shipping Address</b><br>' . str_replace(array("\r\n", "\\r\\n", "\n", "\\n", "\\"), "", $data[0]->shipping_address .', '. $data[0]->city_name . ', ' . $data[0]->state_name . ' - ' . $data[0]->address_pin_code);
                         }
                     }
                     if (isset($data[0]->shipping_gstin)) {
