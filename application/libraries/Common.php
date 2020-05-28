@@ -2873,7 +2873,7 @@ class Common
     public function customer_field()
     {
         if($this->ci->session->userdata('SESS_BRANCH_ID') == $this->ci->config->item('LeatherCraft')){
-            $string = "c.*,CONCAT(c.customer_name,'-', s.store_location) AS customer_name,con.country_name as customer_country_name,sta.state_name as customer_state_name,sta.state_code as customer_state_code,cit.city_name as customer_city_name";
+            $string = "c.*,CONCAT(c.customer_name,'-', s.store_location) AS customer_name,con.country_name as customer_country_name,sta.state_name as customer_state_name,sta.state_code as customer_state_code,cit.city_name as customer_city_name,s.shipping_address_id";
             $table  = "customer c";
             $where  = array(
                 's.shipping_party_type' => 'customer',

@@ -1,5 +1,5 @@
 $(document).ready(function () {
-        /*var comp_table = $('#customer_address_table').DataTable();*/
+        
         $(document).on("click", "#shipping_pop", function () {
             var comp_table = $('#customer_address_table').DataTable();
             var billing_state = $('#billing_state').val();
@@ -10,7 +10,7 @@ $(document).ready(function () {
                 'ajax': {
                     url: base_url + 'general/get_shipping_popup',
                     type: 'post',
-                    data: {'billing_state': billing_state, 'party_id': party_id, 'shipping_id': ship_add},
+                    data: {'billing_state': billing_state, 'party_id': party_id, shipping_id: ship_add},
                 },
                 "processing": true,
                 "serverSide": true,
@@ -36,10 +36,10 @@ $(document).ready(function () {
             $("#billing_addr").modal();
         });
 
+        var comp_table = $('#customer_address_table').DataTable();
         $(document).on("click", "#shipping_pop_edit", function () {
             var billing_state = $('#billing_state').val();
             var party_id = $("#ship_to").val();
-            var comp_table = $('#customer_address_table').DataTable();
             comp_table.destroy();
             var shipping_id = $('[name=shipping_address]').val();
             comp_table = $('#customer_address_table').DataTable({
@@ -63,28 +63,59 @@ $(document).ready(function () {
         });
         
         $(document).on("change", "#customer", function () {
-            $("#shipping_address").val('');
-            var billing_state = $('#billing_state').val();
-            var party_id = $("#customer").val();
-            var shipping_id = $("#customer").find("option:selected").attr("data-id");
-           $("#shipping_address").val(shipping_id);
-           $("#billing_address").val(shipping_id);
-           var customer_name = $("#customer :selected").val();
-           $('#ship_to>option[value='+customer_name+']').prop('selected',true);
-           $('#ship_to').select2();
+             var billing_state = $('#billing_state').val();
+                var party_id = $("#customer").val();
+                var ship_add = '';
+            $.ajax({
+                url: base_url + "general/get_billing_popup",
+                type: "post",
+                dataType: "JSON",
+                data: {'party_id': party_id},
+                success: function (data) {
+                    var table_data = data.data;
+                       var biling_table = $('#billing_address_table').DataTable();
+                       biling_table.destroy();
+                       biling_table = $('#billing_address_table').DataTable({
+                           data: table_data,
+                           'columns': [
+                               {'data': 'shipping_code'},
+                               {'data': 'contact_person'},
+                               {'data': 'shipping_address'},
+                               {'data': 'gst'},
+                               {'data': 'state'},
+                               {'data': 'action'}
+                           ],
+                           "initComplete": function(settings, json) {
+                               $("#same_as_billing").prop('checked', true);
+                               $(":input#same_as_billing").trigger('change');
+                           }
+                       });
+                    if(data['recordsTotal'] == 1){
+                       var val = data['shipping_address_id'];
+                       $("#shipping_address").val(val);
+                       $("#billing_address").val(val);
+                       var customer_name = $("#customer :selected").val();
+
+                       $('#ship_to>option[value='+customer_name+']').prop('selected',true);
+                       $('#ship_to').select2();
+                    }else{
+                       $("#billing_addr").modal();    
+                    }
+                }
+            });
         });
 
         $(document).on("change", "#ship_to", function(){
                 var billing_state = $('#billing_state').val();
                 var party_id = $("#ship_to").val();
-                var shipping_id = $('[name=shipping_address]').val();
+                var ship_add = '';
                 var comp_table = $('#customer_address_table').DataTable();
                 comp_table.destroy();
                 comp_table = $('#customer_address_table').DataTable({
                     'ajax': {
                         url: base_url + 'general/get_shipping_popup',
                         type: 'post',
-                        data: {'billing_state': billing_state, 'party_id': party_id, 'shipping_id': shipping_id},
+                        data: {'billing_state': billing_state, 'party_id': party_id, shipping_id: ship_add},
                     },
                     "processing": true,
                     "serverSide": true,

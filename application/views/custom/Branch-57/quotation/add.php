@@ -72,22 +72,12 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                     <option value="">Select</option>
                                                     <?php
                                                     foreach ($customer as $row) {
-                                                        $customer_id = $row->customer_id;
-                                                        foreach ($shipping_address as $col) {
-                                                            if($customer_id == $col->shipping_party_id) {
-                                                                if($row->customer_code != '' && $col->store_location != ''){
-                                                                    echo "<option data-id={$col->shipping_address_id} value='{$row->customer_id}'>$row->customer_code - $row->customer_name - $col->store_location</option>";
-                                                                }elseif($row->customer_code != ''){
-                                                                    echo "<option value='$row->customer_id'>$row->customer_code - $row->customer_name</option>";
-                                                                }elseif($col->store_location != ''){
-                                                                    echo "<option data-id={$col->shipping_address_id} value='$row->customer_id'>$row->customer_name - $col->store_location</option>";
-                                                                }else{
-                                                                    echo "<option value='$row->customer_id'>$row->customer_name</option>";
-                                                                }
-                                                            }
+                                                        if($row->customer_code != ''){
+                                                            echo "<option data-id={$row->shipping_address_id} value='{$row->customer_id}'>$row->customer_code - $row->customer_name</option>";
+                                                        }else{
+                                                            echo "<option value='$row->customer_id'>$row->customer_name</option>";
                                                         }
-                                                    }
-                                                    ?>
+                                                    }?>
                                                 </select>
                                                 <!-- <div class="input-group-addon">
                                                 <span id="customer_pop"><i class="fa fa-map-marker icon-blue"></i></span>

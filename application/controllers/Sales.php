@@ -468,7 +468,6 @@ class Sales extends MY_Controller{
         $data['customer'] = $this->customer_call();
         $data['currency'] = $this->currency_call();
         $data['brands'] = $this->brand_call();
-        $data['shipping_address'] = $this->general_model->getRecords('*', 'shipping_address', array('delete_status' => 0,'branch_id'     => $this->session->userdata('SESS_BRANCH_ID') ));
         /*if($this->company_type == 'pharma'){
             $currecny =$this->sales_lib->sales_type('pharma',$data);
         }else{*/
@@ -611,11 +610,11 @@ class Sales extends MY_Controller{
                 'state_id' =>       $data['data'][0]->sales_billing_state_id
                 ));
         }
-        $data['shipping_address'] = $this->general_model->getRecords('*' , 'shipping_address' , array(
+        /*$data['shipping_address'] = $this->general_model->getRecords('*' , 'shipping_address' , array(
             'shipping_party_id'   => $data['data'][0]->sales_party_id ,
             'shipping_party_type' => $data['data'][0]->sales_party_type ,
             'delete_status' => 0
-        ));
+        ));*/
         $item_types = $this->general_model->getRecords('item_type,sales_item_description' , 'sales_item' , array(
             'sales_id' => $id ));
         $service     = 0;
