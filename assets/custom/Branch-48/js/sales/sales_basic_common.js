@@ -760,7 +760,7 @@ function add_row(data) {
             "<td>" +
             "<input type='text' class='form-control form-fixer' name='item_description' ></td>";
     }
-    var uom_select = '<select class="form-control form-fixer select2" name="item_uom" style="width: 100%;">';
+    var uom_select = '<select class="form-control form-fixer select2" name="item_uom" style="width: 100%;" disabled>';
         uom_select += '<option value="">Select</option>';
         //console.log(uom);
     if(uom != ''){
@@ -794,7 +794,7 @@ function add_row(data) {
         })
     }
 
-    var cat_select = '<select class="form-control form-fixer select2" name="item_category" style="width: 100%;">';
+    var cat_select = '<select class="form-control form-fixer select2" name="item_category" style="width: 100%;" disabled>';
         cat_select += '<option value="">Select</option>';
         //console.log(uom);
     if(product_category != ''){
@@ -950,7 +950,15 @@ function add_row(data) {
             "' class='pull-right' style='color:red;'>0.00</span>" +
             "</td>";
     }
-    cols += "<td style='text-align:center'><input type='text' class='form-control form-fixer text-center float_number' value="+ item_hsn_sac_code +" data-rule='quantity' name='item_hsn'></td>";
+    cols += "<td style='text-align:center'><input type='text' class='form-control form-fixer text-center float_number' value="+ item_hsn_sac_code +" name='item_hsn' readonly></td>";
+   /* cols += "<td>" +
+                "<div class='form-group' style='display: table;'>" +
+                    "<div class='input-group-addon hsn' style='background-color: #d0e0fc;'>" +
+                         "<a href='' data-toggle='modal' data-target='#hsn_modal' class='pull-right'><span class='fa fa-eye'></span></a>"+
+                    "</div>"+
+                    "<input type='text' style='height: 36px;' class='form-control form-fixer text-left float_number' value="+ item_hsn_sac_code +" name='item_hsn' readonly>" +
+                "</div>"+
+            "</td>";*/
     cols += "<td style='text-align:center'>"+cat_select+"</td>";
     //tax area
     if (input_type == "hidden") {
@@ -974,7 +982,7 @@ function add_row(data) {
     $("table #sales_table_body tr:last").replaceWith(newRow);
     /*$("#sales_table_body").prepend(newRow);*/
     console.log(table_index,'table_index');
-    //table_index++;
+    table_index++;
 
     calculateTable(newRow);
 
@@ -1057,7 +1065,7 @@ function calculateTax(row) {
                 item_tax = 0;
             }
         }
-        console.log(item_tax,'tax_data');
+        //console.log(item_tax,'tax_data');
         var type_of_supply = $("#type_of_supply").val();
         var cess_tax = row.find('select[name=item_tax_cess]').val();
         if(cess_tax != '' && typeof cess_tax != 'undefined' ){
@@ -1419,7 +1427,7 @@ function generateJson(row) {
         item_discount_id = 0;
         item_discount_percentage = 0;
     }
-    console.log(table_index,'item_key_value');
+    //console.log(table_index,'item_key_value');
     var data_item = {
         item_key_value: +table_index,
         item_id: +item_id,
