@@ -224,9 +224,26 @@ $(document).ready(function () {
                     var count_item = 0;
                     var j = 0;
                     if(data.length == 1){
+                        var product_id = data1[0]. product_id;
                         $('#table-total').show();
-                        add_row(data);
-                        call_css();
+                        if(sales_data.length != 0){
+                            for (var i = 0; i < sales_data.length; i++) {
+                                var pre_item_id = sales_data[i].item_id;
+                                if (pre_item_id == product_id) {
+                                    var row_index = sales_data[i].item_key_value;
+                                    var table_row = $("#"+ row_index);
+                                    var quantity = table_row.find('input[name^="item_quantity"]').val();
+                                    quantity = ++quantity;
+                                    table_row.find('input[name^="item_quantity"]').val(quantity);
+                                    $("#input_sales_code").val("");
+                                    calculateTable(table_row);    
+                                    break;
+                                }
+                            }
+                        }else{
+                            add_row(data);
+                            call_css();
+                        }
                         $("#input_sales_code").val("");
                     }else{
 
