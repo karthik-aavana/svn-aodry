@@ -200,7 +200,6 @@ class Quotation extends MY_Controller {
 
         $data['customer'] = $this->customer_call();
         $data['currency'] = $this->currency_call();
-        $data['shipping_address'] = $this->general_model->getRecords('*', 'shipping_address', array('delete_status' => 0,'branch_id'     => $this->session->userdata('SESS_BRANCH_ID') ));
         if ($data['access_settings'][0]->discount_visible == "yes") {
 
             $data['discount'] = $this->discount_call();
