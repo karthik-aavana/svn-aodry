@@ -277,8 +277,8 @@ class Common_api{
         return $resp;
     }
 
-    public function get_default_country_state() {
-        $branch_data  = $this->branch_field($this->ci->session->userdata('SESS_BRANCH_ID'));
+    public function get_default_country_state($branch_id) {
+        $branch_data  = $this->branch_field($branch_id);
         
         $branch       = $this->ci->general_model->getJoinRecords($branch_data['string'], $branch_data['table'], $branch_data['where'], $branch_data['join'], $branch_data['order']);
         $country_data = $this->country_field();
@@ -557,7 +557,7 @@ class Common_api{
 
     public function generate_reference_number_api($access_settings, $primary_id, $table_name, $date_field_name, $current_date, $option = "")
     {
-        $financial_year = explode('-', $this->SESS_FINANCIAL_YEAR_TITLE);
+        $financial_year = explode('-', $this->ci->session->userdata('SESS_FINANCIAL_YEAR_TITLE'));
 
         if ((date("Y") != $financial_year[0]) && (date("Y") != $financial_year[1]))
         {
@@ -641,5 +641,15 @@ class Common_api{
         }
 
         return $reference_number;
+    }
+
+    public function getValues($ary,$key){
+        $ids_ary = array();
+        if(!empty($ary)){
+            foreach ($ary as $k => $value) {
+                array_push($ids_ary, $value->$key);
+            }
+        }
+        return $ids_ary;
     }
 }

@@ -137,7 +137,7 @@ $this->load->view('layout/header');
 
                                     <th><a href="#" data-backdrop="static" data-keyboard="false" class="open_distinct_modal"  data-toggle="modal" data-target="#distinct-modal" data-title="Please Enter Pending Amount" data-type="pending_amount">Pending Amount<span class="fa fa-toggle-down mr-20"></span></a></th>
 
-                                    <th><a href="#" data-backdrop="static" data-keyboard="false" class="open_distinct_modal"  data-toggle="modal" data-target="#distinct-modal" data-title="Please Enter Pending Amount" data-type="total_received_amount">Total Received Amount<span class="fa fa-toggle-down mr-20"></span></a></th>
+                                    <th><a href="#" data-backdrop="static" data-keyboard="false" class="open_distinct_modal"  data-toggle="modal" data-target="#distinct-modal" data-title="Please Enter Received Amount" data-type="total_received_amount">Total Received Amount<span class="fa fa-toggle-down mr-20"></span></a></th>
 
                                     <th><a href="#" data-backdrop="static" data-keyboard="false" class="open_distinct_modal"  data-toggle="modal" data-target="#distinct-modal" data-title="Please Enter Invoice Amount" data-type="invoice_amount">Invoice Amount<span class="fa fa-toggle-down mr-20"></span></a></th>
 

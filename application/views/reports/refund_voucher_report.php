@@ -1228,13 +1228,13 @@ $this->load->view('recurrence/recurrence_invoice_modal');
                         text: 'Select columns',
                         action: function (e, dt, node, config) {
                             $('#refund_voucher_report_select_columns').modal('show');
-                        }
-                        'language': {
+                    },
+                'language': {
                 'loadingRecords': '&nbsp;',
                 'processing': ' <h1 class="ml8"><span class="letters-container"> <span class="letters letters-left"><img src="<?php echo base_url('assets/'); ?>images/loader-icon.png" width="30px"></span></span><span class="circle circle-white"></span><span class="circle circle-dark"></span><span class="circle circle-container"><span class="circle circle-dark-dashed"></span></span></h1>'
                 },
-                    }
-                    ],
+                }
+                ],
                 'language': {
                 'loadingRecords': '&nbsp;',
                 'processing': ' <h1 class="ml8"><span class="letters-container"> <span class="letters letters-left"><img src="<?php echo base_url('assets/'); ?>images/loader-icon.png" width="30px"></span></span><span class="circle circle-white"></span><span class="circle circle-dark"></span><span class="circle circle-container"><span class="circle circle-dark-dashed"></span></span></h1>'
