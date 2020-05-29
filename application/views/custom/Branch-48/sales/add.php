@@ -869,13 +869,14 @@ $(document).ready(function () {
         /*$('#sales_table_body tfoot').children("select").select2("destroy");*/
         $('#texts').find('[name=item_key_value]').val(table_index);
         var html_row = $('#texts').html();
-        console.log(table_index);
-        table_index++;
+        console.log(table_index,'table_index_new');
+        
         $('#sales_table_body').append(html_row);
         $("#type_of_supply").change();
         $('#sales_table_body tr:last').find("select").addClass('select2').select2();
         $('#table-total').show();
         AutoComplate();
+        //table_index++;
     });
 
 
