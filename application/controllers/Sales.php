@@ -88,6 +88,9 @@ class Sales extends MY_Controller{
                     $sales_invoice_number = $post->sales_invoice_number;
                     if($post->sales_brand_invoice_number != '') $sales_invoice_number = $post->sales_brand_invoice_number;
                     $nestedData['customer']    = $post->customer_name . ' (<a href="' . base_url('sales/view/') . $sales_id . '">' . $sales_invoice_number . '</a>)<br> ';
+                    if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('LeatherCraft')){
+                        $nestedData['customer']    = $post->customer_name .' - '.$post->store_location . ' (<a href="' . base_url('sales/view/') . $sales_id . '">' . $sales_invoice_number . '</a>)<br> ';
+                    }
                     $nestedData['grand_total'] = $currency_symbol . ' ' . $this->precise_amount($post->sales_grand_total , $access_common_settings[0]->amount_precision) . ' (INV)';
                     if ($post->credit_note_amount > 0) {
                         $nestedData['grand_total'] .= '<br>' . $currency_symbol . ' ' . $this->precise_amount($post->credit_note_amount , $access_common_settings[0]->amount_precision) . ' (CN)';
@@ -465,7 +468,6 @@ class Sales extends MY_Controller{
         $data['customer'] = $this->customer_call();
         $data['currency'] = $this->currency_call();
         $data['brands'] = $this->brand_call();
-        $data['shipping_address'] = $this->general_model->getRecords('*', 'shipping_address', array('delete_status' => 0,'branch_id'     => $this->session->userdata('SESS_BRANCH_ID') ));
         /*if($this->company_type == 'pharma'){
             $currecny =$this->sales_lib->sales_type('pharma',$data);
         }else{*/
@@ -608,11 +610,11 @@ class Sales extends MY_Controller{
                 'state_id' =>       $data['data'][0]->sales_billing_state_id
                 ));
         }
-        $data['shipping_address'] = $this->general_model->getRecords('*' , 'shipping_address' , array(
+        /*$data['shipping_address'] = $this->general_model->getRecords('*' , 'shipping_address' , array(
             'shipping_party_id'   => $data['data'][0]->sales_party_id ,
             'shipping_party_type' => $data['data'][0]->sales_party_type ,
             'delete_status' => 0
-        ));
+        ));*/
         $item_types = $this->general_model->getRecords('item_type,sales_item_description' , 'sales_item' , array(
             'sales_id' => $id ));
         $service     = 0;

@@ -78,6 +78,9 @@ class Quotation extends MY_Controller {
                     if (in_array($quotation_module_id, $data['active_view'])) {
                         $nestedData['customer'] = $post->customer_name . ' (<a href="' . base_url('quotation/view/') . $quotation_id . '">' . $post->quotation_invoice_number . '</a>) ';
                     }
+                    if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('LeatherCraft')){
+                        $nestedData['customer'] = $post->customer_name .' - '. $post->store_location. ' (<a href="' . base_url('quotation/view/') . $quotation_id . '">' . $post->quotation_invoice_number . '</a>) ';
+                    }
                     $nestedData['grand_total'] = $post->currency_symbol . ' ' . $this->precise_amount($post->quotation_grand_total, $access_common_settings[0]->amount_precision);
                     $nestedData['converted_grand_total'] = $this->precise_amount($post->converted_grand_total, $access_common_settings[0]->amount_precision);
                     $is_complate = 0;
@@ -197,7 +200,6 @@ class Quotation extends MY_Controller {
 
         $data['customer'] = $this->customer_call();
         $data['currency'] = $this->currency_call();
-        $data['shipping_address'] = $this->general_model->getRecords('*', 'shipping_address', array('delete_status' => 0,'branch_id'     => $this->session->userdata('SESS_BRANCH_ID') ));
         if ($data['access_settings'][0]->discount_visible == "yes") {
 
             $data['discount'] = $this->discount_call();
