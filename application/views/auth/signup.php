@@ -122,7 +122,9 @@
                 color: #000000 !important;
                 font-family: 'Google Sans',arial,sans-serif!important;
             }
-         
+            .fb-box img{
+                width: 170px;
+            }
         </style>
         <?php
             $this->load->view('layout/login_header');
@@ -189,14 +191,14 @@
 
                                 <div class="form-group has-feedback col-sm-12">
                                     <label for="name">Company / Firm Name <span class="validation-color"> *</span></label>
-                                    <?php echo form_input('name', (@$name ? $name : ''), 'class="form-control" placeholder="Company / Firm Name"'); ?>
+                                    <?php echo form_input('name', (@$name ? $name : ''), 'class="form-control" id="first_last_name"  placeholder="Company / Firm Name"'); ?>
                                     <input type="hidden" name="payment" value="trial">
                                     <span class="glyphicon glyphicon-user form-control-feedback"></span>
                                     <span class="validation-color" id="err_name"></span>
                                 </div>
                                 <div class="form-group has-feedback col-sm-12">
                                     <label for="email">Email <span class="validation-color"> *</span></label>
-                                    <?php echo form_input('email', (@$email ? $email : ''), 'class="form-control" placeholder="Email"'); ?>
+                                    <?php echo form_input('email', (@$email ? $email : ''), 'class="form-control" id="email_id"  placeholder="Email"'); ?>
                                     <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                                     <span class="validation-color" id="err_email"></span>
                                 </div>
@@ -223,7 +225,7 @@
                                         <?php
                                         $selected_id = 101;
                                         if(@$sa_country){
-                                        	$selected_id = $sa_country;
+                                            $selected_id = $sa_country;
                                         } 
                                         foreach ($country as $key) { ?>
                                         <option value="<?=$key->country_id;?>" <?=($key->country_id == $selected_id ? 'selected' : '')?>>
@@ -242,7 +244,7 @@
                                         <?php 
                                         $state_id = 17;
                                         if(@$sa_state){
-                                        	$state_id = $sa_state;
+                                            $state_id = $sa_state;
                                         } 
                                         foreach ($state as $key) { ?>
                                             <option value='<?php echo $key->state_id ?>' <?=($key->state_id == $state_id ? 'selected' : '')?> code='<?=$key->state_code;?>'>
@@ -260,7 +262,7 @@
                                         <?php
                                         $city_id = 43889;
                                         if(@$sa_city){
-                                        	$city_id = $sa_city;
+                                            $city_id = $sa_city;
                                         }
                                         foreach ($city as $key) { ?>
                                             <option value='<?php echo $key->city_id ?>' <?=($key->city_id == $city_id ? 'selected' : '')?> >
@@ -288,6 +290,11 @@
                                     <!-- <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button> -->
                                     <?php echo form_submit('register', 'Next', 'class="btn btn-primary btn-block btn-flat"'); ?>
                                 </div>
+                            </div>
+                            <div class="fb-box">
+                                <div id="status"></div>
+                                <a href="javascript:void(0);" onclick="fbLogin();" id="fbLink"><img src="<?php echo base_url('assets/'); ?>images/facebook_logo.jpg"></a>
+                                <div class="ac-data" id="userData"></div>
                             </div>
                            <p style="margin-top: 13px;border-bottom:1px solid #e7dede;text-align: center;padding-bottom: 10px;">By creating an Aodry account, you're agreeing to accept the <b style="color: #000000">Aodry</b> <strong><a href="http://aodry.com/terms.php" target="_blank">Customer Terms of Service.</a></strong> </p>
                            <p style="text-align:justify;">
@@ -324,6 +331,7 @@
                 </div>    
              </div> 
          -->
+        
         <script src="<?php echo base_url(); ?>assets/plugins/jQuery/jquery-2.2.3.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/bootstrap/js/bootstrap.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/plugins/iCheck/icheck.min.js"></script>
@@ -392,20 +400,20 @@
 
             $('#sa_state').change(function() {
 
-				var id = $(this).val();
-				$('#state_code').val($(this).find('option:selected').attr('code'));
-				$('#sa_city').html('<option value="">Select</option>');
-				$.ajax({
-					url : base_url + 'superadmin/general/get_city/' + id,
-					type : "GET",
-					dataType : "JSON",
-					success : function(data) {
-						for ( i = 0; i < data.length; i++) {
-							$('#sa_city').append('<option value="' + data[i].city_id + '">' + data[i].city_name + '</option>');
-						}
-					}
-				});
-			});*/
+                var id = $(this).val();
+                $('#state_code').val($(this).find('option:selected').attr('code'));
+                $('#sa_city').html('<option value="">Select</option>');
+                $.ajax({
+                    url : base_url + 'superadmin/general/get_city/' + id,
+                    type : "GET",
+                    dataType : "JSON",
+                    success : function(data) {
+                        for ( i = 0; i < data.length; i++) {
+                            $('#sa_city').append('<option value="' + data[i].city_id + '">' + data[i].city_name + '</option>');
+                        }
+                    }
+                });
+            });*/
 
             $('[name=name]').on('keyup',function(){
                 var name = $('[name=name]').val();
@@ -593,4 +601,5 @@
             });
         }
     </script>
+    <script src="<?php echo base_url('assets/js/') ?>signup_fb.js"></script>
 </html>
