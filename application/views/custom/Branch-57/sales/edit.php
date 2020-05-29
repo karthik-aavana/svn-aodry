@@ -76,18 +76,34 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                             <?php
                                             foreach ($customer as $key) {
                                                 if ($key->customer_id == $data[0]->sales_party_id) {
-                                                    if($key->customer_code != ''){ ?>
+                                                    $store_location = $shipping_address[0]->store_location;
+                                                    $shipping_code = $shipping_address[0]->shipping_code;
+                                                    if($shipping_code != '' && $store_location != ''){ ?>
+                                                    <option value='<?php
+                                                    echo $key->customer_id;
+                                                    ?>' selected>
+                                                        <?php echo $shipping_code.' - '.$key->customer_name.' - '.$store_location; ?></option>
+                                                    <?php
+                                                    }elseif($shipping_code != ''){ ?>
                                                         <option value='<?php
-                                                        echo $key->customer_id;
-                                                        ?>' selected>
-                                                            <?php echo $key->customer_code.' - '.$key->customer_name; ?></option>
-                                                        <?php
-                                                    }else{ ?>
+                                                    echo $key->customer_id;
+                                                    ?>' selected>
+                                                        <?php echo $shipping_code.' - '.$key->customer_name; ?></option>
+                                                    <?php
+                                                    }elseif($store_location != ''){?>
                                                         <option value='<?php
-                                                        echo $key->customer_id;
-                                                        ?>' selected>
-                                                            <?php echo $key->customer_name; ?></option>
-                                                    <?php }
+                                                    echo $key->customer_id;
+                                                    ?>' selected>
+                                                        <?php echo $key->customer_name.' - '.$store_location; ?></option>
+                                                    <?php 
+                                                    }else{
+                                                    ?>
+                                                    <option value='<?php
+                                                    echo $key->customer_id;
+                                                    ?>' selected>
+                                                        <?php echo $key->customer_name; ?></option>
+                                                    <?php
+                                                    }
                                                     break;
                                                 }
                                             }
@@ -1074,6 +1090,8 @@ $this->load->view('sub_modules/shipping_address_modal');
 <script type="text/javascript">
     var sales_data = <?php echo json_encode($sales_data); ?>;
     var branch_state_list = <?php echo json_encode($state); ?>;
+    var discount_ary= <?=json_encode($discount);?>;
+    var tax_data = <?=json_encode($tax);?>;
     var count_data = <?= $countData; ?>;
     var common_settings_round_off = "<?= $access_common_settings[0]->round_off_access ?>";
     var common_settings_amount_precision = "<?= $access_common_settings[0]->amount_precision ?>";

@@ -2192,7 +2192,7 @@ class Common
         $join   = [
             'currency cur' => 'q.currency_id = cur.currency_id',
             "customer c"   => "q.quotation_party_id = c.customer_id",
-            "users u"      => "q.added_user_id = u.id",
+             "users u"      => "q.added_user_id = u.id",
             'shipping_address sa' => 'sa.shipping_party_id = q.quotation_party_id' . '#' . 'left'];
         if($order_ser =='' || $dir == ''){
                 $order = [ 'q.quotation_id' => 'desc' ];
@@ -2804,6 +2804,22 @@ class Common
         );
         return $data;
     }
+
+    public function branch_list(){
+        $string = "br.branch_name,br.branch_id,br.branch_code";
+        $table  = "branch br";
+        $where  = array('br.delete_status' => 0,'br.firm_id'=>$this->ci->session->userdata('SESS_FIRM_ID'));
+        $order = [
+            "br.branch_id" => "asc"];
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'order'  => $order
+        );
+        return $data;
+    }
+
     public function branch_field($firm_id = "")
     {
         $string = "f.*,br.*,com.*,con.country_name as branch_country_name,sta.state_name as branch_state_name,sta.state_code as branch_state_code,cit.city_name as branch_city_name,sta.state_short_code,br.branch_address as address,CONCAT(br.branch_address , ' ,' ,cit.city_name,' ,',sta.state_name , ' - ',br.branch_postal_code) AS branch_address";
@@ -2873,7 +2889,7 @@ class Common
     public function customer_field()
     {
         if($this->ci->session->userdata('SESS_BRANCH_ID') == $this->ci->config->item('LeatherCraft')){
-            $string = "c.*,CONCAT(c.customer_name,'-', s.store_location) AS customer_name,con.country_name as customer_country_name,sta.state_name as customer_state_name,sta.state_code as customer_state_code,cit.city_name as customer_city_name,s.shipping_address_id";
+            $string = "c.*,CONCAT(c.customer_name,'-', s.store_location) AS customer_name,con.country_name as customer_country_name,sta.state_name as customer_state_name,sta.state_code as customer_state_code,cit.city_name as customer_city_name";
             $table  = "customer c";
             $where  = array(
                 's.shipping_party_type' => 'customer',

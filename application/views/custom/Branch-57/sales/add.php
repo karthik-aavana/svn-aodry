@@ -62,11 +62,20 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                             <select class="form-control select2"  id="customer" name="customer">
                                                 <option value="">Select Customer</option>
                                                 <?php
-                                                foreach ($customer as $row) {   
-                                                    if($row->customer_code != ''){
-                                                        echo "<option data-id={$row->shipping_address_id} value='{$row->customer_id}'>$row->customer_code - $row->customer_name</option>";
-                                                    }else{
-                                                        echo "<option value='$row->customer_id'>$row->customer_name</option>";
+                                                foreach ($customer as $row) {
+                                                    $customer_id = $row->customer_id;
+                                                    foreach ($shipping_address as $col) {
+                                                        if($customer_id == $col->shipping_party_id) {   
+                                                            if($row->customer_code != '' && $col->store_location != ''){
+                                                                echo "<option data-id={$col->shipping_address_id} value='{$row->customer_id}'>$row->customer_code - $row->customer_name - $col->store_location</option>";
+                                                            }elseif($row->customer_code != ''){
+                                                                echo "<option value='$row->customer_id'>$row->customer_code - $row->customer_name</option>";
+                                                            }elseif($col->store_location != ''){
+                                                                echo "<option data-id={$col->shipping_address_id} value='$row->customer_id'>$row->customer_name - $col->store_location</option>";
+                                                            }else{
+                                                                echo "<option value='$row->customer_id'>$row->customer_name</option>";
+                                                            }
+                                                        }
                                                     }
                                                 }
                                                 ?>
@@ -617,6 +626,8 @@ if ($charges_sub_module == 1) {
     });*/
 var sales_data = new Array();
 var branch_state_list =<?php echo json_encode($state); ?>;
+var discount_ary= <?=json_encode($discount);?>;
+var tax_data = <?=json_encode($tax);?>;
 var item_gst = new Array();
 var common_settings_round_off = "<?= $access_common_settings[0]->round_off_access ?>";
 var common_settings_amount_precision = "<?= $access_common_settings[0]->amount_precision ?>";

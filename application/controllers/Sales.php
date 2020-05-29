@@ -20,7 +20,6 @@ class Sales extends MY_Controller{
     }
     
     function index(){
-
         $sales_module_id        = $this->config->item('sales_module');
         $data['sales_module_id'] = $sales_module_id;
         $modules                = $this->modules;
@@ -468,6 +467,7 @@ class Sales extends MY_Controller{
         $data['customer'] = $this->customer_call();
         $data['currency'] = $this->currency_call();
         $data['brands'] = $this->brand_call();
+        /*$data['shipping_address'] = $this->general_model->getRecords('*', 'shipping_address', array('delete_status' => 0,'branch_id'     => $this->session->userdata('SESS_BRANCH_ID') ));*/
         /*if($this->company_type == 'pharma'){
             $currecny =$this->sales_lib->sales_type('pharma',$data);
         }else{*/
@@ -781,25 +781,26 @@ class Sales extends MY_Controller{
 
     public function get_sales_suggestions($term , $inventory_advanced , $item_access , $brand_id= '')
     {
-        /*echo $term;*/
-        /*$sales_module_id   = $this->config->item('sales_module');
-        $modules           = $this->modules;
-        $privilege         = "add_privilege";
-        $data['privilege'] = $privilege;
-        $section_modules   = $this->get_section_modules($sales_module_id , $modules , $privilege);*/
-        //echo $inventory_access[0]->inventory_advanced;
-        /*if ($inventory_advanced == "yes")
-        {
-            $suggestions_query = $this->common->item_inventory_suggestions_field($item_access , $term);
-            $data              = $this->general_model->getQueryRecords($suggestions_query);
-        }
-        else
-        {
-        }*/
+        
         if($term == '-') $term ='';
         $suggestions_query = $this->common->item_suggestions_field($item_access , $term , $brand_id);
 
         $data              = $this->general_model->getQueryRecords($suggestions_query);
+        // $data["product_inventoery"]=$inventory_access[0]->inventory_advanced;
+        echo json_encode($data);
+    }
+
+    public function get_sales_suggestions_leathercraft($term , $inventory_advanced , $item_access , $brand_id= ''){
+        if($term == '-') $term ='';
+        $suggestions_query = $this->common->item_suggestions_field($item_access , $term , $brand_id);
+
+        $data              = $this->general_model->getQueryRecords($suggestions_query);
+
+        if(count($data) ==1){
+
+            $product_data = $this->common->product_field($data[0]->item_id);
+            $data         = $this->general_model->getJoinRecords($product_data['string'] , $product_data['table'] , $product_data['where'] , $product_data['join']);
+        }
         // $data["product_inventoery"]=$inventory_access[0]->inventory_advanced;
         echo json_encode($data);
     }
@@ -827,14 +828,17 @@ class Sales extends MY_Controller{
         $discount_data = array();
         $tax_data      = array();
         $tds_data      = array();
-        if ($item_code[2] == 'yes')
-        {
-            $discount_data = $this->discount_call();
+
+        if($this->config->item('LeatherCraft') != $this->session->userdata('SESS_BRANCH_ID')){
+            if ($item_code[2] == 'yes')
+            {
+                $discount_data = $this->discount_call();
+            }
+            /*if ($item_code[3] == 'gst' || $item_code[3] == 'single_tax')
+            {*/
+                $tax_data = $this->tax_call();
+            /*}*/
         }
-        /*if ($item_code[3] == 'gst' || $item_code[3] == 'single_tax')
-        {*/
-            $tax_data = $this->tax_call();
-        /*}*/
         $data['discount']          = $discount_data;
         $data['tax']               = $tax_data;
         $branch_details            = $this->get_default_country_state();
@@ -1093,7 +1097,7 @@ class Sales extends MY_Controller{
                         $product_data = array(
                             "product_code"           => $product_code,
                             "product_name"           => $value->item_name,
-                            "product_batch"          => 'BATCH-01',
+                             "product_batch"          => 'BATCH-01',
                             "product_category_id"    => $value->item_category,
                             "product_subcategory_id" => 0,
                             "product_quantity"       => $value->item_quantity,

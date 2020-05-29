@@ -1045,6 +1045,8 @@ if ($charges_sub_module == 1) {
 // var quotation_data = new Array();
 var sales_data = <?php echo json_encode($quotation_data); ?>;
 var branch_state_list = <?php echo json_encode($state); ?>;
+var discount_ary= <?=json_encode($discount);?>;
+var tax_data = <?=json_encode($tax);?>;
 var count_data = <?= $countData; ?>;
 var common_settings_round_off = "<?= $access_common_settings[0]->round_off_access ?>";
 var common_settings_amount_precision = "<?= $access_common_settings[0]->amount_precision ?>";
