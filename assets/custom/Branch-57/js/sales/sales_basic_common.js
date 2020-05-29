@@ -225,6 +225,7 @@ $(document).ready(function () {
                     var j = 0;
                     if(data.length == 1){
                         var product_id = data1[0]. product_id;
+                        var new_item = true;
                         $('#table-total').show();
                         if(sales_data.length != 0){
                             for (var i = 0; i < sales_data.length; i++) {
@@ -235,12 +236,13 @@ $(document).ready(function () {
                                     var quantity = table_row.find('input[name^="item_quantity"]').val();
                                     quantity = ++quantity;
                                     table_row.find('input[name^="item_quantity"]').val(quantity);
+                                    new_item = false;
                                     $("#input_sales_code").val("");
                                     calculateTable(table_row);    
                                     break;
                                 }
                             }
-                        }else{
+                        }if(new_item == true){
                             add_row(data);
                             call_css();
                         }
