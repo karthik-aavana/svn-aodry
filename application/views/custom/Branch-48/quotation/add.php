@@ -363,6 +363,7 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                     <td>
                                                         <input type="hidden" name="item_name" value="">
                                                         <input id="input_sales_code" class="form-control" type="text" name="input_sales_code" placeholder="Enter Product Code/Name" >
+                                                        <span name="input_sales_code_err" class="pull-right validation-color"  style="color:red;"></span>
                                                     </td>
                                                     <?php
                                                     if ($access_settings[0]->description_visible == 'yes') {

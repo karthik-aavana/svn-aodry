@@ -1349,6 +1349,7 @@ function preciseRowAmount(row) {
 }
 
 function generateJson(row) {
+    /*$(document).find('span.validation-color').text('');*/
     var item_name = row.find('input[name^="input_sales_code"]').val();
     var item_category = row.find('select[name="item_category"]').val();
     var item_hsn_sac_code = row.find('input[name^="product_hsn_sac_code"]').val();
@@ -1474,7 +1475,6 @@ function generateJson(row) {
     } else {
         sales_data.push(data_item);
     }
-    console.log(sales_data);
     var table_data = JSON.stringify(sales_data);
     $("#table_data").val(table_data);
 }
