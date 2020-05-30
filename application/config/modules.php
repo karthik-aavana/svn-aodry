@@ -33,6 +33,7 @@ $config['purchase_debit_note_module'] = 28;
 $config['recurrence_module'] = 29;
 $config['accounts_module'] = 30;
 $config['sales_voucher_module'] = 31;
+$config['pos_voucher_module'] = 114;
 $config['purchase_voucher_module'] = 32;
 $config['tax_module'] = 33;
 $config['expense_module'] = 34;
@@ -115,6 +116,7 @@ $config['closing_stock_report'] = 109;
 $config['product_stock_report'] = 110;
 $config['gstr1_report_module'] = 111;
 $config['team_module'] = 112;
+$config['outlet_module'] = 113;
 
 //submodule list
 $config['transporter_sub_module'] = 2;
@@ -233,6 +235,7 @@ $config['expense_bill_table'] = "expense_bill";
 $config['expense_voucher_table'] = "expense_voucher";
 $config['expense_bill_item_table'] = "expense_bill_item";
 $config['sales_voucher_table'] = "sales_voucher";
+$config['pos_voucher_table'] = "pos_voucher";
 $config['purchase_voucher_table'] = "purchase_voucher";
 $config['general_bill_table'] = "general_bill";
 $config['general_voucher_table'] = "general_voucher";
