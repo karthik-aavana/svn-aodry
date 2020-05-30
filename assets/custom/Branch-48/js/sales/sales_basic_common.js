@@ -17,7 +17,7 @@ $(document).ready(function () {
             return false;
         }
     });
-    //AutoComplate();
+    AutoComplate();
     $("#input_sales_code").on('change focus', function () {
         $("#input_sales_code").trigger("click");
     });
@@ -381,7 +381,7 @@ function AutoComplate(){
                     "/" +
                     inventory_advanced +
                     "/" +
-                    item_access,
+                    item_access+"/"+brand_id,
                 type: "GET",
                 dataType: "json",
                 success: function (data) {
@@ -1495,16 +1495,6 @@ function calculateTable(row) {
     preciseRowAmount(row);
     generateJson(row);
     calculateGrandTotal();
-    /*$("#sales_table_body")
-        .find('input[name^="product_hsn_sac_code"]')
-        .each(function () {
-            ro = $(this).closest("tr");
-            if(ro.find(''input[name^="product_hsn_sac_code"]'').val != ""){
-                calculateGrandTotal();
-            }
-    });*/
-
-
 
     var grand_total = +$('#total_grand_total').val();
     var error = $("#err_product").text();
