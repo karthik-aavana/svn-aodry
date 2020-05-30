@@ -788,6 +788,42 @@ class Common
         );
         return $data;
     }
+
+    public function pos_voucher_list_field($voucher_type='pos',$order_ser='',$dir = ''){
+        $string = "sv.pos_voucher_id,sv.voucher_number,sv.voucher_date,sv.receipt_amount,sv.reference_number,sv.reference_id,sv.reference_type,sv.to_account,cur.currency_name, cur.currency_symbol, cur.currency_code, cur.currency_text,c.customer_name";
+        $table  = "pos_voucher sv";
+        $join   = [
+            "customer c"   => "sv.party_id = c.customer_id#left",
+            'currency cur' => 'sv.currency_id = cur.currency_id#left'];
+        
+        if($order_ser =='' || $dir == ''){
+                $order = [ 'sv.pos_voucher_id' => 'desc' ];
+            }else{
+                $order = [ $order_ser => $dir ];
+            }
+        $where = array(
+            'sv.reference_type' => $voucher_type,
+            'sv.delete_status'     => 0,
+            'sv.branch_id'         => $this->ci->session->userdata('SESS_BRANCH_ID'),
+            'sv.financial_year_id' => $this->ci->session->userdata('SESS_FINANCIAL_YEAR_ID')
+        );
+        $filter = array(
+            'c.customer_name',
+            'sv.voucher_number',
+            'DATE_FORMAT(sv.voucher_date, "%d-%m-%Y")',
+            'sv.to_account',
+            'sv.receipt_amount',
+            'sv.reference_number');
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'join'   => $join,
+            'filter' => $filter,
+            'order'  => $order
+        );
+        return $data;
+    }
     public function sales_voucher_details($sales_voucher_id)
     {
         $string = "sv.voucher_number,sv.voucher_date,sv.reference_number,sv.receipt_amount,sv.reference_id,av.accounts_sales_id,av.cr_amount,av.dr_amount,av.voucher_amount,l.ledger_name as from_name,l.ledger_name,l.ledger_name as to_name,av.converted_voucher_amount,sv.currency_converted_rate,av.sales_voucher_id,sv.reference_type";
@@ -797,6 +833,25 @@ class Common
             'tbl_ledgers l'        => 'l.ledger_id = av.ledger_id'];
         $where = [
             'av.sales_voucher_id' => $sales_voucher_id,
+            'av.delete_status'    => 0];
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'join'   => $join
+        );
+        return $data;
+    }
+
+    public function pos_voucher_details($pos_voucher_id)
+    {
+        $string = "sv.voucher_number,sv.voucher_date,sv.reference_number,sv.receipt_amount,sv.reference_id,av.accounts_pos_id,av.cr_amount,av.dr_amount,av.voucher_amount,l.ledger_name as from_name,l.ledger_name,l.ledger_name as to_name,av.converted_voucher_amount,sv.currency_converted_rate,av.pos_voucher_id,sv.reference_type";
+        $table  = "accounts_pos_voucher av";
+        $join   = [
+            'pos_voucher sv' => 'sv.pos_voucher_id = av.pos_voucher_id',
+            'tbl_ledgers l'        => 'l.ledger_id = av.ledger_id'];
+        $where = [
+            'av.pos_voucher_id' => $pos_voucher_id,
             'av.delete_status'    => 0];
         $data = array(
             'string' => $string,
