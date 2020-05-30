@@ -98,10 +98,10 @@ $(document).ready(function () {
         }else {
             $("#err_product").text("")
         }
-
         
-        row_validation();        
-
+        if(!row_validation()){
+            return false;
+        }
         var grand_total = +$('#total_grand_total').val();
         if (grand_total == "" || grand_total == null || grand_total <= 0) {
             $("#err_product").text("Total Amount Should be equal or greater than Zero.");
@@ -112,6 +112,7 @@ $(document).ready(function () {
         }
         
     });
+
     $("#invoice_date").blur(function (event) {
         var date = $('#invoice_date').val();
         if (date == null || date == "") {
@@ -196,6 +197,7 @@ $(document).ready(function () {
         }
     });
 });
+
 function invoice_number_count() {
     var invoice_number = $('#invoice_number').val();
     var module_id = $("#module_id").val();
@@ -223,14 +225,23 @@ function invoice_number_count() {
 }
 
 function row_validation(){
-$("#sales_table_body")
-    .find('input[name^="product_hsn_sac_code"]','select[name="item_category"]','select[name="item_uom"]')
+$(document)
+    .find('#sales_table_body tr')
     .each(function () {
-        var rows = $(this).closest("tr");
-        
+        var rows = $(this);
+        rows.find('[name=input_sales_code_err]').text("");
+        if(rows.find('[name=input_sales_code]').length > 0){
+            if(rows.find('[name=input_sales_code]').val() == ''){
+                rows.find('[name=input_sales_code_err]').text("Please product name.");
+                rows.find('[name="input_sales_code"]').focus();
+                return !1
+            }
+        }
+
+
         var item_uom = rows.find('select[name="item_uom"]').val();
         if (item_uom == "" || item_uom == null) {
-            console.log('errorrrrrr')
+            
             rows.find('[name=item_uom_err]').text("Please Select Unit.");
             rows.find('select[name="item_uom"]').focus();
             return !1
@@ -238,26 +249,7 @@ $("#sales_table_body")
             rows.find('[name=item_uom_err]').text("")
         }
 
-        if (rows.find('input[name=product_hsn_sac_code]').val() == "") {
-            console.log('errorrrrrr')
-            rows.find('[name=err_product_hsn_sac_code]').text("Please Select HSN.");
-            rows.find('input[name=product_hsn_sac_code]').focus();
-            return !1
-        }else {
-            rows.find('[name=err_product_hsn_sac_code]').text("")
-        }
-
-        if (rows.find('select[name="item_category"]').val() == "") {
-            console.log('errorrrrrr')
-            rows.find('[name=category_name_err]').text("Please Select Category.");
-            rows.find('select[name="item_category"]').focus();
-            return !1
-        }else {
-            rows.find('[name=category_name_err]').text("")
-        }
-        
-        if (rows.find('input[name=item_price]').val() == "") {
-            console.log('errorrrrrr')
+        if (rows.find('input[name=item_price]').val() == "" || rows.find('input[name=item_price]').val() <= 0) {    
             rows.find('[name=item_amount_err]').text("Please enter amount.");
             rows.find('input[name=item_price]').focus();
             $("#err_product").text("Please enter amount.")
@@ -266,7 +258,25 @@ $("#sales_table_body")
             rows.find('[name=err_product_hsn_sac_code]').text("")
         }
 
+        if (rows.find('input[name=product_hsn_sac_code]').val() == "") {
+            
+            rows.find('[name=err_product_hsn_sac_code]').text("Please Select HSN.");
+            rows.find('input[name=product_hsn_sac_code]').focus();
+            return !1
+        }else {
+            rows.find('[name=err_product_hsn_sac_code]').text("")
+        }
+
+        if (rows.find('select[name="item_category"]').val() == "") {
+            
+            rows.find('[name=category_name_err]').text("Please Select Category.");
+            rows.find('select[name="item_category"]').focus();
+            return !1
+        }else {
+            rows.find('[name=category_name_err]').text("")
+        }
     });
+    return true;
 }
 
 /*$("#sales_table_body")
