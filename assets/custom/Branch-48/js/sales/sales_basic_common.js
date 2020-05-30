@@ -1429,55 +1429,57 @@ function generateJson(row) {
         item_discount_percentage = 0;
     }
     //console.log(table_index,'item_key_value');
-    var data_item = {
-        item_key_value: +table_index,
-        item_id: +item_id,
-        item_type: item_type,
-        item_code: item_code,
-        item_name: item_name,
-        item_category: item_category,
-        item_hsn_sac_code: item_hsn_sac_code,
-        item_uom: item_uom,
-        item_quantity: +item_quantity,
-        item_price: +item_price,
-        item_description: item_description,
-        item_sub_total: +item_sub_total,
-        item_discount_amount: +item_discount_amount,
-        item_discount_id: +item_discount_id,
-        item_discount_percentage: +item_discount_percentage,
-        item_tax_amount: +item_tax_amount,
-        item_tax_id: +item_tax_id,
-        item_tax_percentage: +item_tax_percentage,
-        item_tax_cess_amount: +item_tax_cess_amount,
-        item_tax_cess_id: +item_tax_cess_id,
-        item_tax_cess_percentage: +item_tax_cess_percentage,
-        item_tds_amount: +item_tds_amount,
-        item_tds_id: +item_tds_id,
-        item_tds_percentage: +item_tds_percentage,
-        item_tds_type: item_tds_type,
-        item_taxable_value: +item_taxable_value,
-        item_grand_total: +item_grand_total
-    };
-    var flag = 0;
-    var i_val = "";
-    for (var i = 0; i < sales_data.length; i++) {
-        if (
-            sales_data[i] !== "undefined" &&
-            sales_data[i].item_key_value == table_index
-        ) {
-            flag = 1;
-            i_val = i;
-            break;
+    if(item_id >= 0 && item_name != "" && item_price != 0){
+        var data_item = {
+            item_key_value: +table_index,
+            item_id: +item_id,
+            item_type: item_type,
+            item_code: item_code,
+            item_name: item_name,
+            item_category: item_category,
+            item_hsn_sac_code: item_hsn_sac_code,
+            item_uom: item_uom,
+            item_quantity: +item_quantity,
+            item_price: +item_price,
+            item_description: item_description,
+            item_sub_total: +item_sub_total,
+            item_discount_amount: +item_discount_amount,
+            item_discount_id: +item_discount_id,
+            item_discount_percentage: +item_discount_percentage,
+            item_tax_amount: +item_tax_amount,
+            item_tax_id: +item_tax_id,
+            item_tax_percentage: +item_tax_percentage,
+            item_tax_cess_amount: +item_tax_cess_amount,
+            item_tax_cess_id: +item_tax_cess_id,
+            item_tax_cess_percentage: +item_tax_cess_percentage,
+            item_tds_amount: +item_tds_amount,
+            item_tds_id: +item_tds_id,
+            item_tds_percentage: +item_tds_percentage,
+            item_tds_type: item_tds_type,
+            item_taxable_value: +item_taxable_value,
+            item_grand_total: +item_grand_total
+        };
+        var flag = 0;
+        var i_val = "";
+        for (var i = 0; i < sales_data.length; i++) {
+            if (
+                sales_data[i] !== "undefined" &&
+                sales_data[i].item_key_value == table_index
+            ) {
+                flag = 1;
+                i_val = i;
+                break;
+            }
         }
+        if (flag == 1) {
+            sales_data[i_val] = data_item;
+        } else {
+            sales_data.push(data_item);
+        }
+        console.log(sales_data);
+        var table_data = JSON.stringify(sales_data);
+        $("#table_data").val(table_data);
     }
-    if (flag == 1) {
-        sales_data[i_val] = data_item;
-    } else {
-        sales_data.push(data_item);
-    }
-    console.log(sales_data);
-    var table_data = JSON.stringify(sales_data);
-    $("#table_data").val(table_data);
 }
 
 function calculateTable(row) {
