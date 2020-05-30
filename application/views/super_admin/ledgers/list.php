@@ -5,7 +5,7 @@ $this->load->view('super_admin/layouts/header');
 <style type="text/css">
   .filter-margin{margin-bottom: 20px;} 
 </style>
-<div class="content-wrapper">
+<div class="content-wrapper add_margin">
   <!-- Content Header (Page header) -->
     <section class="content-header">
       <h5>

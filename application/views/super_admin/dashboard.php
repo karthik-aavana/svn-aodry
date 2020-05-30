@@ -4,7 +4,7 @@ $this->load->view('super_admin/layouts/header');
 
 ?>
 
-<div class="content-wrapper" style="padding-bottom: 80px !important;">
+<div class="content-wrapper add_margin" style="padding-bottom: 80px !important;">
 
     <section class="content-header">
 

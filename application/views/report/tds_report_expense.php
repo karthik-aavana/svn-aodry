@@ -19,6 +19,19 @@ $this->load->view('layout/header');
     div.dataTables_wrapper div.dataTables_filter {
         float: right;
     }
+    .dt-button{
+       float: left;
+       border-radius: 0;
+       -webkit-box-shadow: none;
+       box-shadow: none;
+       border: none;
+       padding: 6px 12px;
+       background-color: #012b72;
+       color: #fff;
+       margin-right: 15px;
+       margin-bottom: 6px !important;
+   }
+
 </style>
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->

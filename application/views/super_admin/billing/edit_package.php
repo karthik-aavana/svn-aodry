@@ -16,7 +16,7 @@ function in_object($ob,$key){
     .module_list ul{padding-left: 5px;}
 </style>
 <!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
+<div class="content-wrapper add_margin">
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h5>

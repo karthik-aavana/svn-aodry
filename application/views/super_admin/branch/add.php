@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed'); 
 $this->load->view('super_admin/layouts/header');
 ?>
-<div class="content-wrapper">
+<div class="content-wrapper add_margin">
     <section class="content-header">
         <h5>
             <ol class="breadcrumb">

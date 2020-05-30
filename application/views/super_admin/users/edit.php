@@ -8,7 +8,7 @@ $this->load->view('super_admin/layouts/header');
 
 <!-- Content Wrapper. Contains page content -->
 
-<div class="content-wrapper">
+<div class="content-wrapper add_margin">
 
     <!-- Content Header (Page header) -->
 

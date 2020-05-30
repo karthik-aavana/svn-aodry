@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $this->load->view('super_admin/layouts/header');
 // $user_id = $this->uri->segment(3);
 ?>
-<div class="content-wrapper">
+<div class="content-wrapper add_margin">
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h5>
