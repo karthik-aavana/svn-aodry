@@ -120,13 +120,13 @@ $(document).ready(function () {
                 rows.find('[name=item_uom_err]').text("")
             }
 
-            if (rows.find('input[name=item_price]').val() == "" || rows.find('input[name=item_price]').val() <= 0) {    
+            if (rows.find('input[name=item_sub_total]').val() == "" || rows.find('input[name=item_sub_total]').val() <= 0) {    
                 rows.find('[name=item_amount_err]').text("Please enter amount.");
                 rows.find('input[name=item_price]').focus();
                 $("#err_product").text("Please enter amount.")
                 flag = false;
             }else {
-                rows.find('[name=err_product_hsn_sac_code]').text("")
+                rows.find('[name=item_amount_err]').text("")
             }
 
             if (rows.find('input[name=product_hsn_sac_code]').val() == "") {
