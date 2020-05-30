@@ -144,7 +144,7 @@ if (@$converted_rate)
                         }
                     }elseif ($data[0]->shipping_address_id == $data[0]->billing_address_id){
                         echo "<br/>";
-                            echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>", $billing_address[0]->shipping_address);
+                            echo str_replace(array("\r\n", "\\r\\n", "\n", "\\n"), "<br>",  $billing_address[0]->shipping_address .', '. $billing_address[0]->city_name . ', ' . $billing_address[0]->state_name . ' - ' . $billing_address[0]->address_pin_code);
                         
                     }
                     ?>

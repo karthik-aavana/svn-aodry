@@ -166,11 +166,13 @@ if(@$converted_rate) $convert_rate = $converted_rate;
                     }
                     ?>
                     <?php
+                    $e_way_bill_date = '';
                     $date = $data[0]->sales_credit_note_e_way_bill_date;
-                    $date_for_e_bill = date('d-m-Y', strtotime($date));?>
+                    $date_for_e_bill = date('d-m-Y', strtotime($date));
+                    ?>
                     <?php
                     if (isset($data[0]->sales_credit_note_e_way_bill_date)) {
-                        if ($data[0]->sales_credit_note_e_way_bill_date != "") {
+                        if ($data[0]->sales_credit_note_e_way_bill_date != '' && $data[0]->sales_credit_note_e_way_bill_date != '0000-00-00') {
                             echo '<br>E Way Bill Date : ' . $date_for_e_bill;
                         }
                     }
