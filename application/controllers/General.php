@@ -27,6 +27,7 @@ class General extends MY_Controller
         $this->db->where('branch_id',$branch_id);
         $this->db->where('from_date <=',$invoice_date);
         $this->db->where('year_status','1');
+        $this->db->where('is_current','1');
         $this->db->where('to_date >=',$invoice_date);
         $q = $this->db->get('tbl_financial_year');
        
