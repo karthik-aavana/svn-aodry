@@ -481,7 +481,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                                 <input type='hidden' name='item_code' value='<?php
                                                                 echo $key->product_code;
                                                                 ?>'>
-                                                                       <?php echo $key->product_name; ?>
+                                                                       <?php echo $key->product_code.' '.$key->product_name; ?>
                                                                 <br>(P) (HSN/SAC: 
                                                                 <?php echo $key->product_hsn_sac_code; ?>)
                                                                 <br>

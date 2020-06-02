@@ -356,7 +356,7 @@ if (@$converted_rate)
                         if ($value->item_type == 'product' || $value->item_type == 'product_inventory') {
                             ?>
                             <td style="text-align: left;">
-                                <span class="capitalize" style="font-weight: none"><?php echo strtoupper(strtolower($value->product_name)); ?></span>
+                                <span class="capitalize" style="font-weight: none"><?php echo $value->product_code .' '.strtoupper(strtolower($value->product_name)); ?></span>
                                 <?php
                                 if (isset($value->sales_item_description) && $value->sales_item_description != "") {
                                     echo "<br/>";
