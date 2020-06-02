@@ -4535,6 +4535,7 @@ class Common
                    sa.address_pin_code,
                    cti.city_name ,
                    sta.state_name,
+                   c.customer_code,
                    c.customer_name,
                    c.due_days,
                    c.customer_address,
