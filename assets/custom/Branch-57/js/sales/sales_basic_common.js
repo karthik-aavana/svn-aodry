@@ -919,7 +919,7 @@ function add_row(data) {
         item_code +
         "'></td>";
     if (item_type == "product" || item_type == "product_inventory")
-        cols += "<td>" + item_name + "<br>(P) (HSN/SAC:" + item_hsn_sac_code + ")<br>"+product_batch+"</td>";
+        cols += "<td>" + item_code + ' ' + item_name + "<br>(P) (HSN/SAC:" + item_hsn_sac_code + ")<br>"+product_batch+"</td>";
     else cols += "<td>" + item_name + "<br>(S) (HSN/SAC:" + item_hsn_sac_code + ")</td>";
 
     if (settings_description_visible == "yes") {

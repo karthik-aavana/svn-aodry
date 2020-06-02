@@ -119,7 +119,7 @@ if (@$converted_rate)
                     </div>
                     <b class="capitalize"><?php
                         if (isset($data[0]->customer_name)) {
-                            echo strtolower($data[0]->customer_name);
+                            echo $data[0]->customer_code .' '.strtolower($data[0]->customer_name);
                         }
                         ?></b>
                     <?php
