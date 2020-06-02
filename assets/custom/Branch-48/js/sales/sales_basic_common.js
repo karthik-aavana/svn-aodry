@@ -982,7 +982,7 @@ function add_row(data) {
     $("table #sales_table_body tr:last").replaceWith(newRow);
     /*$("#sales_table_body").prepend(newRow);*/
     console.log(table_index,'table_index');
-    //table_index++;
+    table_index++;
 
     calculateTable(newRow);
 
