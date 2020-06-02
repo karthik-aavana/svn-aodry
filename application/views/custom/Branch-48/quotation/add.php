@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $this->load->view('layout/header');
 
 $CI =& get_instance();
-$tax_cess         = $CI->tax_call_type('CESS');
+$tax_cess  = $CI->tax_call_type('CESS');
 ?>
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
