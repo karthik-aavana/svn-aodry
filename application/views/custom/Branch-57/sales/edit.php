@@ -468,6 +468,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                 <?php
                                                 $i = 0;
                                                 $tot = 0;
+                                                $sales_total_qty = 0;
                                                 foreach ($items as $key) {
                                                     ?>
                                                     <tr id="<?= $i ?>">
@@ -720,6 +721,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                             ?>'>
                                                         </td>
                                                         <?php
+                                                        $sales_total_qty += $key->sales_item_quantity;
                                                         $sales_temp = array("item_key_value" => $i, "item_id" => $key->item_id, "item_type" => $key->item_type, "item_quantity" => $key->sales_item_quantity, "item_price" => $key->sales_item_unit_price ? precise_amount($key->sales_item_unit_price) : 0, "item_description" => $key->sales_item_description, "item_sub_total" => $key->sales_item_sub_total ? precise_amount($key->sales_item_sub_total) : 0, "item_discount_amount" => $key->sales_item_discount_amount ? precise_amount($key->sales_item_discount_amount) : 0, "item_discount_id" => $key->sales_item_discount_id ? $key->sales_item_discount_id : 0, "item_discount_percentage" => $key->item_discount_percentage ? precise_amount($key->item_discount_percentage) : 0,
                                                             'item_basic_total' => $key->sales_item_basic_total ? precise_amount($key->sales_item_basic_total) : 0,
                                                             'item_selling_price' => $key->sales_item_selling_price ? precise_amount($key->sales_item_selling_price) : 0,
@@ -810,6 +812,12 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                         echo precise_amount($data[0]->sales_sub_total);
                                                         ?></span>
                                                 </td>
+                                            </tr>
+                                            <tr class="totalQuantity_tr">
+                                                <td align="right"><?php echo 'Quantity'; ?></td>
+                                                <td align='right'><span id="totalQuantity"><?php
+                                                        echo ($sales_total_qty);
+                                                        ?></span></td>
                                             </tr>
                                             <tr <?= ( $data[0]->sales_discount_amount <= 0 ? 'style="display: none;"' : '' );
                                                         ?>class='totalDiscountAmount_tr'>

@@ -415,6 +415,10 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                 <td align="right"><?php echo 'Subtotal'; ?> (+)</td>
                                                 <td align='right'><span id="totalSubTotal">0.00</span></td>
                                             </tr>
+                                            <tr class="totalQuantity_tr">
+                                                <td align="right"><?php echo 'Quantity'; ?></td>
+                                                <td align='right'><span id="totalQuantity">0.00</span></td>
+                                            </tr>
                                             <tr <?= ($access_settings[0]->discount_visible == 'no' ? 'style="display: none;"' : ''); ?> class='totalDiscountAmount_tr'>
                                                 <td align="right"><?php echo 'Discount'; ?> (-)</td>
                                                 <td align='right'>

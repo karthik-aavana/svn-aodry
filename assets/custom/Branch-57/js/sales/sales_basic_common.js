@@ -224,7 +224,7 @@ $(document).ready(function () {
                     var count_item = 0;
                     var j = 0;
                     if(data.is_product){
-                        var product_id = data[0]. product_id;
+                        var product_id = data[0].product_id;
                         data['item_id'] = product_id;
                         var new_item = true;
                         $('#table-total').show();
@@ -594,7 +594,7 @@ function add_row(data) {
     
     var flag = 0;
     var item_id = data.item_id;
-    var item_type = data.item_type;
+    var item_type = 'product';//data.item_type;
     var branch_country_id = data.branch_country_id;
     /*var branch_state_id = data.branch_state_id;*/
     var branch_id = data.branch_id;
@@ -1723,7 +1723,7 @@ function calculateTable(row) {
 }
 //calculate grand total
 function calculateGrandTotal() {
-    var sub_total = 0;
+    var sub_total = total_qty= 0;
     var discount = 0;
     var tax = 0;
     var tax_cess = 0;
@@ -1743,6 +1743,11 @@ function calculateGrandTotal() {
         .find('input[name^="item_sub_total"]')
         .each(function () {
             sub_total += +$(this).val();
+        });
+    $("#sales_table_body")
+        .find('input[name^="item_quantity"]')
+        .each(function () {
+            total_qty += +$(this).val();
         });
     $("#sales_table_body")
         .find('input[name^="item_taxable_value"]')
@@ -1854,6 +1859,7 @@ function calculateGrandTotal() {
     $('#without_reound_off_grand_total').val(final_grand_total);
     $("#total_sub_total").val(precise_amount(sub_total));
     $("#total_taxable_amount").val(precise_amount(taxable));
+    $("#totalQuantity").text(total_qty);
    /* $("#total_discount_amount").val(precise_amount(discount));*/
     $("#total_discount_amount").val(0);
     $("#total_tax_amount").val(precise_amount(tax));

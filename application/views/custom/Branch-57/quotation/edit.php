@@ -391,6 +391,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                 <?php
                                                 $i = 0;
                                                 $tot = 0;
+                                                $sales_total_qty = 0;
                                                 foreach ($items as $key) { ?>
                                                     <tr id="<?= $i ?>">
                                                         <td><a class='deleteRow'> <img src='<?= base_url(); ?>assets/images/bin_close.png' /></a>
@@ -642,6 +643,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                             ?>'>
                                                         </td>
                                                         <?php
+                                                        $sales_total_qty += $key->quotation_item_quantity;
                                                         $quotation_temp = array("item_key_value" => $i, "item_id" => $key->item_id, "item_type" => $key->item_type, "item_quantity" => $key->quotation_item_quantity, "item_price" => $key->quotation_item_unit_price ? precise_amount($key->quotation_item_unit_price) : 0, "item_description" => $key->quotation_item_description, "item_sub_total" => $key->quotation_item_sub_total ? precise_amount($key->quotation_item_sub_total) : 0, "item_discount_amount" => $key->quotation_item_discount_amount ? precise_amount($key->quotation_item_discount_amount) : 0, "item_discount_id" => $key->quotation_item_discount_id ? $key->quotation_item_discount_id : 0, "item_discount_percentage" => $key->item_discount_percentage ? precise_amount($key->item_discount_percentage) : 0,
                                                             'item_basic_total' => $key->quotation_item_basic_total ? precise_amount($key->quotation_item_basic_total) : 0,
                                                             'item_selling_price' => $key->quotation_item_selling_price ? precise_amount($key->quotation_item_selling_price) : 0,
@@ -719,6 +721,12 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                             <tr>
                                                 <td align="right">Total Value (+)</td>
                                                 <td align='right'><span id="totalSubTotal"><?php echo precise_amount($data[0]->quotation_sub_total); ?></span></td>
+                                            </tr>
+                                            <tr class="totalQuantity_tr">
+                                                <td align="right"><?php echo 'Quantity'; ?></td>
+                                                <td align='right'><span id="totalQuantity"><?php
+                                                        echo ($sales_total_qty);
+                                                        ?></span></td>
                                             </tr>
                                             <tr <?= ($data[0]->quotation_discount_amount <= 0 ? 'style="display: none;"' : ''); ?> class='totalDiscountAmount_tr'>
                                                 <td align="right">Total Discount (-)</td>
