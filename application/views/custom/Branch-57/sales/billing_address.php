@@ -38,4 +38,4 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
     </div>
 </div>
 <!-- <script src="<?php echo base_url('assets/js/service/') ?>sac_code.js"></script> -->
-<script src="<?php echo base_url('assets/custom/branch-'.$branch_id.'/js/sales/'); ?>ship_to.js"></script>
+<!-- <script src="<?php echo base_url('assets/custom/branch-'.$branch_id.'/js/sales/'); ?>ship_to.js"></script> -->

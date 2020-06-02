@@ -1,7 +1,6 @@
 $(document).ready(function () {
-        
+        var comp_table = $('#customer_address_table').DataTable();
         $(document).on("click", "#shipping_pop", function () {
-            var comp_table = $('#customer_address_table').DataTable();
             var billing_state = $('#billing_state').val();
             var party_id = $("#ship_to").val();
             var ship_add = $('[name=shipping_address]').val();
@@ -109,7 +108,6 @@ $(document).ready(function () {
                 var billing_state = $('#billing_state').val();
                 var party_id = $("#ship_to").val();
                 var ship_add = '';
-                var comp_table = $('#customer_address_table').DataTable();
                 comp_table.destroy();
                 comp_table = $('#customer_address_table').DataTable({
                     'ajax': {
