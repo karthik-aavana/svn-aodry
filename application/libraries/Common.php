@@ -3045,6 +3045,29 @@ class Common
         return $data;
     }
 
+    public function product_based_barcode($barcode = ""){
+        $string = "p.product_id,p.product_code,p.product_hsn_sac_code,p.product_name,p.product_price,p.product_quantity,p.product_damaged_quantity,p.product_gst_id as product_tax_id,p.product_gst_value as product_tax_value,p.product_tds_id,p.product_tds_value,p.product_details,p.ledger_id,td.tax_name as module_type,p.product_batch,p.product_quantity,p.product_opening_quantity,p.product_selling_price, p.product_mrp_price, p.product_discount_id,p.margin_discount_value,p.margin_discount_id,p.product_basic_price,p.product_unit,u.uom,p.equal_unit_number,p.equal_uom_id";
+        $table = "products p";
+        $join  = [
+            'tax td' => 'td.tax_id = p.product_tds_id' . '#' . 'left',
+            "uqc u"  => "u.id = p.product_unit_id" . '#left']; 
+        $where = array(
+            'p.delete_status' => 0,
+            'p.branch_id'     => $this->ci->session->userdata('SESS_BRANCH_ID'));
+        if ($barcode != "")
+        {
+            $where['p.product_barcode'] = $barcode;
+        }
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'join'   => $join,
+            'where'  => $where,
+            'order'  => ""
+        );
+        return $data;
+    }
+
     public function sales_saleing_price() {
         $string = "s.sales_sub_total";
         $table = "sales s";

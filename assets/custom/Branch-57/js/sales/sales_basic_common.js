@@ -197,7 +197,7 @@ $(document).ready(function () {
         minChars: 1,
         cache: false,
         source: function (term, suggest) {
-            term = term.toLowerCase();
+            term = $.trim(term.toLowerCase());
             if (common_settings_inventory_advanced == "") {
                 var inventory_advanced = "no";
             } else {
@@ -223,8 +223,9 @@ $(document).ready(function () {
                     var suggestions = [];
                     var count_item = 0;
                     var j = 0;
-                    if(data.length == 1){
-                        var product_id = data1[0]. product_id;
+                    if(data.is_product){
+                        var product_id = data[0]. product_id;
+                        data['item_id'] = product_id;
                         var new_item = true;
                         $('#table-total').show();
                         if(sales_data.length != 0){

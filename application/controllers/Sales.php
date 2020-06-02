@@ -792,15 +792,29 @@ class Sales extends MY_Controller{
 
     public function get_sales_suggestions_leathercraft($term , $inventory_advanced , $item_access , $brand_id= ''){
         if($term == '-') $term ='';
-        $suggestions_query = $this->common->item_suggestions_field($item_access , $term , $brand_id);
-
-        $data              = $this->general_model->getQueryRecords($suggestions_query);
-
-        if(count($data) ==1){
-
-            $product_data = $this->common->product_field($data[0]->item_id);
+        $flag = false;
+        if(strlen($term) > 7){
+            $product_data = $this->common->product_based_barcode($term);
             $data         = $this->general_model->getJoinRecords($product_data['string'] , $product_data['table'] , $product_data['where'] , $product_data['join']);
+            if(count($data) == 1){
+                $flag = true;
+                $data['is_product'] = true;
+            }
+            /*print_r($this->db->last_query());*/
         }
+        if(!$flag){
+
+            $suggestions_query = $this->common->item_suggestions_field($item_access , $term , $brand_id);
+
+            $data              = $this->general_model->getQueryRecords($suggestions_query);
+            if(count($data) ==1){
+
+                $product_data = $this->common->product_field($data[0]->item_id);
+                $data         = $this->general_model->getJoinRecords($product_data['string'] , $product_data['table'] , $product_data['where'] , $product_data['join']);
+                $data['is_product'] = true;
+            }
+        }
+
         // $data["product_inventoery"]=$inventory_access[0]->inventory_advanced;
         echo json_encode($data);
     }
