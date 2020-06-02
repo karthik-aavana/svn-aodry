@@ -752,9 +752,11 @@ function add_row(data) {
         item_code +
         "'></td>";
     if (item_type == "product" || item_type == "product_inventory")
-        cols += "<td>" + item_name + "<br>(P) (HSN/SAC:" + item_hsn_sac_code + ")<br>"+product_batch+"</td>";
+        cols += "<td>" + item_name + "<br>(P) (HSN/SAC:" + item_hsn_sac_code + ")<br></td>";
     else cols += "<td>" + item_name + "<br>(S) (HSN/SAC:" + item_hsn_sac_code + ")</td>";
 
+    cols += "<td style='text-align:center'><input type='text' class='form-control form-fixer text-center float_number' value="+ item_hsn_sac_code +" name='item_hsn' readonly></td>";
+    
     if (settings_description_visible == "yes") {
         cols +=
             "<td>" +
@@ -931,7 +933,7 @@ function add_row(data) {
             "' class='pull-right' style='color:red;'>0.00</span>" +
             "</td>";
 
-        if (input_type == "hidden") {
+        /*if (input_type == "hidden") {
             cols +=
                 "<td style='text-align:center'>" +
                 "<span id='item_tax_percentage_hide_lbl_" +
@@ -940,6 +942,7 @@ function add_row(data) {
         } else {
             cols += "<td>";
         }
+
         cols +=
             "<input type='hidden' name='item_tax_cess_id' value='0'>" +
             "<input type='hidden' name='item_tax_cess_percentage' value='0'>" +
@@ -948,9 +951,9 @@ function add_row(data) {
             "<span id='item_tax_cess_lbl_" +
             table_index +
             "' class='pull-right' style='color:red;'>0.00</span>" +
-            "</td>";
+            "</td>";*/
     }
-    cols += "<td style='text-align:center'><input type='text' class='form-control form-fixer text-center float_number' value="+ item_hsn_sac_code +" name='item_hsn' readonly></td>";
+    
    /* cols += "<td>" +
                 "<div class='form-group' style='display: table;'>" +
                     "<div class='input-group-addon hsn' style='background-color: #d0e0fc;'>" +
@@ -959,7 +962,7 @@ function add_row(data) {
                     "<input type='text' style='height: 36px;' class='form-control form-fixer text-left float_number' value="+ item_hsn_sac_code +" name='item_hsn' readonly>" +
                 "</div>"+
             "</td>";*/
-    cols += "<td style='text-align:center'>"+cat_select+"</td>";
+    //cols += "<td style='text-align:center'>"+cat_select+"</td>";
     //tax area
     if (input_type == "hidden") {
         cols +=

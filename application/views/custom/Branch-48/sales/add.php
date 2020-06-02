@@ -286,12 +286,13 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                 <tr>
                                                     <th width="2%"><img src="<?php echo base_url(); ?>assets/images/bin1.png" /></th>
                                                     <th class="span2" width="15%">Items</th>
+                                                    <th class="span2" width="9%">HSN Code</th>
                                                     <?php
                                                     if ($access_settings[0]->description_visible == 'yes') {
                                                         ?>
                                                         <th class="span2" width="10%">Description</th>
                                                     <?php } ?>
-                                                    <th class="span2">Quantity</th>
+                                                    <th class="span2" width="5%">Quantity</th>
                                                     <th class="span2" width="8%">Unit</th>
                                                     <th class="span2" width="8%">Rate</th>
                                                     <?php
@@ -318,10 +319,10 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                     <?php } ?>
                                                     <?php if ($access_settings[0]->tax_type == 'gst' || $access_settings[0]->tax_type == 'single_tax') { ?>
                                                         <th class="span2" width="8%">GST(%)</th>
-                                                        <th class="span2" width="8%">Cess(%)</th>
+                                                        <!-- <th class="span2" width="8%">Cess(%)</th> -->
                                                     <?php } ?>
-                                                    <th class="span2" width="9%">HSN Code</th>
-                                                    <th class="span2" width="8%">Category</th>
+                                                    
+                                                    <!-- <th class="span2" width="8%">Category</th> -->
                                                     <th class="span2" width="9%">Total</th>
                                                 </tr>
                                             </thead>                                            
@@ -458,6 +459,15 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                         <input id="input_sales_code" class="form-control" type="text" name="input_sales_code" placeholder="Enter Product Code/Name" >
                                                         <span name="input_sales_code_err" class="pull-right validation-color"  style="color:red;"></span>
                                                     </td>
+                                                    <td>
+                                                        <div class="form-group" style="display: table;">
+                                                            <div class="input-group-addon hsn" style="background-color: #d0e0fc;">
+                                                                <a href="" data-toggle="modal" data-target="#hsn_modal" class="pull-right"><span class="fa fa-eye"></span></a>
+                                                            </div>
+                                                            <input type="text" style="height: 36px;" class="form-control form-fixer text-left float_number" name="product_hsn_sac_code" value="<?php echo set_value('service_hsn_sac_code'); ?>" >
+                                                        </div>
+                                                        <span class="pull-right validation-color" style="color:red;margin: -12px 0 0 13px;" name="err_product_hsn_sac_code"></span>
+                                                    </td>
                                                     <?php
                                                     if ($access_settings[0]->description_visible == 'yes') {
                                                         ?>
@@ -541,7 +551,7 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                         </div>
                                                         <span id="item_tax_lbl_0" class="pull-right" style="color:red;">0.00</span>
                                                     </td>
-                                                    <td>
+                                                    <!-- <td>
                                                         <input type="hidden" name="item_tax_cess_id" value=""><input type="hidden" name="item_tax_cess_percentage" value="0.00"><input type="hidden" name="item_tax_cess_amount" value="0.00">
                                                         <div class="form-group" style="margin-bottom:0px !important;">
                                                             <select class="form-control open_tax " name="item_tax_cess" style="width: 100%;" tabindex="-1" aria-hidden="true">
@@ -554,18 +564,10 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                             </select>
                                                         </div>
                                                         <span id="item_tax_cess_lbl_0" class="pull-right" style="color:red;">0.00</span>
-                                                    </td>
+                                                    </td> -->
                                                     <?php } ?>
-                                                    <td>
-                                                        <div class="form-group" style="display: table;">
-                                                            <div class="input-group-addon hsn" style="background-color: #d0e0fc;">
-                                                                <a href="" data-toggle="modal" data-target="#hsn_modal" class="pull-right"><span class="fa fa-eye"></span></a>
-                                                            </div>
-                                                            <input type="text" style="height: 36px;" class="form-control form-fixer text-left float_number" name="product_hsn_sac_code" value="<?php echo set_value('service_hsn_sac_code'); ?>" >
-                                                        </div>
-                                                        <span class="pull-right validation-color" style="color:red;margin: -12px 0 0 13px;" name="err_product_hsn_sac_code"></span>
-                                                    </td>
-                                                    <td style="text-align:center">
+                                                    
+                                                    <!-- <td style="text-align:center">
                                                         <input type="hidden" name="category_id" value="">
                                                         <select class="form-control " name="item_category" style="width: 100%;" tabindex="-1" aria-hidden="true">
                                                             <option value="">Select</option>
@@ -576,7 +578,7 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                             ?>
                                                         </select>
                                                         <span name="category_name_err" class="pull-right validation-color"  style="color:red;"></span>
-                                                    </td>
+                                                    </td> -->
                                                     <td><input type="text" class="float_number form-control form-fixer text-right" name="item_grand_total"></td>
                                                 </tr>
                                             </tfoot>

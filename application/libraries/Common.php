@@ -6233,7 +6233,7 @@ class Common
     public function product_list_field(){
         $string             = "p.*,c.category_name,u.first_name,u.last_name,m.uom";
         $table              = "products p";
-        $join['category c'] = "c.category_id=p.product_category_id";
+        $join['category c'] = "c.category_id=p.product_category_id" . '#' . 'left';
         $join['users u']    = "u.id = p.added_user_id";
         $join['uqc m']    = 'm.id = p.product_unit_id' . '#' . 'left';
         $where = array(
