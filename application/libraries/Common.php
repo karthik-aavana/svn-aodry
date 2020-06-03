@@ -2708,7 +2708,7 @@ class Common
 
     public function sa_autoModule_field($branch_id)
     {
-        $string = "am.module_id,is_report";
+        $string = "am.module_id,m.is_report";
         $table = "active_modules am";
         $where = array(
             'am.branch_id'     => $branch_id,
