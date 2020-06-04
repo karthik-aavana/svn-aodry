@@ -123,23 +123,7 @@
                 font-family: 'Google Sans',arial,sans-serif!important;
             }
             .fb-box img{
-                width: 47%;
-                margin: 10px 0px 0px 110px;
-            }
-            .add_line{ 
-                display: flex; 
-                flex-direction: row; 
-            }
-            .add_line:before, 
-            .add_line:after { 
-                background-color:#dcdada;
-                content: "";
-                display: inline-block;
-                height: 1px;
-                position: relative;
-                vertical-align: middle;
-                width: 50%;
-                margin-top: 10px;
+                width: 170px;
             }
         </style>
         <?php
@@ -307,12 +291,9 @@
                                     <?php echo form_submit('register', 'Next', 'class="btn btn-primary btn-block btn-flat"'); ?>
                                 </div>
                             </div>
-                            <div class="add_line">
-                                <div class="line_brek">OR</div>
-                            </div>
                             <div class="fb-box">
                                 <div id="status"></div>
-                                <a href="javascript:void(0);" onclick="fbLogin();" id="fbLink"><img src="<?php echo base_url('assets/'); ?>images/facebook_logo.png"></a>
+                                <a href="javascript:void(0);" onclick="fbLogin();" id="fbLink"><img src="<?php echo base_url('assets/'); ?>images/facebook_logo.jpg"></a>
                                 <div class="ac-data" id="userData"></div>
                             </div>
                            <p style="margin-top: 13px;border-bottom:1px solid #e7dede;text-align: center;padding-bottom: 10px;">By creating an Aodry account, you're agreeing to accept the <b style="color: #000000">Aodry</b> <strong><a href="http://aodry.com/terms.php" target="_blank">Customer Terms of Service.</a></strong> </p>
