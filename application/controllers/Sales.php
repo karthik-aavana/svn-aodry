@@ -388,6 +388,18 @@ class Sales extends MY_Controller{
         
     }
 
+    function get_all_items_barcode(){
+        $product_data = $this->common->all_products_field();
+        $data         = $this->general_model->getRecords($product_data['string'] , $product_data['table'] , $product_data['where']);
+        $pros = array();
+        foreach ($data as $key => $value) {
+            if($value->product_closing_quantity > 0){
+                $pros['pro_'.strtolower($value->product_barcode)] = $value;
+            }
+        }
+        echo json_encode($pros);
+    }
+
     function getAdvanceNumber(){
         $json = array();
         $data = $this->get_default_country_state();

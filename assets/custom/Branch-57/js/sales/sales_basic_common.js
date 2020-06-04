@@ -1,5 +1,6 @@
 var mapping = {};
-
+var allPros = {};
+var addedItems = {};
 if (typeof count_data === "undefined" || count_data === null) {
     var count_data = 0;
 }
@@ -8,6 +9,13 @@ var branch_country_id = $("#branch_country_id").val();
 var branch_state_id = $("#branch_state_id").val();
 var flag2 = 0;
 $(document).ready(function () {
+    if(uqc){
+        var uom = {};
+        $(uqc).each(function(k,v){
+            uom[v.id]= v;
+        })
+        uqc = uom;
+    }
     $('.content-wrapper').css('margin-left', 0);
     $('.main-sidebar').css('display', 'none');
 
@@ -125,32 +133,13 @@ $(document).ready(function () {
             
         } else {
             flag2 = 2;
-            /*$("#billing_state").html("");
-            $("#billing_state").append('<option value="">Select</option>');
-            for (var i = 0; i < branch_state_list.length; i++) {
-                $("#billing_state").append(
-                    '<option value="' +
-                    branch_state_list[i].state_id +
-                    '">' +
-                    branch_state_list[i].state_name +
-                    "</option>"
-                );
-            }*/
+            
             $("#type_of_supply").html("");
             $("#type_of_supply").append('<option value="regular">Regular</option>');
             $('[name=gst_payable]').attr('disabled',false);
         }
         $("#type_of_supply").change();
-        /*var state = $('#billing_state').val();
-        if(state == '0'){
-            opt = "<option value='export_without_tax'>Export without tax</option>\n\
-                            <option value='export_with_tax'>Export with tax</option>";
-            $('[name=gst_payable]').val('no').trigger('change').attr('disabled',true);
-        }else{
-            opt = "<option selected='selected' value='regular'>Regular</option>";
-            $('[name=gst_payable]').attr('disabled',false);
-        }
-        $('#type_of_supply').html(opt);*/
+        
     }
     $("#billing_state").change(function (event) {
         if($(this).val() == '0'){
@@ -158,7 +147,6 @@ $(document).ready(function () {
         }
         ChangeTypeOfSupply();
     });
-    
     
     //date change
     $("#invoice_date").on("changeDate", function () {
@@ -208,118 +196,90 @@ $(document).ready(function () {
                 item_access = "product";
             }
 
-            var isnum = /^\d+$/.test(term);
-            $.ajax({
-                url: base_url +
-                    "sales/get_sales_suggestions_leathercraft/" +
-                    term +
-                    "/" +
-                    inventory_advanced +
-                    "/" +
-                    item_access,
-                type: "GET",
-                dataType: "json",
-                success: function (data) {
-                    var suggestions = [];
-                    var count_item = 0;
-                    var j = 0;
-                    if(data.is_product){
-                        var product_id = data[0].product_id;
-                        data['item_id'] = product_id;
-                        var new_item = true;
-                        $('#table-total').show();
-                        if(sales_data.length != 0){
-                            for (var i = 0; i < sales_data.length; i++) {
-                                var pre_item_id = sales_data[i].item_id;
-                                if (pre_item_id == product_id) {
-                                    var row_index = sales_data[i].item_key_value;
-                                    var table_row = $("#"+ row_index);
-                                    var quantity = table_row.find('input[name^="item_quantity"]').val();
-                                    quantity = ++quantity;
-                                    table_row.find('input[name^="item_quantity"]').val(quantity);
-                                    new_item = false;
-                                    $("#input_sales_code").val("");
-                                    calculateTable(table_row);    
-                                    break;
-                                }
-                            }
-                        }if(new_item == true){
-                            add_row(data);
-                            call_css();
-                        }
-                        $("#input_sales_code").val("");
-                    }else{
-
-                        for (var i = 0; i < data.length; ++i) {
-                            var quantity = 0;
-                            var product_quantity = (data[i].product_quantity == null) ? 0 : data[i].product_quantity;
-                            var product_opening_quantity = (data[i].product_opening_quantity == null) ? 0 : data[i].product_opening_quantity;
-                            quantity = parseFloat(product_quantity) + parseFloat(product_opening_quantity);
-                            if(quantity > 0){
-                                j = i;
-                                count_item++;
-                                var kv = data[i].item_code + " " + data[i].item_name+ ' ' + data[i].product_batch
-                                suggestions.push(kv);
-                                kv = kv.replace(/ /g, "_"); 
-                                var item_code = kv;//data[i].item_code+'-'+data[i].product_batch;
-                                var code = item_code.toString().split(' ');
-                                mapping[code[0]] =
-                                    data[i].item_id +
-                                    "-" +
-                                    data[i].item_type +
-                                    "-" +
-                                    settings_discount_visible +
-                                    "-" +
-                                    settings_tax_type;
-                            }
-                        }
-                        suggest(suggestions);
-                    }
-                    
-                    //console.log(term);
-                    //&& isnum == true
-                    /*if (count_item == 1 && term.length > 9 ) {
-                        var k =  data[j].item_code + " " + data[j].item_name+ ' ' + data[j].product_batch;
-                        k = k.replace(/ /g, "_");
-                        $.ajax({
-                            url: base_url +
-                                "sales/get_table_items/" +
-                                mapping[k],
-                            type: "GET",
-                            dataType: "JSON",
-                            success: function (data1) {
-                                var product_id = data1[0]. product_id;
-                                var new_item = true;
-                                if(sales_data.length != 0){
-                                    for (var i = 0; i < sales_data.length; i++) {
-                                        var pre_item_id = sales_data[i].item_id;
-                                        if (pre_item_id == product_id) {
-                                            var row_index = sales_data[i].item_key_value;
-                                            var table_row = $("#"+ row_index);
-                                            var quantity = table_row.find('input[name^="item_quantity"]').val();
-                                            quantity = ++quantity;
-                                            table_row.find('input[name^="item_quantity"]').val(quantity);
-                                            new_item = false;
-                                            $("#input_sales_code").val("");
-                                            calculateTable(table_row);    
-                                            break;
-                                        }
-                                    }
-                                }
-                                if(new_item == true){
-                                    $('#table-total').show();
-                                    add_row(data1);
-                                    call_css();
-                                    $("#input_sales_code").val("");
-                                }
-                            }
-                        });
-                        suggest("");
-                    } else {
-                        
-                    }*/
+            if(allPros['pro_'+term]){
+                product_id = allPros['pro_'+term]['product_id'];
+                
+                if (addedItems['pro_'+product_id]) {
+                    var row_index = addedItems['pro_'+product_id];
+                    var table_row = $("#"+ row_index);
+                    var quantity = table_row.find('input[name^="item_quantity"]').val();
+                    quantity = ++quantity;
+                    table_row.find('input[name^="item_quantity"]').val(quantity);
+                    new_item = false;
+                    calculateTable(table_row);
+                }else{
+                    $('#table-total').show();
+                    add_row(allPros['pro_'+term]);
                 }
-            });
+                /*call_css();*/
+                
+                $("#input_sales_code").val("");
+            }else{
+                var isnum = /^\d+$/.test(term);
+                $.ajax({
+                    url: base_url +
+                        "sales/get_sales_suggestions_leathercraft/" +
+                        term +
+                        "/" +
+                        inventory_advanced +
+                        "/" +
+                        item_access,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        var suggestions = [];
+                        var count_item = 0;
+                        var j = 0;
+                        if(data.is_product){
+                            var product_id = data[0].product_id;
+                            data['item_id'] = product_id;
+                            var new_item = true;
+                            $('#table-total').show();
+                            if (addedItems['pro_'+product_id]) {
+                                var row_index = addedItems['pro_'+product_id];
+                                var table_row = $("#"+ row_index);
+                                var quantity = table_row.find('input[name^="item_quantity"]').val();
+                                quantity = ++quantity;
+                                table_row.find('input[name^="item_quantity"]').val(quantity);
+                                new_item = false;
+                                $("#input_sales_code").val("");
+                                calculateTable(table_row);
+                            }
+                            if(new_item == true){
+                                add_row(data[0]);
+                                call_css();
+                            }
+                            $("#input_sales_code").val("");
+                        }else{
+
+                            for (var i = 0; i < data.length; ++i) {
+                                var quantity = 0;
+                                var product_quantity = (data[i].product_quantity == null) ? 0 : data[i].product_quantity;
+                                var product_opening_quantity = (data[i].product_opening_quantity == null) ? 0 : data[i].product_opening_quantity;
+                                quantity = parseFloat(product_quantity) + parseFloat(product_opening_quantity);
+                                if(quantity > 0){
+                                    j = i;
+                                    count_item++;
+                                    var kv = data[i].item_code + " " + data[i].item_name+ ' ' + data[i].product_batch
+                                    suggestions.push(kv);
+                                    kv = kv.replace(/ /g, "_"); 
+                                    var item_code = kv;//data[i].item_code+'-'+data[i].product_batch;
+                                    var code = item_code.toString().split(' ');
+                                    mapping[code[0]] =
+                                        data[i].item_id +
+                                        "-" +
+                                        data[i].item_type +
+                                        "-" +
+                                        settings_discount_visible +
+                                        "-" +
+                                        settings_tax_type;
+                                }
+                            }
+                            suggest(suggestions);
+                        }
+                    }
+                });
+            }
         },
         onSelect: function (event, ui) {
             k = ui.replace(/ /g, "_"); 
@@ -330,27 +290,21 @@ $(document).ready(function () {
                 type: "GET",
                 dataType: "JSON",
                 success: function (data) {
-                    var product_id = data[0]. product_id;
+                    var product_id = data[0].product_id;
                     var new_item = true;
-                    if(sales_data.length != 0){
-                        for (var i = 0; i < sales_data.length; i++) {
-                            var pre_item_id = sales_data[i].item_id;
-                            if (pre_item_id == product_id) {
-                                var row_index = sales_data[i].item_key_value;
-                                var table_row = $("#"+ row_index);
-                                var quantity = table_row.find('input[name^="item_quantity"]').val();
-                                quantity = ++quantity;
-                                table_row.find('input[name^="item_quantity"]').val(quantity);
-                                new_item = false;
-                                $("#input_sales_code").val("");
-                                calculateTable(table_row);
-                                break;
-                            }
-                        }
+                    if (addedItems['pro_'+product_id]) {
+                        var row_index = addedItems['pro_'+product_id];
+                        var table_row = $("#"+ row_index);
+                        var quantity = table_row.find('input[name^="item_quantity"]').val();
+                        quantity = ++quantity;
+                        table_row.find('input[name^="item_quantity"]').val(quantity);
+                        new_item = false;
+                        $("#input_sales_code").val("");
+                        calculateTable(table_row);
                     }
                     if(new_item == true){
                         $('#table-total').show();
-                        add_row(data);
+                        add_row(data[0]);
                         call_css();
                         $("#input_sales_code").val("");
                     }
@@ -377,30 +331,6 @@ $(document).ready(function () {
             calculateTable(newRow);
         }
     );
-
-    /*$("#sales_table_body").on(
-        "change",
-        '[name="item_tds_percentage"]',
-        function (event) {
-           
-            var newRow = $(this).closest("tr");
-            var item_tds_id = newRow.find('[name^="item_tds_percentage"] option:selected').attr('tds_id');
-            var item_tds_type = newRow.find('[name^="item_tds_percentage"] option:selected').attr('type');
-          
-            newRow.find('input[name=item_tds_id]').val(item_tds_id);
-            newRow.find('input[name=item_tds_type]').val(item_tds_type);
-            calculateTable(newRow);
-        }
-    );*/
-
-    /*$("#sales_table_body").on(
-        "change",
-        'select[name="item_tax_cess"]',
-        function (event) {
-            var newRow = $(this).closest("tr");
-            calculateTable(newRow);
-        }
-    );*/
 
     //reverse calculations
     $("#sales_table_body").on(
@@ -580,6 +510,18 @@ function CalculateRoundOff(){
     $("#totalGrandTotal").text(precise_amount(grand_total));
 }
 
+getAllProducts();
+function getAllProducts(){
+    $.ajax({
+        url: base_url +"sales/get_all_items_barcode",
+        type: "POST",
+        dataType: "JSON",
+        success: function (data) {
+            allPros = data;
+        }
+    });
+}
+
 function reCalculateTable(){
     $("#sales_table_body")
         .find('input[name^="item_tax_id"]')
@@ -593,47 +535,48 @@ function reCalculateTable(){
 function add_row(data) {
     
     var flag = 0;
-    var item_id = data.item_id;
+    var item_id = data.product_id;
     var item_type = 'product';//data.item_type;
-    var branch_country_id = data.branch_country_id;
-    /*var branch_state_id = data.branch_state_id;*/
-    var branch_id = data.branch_id;
 
     if (item_type == "service") {
-        var item_code = data[0].service_code;
-        var item_name = data[0].service_name;
-        var item_hsn_sac_code = data[0].service_hsn_sac_code;
-        var item_details = data[0].service_details;
-        var item_price = precise_amount(data[0].service_price);
-        var item_tax_id = data[0].service_gst_id;
-        var item_tax_percentage = precise_amount(data[0].service_tax_value);
-        var item_tds_id = data[0].service_tds_id;
-        var item_tds_percentage = precise_amount(data[0].service_tds_value);
-        /*var item_tds_type = data[0].module_type;*/
+        var item_code = data.service_code;
+        var item_name = data.service_name;
+        var item_hsn_sac_code = data.service_hsn_sac_code;
+        var item_details = data.service_details;
+        var item_price = precise_amount(data.service_price);
+        var item_tax_id = data.service_gst_id;
+        var item_tax_percentage = precise_amount(data.service_tax_value);
+        var item_tds_id = data.service_tds_id;
+        var item_tds_percentage = precise_amount(data.service_tds_value);
+        /*var item_tds_type = data.module_type;*/
         var item_tds_type = 'TDS';
-        var product_batch = data[0].product_batch;
+        var product_batch = data.product_batch;
         var product_quantity = '';
     } else {
-        var item_code = data[0].product_code;
-        var item_name = data[0].product_name;
-        var item_hsn_sac_code = data[0].product_hsn_sac_code;
-        var item_details = data[0].product_details;
-        var item_price = precise_amount(data[0].product_mrp_price);
-        var item_basic_price = precise_amount(data[0].product_basic_price);
-        var item_out_tax_id = data[0].product_tax_id;
-        var item_tax_id = data[0].product_tax_id;
-        var item_mrkd_discount = data[0].product_discount_id;
-        var item_mrg_discount = data[0].margin_discount_id;
-        var item_tax_percentage = precise_amount(data[0].product_tax_value);
-        var item_tds_id = data[0].product_tds_id;
-        var item_tds_percentage = precise_amount(data[0].product_tds_value);
-        var product_batch = data[0].product_batch;
-        /*var item_tds_type = data[0].module_type;*/
+        var item_code = data.product_code;
+        var item_name = data.product_name;
+        var item_hsn_sac_code = data.product_hsn_sac_code;
+        var item_details = data.product_details;
+        var item_price = precise_amount(data.product_mrp_price);
+        var item_basic_price = precise_amount(data.product_basic_price);
+        var item_out_tax_id = data.product_tax_id;
+        var item_tax_id = data.product_tax_id;
+        var item_mrkd_discount = data.product_discount_id;
+        var item_mrg_discount = data.margin_discount_id;
+        var item_tax_percentage = precise_amount(data.product_tax_value);
+        var item_tds_id = data.product_tds_id;
+        var item_tds_percentage = precise_amount(data.product_tds_value);
+        var product_batch = data.product_batch;
+        /*var item_tds_type = data.module_type;*/
         var item_tds_type = 'TCS';
-        var product_quantity = data[0]. product_quantity;
-        var selling_price = data[0].product_selling_price;
+        var product_quantity = data. product_quantity;
+        var selling_price = data.product_selling_price;
     }
-    var uom = data[0].uom;
+    var uom = '';
+    if(uqc[data.product_unit_id]){
+        uom = uqc[data.product_unit_id];
+        uom = uom.uom;
+    }
 
     if (item_tds_id == "") {
         item_tds_id = 0;
@@ -739,49 +682,15 @@ function add_row(data) {
             gst_disable = 'disabled';
         }
         var open_tds_modal = 'open_tds_modal';
-       /* commented by karthik on 09-01-2020
-       var open_tds_modal = 'open_tds_modal';
+        /* commented by karthik on 09-01-2020
+        var open_tds_modal = 'open_tds_modal';
         if($('#section_area').val() == 'quotation' && item_tds_type == 'TDS'){
             open_tds_modal = '';
             item_tds_percentage = 0;
         }*/
 
         var select_tds = '<input type="text" class="form-control '+open_tds_modal+' pointer" name="item_tds_percentage" value="'+parseFloat(item_tds_percentage)+'%" readonly>';
-
-//        var select_tds = '';
-//        if (input_type == "hidden") {
-//            select_tds +=
-//                '<div class="form-group" style="margin-bottom:0px !important;display:none">';
-//        } else {
-//            select_tds +=
-//                '<div class="form-group" style="margin-bottom:0px !important;">';
-//        }
-//        select_tds +=
-//            '<select class="form-control open_tax form-fixer select2" name="item_tds_percentage" style="width: 100%;" '+gst_disable+'>';
-//        select_tds += '<option value=""></option>';
-//
-//        for (a = 0; a < tax_data.length; a++) {
-//            if (item_tds_id == tax_data[a].tax_id) {
-//                var selected = "selected";
-//            } else {
-//                var selected = "";
-//            }
-//            if(tax_data[a].tax_name == 'TDS' || tax_data[a].tax_name == 'TCS'){
-//                tax_name = tax_data[a].tax_name;
-//                if(item_tds_type.toLowerCase() == tax_name.toLowerCase()){
-//                    select_tds +=
-//                        '<option value="'+
-//                        precise_amount(tax_data[a].tax_value) +
-//                        '" ' +
-//                        selected +
-//                        " tds_id='"+tax_data[a].tax_id+"' type='"+tax_data[a].tax_name+"'>" +
-//                        precise_amount(tax_data[a].tax_value) +
-//                        "%</option>";
-//                }
-//            }
-//        }
-//        select_tds += "</select></div>";
-        
+       
         var tds_body = '<table id="tds_table" index="'+ table_index +'" class="table table-bordered table-striped sac_table ">\
                     <thead>\
                     <th>TAX Name</th>\
@@ -986,7 +895,7 @@ function add_row(data) {
             " >0.00</span>" +
             "</td>";
     }
-    cols += "<td style='text-align:center'><input type='hidden' name='item_selling_price' value='"+selling_price+"' autocomplete='off'><span id='item_selling_price_lbl_0' class='pull-right'>"+selling_price+"</span></td>";
+    cols += "<td style='text-align:center'><input type='hidden' name='item_selling_price' value='"+selling_price+"' autocomplete='off'><span id='item_selling_price_lbl_"+table_index+"' class='pull-right'>"+selling_price+"</span></td>";
 
     if (input_type == "hidden") {
         cols +=
@@ -1128,9 +1037,9 @@ function add_row(data) {
 
     calculateTable(newRow);
 
-    $("#type_of_supply").change();
+    /*$("#type_of_supply").change();*/
 
-    $(".select2").select2();
+    /*$(".select2").select2();*/
 }
 //calculate row
 function calculateRow(row) {
@@ -1673,7 +1582,7 @@ function generateJson(row) {
         item_taxable_value: +item_taxable_value,
         item_grand_total: +item_grand_total
     };
-    var flag = 0;
+    /*var flag = 0;
     var i_val = "";
     for (var i = 0; i < sales_data.length; i++) {
         if (
@@ -1687,10 +1596,11 @@ function generateJson(row) {
     }
     if (flag == 1) {
         sales_data[i_val] = data_item;
-    } else {
+        addedItems[item_id] = addedItems[item_id] +
+    } else {*/
         sales_data.push(data_item);
-    }
-   
+        addedItems['pro_'+item_id] = +table_index;
+    /*}*/
     var table_data = JSON.stringify(sales_data);
     $("#table_data").val(table_data);
 }

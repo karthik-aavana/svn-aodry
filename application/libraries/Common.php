@@ -2710,6 +2710,7 @@ class Common
     {
         $string = "am.module_id,m.is_report";
         $table = "active_modules am";
+        
         $where = array(
             'am.branch_id'     => $branch_id,
             'am.delete_status' => 0);
@@ -2946,7 +2947,7 @@ class Common
     public function customer_field()
     {
         if($this->ci->session->userdata('SESS_BRANCH_ID') == $this->ci->config->item('LeatherCraft')){
-            $string = "c.*,CONCAT(c.customer_name,'-', s.store_location) AS customer_name,con.country_name as customer_country_name,sta.state_name as customer_state_name,sta.state_code as customer_state_code,cit.city_name as customer_city_name";
+            $string = "c.*,CONCAT(c.customer_name,'-', s.store_location) AS customer_name,con.country_name as customer_country_name,sta.state_name as customer_state_name,sta.state_code as customer_state_code,cit.city_name as customer_city_name,,s.shipping_address_id";
             $table  = "customer c";
             $where  = array(
                 's.shipping_party_type' => 'customer',
@@ -3729,10 +3730,11 @@ class Common
 
     public function all_products_field(){
         
-        $string = "*";
+        $string = "*,(product_quantity + product_opening_quantity) as product_closing_quantity";
         $table  = "products";
         $where = array(
-            'delete_status' => 0);
+            'delete_status' => 0,
+            'branch_id'=>$this->ci->session->userdata('SESS_BRANCH_ID'));
         $data = array(
             'string' => $string,
             'table'  => $table,

@@ -619,6 +619,7 @@ if ($charges_sub_module == 1) {
             return false;
         }
     });*/
+var uqc = <?=json_encode($uqc)?>;
 var sales_data = new Array();
 var branch_state_list =<?php echo json_encode($state); ?>;
 var discount_ary= <?=json_encode($discount);?>;
