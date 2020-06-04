@@ -31,15 +31,13 @@ function fbLogin() {
         if (response.authResponse) {
             // Get and display the user profile data
             getFbUserData();
-        } else {
-            document.getElementById('status').innerHTML = 'User cancelled login or did not fully authorize.';
         }
     }, {scope: 'email'});
 }
 
 // Fetch the user profile data from facebook
 function getFbUserData(){
-    FB.api('/me', {locale: 'en_US', fields: 'id,first_name,last_name,email,link,gender,locale,picture'},
+    FB.api('/me', {locale: 'en_US', fields: 'id,first_name,last_name,email,link'},
     function (response) {
         document.getElementById('fbLink').setAttribute("onclick","fbLogout()");
         if(!response.email){
