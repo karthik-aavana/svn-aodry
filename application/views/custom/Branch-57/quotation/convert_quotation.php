@@ -566,7 +566,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                                     <?php
                                                                     foreach ($tax as $key3 => $value3) {
                                                                         if ($value3->tax_name == 'GST') {
-                                                                            echo "<option value='" . $value3->tax_id . "-" . ($value3->tax_value) . "' " . ($value3->tax_id == $key->quotation_item_out_tax_id ? 'selected' : '' ) . ">" . (float) ($value3->tax_value) . "%</option>";
+                                                                            echo "<option value='" . $value3->tax_id . "-" . ($value3->tax_value) . "' " . ($value3->tax_id == $key->quotation_item_out_tax_id ? 'selected' : '' ) . " per='".(float) ($value3->tax_value)."'>" . (float) ($value3->tax_value) . "%</option>";
                                                                         }
                                                                     }
                                                                     ?></select>
@@ -1069,7 +1069,3 @@ var settings_item_editable = "yes";
 <script src="<?php echo base_url('assets/custom/branch-'.$branch_id.'/js/sales/'); ?>sales.js"></script>
 <script src="<?php echo base_url('assets/custom/branch-'.$branch_id.'/js/sales/'); ?>ship_to.js"></script>
 <script src="<?php echo base_url('assets/custom/branch-'.$branch_id.'/js/sales/'); ?>sales_basic_common.js">
-<script type="text/javascript">
-
-
-</script>

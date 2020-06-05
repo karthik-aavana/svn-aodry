@@ -609,6 +609,7 @@ if ($charges_sub_module == 1) {
     var branch_state_list = <?php echo json_encode($state); ?>;
     var discount_ary= <?=json_encode($discount);?>;
     var tax_data = <?=json_encode($tax);?>;
+    var uqc = <?=json_encode($uqc)?>;
     var item_gst = new Array();
     var common_settings_round_off = "<?= $access_common_settings[0]->round_off_access ?>";
     var common_settings_amount_precision = "<?= $access_common_settings[0]->amount_precision ?>";

@@ -271,15 +271,19 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                             <select class="form-control select2" id="ship_to" name="ship_to">
                                             <?php
                                             foreach ($customer as $key) {
-                                                
-                                                if ($key->customer_id == $data[0]->ship_to_customer_id) {
-                                                    ?>
-                                                    <option value='<?php
-                                                    echo $key->customer_id; ?>' selected><?php echo $key->customer_name; ?></option>
-                                                    <?php
-                                                    //break;
-                                                }else{
-                                                    echo "<option value='$key->customer_id'>$key->customer_name</option>";
+                                                if ($key->customer_id == $data[0]->sales_party_id) {
+                                                    if($key->customer_code != ''){ ?>
+                                                        <option value='<?php
+                                                        echo $key->customer_id;
+                                                        ?>' selected>
+                                                            <?php echo $key->customer_code.' - '.$key->customer_name; ?></option>
+                                                        <?php
+                                                    }else{ ?>
+                                                        <option value='<?php
+                                                        echo $key->customer_id;
+                                                        ?>' selected>
+                                                            <?php echo $key->customer_name; ?></option>
+                                                    <?php }
                                                 }
                                             }
                                             ?>
@@ -616,7 +620,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                                     <?php
                                                                     foreach ($tax as $key3 => $value3) {
                                                                         if ($value3->tax_name == 'GST') {
-                                                                            echo "<option value='" . $value3->tax_id . "-" . ($value3->tax_value) . "' " . ($value3->tax_id == $key->sales_item_out_tax_id ? 'selected' : '' ) . ">" . (float) ($value3->tax_value) . "%</option>";
+                                                                            echo "<option value='" . $value3->tax_id . "-" . ($value3->tax_value) . "' " . ($value3->tax_id == $key->sales_item_out_tax_id ? 'selected' : '' ) . " per='".(float) ($value3->tax_value)."'>" . (float) ($value3->tax_value) . "%</option>";
                                                                         }
                                                                     }
                                                                     ?></select>
@@ -628,6 +632,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                             <input type="hidden" name="item_sub_total" value="<?= ($key->sales_item_taxable_value ? $key->sales_item_taxable_value : 0); ?>"> 
                                                             <span id='item_taxable_value_lbl_<?= $i ?>'><?= $key->sales_item_taxable_value ? precise_amount($key->sales_item_taxable_value) : 0; ?></span>
                                                         </td>
+                                                        <?php if ($access_settings[0]->tds_visible == 'yes') { ?>
                                                         <td style='text-align:center'>
                                                             <?php
                                                             if ($key->tds_module_type == "" || $key->tds_module_type == null) {
@@ -676,6 +681,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                             <input type='hidden' name='item_tds_type' value='<?= $key->tds_module_type ? $key->tds_module_type : ' ' ?>'>
                                                             <input type='hidden' name='item_tds_amount' value='<?= $key->sales_item_tds_amount ? precise_amount($key->sales_item_tds_amount) : 0 ?>'><span id='item_tds_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?= $key->sales_item_tds_amount ? precise_amount($key->sales_item_tds_amount) : 0 ?></span>
                                                         </td>
+                                                        <?php } ?>
                                                         <!-- tds area -->
                                                         <td>
                                                             <input type='hidden' name='item_tax_id' value='<?= $key->sales_item_tax_id ? $key->sales_item_tax_id : 0 ?>'>
@@ -1083,6 +1089,7 @@ $this->load->view('sub_modules/shipping_address_modal');
     var branch_state_list = <?php echo json_encode($state); ?>;
     var discount_ary= <?=json_encode($discount);?>;
     var tax_data = <?=json_encode($tax);?>;
+    var uqc = <?=json_encode($uqc)?>;
     var count_data = <?= $countData; ?>;
     var common_settings_round_off = "<?= $access_common_settings[0]->round_off_access ?>";
     var common_settings_amount_precision = "<?= $access_common_settings[0]->amount_precision ?>";

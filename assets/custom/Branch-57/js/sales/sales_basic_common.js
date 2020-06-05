@@ -512,12 +512,14 @@ function CalculateRoundOff(){
 
 getAllProducts();
 function getAllProducts(){
+    $('body > .loader').show();
     $.ajax({
         url: base_url +"sales/get_all_items_barcode",
         type: "POST",
         dataType: "JSON",
         success: function (data) {
             allPros = data;
+            $('body > .loader').hide();
         }
     });
 }
@@ -771,7 +773,7 @@ function add_row(data) {
                     parseFloat(tax_data[a].tax_value) +
                     '" ' +
                     selected +
-                    " >" +
+                    " per='"+parseFloat(tax_data[a].tax_value)+"'>" +
                     parseFloat(tax_data[a].tax_value) +
                     "%</option>";
             }
@@ -1143,11 +1145,18 @@ function calculateOutTax(row){
 }
 
 function calculateSubTotal(row){
+    var item_quantity = +row.find('input[name^="item_quantity"]').val();
     var item_mrgn_discount_amount = +parseFloat(row.find('input[name^="item_mrgn_discount_amount"]').val());
     var item_out_tax_amount = +parseFloat(row.find('input[name^="item_out_tax_amount"]').val());
     var item_selling_price = row.find('input[name^=item_selling_price]').val();
     var item_sub_total = parseFloat(precise_amount(item_selling_price) - item_mrgn_discount_amount - item_out_tax_amount);
-    
+    var tax_per_ant = (item_sub_total/item_quantity);  
+    var per = row.find('select[name=item_tax] option:selected').attr('per');    
+    if(tax_per_ant >= 1000){    
+        if(per != 18) row.find('select[name=item_tax] option[per=18]').prop('selected',true).trigger('change.select2'); 
+    }else{  
+        if(per != 5) row.find('select[name=item_tax] option[per=5]').prop('selected',true).trigger('change.select2');   
+    }
     row.find('input[name^="item_sub_total"]').val(precise_amount(item_sub_total));
     row.find('input[name^="item_taxable_value"]').val(precise_amount(item_sub_total));
     row.find("#item_taxable_value_lbl_" + table_index).text(precise_amount(item_sub_total));
@@ -1649,6 +1658,8 @@ function calculateGrandTotal() {
     var tflag = 0;
     var tdsflag = 0;
     var tcsflag = 0;
+    var txtAry = [];
+
     $("#sales_table_body")
         .find('input[name^="item_sub_total"]')
         .each(function () {
@@ -1675,6 +1686,14 @@ function calculateGrandTotal() {
         .each(function () {
             tflag = 1;
             tax += +$(this).val();
+            var per = +$(this).closest('tr').find('select[name=item_tax] option:selected').attr('per'); 
+            if(per > 0 && per != ''){
+                if(txtAry.indexOf(per) > -1){   
+                    txtAry[per] += +$(this).val();  
+                }else{  
+                    txtAry[per] = +$(this).val();   
+                }   
+            }
         });
     $("#sales_table_body")
         .find('input[name="item_tax_cess_amount"]')
@@ -1717,7 +1736,7 @@ function calculateGrandTotal() {
                 tdsflag = 1;
             }
         });
-
+    var total_tax_html = '';
     $("#sales_table_body")
         .find('input[name^="item_grand_total"]')
         .each(function () {
@@ -1727,9 +1746,9 @@ function calculateGrandTotal() {
     var total_other_amount = +$("#total_other_amount").val();
     if(isNaN(total_other_amount) || typeof total_other_amount == 'undefined') total_other_amount = 0;
     var other_tax_amount = $('#total_other_taxable_amount').val();
-    if(isNaN(other_tax_amount) || typeof other_tax_amount == 'undefined' )
+    if(isNaN(other_tax_amount) || typeof other_tax_amount == 'undefined' || other_tax_amount == '')
         other_tax_amount = 0;
-
+    
     if(tax > 0){
         if(tax_cgst > 0){
             var cgst_amount_percentage = parseFloat(settings_tax_percentage);
@@ -1786,32 +1805,62 @@ function calculateGrandTotal() {
     }else{
     }*/
     $('.totalDiscountAmount_tr').hide();
-
+    console.log(txtAry,11111,tax_sgst,tax_cgst,tax_igst);
     if (settings_tax_type != "no_tax") {
         $("#totalTaxAmount").text(precise_amount(tax));
         
-        if(tax_sgst > 0){
-            var lbl = 'SGST (+)';
-            if($('#billing_state option:selected').attr('utgst') == '1')
-                lbl = 'UTGST (+)';
-            $('.totalSGSTAmount_tr').find('td:first').text(lbl);
-            $('.totalSGSTAmount_tr').show();
-            $("#totalSGSTAmount").text(precise_amount(tax_sgst));
-        }else{
-            $('.totalSGSTAmount_tr').hide();
-        }
-        if(tax_cgst > 0){
-            $("#totalCGSTAmount").text(precise_amount(tax_cgst));
-            $('.totalCGSTAmount_tr').show();
-        }else{
-            $('.totalCGSTAmount_tr').hide();
-        }
-       
-        if(tax_igst > 0){
-            $('.totalIGSTAmount_tr').show();
-            $("#totalIGSTAmount").text(precise_amount(tax_igst));
-        }else{
-            $('.totalIGSTAmount_tr').hide();
+        if(tax_sgst > 0){   
+            var lbl = 'SGST';   
+            if($('#billing_state option:selected').attr('utgst') == '1')    
+                lbl = 'UTGST';  
+            var txt_lbl = '';   
+            var txt_amt = '';   
+            $(txtAry).each(function(k,v){   
+                if(typeof v != 'undefined' && v != ''){ 
+                    k = (k/2);  
+                    v = (v/2);  
+                    txt_lbl += lbl+'('+k+'%)<br>';  
+                    txt_amt += precise_amount(v)+'<br>';    
+                }   
+            })  
+            $('.totalSGSTAmount_tr').find('td:first').html(txt_lbl);    
+            $('.totalSGSTAmount_tr').show();    
+            $("#totalSGSTAmount").html(txt_amt);    
+        }else{  
+            $('.totalSGSTAmount_tr').hide();    
+        }   
+        if(tax_cgst > 0){   
+            var txt_lbl = '';   
+            var txt_amt = '';   
+            $(txtAry).each(function(k,v){   
+                if(typeof v != 'undefined' && v != ''){ 
+                    k = (k/2);  
+                    v = (v/2);  
+                    txt_lbl += 'CGST('+k+'%)<br>';  
+                    txt_amt += precise_amount(v)+'<br>';    
+                }   
+            })  
+            $('.totalCGSTAmount_tr').find('td:first').html(txt_lbl);    
+            $("#totalCGSTAmount").html(txt_amt);    
+            $('.totalCGSTAmount_tr').show();    
+        }else{  
+            $('.totalCGSTAmount_tr').hide();    
+        }   
+            
+        if(tax_igst > 0){   
+            var txt_lbl = '';   
+            var txt_amt = '';   
+            $(txtAry).each(function(k,v){   
+                if(typeof v != 'undefined' && v != ''){ 
+                    txt_lbl += 'IGST('+k+'%)<br>';  
+                    txt_amt += precise_amount(v)+'<br>';    
+                }   
+            })  
+            $('.totalIGSTAmount_tr').find('td:first').html(txt_lbl);    
+            $("#totalIGSTAmount").html(txt_amt);    
+            $('.totalIGSTAmount_tr').show();    
+        }else{  
+            $('.totalIGSTAmount_tr').hide();    
         }
 
         if(tax_cess > 0){
