@@ -382,7 +382,7 @@ $(document).ready(function () {
                 );
                 
                 var item_tds_type = row.find('input[name^="item_tds_type"]').val();
-               // console.log(item_tds_type);
+               
                 item_tds_type = item_tds_type.trim();
                 //| item_tds_type != "tcs"
                 item_tds_type = item_tds_type.toLowerCase();
@@ -1591,7 +1591,7 @@ function generateJson(row) {
         item_taxable_value: +item_taxable_value,
         item_grand_total: +item_grand_total
     };
-    /*var flag = 0;
+    var flag = 0;
     var i_val = "";
     for (var i = 0; i < sales_data.length; i++) {
         if (
@@ -1605,11 +1605,10 @@ function generateJson(row) {
     }
     if (flag == 1) {
         sales_data[i_val] = data_item;
-        addedItems[item_id] = addedItems[item_id] +
-    } else {*/
+    } else {
         sales_data.push(data_item);
         addedItems['pro_'+item_id] = +table_index;
-    /*}*/
+    }
     var table_data = JSON.stringify(sales_data);
     $("#table_data").val(table_data);
 }
@@ -1805,7 +1804,6 @@ function calculateGrandTotal() {
     }else{
     }*/
     $('.totalDiscountAmount_tr').hide();
-    console.log(txtAry,11111,tax_sgst,tax_cgst,tax_igst);
     if (settings_tax_type != "no_tax") {
         $("#totalTaxAmount").text(precise_amount(tax));
         
