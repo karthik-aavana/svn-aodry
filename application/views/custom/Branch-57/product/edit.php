@@ -627,14 +627,14 @@ if ($data[0]->is_varients == 'Y') {
                     {"visible": true, "targets": 0}
                 ]
             });
-            $('.product_tcs').addClass('disable_div');
-            $('.product_gst').addClass('disable_div');
-            $('.product_uom').addClass('disable_div');
-            $('.product_category').addClass('disable_div');
-            $('.product_subcategory').addClass('disable_div');
-            $('.produc_hsn').addClass('disable_div');
-            $('.produc_type').addClass('disable_div');
-            $('.product_name').addClass('disable_div');
+            //$('.product_tcs').addClass('disable_div');
+           // $('.product_gst').addClass('disable_div');
+            //$('.product_uom').addClass('disable_div');
+            //$('.product_category').addClass('disable_div');
+            //$('.product_subcategory').addClass('disable_div');
+           // $('.produc_hsn').addClass('disable_div');
+           // $('.produc_type').addClass('disable_div');
+          //  $('.product_name').addClass('disable_div');
     <?php
 }
 ?>

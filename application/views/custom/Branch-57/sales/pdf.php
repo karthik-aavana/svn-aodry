@@ -180,8 +180,12 @@ if (@$converted_rate)
                             echo $data[0]->sales_invoice_number;
                         }
                         ?></span>   
-
                     <?php
+                    if (isset($data[0]->sales_order_number)) {
+                        if ($data[0]->sales_order_number != "" || $data[0]->sales_order_number != null) {
+                            echo '<br>PO Number : ' . $data[0]->sales_order_number;
+                        }
+                    }
                     if (isset($data[0]->place_of_supply)) {
                         if ($data[0]->place_of_supply != "" || $data[0]->place_of_supply != null) {
                             echo '<br>Place of Supply : ' . $data[0]->place_of_supply;
@@ -319,7 +323,7 @@ if (@$converted_rate)
                     <th height="30px">#</th>
                     <th>Description of Goods/Services</th>  
                     <th>Product Image</th>
-                    <th>Article Number</th>                
+                    <th>Article Number</th>                  
                     <th>HSN Code/ SAC</th>
                     <th>Qty</th>
                     <th>Unit</th>
@@ -349,7 +353,48 @@ if (@$converted_rate)
                 $quantity = 0;
                 $price = 0;
                 $grand_total = $tot_cgst = $tot_sgst = $tot_igst = $sales_total_basic_price = 0;
-                foreach ($items as $value) { ?>
+                foreach ($items as $value) { 
+                    if ($igst_exist > 0) {
+                            if ($value->sales_item_igst_amount < 0) {
+                                echo '-';
+                            } else { 
+                                $gst_summry['igst']['igst_'.$value->sales_item_igst_percentage]['percentage'] = $value->sales_item_igst_percentage;
+                                if(@$gst_summry['igst']['igst_'.$value->sales_item_igst_percentage]['amount']){
+                                    $gst_summry['igst']['igst_'.$value->sales_item_igst_percentage]['gst_amount'] += $value->sales_item_igst_amount;
+                                    $gst_summry['igst']['igst_'.$value->sales_item_igst_percentage]['amount'] += $value->sales_item_taxable_value;
+                                }else{
+                                    $gst_summry['igst']['igst_'.$value->sales_item_igst_percentage]['gst_amount'] = $value->sales_item_igst_amount;
+                                    $gst_summry['igst']['igst_'.$value->sales_item_igst_percentage]['amount'] = $value->sales_item_taxable_value;
+                                } 
+                            } 
+                    }elseif ($cgst_exist > 0 || $sgst_exist > 0) {
+                        if ($value->sales_item_cgst_amount < 0) {
+                                echo '-';
+                            } else {
+                                $gst_summry['cgst']['cgst_'.$value->sales_item_cgst_percentage]['percentage'] = $value->sales_item_cgst_percentage;
+                                if(@$gst_summry['cgst']['cgst_'.$value->sales_item_cgst_percentage]['amount']){
+                                    $gst_summry['cgst']['cgst_'.$value->sales_item_cgst_percentage]['gst_amount'] += $value->sales_item_cgst_amount;
+                                    $gst_summry['cgst']['cgst_'.$value->sales_item_cgst_percentage]['amount'] += $value->sales_item_taxable_value;
+                                }else{
+                                    $gst_summry['cgst']['cgst_'.$value->sales_item_cgst_percentage]['gst_amount'] = $value->sales_item_cgst_amount;
+                                    $gst_summry['cgst']['cgst_'.$value->sales_item_cgst_percentage]['amount'] = $value->sales_item_taxable_value;
+                                } 
+                             }
+                             
+                              if ($value->sales_item_sgst_amount < 0) {
+                                echo '-';
+                            } else {
+                                $gst_summry['sgst']['cgst_'.$value->sales_item_sgst_percentage]['percentage'] = $value->sales_item_sgst_percentage;
+                                if(@$gst_summry['sgst']['cgst_'.$value->sales_item_sgst_percentage]['amount']){
+                                    $gst_summry['sgst']['cgst_'.$value->sales_item_sgst_percentage]['gst_amount'] += $value->sales_item_sgst_amount;
+                                    $gst_summry['sgst']['cgst_'.$value->sales_item_sgst_percentage]['amount'] += $value->sales_item_taxable_value;
+                                }else{
+                                    $gst_summry['sgst']['cgst_'.$value->sales_item_sgst_percentage]['gst_amount'] = $value->sales_item_sgst_amount;
+                                    $gst_summry['sgst']['cgst_'.$value->sales_item_sgst_percentage]['amount'] = $value->sales_item_taxable_value;
+                                }
+                            }
+                    }
+                ?>
                     <tr>
                         <td><?php echo $i; ?></td>
                         <?php
@@ -384,8 +429,8 @@ if (@$converted_rate)
                                 }
                                 ?>
                             </td>
-                            <td>-</td> 
-                            <td>-</td>                           
+                            <td>-</td>
+                            <td>-</td>                             
                             <td style="text-align: left;"><?php echo $value->service_hsn_sac_code; ?></td>
                         <?php } ?>
                         
@@ -581,9 +626,10 @@ if (@$converted_rate)
                 </tr>
             </tbody>
         </table>
+        
         <table class="mt-20">
             <tr>
-                <td style="width:66%; margin-right: 4%">
+                <td style="width:34%; margin-right: 4%">
                     <table class="dashed_table">
                     <?php if ($data[0]->total_other_amount != 0) { ?>
                         <thead>
@@ -687,6 +733,49 @@ if (@$converted_rate)
                         </tbody>
                     <?php } ?>
                     </table>
+                </td>
+                <td style="width:32%">
+                    <table class="total_sum">
+                    <tr>
+                        <td colspan="4" style="text-align: center;"><b>****GST Summary ****</b></td>
+                    </tr>
+                    <tr>
+                        <td><b>Type</b></td>
+                        <td><b>Tax %</b></td>
+                        <td><b>TBL Amt</b></td>
+                        <td><b>Tax Amt</b></td>
+                    </tr>
+                    <?php if(@$gst_summry['igst'] && $igst_exist > 0){ ?>
+                        <?php foreach ($gst_summry['igst'] as $key => $value) {?>
+                        <tr>
+                            <td><b>IGST</b></td>
+                            <td><?php echo precise_amount($value['percentage']) ?></td>
+                            <td><?php echo precise_amount($value['amount']) ?></td>
+                            <td><?php echo precise_amount($value['gst_amount']) ?></td>
+                        </tr>
+                        <?php } ?>
+                    <?php } ?>
+                    <?php if(@$gst_summry['cgst'] && $cgst_exist > 0){ ?>
+                        <?php foreach ($gst_summry['cgst'] as $key => $value) {?>
+                        <tr>
+                            <td><b>CGST</b></td>
+                            <td><?php echo precise_amount($value['percentage']) ?></td>
+                            <td><?php echo precise_amount($value['amount']) ?></td>
+                            <td><?php echo precise_amount($value['gst_amount']) ?></td>
+                        </tr>
+                        <?php } ?>
+                    <?php } ?>
+                    <?php if(@$gst_summry['sgst'] && $sgst_exist > 0){ ?>
+                        <?php foreach ($gst_summry['sgst'] as $key => $value) {?>
+                        <tr>
+                            <td><b>SGST</b></td>
+                            <td><?php echo precise_amount($value['percentage']) ?></td>
+                            <td><?php echo precise_amount($value['amount']) ?></td>
+                            <td><?php echo precise_amount($value['gst_amount']) ?></td>
+                        </tr>
+                        <?php } ?>
+                    <?php } ?>
+                </table>
                 </td>
                 <td style="width:30%">
                     <table class="total_sum">

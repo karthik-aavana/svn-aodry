@@ -748,7 +748,7 @@ function add_row(data) {
         item_code +
         "'></td>";
     if (item_type == "product" || item_type == "product_inventory")
-        cols += "<td>" + item_name + "<br>(P) (HSN/SAC:" + item_hsn_sac_code + ")<br>"+product_batch+"</td>";
+        cols += "<td>"+ item_code + " " + item_name + "<br>(P) (HSN/SAC:" + item_hsn_sac_code + ")<br>"+product_batch+"</td>";
     else cols += "<td>" + item_name + "<br>(S) (HSN/SAC:" + item_hsn_sac_code + ")</td>";
 
     if (settings_description_visible == "yes") {
@@ -1429,6 +1429,7 @@ function calculateTable(row) {
 //calculate grand total
 function calculateGrandTotal() {
     var sub_total = 0;
+    var total_qty = 0;
     var discount = 0;
     var tax = 0;
     var tax_cess = 0;
@@ -1448,6 +1449,11 @@ function calculateGrandTotal() {
         .find('input[name^="item_sub_total"]')
         .each(function () {
             sub_total += +$(this).val();
+        });
+    $("#purchase_table_body")
+        .find('input[name^="item_quantity"]')
+        .each(function () {
+            total_qty += +$(this).val();
         });
     $("#purchase_table_body")
         .find('input[name^="item_taxable_value"]')
@@ -1555,6 +1561,7 @@ function calculateGrandTotal() {
     }
     $('#without_reound_off_grand_total').val(precise_amount(final_grand_total));
     $("#total_sub_total").val(precise_amount(sub_total));
+    $("#totalQuantity").text(total_qty);
     $("#total_taxable_amount").val(precise_amount(taxable));
     $("#total_discount_amount").val(precise_amount(discount));
     $("#total_tax_amount").val(precise_amount(tax));

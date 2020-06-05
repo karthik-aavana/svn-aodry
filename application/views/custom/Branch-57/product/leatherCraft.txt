@@ -18,10 +18,18 @@ ALTER TABLE `sales_item` CHANGE `sales_item_mrkd_discount_amount` `sales_item_mr
 
 ALTER TABLE `branch` CHANGE `branch_address` `branch_address` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
 
-ALTER TABLE `products` ADD `batch_serial` INT NOT NULL DEFAULT '0' AFTER `product_batch`, ADD `batch_parent_product_id` INT NOT NULL DEFAULT '0' AFTER `batch_serial`;
-
 ---- Done in local upto this -----------------
 Taxable value < 1000 = 5% GST should auto fetched
+
+ALTER TABLE `products` ADD `batch_serial` INT NOT NULL DEFAULT '0' AFTER `product_batch`, ADD `batch_parent_product_id` INT NOT NULL DEFAULT '0' AFTER `batch_serial`;
+
+
+
+
+
+
+
+
 
 
 ------------------- Affected files 27/01/20------------------

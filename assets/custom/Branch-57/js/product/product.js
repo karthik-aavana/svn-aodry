@@ -216,7 +216,7 @@ $(document).ready(function () {
         } else {
             $("#err_product_hsn_sac_code").text("");
         }
-         if (!hsn_sac_code.match(hsn_regex)) {
+        if (!hsn_sac_code.match(hsn_regex)) {
             $('#err_product_hsn_sac_code').text("Please Enter Valid Product HSN Code");
             return false;
         } else {
@@ -389,8 +389,9 @@ $(document).ready(function () {
 
     $("[name=product_code]").on("blur", function (event) {
         var product_id = $('#product_id').val();
-        if(!product_id)
-        checkValidArticle();
+        if(product_id == 0){
+            checkValidArticle();
+        }
     });
 
     $("[name=product_name]").on("change", function (event) {

@@ -352,17 +352,12 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                         ?>
                                         <label for="delivery_note_date">Delivery Challan Date</label>
                                         <div class="input-group date">          
-                                        <input type="text" class="form-control datepicker" id="delivery_date" name="delivery_date" value="<?= $delivery_date; ?>">
-                                        <!--                                        <div class="input-group">
-                                                                                    
-                                                                                    <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
-                                                                                </div>-->
-
-                                         <div class="input-group-addon">
+                                            <input type="text" class="form-control datepicker" id="delivery_date" name="delivery_date" value="<?= $delivery_date; ?>">
+                                            <!-- <div class="input-group"><span class="input-group-addon"><span class="fa fa-calendar"></span></span> </div>-->
+                                            <div class="input-group-addon">
                                                 <i class="fa fa-calendar"></i>
                                             </div>
                                         </div>
-
                                         <span class="validation-color" id="err_delivery_date"><?php echo form_error('delivery_date'); ?></span>
                                     </div>
                                 </div>
@@ -473,8 +468,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                     if ($access_settings[0]->discount_visible == 'yes') {
                                                         ?>
                                                         <th class="span2" width="9%">Discount
-                                                            <?php if (in_array($discount_module_id, $active_add)) { ?>
-                                                                                                        <!--<a href="" data-toggle="modal" data-target="#discount_modal"><strong>+</strong></a>-->
+                                                            <?php if (in_array($discount_module_id, $active_add)) { ?><!--<a href="" data-toggle="modal" data-target="#discount_modal"><strong>+</strong></a>-->
                                                                 <?php
                                                             }
                                                             ?>
@@ -502,7 +496,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                             <tbody id="purchase_table_body">
                                                 <?php
                                                 $i = 0;
-                                                $tot = 0;
+                                                $tot = $purchase_total_qty = 0;
                                                 foreach ($items as $key) {
                                                     ?>
                                                     <tr id="<?= $i ?>">
@@ -513,7 +507,8 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                                 echo $key->product_code;
                                                                 ?>'>
                                                                        <?php
-                                                                       echo $key->product_name;
+                                                                       
+                                                                       echo $key->product_code.' '.$key->product_name;
                                                                        ?><br>(P) (HSN/SAC:  <?php echo $key->product_hsn_sac_code; ?>)<br> <?php echo $key->product_batch; ?>
                                                             </td>
                                                             <?php
@@ -713,6 +708,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                         ?>
                                                     </tr>
                                                     <?php
+                                                    $purchase_total_qty += ($key->purchase_item_quantity ? $key->purchase_item_quantity : 0);
                                                     $purchase_data[$i] = $purchase_temp;
                                                     $i++;
                                                 }
@@ -823,6 +819,12 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                                         ?>
                                                     </span>
                                                 </td>
+                                            </tr>
+                                            <tr class="totalQuantity_tr">
+                                                <td align="right"><?php echo 'Quantity'; ?></td>
+                                                <td align='right'><span id="totalQuantity"><?php
+                                                        echo ($purchase_total_qty);
+                                                        ?></span></td>
                                             </tr>
                                             <tr <?= ($data[0]->purchase_discount_amount <= 0 ? 'style="display: none;"' : '' ); ?> class='totalDiscountAmount_tr'>
                                                 <td align="right">Total Discount (-)</td>

@@ -55,18 +55,3 @@
         'data-keyboard' : false                       
     });
 </script>
-<?php
-$this->load->view('product/product_inventory_modal');
-if ($product_inventory_modal == 1 || $product_modal == 1) {
-}
-/*if ($product_modal == 1) {
-    $this->load->view('product/product_modal');
-}*/
-if ($product_modal == 1 || $product_inventory_modal == 1) {
-    //$this->load->view('product/hsn_modal');
-}
-if ($service_modal == 1) {
-    $this->load->view('service/service_modal');
-    //  $this->load->view('service/sac_modal');
-}
-?>
