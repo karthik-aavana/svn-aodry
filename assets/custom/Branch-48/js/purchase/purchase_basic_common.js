@@ -8,8 +8,7 @@ var branch_country_id = $("#branch_country_id").val();
 var branch_state_id = $("#branch_state_id").val();
 var flag2 = 0;
 $(document).ready(function () {
-    $('.content-wrapper').css('margin-left', 0);
-    $('.main-sidebar').css('display', 'none');
+
     $(document).keyup(function (event) {
         if (event.which == 13 && $(event.target)[0] != $("textarea")[0]) {
             event.preventDefault();
@@ -17,60 +16,135 @@ $(document).ready(function () {
             return false;
         }
     });
-    AutoComplate();
-    $("#input_sales_code").on('change focus', function () {
-        $("#input_sales_code").trigger("click");
+
+    $("#input_purchase_code").on('change focus', function () {
+        $("#input_purchase_code").trigger("click");
     });
 
-    $("#customer").change(function () {
+    var biling_table = $('#billing_address_table').DataTable();
+    $(document).on("click", "#supplier_pop", function () {
+        
+        $("#billing_addr").modal();
+    });
+
+    
+    $(document).on("change", "#supplier", function () {
+        var party_id = $("#supplier").val();
+        $.ajax({
+                url: base_url + "general/get_billing_popup",
+                type: "post",
+                dataType: "JSON",
+                data: {'party_id': party_id,party_type:'supplier'},
+                success: function (data) {
+                    var table_data = data.data;
+                    var biling_table = $('#billing_address_table').DataTable();
+                    biling_table.destroy();
+                    biling_table = $('#billing_address_table').DataTable({
+                    data: table_data,
+                        'columns': [
+                            {'data': 'shipping_code'},
+                            {'data': 'contact_person'},
+                            {'data': 'shipping_address'},
+                            {'data': 'gst'},
+                            {'data': 'state'},
+                            {'data': 'action'}
+                        ]
+                    });
+                    if(data['recordsTotal'] == 1){
+                        $('#shipping_address_id').val(data['shipping_address_id']);
+                    }else{                
+                        /*$('#shipping_address_id').val('0');*/
+                        $('#billing_address_table_wrapper').next('.label').hide();
+                        $("#billing_addr").modal();
+                        $("#ship_to_checkbox").hide();
+                        var bill_id = $('#billing_address_table_wrapper').find('input[name=apply_billing]:checked').val();
+                        $('#shipping_address_id').val(bill_id);
+                    }
+                }
+        });
+    });
+
+    $(document).on('click', 'input[name=apply_billing]:radio', function () {
+        var id = $(this).val();
+        $('#shipping_address_id').val(id);
+    });
+
+    $(document).on('click', '.apply_bill_address', function () {
+        var id = $('#billing_address_table_wrapper').find('input[name=apply_billing]:checked').val();
+        
+        $('#shipping_address_id').val(id);
+    });
+
+    $("#supplier").change(function () {
         if ($(this).find("option:selected").text() != "Select Shipping Address") {
-            $("#input_sales_code").prop("disabled", false);
-            $(".search_sales_code").show();
-            $("#err_sales_code").text("");
+            $("#input_purchase_code").prop("disabled", false);
+            $(".search_purchase_code").show();
+            $("#err_purchase_code").text("");
         } else {
-            $(".search_sales_code").hide();
-            $("#input_sales_code").prop("disabled", true);
-            $("#err_sales_code").text("Please select the customer to do sales.");
+            $(".search_purchase_code").hide();
+            $("#input_purchase_code").prop("disabled", true);
+            $("#err_purchase_code").text("Please select the supplier to do purchase.");
             $("#err_product").text("");
         }
         $("#myForm input").change();
     });
 
-    if ($("#customer").val() != "") {
+    if ($("#supplier").val() != "") {
         $("#shipping_address_div").show();
     } else {
         $("#shipping_address_div").hide();
     }
 
-    $("#customer").change(function () {
-        if ($("#customer").val() != "") {
+    $("#supplier").change(function () {
+        if ($("#supplier").val() != "") {
             $("#shipping_address_div").show();
-            // $('#modal_party_name').val($('#customer').text());
-            var party_id = $("#customer").val();
-            $("#modal_party_id").val(party_id);            
-            $("#modal_party_type").val("customer");
+            // $('#modal_party_name').val($('#supplier').text());
+            var party_id = $("#supplier").val();
+            $("#modal_party_id").val(party_id);
+            $("#modal_party_type").val("supplier");
             $.ajax({
                 url: base_url + "general/get_shipping_address",
                 dataType: "JSON",
                 method: "POST",
                 data: {
-                    party_id: $("#customer").val(),
-                    party_type: "customer"
+                    party_id: $("#supplier").val(),
+                    party_type: "supplier"
                 },
                 success: function (result) {
                     var data = result["shipping_address_data"];
-                    
-                    if(result.customer_detail){
-                        var is_utgst = result.customer_detail.is_utgst;
+                    $("#shipping_address").html("");
+                    $("#shipping_address").append('<option value="">Select</option>');
+                    for (i = 0; i < data.length; i++) {
+                        var shipping_address = data[i].shipping_address;
+                        var shipping_address_new = shipping_address.replace(
+                            /\n\r|\\r|\\n|\r|\n|\r\n|\\n\\r|\\r\\n/g,
+                            "<br/>"
+                        );
+
+                        $("#shipping_address").append(
+                            '<option value="' +
+                            data[i].shipping_address_id +
+                            '">' +
+                            shipping_address_new +
+                            "</option>"
+                        );
+                    }
+
+                    $("#shipping_address").select2({
+                        containerCssClass: "wrap"
+                    });
+                    $("#shipping_address").change();
+                    if(result.supplier_detail){
+                        var is_utgst = result.supplier_detail.is_utgst;
                         $('#is_utgst').val(is_utgst);
-                        var out_of_india = result.customer_detail.out_of_india;
+                        var out_of_india = result.supplier_detail.out_of_india;
                         var opt = '';
                         if(out_of_india){
                             $('#billing_state').val('0').change();
                         }else{
-                            $('#billing_state').val(result.customer_detail.customer_state_id).change();
+                            $('#billing_state').val(result.supplier_detail.supplier_state_id).change();
                         }
-                        $('#billing_country').val(result.customer_detail.customer_country_id).change();
+                        $('#billing_country').val(result.supplier_detail.supplier_country_id).change();
                         ChangeTypeOfSupply();
                     }
                 }
@@ -79,63 +153,38 @@ $(document).ready(function () {
             $("#shipping_address_div").hide();
             $("#modal_party_id").val("");
             $("#modal_party_type").val("");
+            $("#shipping_address").html('<option value="">Select Shipping Address</option>');
         }
     });
-    
+
     function ChangeTypeOfSupply(){
         var table_data = $("#table_data").val();
         var state = $('#billing_state').val();
         if(state == '0'){
             flag2 = 1;
-            /*$("#billing_state").html("");
-            $("#billing_state").append('<option value="0">Out of Country</option>');*/
+           
             $("#type_of_supply").html("");
             $("#type_of_supply").append(
-                '<option value="export_with_payment">Export (With Tax Payment)</option>'
+                '<option value="import" selected>Import</option>'
             );
-            $("#type_of_supply").append(
-                '<option value="export_without_payment" selected>Export (Without Tax Payment)</option>'
-            );
-            $('[name=gst_payable][value=no]').prop('checked',true).trigger('change');
-            
+           
+            $('[name=gst_payable][value=no]').prop('checked',true);
         } else {
             flag2 = 2;
-            /*$("#billing_state").html("");
-            $("#billing_state").append('<option value="">Select</option>');
-            for (var i = 0; i < branch_state_list.length; i++) {
-                $("#billing_state").append(
-                    '<option value="' +
-                    branch_state_list[i].state_id +
-                    '">' +
-                    branch_state_list[i].state_name +
-                    "</option>"
-                );
-            }*/
             $("#type_of_supply").html("");
-            $("#type_of_supply").append('<option value="regular">Regular</option>');
-            $('[name=gst_payable]').attr('disabled',false);
+            if(branch_state_id == $('#billing_state').val()){
+                $("#type_of_supply").append('<option value="intra_state">Regular(Intra State)</option>');
+            }else{
+                $("#type_of_supply").append('<option value="inter_state">Regular(Inter State)</option>');
+            }
         }
         $("#type_of_supply").change();
-        /*var state = $('#billing_state').val();
-        if(state == '0'){
-            opt = "<option value='export_without_tax'>Export without tax</option>\n\
-                            <option value='export_with_tax'>Export with tax</option>";
-            $('[name=gst_payable]').val('no').trigger('change').attr('disabled',true);
-        }else{
-            opt = "<option selected='selected' value='regular'>Regular</option>";
-            $('[name=gst_payable]').attr('disabled',false);
-        }
-        $('#type_of_supply').html(opt);*/
     }
+
     $("#billing_state").change(function (event) {
-        if($(this).val() == '0'){
-           /*$('#billing_country').val('0').change(); */
-        }
         ChangeTypeOfSupply();
     });
-    
-    
-    //date change
+
     $("#invoice_date").on("changeDate", function () {
         var selected = $(this).val();
         var module_id = $("#module_id").val();
@@ -167,11 +216,8 @@ $(document).ready(function () {
         }
     });
 
-
-    // get items to table ends
-
     //delete rows
-    $("#sales_table_body").on("click", "a.deleteRow", function (event) {
+    $("#purchase_table_body").on("click", "a.deleteRow", function (event) {
         var newRow = $(this).closest("tr");
         deleteRow(newRow);
         $(this).closest("tr").remove();
@@ -179,32 +225,32 @@ $(document).ready(function () {
     });
 
     // changes in rows
-    $("#sales_table_body").on(
+    $("#purchase_table_body").on(
         "change blur",
         'input[name="item_price"],input[name="item_description"],input[name="item_quantity"],select[name="item_discount"],select[name="item_tax"],select[name="item_tax_cess"],select[name="item_uom"],select[name="item_category"],input[name="product_hsn_sac_code"]',
         function (event) {
-            console.log('chnage');
             var newRow = $(this).closest("tr");
+
             calculateTable(newRow);
         }
     );
 
-    /*$("#sales_table_body").on(
+    $("#purchase_table_body").on(
         "change",
-        '[name="item_tds_percentage"]',
+        'select[name="item_tds_percentage"]',
         function (event) {
-           
+            /**/
             var newRow = $(this).closest("tr");
-            var item_tds_id = newRow.find('[name^="item_tds_percentage"] option:selected').attr('tds_id');
-            var item_tds_type = newRow.find('[name^="item_tds_percentage"] option:selected').attr('type');
+            var item_tds_id = newRow.find('select[name^="item_tds_percentage"] option:selected').attr('tds_id');
+            var item_tds_type = newRow.find('select[name^="item_tds_percentage"] option:selected').attr('typ');
           
             newRow.find('input[name=item_tds_id]').val(item_tds_id);
             newRow.find('input[name=item_tds_type]').val(item_tds_type);
             calculateTable(newRow);
         }
-    );*/
+    );
 
-    $("#sales_table_body").on(
+    $("#purchase_table_body").on(
         "change",
         'select[name="item_tax_cess"]',
         function (event) {
@@ -214,7 +260,7 @@ $(document).ready(function () {
     );
 
     //reverse calculations
-    $("#sales_table_body").on(
+    $("#purchase_table_body").on(
         "change",
         'input[name^="item_grand_total"]',
         function (event) {
@@ -251,8 +297,6 @@ $(document).ready(function () {
                 item_tax_cess_percentage = +parseFloat(
                     row.find('input[name^="item_tax_cess_percentage"]').val()
                 );
-
-
             }
             if (settings_tds_visible != "no") {
                 item_tds_amount = +parseFloat(
@@ -261,13 +305,11 @@ $(document).ready(function () {
                 item_tds_percentage = +parseFloat(
                     row.find('[name="item_tds_percentage"]').val()
                 );
-                
                 var item_tds_type = row.find('input[name^="item_tds_type"]').val();
-               // console.log(item_tds_type);
                 item_tds_type = item_tds_type.trim();
-                //| item_tds_type != "tcs"
                 item_tds_type = item_tds_type.toLowerCase();
                 item_tds_type = item_tds_type.toUpperCase();
+
                 if (item_tds_type != "TCS" ) {
                     item_tds_amount = 0;
                     item_tds_percentage = 0;
@@ -275,12 +317,15 @@ $(document).ready(function () {
             }
 
             var item_quantity = +row.find('input[name^="item_quantity"]').val();
-            var item_taxable_value = precise_amount((+item_grand_total * 100) / (100 + (+item_tds_percentage + +item_tax_percentage + +item_tax_cess_percentage)));
+            var item_taxable_value =
+                (+item_grand_total * 100) /
+                (100 + (+item_tds_percentage + +item_tax_percentage + +item_tax_cess_percentage));
             var item_sub_total =
                 (+item_taxable_value * 100) / (100 - +item_discount_percentage);
             var item_price = item_sub_total / item_quantity;
+           
             row.find('input[name="item_price"]').val(precise_amount(item_price));
-        
+       
             calculateTable(row);
         }
     );
@@ -326,7 +371,7 @@ $(document).ready(function () {
                     $("#round_off_select").removeAttr("style");
                     
                 } else {
-                    $('#round_off_value').html('');
+                    $("#round_off_value").html('');
                     $("#round_off_select").attr("style", "display: none");
                 }
             }
@@ -340,9 +385,7 @@ $(document).ready(function () {
 
     $(document).on('change','[name=type_of_supply]',function(){
         var type_of_supply = $(this).val();
-        if(type_of_supply == 'export_without_payment'){
-            $('.gst_payable_div').hide();
-        }else if(type_of_supply == 'export_with_payment'){
+        if(type_of_supply == 'import'){
             $('.gst_payable_div').hide();
         }else{
             $('.gst_payable_div').show();
@@ -350,10 +393,11 @@ $(document).ready(function () {
         reCalculateTable();
     }) 
 });
+
 var ProXHR;
-// get items to table starts
+    // get items to table starts
 function AutoComplate(){
-    $(document).find("[name=input_sales_code]").autoComplete({
+    $(document).find("[name=input_purchase_code]").autoComplete({
         minChars: 0,
         cache: false,
         source: function (term, suggest) {
@@ -364,85 +408,75 @@ function AutoComplate(){
             } else {
                 var inventory_advanced = common_settings_inventory_advanced;
             }
-            var item_access = $("#nature_of_supply").val();
+            var item_access = $('#nature_of_supply').val();
             if (item_access == "") {
                 item_access = "product";
             }
-            
-            brand_id = $('#brand_id').val();
+
             var isnum = /^\d+$/.test(term);
             if(ProXHR && ProXHR.readyState != 4){
                 ProXHR.abort();
             }
             ProXHR = $.ajax({
-                url: base_url +
-                    "sales/get_sales_suggestions/" +
-                    term +
-                    "/" +
-                    inventory_advanced +
-                    "/" +
-                    item_access+"/"+brand_id,
+                url: base_url + "purchase/get_purchase_suggestions/" + term + "/" + inventory_advanced + "/" + item_access,
                 type: "GET",
                 dataType: "json",
                 success: function (data) {
                     var suggestions = [];
                     for (var i = 0; i < data.length; ++i) {
+                        var kv = data[i].item_code + " " + data[i].item_name+ ' ' + data[i].product_batch
+                        /*suggestions.push(kv);*/
                         suggestions.push(data[i].item_code + " " + data[i].item_name+ ' ' + data[i].product_batch+ ' <span class="stock_span">' + (parseInt(+data[i].product_quantity) + parseInt(+data[i].product_opening_quantity))+'</span>');
-                        var item_code = data[i].item_code+'-'+data[i].product_batch;
+                        kv = kv.replace(/ /g, "_"); 
+                        var item_code = kv;
                         var code = item_code.toString().split(' ');
-                        mapping[code[0]] =
-                            data[i].item_id +
-                            "-" +
-                            data[i].item_type +
-                            "-" +
-                            settings_discount_visible +
-                            "-" +
-                            settings_tax_type;
+                        //mapping[data[i].item_code] = data[i].item_id + '-' + data[i].item_type + '-' + settings_discount_visible + '-' + settings_tax_type;
+                        mapping[code[0]] = data[i].item_id + '-' + data[i].item_type + '-' + settings_discount_visible + '-' + settings_tax_type;
                     }
+                    //&& isnum == true
                     if (i == 1 && term.length > 7 ) {
-                        var k = data[0].item_code+'-'+data[0].product_batch;
+                        var k = data[i].item_code + " " + data[i].item_name+ ' ' + data[i].product_batch;
+                        k = k.replace(/ /g, "_");
                         $.ajax({
-                            url: base_url +
-                                "sales/get_table_items/" +
-                                mapping[k],
+                            url: base_url + 'purchase/get_table_items/' + mapping[k],
                             type: "GET",
                             dataType: "JSON",
                             success: function (data1) {
                                 $('#table-total').show();
                                 add_row(data1);
                                 call_css();
-                                /*$("[name=input_sales_code]").val("");*/
+                                $('#input_purchase_code').val('')
                             }
                         });
-                        suggest("");
+                        suggest('');
                     } else {
                         suggest(suggestions);
                     }
                 }
-            });
+            })
         },
         onSelect: function (event, ui) {
             ui = $.trim(ui);
-            var code = ui.toString().split(" ");
-            k = code[0]+'-'+(code[code.length-1]);
+            k = ui.replace(/ /g, "_"); 
             
+            /*var code = ui.toString().split(" ");
+            var code = ui.toString().split(' ');
+            k = code[0]+'-'+(code[code.length-1]);*/
             $.ajax({
-                url: base_url + "sales/get_table_items/" + mapping[k],
+                url: base_url + 'purchase/get_table_items/' + mapping[k],
                 type: "GET",
                 dataType: "JSON",
                 success: function (data) {
                     $('#table-total').show();
                     add_row(data);
                     call_css();
-                    /*$(document).find("[name=input_sales_code]").val("").focusout(function(){
-
-                    });*/
+                    //$('#input_purchase_code').val('')
                 }
-            });
+            })
         }
     });
 }
-    
+
 function CalculateRoundOff(){
     var grand_total = parseFloat($("#without_reound_off_grand_total").val());
     
@@ -460,7 +494,7 @@ function CalculateRoundOff(){
                 round_off_minus = grand_total - round_off_value; 
                 grand_total = parseFloat(grand_total) - parseFloat(round_off_minus);
             }
-        }
+        } 
     }
     
     $('#round_off_plus').val(round_off_plus);
@@ -484,7 +518,7 @@ function CalculateRoundOff(){
 }
 
 function reCalculateTable(){
-    $("#sales_table_body")
+    $("#purchase_table_body")
         .find('input[name^="item_tax_id"]')
         .each(function () {
             var row = $(this).closest("tr");
@@ -494,8 +528,6 @@ function reCalculateTable(){
 }
 //function to add new row to datatable
 function add_row(data) {
-    //console.log(uom);
-    console.log(data,'data');
     var flag = 0;
     var item_id = data.item_id;
     var item_type = data.item_type;
@@ -514,27 +546,21 @@ function add_row(data) {
         var item_tax_percentage = precise_amount(data[0].service_tax_value);
         var item_tds_id = data[0].service_tds_id;
         var item_tds_percentage = precise_amount(data[0].service_tds_value);
-        /*var item_tds_type = data[0].module_type;*/
-        var item_tds_type = 'TDS';
         var product_batch = data[0].product_batch;
-        var product_quantity = '';
+        var item_tds_type = 'TDS';
     } else {
         var item_code = data[0].product_code;
         var item_name = data[0].product_name;
         var item_hsn_sac_code = data[0].product_hsn_sac_code;
         var item_details = data[0].product_details;
-        var item_price = precise_amount(data[0].product_selling_price);
+        var item_price = precise_amount(data[0].product_price);
         var item_tax_id = data[0].product_tax_id;
-        var item_discount = data[0].product_discount_id;
         var item_tax_percentage = precise_amount(data[0].product_tax_value);
         var item_tds_id = data[0].product_tds_id;
         var item_tds_percentage = precise_amount(data[0].product_tds_value);
-        var product_batch = data[0].product_batch;
+        var product_batch = data[0].product_batch;        
         /*var item_tds_type = data[0].module_type;*/
         var item_tds_type = 'TCS';
-        var product_quantity = data[0]. product_quantity;
-        var equal_unit_number = data[0].equal_unit_number;
-        var equal_uom_id = data[0].equal_uom_id;
     }
 
     if (item_tds_id == "") {
@@ -542,11 +568,10 @@ function add_row(data) {
     }
     var billing_state_id = $("#billing_state").val();
     var billing_country_id = $("#billing_country").val();
-    var type_of_supply = $("#type_of_supply").val();
-    if(item_discount == ""){
-       var item_discount = 0; 
-    }
+    var type_of_supply = $("#type_of_supply").val();    
+    var item_discount = 0; 
     
+
     table_index = +table_index;
 
     var input_type = "text";
@@ -573,23 +598,19 @@ function add_row(data) {
         select_discount +=
             '<select class="form-control open_discount form-fixer select2" name="item_discount" style="width: 100%;">';
         select_discount += '<option value="">Select</option>';
-        for (a = 0; a < data.discount.length; a++) {
-            var selected = "";
-                if (item_discount == data.discount[a].discount_id) {
-                   var selected = "selected";
-                }
+        for (a = 0; a < data.discount.length; a++) {             
             select_discount +=
                 '<option value="' +
                 data.discount[a].discount_id +
                 "-" +
                 parseFloat(data.discount[a].discount_value) +
-                '" '+selected +' >' +
+                '">' +
                 parseFloat(data.discount[a].discount_value) +
                 "%</option>";
         }
         select_discount += "</select></div>";
     }
-
+    console.log(discount_exist, 'hhh');
     if (settings_tax_type != "no_tax") {
         tax_exist = 1;
 
@@ -602,81 +623,11 @@ function add_row(data) {
                 '<div class="form-group" style="margin-bottom:0px !important;">';
         }
         var gst_disable = ''; 
-        if(type_of_supply == 'export_without_tax'){
+        if(type_of_supply == 'import'){
             item_tax_id = '0';
-            gst_disable = 'disabled';
-        }
-        var open_tds_modal = 'open_tds_modal';
-       /* commented by karthik on 09-01-2020
-       var open_tds_modal = 'open_tds_modal';
-        if($('#section_area').val() == 'quotation' && item_tds_type == 'TDS'){
-            open_tds_modal = '';
-            item_tds_percentage = 0;
-        }*/
-
-        var select_tds = '<input type="text" class="form-control '+open_tds_modal+' pointer" name="item_tds_percentage" value="'+parseFloat(item_tds_percentage)+'%" readonly>';
-
-//        var select_tds = '';
-//        if (input_type == "hidden") {
-//            select_tds +=
-//                '<div class="form-group" style="margin-bottom:0px !important;display:none">';
-//        } else {
-//            select_tds +=
-//                '<div class="form-group" style="margin-bottom:0px !important;">';
-//        }
-//        select_tds +=
-//            '<select class="form-control open_tax form-fixer select2" name="item_tds_percentage" style="width: 100%;" '+gst_disable+'>';
-//        select_tds += '<option value=""></option>';
-//
-//        for (a = 0; a < data.tax.length; a++) {
-//            if (item_tds_id == data.tax[a].tax_id) {
-//                var selected = "selected";
-//            } else {
-//                var selected = "";
-//            }
-//            if(data.tax[a].tax_name == 'TDS' || data.tax[a].tax_name == 'TCS'){
-//                tax_name = data.tax[a].tax_name;
-//                if(item_tds_type.toLowerCase() == tax_name.toLowerCase()){
-//                    select_tds +=
-//                        '<option value="'+
-//                        precise_amount(data.tax[a].tax_value) +
-//                        '" ' +
-//                        selected +
-//                        " tds_id='"+data.tax[a].tax_id+"' type='"+data.tax[a].tax_name+"'>" +
-//                        precise_amount(data.tax[a].tax_value) +
-//                        "%</option>";
-//                }
-//            }
-//        }
-//        select_tds += "</select></div>";
+            /*gst_disable = 'disabled';*/
+        } 
         
-        var tds_body = '<table id="tds_table" index="'+ table_index +'" class="table table-bordered table-striped sac_table ">\
-                    <thead>\
-                    <th>TAX Name</th>\
-                    <th>Action</th>\
-                    </thead>\
-                    <tbody>';
-     
-        for (a = 0; a < data.tax.length; a++) {
-            
-            if(data.tax[a].tax_name == 'TDS' || data.tax[a].tax_name == 'TCS'){
-                tax_name = data.tax[a].tax_name;
-                if(item_tds_type.toLowerCase() == tax_name.toLowerCase()){
-                    var selected = "";
-                    if (item_tds_id == data.tax[a].tax_id) {
-                       var selected = "selected";
-                    }
-                    tds_body += '<tr>\
-                            <td>'+data.tax[a].tax_name+'(Sec '+data.tax[a].section_name+') @ '+parseFloat(data.tax[a].tax_value) +'%</td>\
-                            <td><div class="radio">\
-                                    <label><input type="radio" name="tds_tax" value="'+precise_amount(data.tax[a].tax_value) +
-                       '"'+selected +" tds_id='"+data.tax[a].tax_id+"' typ='"+data.tax[a].tax_name+"'></label>\
-                                </div></td></tr>";
-                }
-            }
-        }
-        tds_body += '</tbody></table>';
-
         select_tax +=
             '<select class="form-control open_tax form-fixer select2" name="item_tax" style="width: 100%;" '+gst_disable+'>';
         select_tax += '<option value="">Select</option>';
@@ -736,6 +687,68 @@ function add_row(data) {
         cess_select += "</select></div>";
 
     }
+    
+    if (settings_tds_visible == "yes") {
+        var select_tds = '<input type="text" class="form-control open_tds_modal pointer" name="item_tds_percentage" value="'+parseFloat(item_tds_percentage)+'%" readonly>';
+        var tds_body = '<table id="tds_table" index="'+ table_index +'" class="table table-bordered table-striped sac_table ">\
+                    <thead>\
+                    <th>TAX Name</th>\
+                    <th>Action</th>\
+                    </thead>\
+                    <tbody>';
+     
+        for (a = 0; a < data.tax.length; a++) {
+            
+            if(data.tax[a].tax_name == 'TDS' || data.tax[a].tax_name == 'TCS'){
+                tax_name = data.tax[a].tax_name;
+                if(item_tds_type.toLowerCase() == tax_name.toLowerCase()){
+                    var selected = "";
+                    if (item_tds_id == data.tax[a].tax_id) {
+                        selected = "selected";
+                    }
+                    tds_body += '<tr>\
+                            <td>'+data.tax[a].tax_name+'(Sec '+data.tax[a].section_name+') @ '+parseFloat(data.tax[a].tax_value) +'%</td>\
+                            <td><div class="radio">\
+                                    <label><input type="radio" name="tds_tax" value="'+parseFloat(data.tax[a].tax_value) +
+                       '"'+selected +" tds_id='"+data.tax[a].tax_id+"' typ='"+data.tax[a].tax_name+"'></label>\
+                                </div></td></tr>";
+                }
+            }
+        }
+        tds_body += '</tbody></table>';
+        /*var select_tds = '';
+        if (input_type == "hidden") {
+            select_tds +=
+                '<div class="form-group" style="margin-bottom:0px !important;display:none">';
+        } else {
+            select_tds +=
+                '<div class="form-group" style="margin-bottom:0px !important;">';
+        }
+        select_tds +=
+            '<select class="form-control open_tax form-fixer select2" name="item_tds_percentage" style="width: 100%;">';
+        select_tds += '<option value="">Select</option>';
+
+        for (a = 0; a < data.tax.length; a++) {
+            if (item_tds_id == data.tax[a].tax_id) {
+                var selected = "selected";
+            } else {
+                var selected = "";
+            }
+           
+            var t = data.tax[a].tax_name;
+            if(t.toLowerCase() == item_tds_type.toLowerCase()){
+                select_tds +=
+                    '<option value="'+
+                    precise_amount(data.tax[a].tax_value) +
+                    '" ' +
+                    selected +
+                    " tds_id='"+data.tax[a].tax_id+"' type='"+data.tax[a].tax_name+"'>" +
+                    precise_amount(data.tax[a].tax_value) +
+                    "</option>";
+            }
+        }
+        select_tds += "</select></div>";*/
+    }
 
     var newRow = $("<tr id=" + table_index + ">");
     var cols = "";
@@ -752,16 +765,17 @@ function add_row(data) {
         item_code +
         "'></td>";
     if (item_type == "product" || item_type == "product_inventory")
-        cols += "<td>" + item_name + "<br>(P) (HSN/SAC:" + item_hsn_sac_code + ")<br></td>";
+        cols += "<td>" + item_name + "<br>(P) (HSN/SAC:" + item_hsn_sac_code + ")<br>"+product_batch+"</td>";
     else cols += "<td>" + item_name + "<br>(S) (HSN/SAC:" + item_hsn_sac_code + ")</td>";
 
     cols += "<td style='text-align:center'><input type='text' class='form-control form-fixer text-left float_number' value="+ item_hsn_sac_code +" name='item_hsn' readonly></td>";
-    
+
     if (settings_description_visible == "yes") {
         cols +=
             "<td>" +
             "<input type='text' class='form-control form-fixer' name='item_description' ></td>";
     }
+
     var uom_select = '<select class="form-control form-fixer select2" name="item_uom" style="width: 100%;" disabled>';
         uom_select += '<option value="">Select</option>';
         //console.log(uom);
@@ -779,39 +793,11 @@ function add_row(data) {
 
         })
     }
-    var hsn_select = "";
-        
-    if(hsn != ''){
-        $.each(hsn,function(k,v){
-            var select = '';
-            
-                
-                if(v.id == item_hsn_sac_code){
-                    //unit_number = is_main = 1;
-                    select = 'selected';
-                 
-                hsn_select = '<input type="text" class="form-control form-fixer" name="item_hsn" value ="'+ v.hsn +'" style="width: 100%;">';
-                }
 
-        })
-    }
-
-    var cat_select = '<select class="form-control form-fixer select2" name="item_category" style="width: 100%;" disabled>';
-        cat_select += '<option value="">Select</option>';
-        //console.log(uom);
-    if(product_category != ''){
-        
-        $.each(product_category,function(k,v){
-            var select = '';
-            cat_select +='<option value="'+ v.id +'" selected>' + v.category_name +"</option>";
-        })
-    }
     cols +=
         "<td style='text-align:center'><input type='text' class='form-control form-fixer text-center float_number' value='1' data-rule='quantity' name='item_quantity'></td>";
     cols += "<td style='text-align:center'>"+uom_select+"</td>";
-    
-    /*<span id='item_quantity_lbl_" + table_index +
-            "' class='pull-right' style='color:red;'>"+product_quantity+"</span>*/
+
     if (input_type == "hidden") {
         cols +=
             "<td style='text-align:center'>" +
@@ -842,14 +828,16 @@ function add_row(data) {
         "' name='item_sub_total'>" +
         "</td>";
     if (discount_exist == 1) {
+        disply = "";
+        if($('#section_area').val() == 'add_purchase_order' || $('#section_area').val() == 'edit_purchase_order') disply = "style='display:none;'";
         if (input_type == "hidden") {
             cols +=
-                "<td style='text-align:center'>" +
+                "<td style='text-align:center' "+disply+">" +
                 "<span id='item_discount_hide_lbl_" +
                 table_index +
                 "' class='text-center' >0.00</span>";
         } else {
-            cols += "<td>";
+            cols += "<td "+disply+">";
         }
         cols +=
             "<input type='hidden' name='item_discount_id' value='0'>" +
@@ -867,7 +855,6 @@ function add_row(data) {
     //taxable area
     if (tax_exist == 1) {
         if (discount_exist == 1) {
-            
             cols +=
                 "<td style='text-align:center'><input type='hidden' name='item_taxable_value' value='" +
                 item_price +
@@ -942,7 +929,6 @@ function add_row(data) {
         } else {
             cols += "<td>";
         }
-
         cols +=
             "<input type='hidden' name='item_tax_cess_id' value='0'>" +
             "<input type='hidden' name='item_tax_cess_percentage' value='0'>" +
@@ -953,16 +939,7 @@ function add_row(data) {
             "' class='pull-right' style='color:red;'>0.00</span>" +
             "</td>";*/
     }
-    
-   /* cols += "<td>" +
-                "<div class='form-group' style='display: table;'>" +
-                    "<div class='input-group-addon hsn' style='background-color: #d0e0fc;'>" +
-                         "<a href='' data-toggle='modal' data-target='#hsn_modal' class='pull-right'><span class='fa fa-eye'></span></a>"+
-                    "</div>"+
-                    "<input type='text' style='height: 36px;' class='form-control form-fixer text-left float_number' value="+ item_hsn_sac_code +" name='item_hsn' readonly>" +
-                "</div>"+
-            "</td>";*/
-    //cols += "<td style='text-align:center'>"+cat_select+"</td>";
+
     //tax area
     if (input_type == "hidden") {
         cols +=
@@ -979,12 +956,10 @@ function add_row(data) {
         "' class='float_number form-control form-fixer text-right' name='item_grand_total'></td>";
     cols += "</tr>";
 
-    //newRow.replaceWith(cols);
-
     newRow.append(cols);
-    $("table #sales_table_body tr:last").replaceWith(newRow);
-    /*$("#sales_table_body").prepend(newRow);*/
-    console.log(table_index,'table_index');
+    $("table #purchase_table_body tr:last").replaceWith(newRow);
+    
+    //$("#purchase_table_body").prepend(newRow);
     table_index++;
 
     calculateTable(newRow);
@@ -998,9 +973,8 @@ function calculateRow(row) {
     // var key = +row.index();
     var table_index = +row.find('input[name^="item_key_value"]').val();
     var item_price = +parseFloat(row.find('input[name^="item_price"]').val());
-    
     var item_quantity = +row.find('input[name^="item_quantity"]').val();
-    var item_sub_total = parseFloat(precise_amount(item_price) * item_quantity);
+    var item_sub_total = parseFloat(item_price * item_quantity);
     row.find('input[name^="item_sub_total"]').val(precise_amount(item_sub_total));
     row.find("#item_sub_total_lbl_" + table_index).text(item_sub_total);
 
@@ -1015,7 +989,7 @@ function calculateDiscount(row) {
     var table_index = +row.find('input[name^="item_key_value"]').val();
 
     var discount_data = row.find('select[name^="item_discount"]').val();
-    if (discount_data == "" || typeof discount_data == 'undefined') {
+    if (discount_data == "" || typeof discount_data == undefined) {
         discount_data = 0;
     }
     var discount_split = discount_data.toString().split("-");
@@ -1028,11 +1002,11 @@ function calculateDiscount(row) {
     var item_sub_total = +parseFloat(
         row.find('input[name^="item_sub_total"]').val()
     );
-    var item_discount_amount = (precise_amount(item_sub_total) * item_discount) / 100;
+    var item_discount_amount = (item_sub_total * item_discount) / 100;
 
     row.find('input[name^="item_discount_amount"]').val(precise_amount(item_discount_amount));
     row.find('input[name^="item_discount_id"]').val(item_discount_id);
-    row.find('input[name^="item_discount_percentage"]').val(item_discount);
+    row.find('input[name^="item_discount_percentage"]').val(precise_amount(item_discount));
     row.find("#item_discount_lbl_" + table_index).text(item_discount_amount);
 
     if (settings_item_editable == "no") {
@@ -1049,17 +1023,17 @@ function calculateTax(row) {
     var item_discount_amount = +parseFloat(
         row.find('input[name^="item_discount_amount"]').val()
     );
-    var item_taxable_value = precise_amount(item_sub_total);
+    var item_taxable_value = item_sub_total;
     if (typeof item_discount_amount != "undefined" && !isNaN(item_discount_amount)) {
-        item_taxable_value = precise_amount(item_sub_total) - precise_amount(item_discount_amount);
+        item_taxable_value = item_sub_total - item_discount_amount;
         row.find("#item_taxable_value_lbl_" + table_index).text(item_taxable_value);
-        row.find('input[name^="item_taxable_value"]').val(precise_amount(item_taxable_value));
+        row.find('input[name^="item_taxable_value"]').val(item_taxable_value);
     }
 
     if (settings_tax_type != "no_tax") {
         var table_index = +row.find('input[name^="item_key_value"]').val();
         var tax_data = row.find('select[name="item_tax"]').val();
-
+       
         if(tax_data != '' && typeof tax_data != 'undefined' ){
             var tax_split = tax_data.toString().split("-");
             var item_tax_id = +tax_split[0];
@@ -1068,7 +1042,6 @@ function calculateTax(row) {
                 item_tax = 0;
             }
         }
-        //console.log(item_tax,'tax_data');
         var type_of_supply = $("#type_of_supply").val();
         var cess_tax = row.find('select[name=item_tax_cess]').val();
         if(cess_tax != '' && typeof cess_tax != 'undefined' ){
@@ -1080,39 +1053,38 @@ function calculateTax(row) {
             }
         }
 
-        if (type_of_supply == "export_without_payment") {
+        if (type_of_supply == "import") {
             item_tax_id = 0;
             item_tax = 0;
             item_tax_cess_id = item_tax_cess =0;
-            /*row.find('[name=item_tax]').attr('readonly',true);*/
+            /*row.find('[name=item_tax]').val('').change();*/
         }
         var item_tax_amount = (item_taxable_value * item_tax) / 100;
         var item_tax_cess_amount = (item_taxable_value * item_tax_cess) / 100;
-       
         if(settings_tax_type == 'gst'){
             var cgst_amount_percentage = parseFloat(settings_tax_percentage);
             var sgst_amount_percentage = 100 - parseFloat(cgst_amount_percentage);
-            var sales_igst_amount = 0; 
-            var sales_cgst_amount = 0;
-            var sales_sgst_amount = 0;
+            var purchase_igst_amount = 0; 
+            var purchase_cgst_amount = 0;
+            var purchase_sgst_amount = 0;
            /* var txable_amount = (parseFloat(other_tax_amount) + parseFloat(item_tax_amount));*/
-            var txable_amount = parseFloat(precise_amount(item_tax_amount));
-            if($('#type_of_supply').val() == 'regular'){
+            var txable_amount = parseFloat(item_tax_amount);
+            if($('#type_of_supply').val() != 'import'){
                 if(branch_state_id == $('#billing_state').val()){
-                    sales_igst_amount = 0;
-                    sales_cgst_amount = (txable_amount * cgst_amount_percentage)/100;
-                    sales_sgst_amount = (txable_amount * sgst_amount_percentage)/100;
+                    purchase_igst_amount = 0;
+                    purchase_cgst_amount = (txable_amount * cgst_amount_percentage)/100;
+                    purchase_sgst_amount = (txable_amount * sgst_amount_percentage)/100;
                 }else{
-                    sales_igst_amount = txable_amount;
-                    sales_cgst_amount = 0;
-                    sales_sgst_amount = 0;
+                    purchase_igst_amount = txable_amount;
+                    purchase_cgst_amount = 0;
+                    purchase_sgst_amount = 0;
                     /*item_tax_cess_amount = 0;*/
                 }
             }else{
                 if($('#type_of_supply').val() == 'export_with_payment'){
-                    sales_igst_amount = txable_amount;
-                    sales_cgst_amount = 0;
-                    sales_sgst_amount = 0;
+                    purchase_igst_amount = txable_amount;
+                    purchase_cgst_amount = 0;
+                    purchase_sgst_amount = 0;
                     /*item_tax_cess_amount= 0;*/
                 }
             }
@@ -1124,24 +1096,23 @@ function calculateTax(row) {
         other_tax_amount = 0;*/
     item_tax_amount = item_tax_amount || 0;
     item_tax_cess_amount = item_tax_cess_amount || 0;
-    sales_igst_amount = sales_igst_amount || 0;
-    sales_sgst_amount = sales_sgst_amount || 0;
-    sales_cgst_amount = sales_cgst_amount || 0;
+    purchase_igst_amount = purchase_igst_amount || 0;
+    purchase_sgst_amount = purchase_sgst_amount || 0;
+    purchase_cgst_amount = purchase_cgst_amount || 0;
     item_tax = item_tax || 0;
     item_tax_cess = item_tax_cess || 0;
     item_tax_amount = item_tax_amount || 0;
-   
     row.find('input[name="item_tax_amount"]').val(precise_amount(item_tax_amount));
     row.find('input[name="item_tax_cess_amount"]').val(precise_amount(item_tax_cess_amount));
-    row.find('input[name^="item_tax_amount_igst"]').val(precise_amount(sales_igst_amount));
-    row.find('input[name^="item_tax_amount_sgst"]').val(precise_amount(sales_sgst_amount));
-    row.find('input[name^="item_tax_amount_cgst"]').val(precise_amount(sales_cgst_amount));
+    row.find('input[name^="item_tax_amount_igst"]').val(precise_amount(purchase_igst_amount));
+    row.find('input[name^="item_tax_amount_sgst"]').val(precise_amount(purchase_sgst_amount));
+    row.find('input[name^="item_tax_amount_cgst"]').val(precise_amount(purchase_cgst_amount));
     row.find('input[name^="item_tax_id"]').val(item_tax_id);
     row.find('input[name^="item_tax_cess_id"]').val(item_tax_cess_id);
-    row.find('input[name^="item_tax_percentage"]').val(precise_amount(item_tax));
-    row.find('input[name^="item_tax_cess_percentage"]').val(precise_amount(item_tax_cess));
-    row.find("#item_tax_lbl_" + table_index).text(precise_amount(item_tax_amount));
-    row.find("#item_tax_cess_lbl_" + table_index).text(precise_amount(item_tax_cess_amount));
+    row.find('input[name^="item_tax_percentage"]').val(item_tax);
+    row.find('input[name^="item_tax_cess_percentage"]').val(item_tax_cess);
+    row.find("#item_tax_lbl_" + table_index).text(item_tax_amount);
+    row.find("#item_tax_cess_lbl_" + table_index).text(item_tax_cess_amount);
 
     if (settings_item_editable == "no") {
         row
@@ -1158,7 +1129,7 @@ function calculateTds(row) {
         row.find('[name^="item_tds_percentage"]').val()
     );
 
-    if (item_tds == "" || isNaN(item_tds)) {
+    if (item_tds == "" || isNaN(item_tds) || $('#type_of_supply').val() == "import") {
         item_tds = 0;
     }
 
@@ -1168,7 +1139,7 @@ function calculateTds(row) {
     var item_discount_amount = +parseFloat(
         row.find('input[name^="item_discount_amount"]').val()
     );
-    var item_taxable_value = precise_amount(item_sub_total);
+    var item_taxable_value = item_sub_total;
     if (
         typeof item_discount_amount != "undefined" &&
         !isNaN(item_discount_amount)
@@ -1213,7 +1184,7 @@ function calculateRowTotal(row) {
         row.find('input[name^="item_tds_amount"]').val()
     );
     var item_tds_type = row.find('input[name^="item_tds_type"]').val();
-    
+
     if (typeof item_taxable_value === "undefined" || isNaN(item_taxable_value)) {
         item_taxable_value = item_sub_total;
     }
@@ -1231,9 +1202,8 @@ function calculateRowTotal(row) {
     if (typeof item_tax_cess_amount === "undefined" || isNaN(item_tax_cess_amount)) {
         item_tax_cess_amount = 0;
     }
-
-    var item_grand_total = (item_taxable_value) + (item_tax_amount) + (item_tds_amount) + (item_tax_cess_amount);
-   
+    var item_grand_total = item_taxable_value + item_tax_amount + item_tds_amount + item_tax_cess_amount;
+    
     row.find('input[name^="item_grand_total"]').val(precise_amount(item_grand_total));
     if (settings_item_editable == "no") {
         row.find("#item_grand_total_hide_lbl_" + table_index).text(item_grand_total);
@@ -1279,7 +1249,7 @@ function preciseRowAmount(row) {
             .find('input[name^="item_taxable_value"]')
             .val(precise_amount(item_taxable_value));
         row
-            .find("[id^='item_taxable_value_lbl_']")
+            .find("#item_taxable_value_lbl_" + table_index)
             .text(precise_amount(item_taxable_value));
     }
     if (typeof item_tax_amount !== "undefined" && !isNaN(item_tax_amount)) {
@@ -1287,7 +1257,7 @@ function preciseRowAmount(row) {
             .find('input[name="item_tax_amount"]')
             .val(precise_amount(item_tax_amount));
         row
-            .find("[id^='item_tax_lbl_']")
+            .find("#item_tax_lbl_" + table_index)
             .text(precise_amount(item_tax_amount));
     }
     if (typeof item_tax_cess_amount !== "undefined" && !isNaN(item_tax_cess_amount)) {
@@ -1295,7 +1265,7 @@ function preciseRowAmount(row) {
             .find('input[name="item_tax_cess_amount"]')
             .val(precise_amount(item_tax_cess_amount));
         row
-            .find("[id^='item_tax_cess_lbl_']")
+            .find("#item_tax_cess_lbl_" + table_index)
             .text(precise_amount(item_tax_cess_amount));
     }
     if (typeof item_tax_amount_igst !== "undefined" && !isNaN(item_tax_amount_igst)) {
@@ -1318,7 +1288,7 @@ function preciseRowAmount(row) {
             .find('input[name^="item_tds_amount"]')
             .val(precise_amount(item_tds_amount));
         row
-            .find("[id^='item_tds_lbl_']")
+            .find("#item_tds_lbl_" + table_index)
             .text(precise_amount(item_tds_amount));
     }
 
@@ -1330,30 +1300,29 @@ function preciseRowAmount(row) {
             .find('input[name^="item_discount_amount"]')
             .val(precise_amount(item_discount_amount));
         row
-            .find("[id^='item_discount_lbl_']")
+            .find("#item_discount_lbl_" + table_index)
             .text(precise_amount(item_discount_amount));
 
         if (settings_item_editable == "no") {
             row
-                .find("[id^='item_discount_hide_lbl_']")
+                .find("#item_discount_hide_lbl_" + table_index)
                 .text(precise_amount(item_discount_amount));
         }
     }
 
     row.find('input[name^="item_price"]').val(precise_amount(item_price));
     row.find('input[name^="item_sub_total"]').val(precise_amount(item_sub_total));
-    row.find("[id^='item_sub_total_lbl_']").text(precise_amount(item_sub_total));
+    row.find("#item_sub_total_lbl_" + table_index).text(precise_amount(item_sub_total));
     row.find('input[name^="item_grand_total"]').val(precise_amount(item_grand_total));
 
     if (settings_item_editable == "no") {
-        row.find("[id^='item_price_hide_lbl_']").text(precise_amount(item_sub_total));
-        row.find("[id^='item_grand_total_hide_lbl_']").text(precise_amount(item_grand_total));
+        row.find("#item_price_hide_lbl_" + table_index).text(precise_amount(item_sub_total));
+        row.find("#item_grand_total_hide_lbl_" + table_index).text(precise_amount(item_grand_total));
     }
 }
 
 function generateJson(row) {
-    /*$(document).find('span.validation-color').text('');*/
-    var item_name = row.find('input[name^="input_sales_code"]').val();
+    var item_name = row.find('input[name^="input_purchase_code"]').val();
     var item_category = row.find('select[name="item_category"]').val();
     var item_hsn_sac_code = row.find('input[name^="product_hsn_sac_code"]').val();
     var item_uom = row.find('[name=item_uom]').val();
@@ -1431,7 +1400,7 @@ function generateJson(row) {
         item_discount_id = 0;
         item_discount_percentage = 0;
     }
-    //console.log(table_index,'item_key_value');
+
     if(item_id >= 0 && item_name != "" && item_price != 0){
         var data_item = {
             item_key_value: +table_index,
@@ -1464,10 +1433,10 @@ function generateJson(row) {
         };
         var flag = 0;
         var i_val = "";
-        for (var i = 0; i < sales_data.length; i++) {
+        for (var i = 0; i < purchase_data.length; i++) {
             if (
-                sales_data[i] !== "undefined" &&
-                sales_data[i].item_key_value == table_index
+                purchase_data[i] !== "undefined" &&
+                purchase_data[i].item_key_value == table_index
             ) {
                 flag = 1;
                 i_val = i;
@@ -1475,12 +1444,12 @@ function generateJson(row) {
             }
         }
         if (flag == 1) {
-            sales_data[i_val] = data_item;
+            purchase_data[i_val] = data_item;
         } else {
-            sales_data.push(data_item);
+            purchase_data.push(data_item);
         }
-        console.log(sales_data);
-        var table_data = JSON.stringify(sales_data);
+        console.log(purchase_data);
+        var table_data = JSON.stringify(purchase_data);
         $("#table_data").val(table_data);
     }
 }
@@ -1526,57 +1495,57 @@ function calculateGrandTotal() {
     var tflag = 0;
     var tdsflag = 0;
     var tcsflag = 0;
-    $("#sales_table_body")
+    $("#purchase_table_body")
         .find('input[name^="item_sub_total"]')
         .each(function () {
             sub_total += +$(this).val();
         });
-    $("#sales_table_body")
+    $("#purchase_table_body")
         .find('input[name^="item_taxable_value"]')
         .each(function () {
             taxable += +$(this).val();
         });
-    $("#sales_table_body")
+    $("#purchase_table_body")
         .find('input[name^="item_discount_amount"]')
         .each(function () {
             dflag = 1;
             discount += +$(this).val();
         });
-    $("#sales_table_body")
+    $("#purchase_table_body")
         .find('input[name="item_tax_amount"]')
         .each(function () {
             tflag = 1;
             tax += +$(this).val();
         });
-    $("#sales_table_body")
+    $("#purchase_table_body")
         .find('input[name="item_tax_cess_amount"]')
         .each(function () {
             tflag = 1;
             tax_cess += +$(this).val();
         });
 
-    $("#sales_table_body")
+    $("#purchase_table_body")
         .find('input[name="item_tax_amount_cgst"]')
         .each(function () {
             tflag = 1;
             tax_cgst += +$(this).val();
         });
 
-    $("#sales_table_body")
+    $("#purchase_table_body")
         .find('input[name="item_tax_amount_sgst"]')
         .each(function () {
             tflag = 1;
             tax_sgst += +$(this).val();
         });
 
-    $("#sales_table_body")
+    $("#purchase_table_body")
         .find('input[name="item_tax_amount_igst"]')
         .each(function () {
             tflag = 1;
             tax_igst += +$(this).val();
         });
 
-    $("#sales_table_body")
+    $("#purchase_table_body")
         .find('input[name^="item_tds_amount"]')
         .each(function () {
             row = $(this).closest("tr");
@@ -1590,16 +1559,15 @@ function calculateGrandTotal() {
             }
         });
 
-    $("#sales_table_body")
+    $("#purchase_table_body")
         .find('input[name^="item_grand_total"]')
         .each(function () {
             grand_total += +$(this).val();
         });
 
     var total_other_amount = +$("#total_other_amount").val();
-    if(isNaN(total_other_amount) || typeof total_other_amount == 'undefined') total_other_amount = 0;
     var other_tax_amount = $('#total_other_taxable_amount').val();
-    if(isNaN(other_tax_amount) || typeof other_tax_amount == 'undefined' )
+    if(isNaN(other_tax_amount) || typeof other_tax_amount == 'undefined')
         other_tax_amount = 0;
 
     if(tax > 0){
@@ -1614,9 +1582,9 @@ function calculateGrandTotal() {
             tax_igst = (parseFloat(other_tax_amount) + parseFloat(tax));
         }
     }
-
+  
     if(tax <= 0 && other_tax_amount > 0){
-        if($('#type_of_supply').val() != 'export_without_payment'){
+        if($('#type_of_supply').val() != 'import'){
             var cgst_amount_percentage = parseFloat(settings_tax_percentage);
             var sgst_amount_percentage = 100 - parseFloat(cgst_amount_percentage);
             if(branch_state_id == $('#billing_state').val()){
@@ -1631,14 +1599,12 @@ function calculateGrandTotal() {
     }
     
     var final_grand_total = grand_total + total_other_amount;
-
     if (!isNaN(final_grand_total) && final_grand_total.toString().indexOf('.') != -1){
         $('#round_off_option').show();
     }else{
         $('#round_off_option').hide();
     }
-
-    $('#without_reound_off_grand_total').val(final_grand_total);
+    $('#without_reound_off_grand_total').val(precise_amount(final_grand_total));
     $("#total_sub_total").val(precise_amount(sub_total));
     $("#total_taxable_amount").val(precise_amount(taxable));
     $("#total_discount_amount").val(precise_amount(discount));
@@ -1719,45 +1685,45 @@ function calculateGrandTotal() {
 function deleteRow(row) {
     var table_index_key = +row.find('input[name^="item_key_value"]').val();
     var j = 0;
-    var sales_data_temp = new Array();
+    var purchase_data_temp = new Array();
 
-    for (var i = 0; i < sales_data.length; i++) {
-        if (sales_data[i] !== "undefined" && sales_data[i].item_key_value != table_index_key) {
-            // sales_data.splice(i, 1);
+    for (var i = 0; i < purchase_data.length; i++) {
+        if (purchase_data[i] !== "undefined" && purchase_data[i].item_key_value != table_index_key) {
+            // purchase_data.splice(i, 1);
             var data_item = {
-                item_key_value: +sales_data[i].item_key_value,
-                item_id: +sales_data[i].item_id,
-                item_type: sales_data[i].item_type,
-                item_code: sales_data[i].item_code,
-                item_quantity: +sales_data[i].item_quantity,
-                item_price: +sales_data[i].item_price,
-                item_description: sales_data[i].item_description,
-                item_sub_total: +sales_data[i].item_sub_total,
-                item_discount_amount: +sales_data[i].item_discount_amount,
-                item_discount_id: +sales_data[i].item_discount_id,
-                item_discount_percentage: +sales_data[i].item_discount_percentage,
-                item_tax_amount: +sales_data[i].item_tax_amount,
-                item_tax_id: +sales_data[i].item_tax_id,
-                item_tax_percentage: +sales_data[i].item_tax_percentage,
-                item_tax_cess_amount: +sales_data[i].item_tax_cess_amount,
-                item_tax_cess_id: +sales_data[i].item_tax_cess_id,
-                item_tax_cess_percentage: +sales_data[i].item_tax_cess_percentage,
-                item_tds_amount: +sales_data[i].item_tds_amount,
-                item_tds_id: +sales_data[i].item_tds_id,
-                item_tds_percentage: +sales_data[i].item_tds_percentage,
-                item_tds_type: +sales_data[i].item_tds_type,
-                item_taxable_value: +sales_data[i].item_taxable_value,
-                item_grand_total: +sales_data[i].item_grand_total
+                item_key_value: +purchase_data[i].item_key_value,
+                item_id: +purchase_data[i].item_id,
+                item_type: purchase_data[i].item_type,
+                item_code: purchase_data[i].item_code,
+                item_quantity: +purchase_data[i].item_quantity,
+                item_price: +purchase_data[i].item_price,
+                item_description: purchase_data[i].item_description,
+                item_sub_total: +purchase_data[i].item_sub_total,
+                item_discount_amount: +purchase_data[i].item_discount_amount,
+                item_discount_id: +purchase_data[i].item_discount_id,
+                item_discount_percentage: +purchase_data[i].item_discount_percentage,
+                item_tax_amount: +purchase_data[i].item_tax_amount,
+                item_tax_id: +purchase_data[i].item_tax_id,
+                item_tax_percentage: +purchase_data[i].item_tax_percentage,
+                item_tax_cess_amount: +purchase_data[i].item_tax_cess_amount,
+                item_tax_cess_id: +purchase_data[i].item_tax_cess_id,
+                item_tax_cess_percentage: +purchase_data[i].item_tax_cess_percentage,
+                item_tds_amount: +purchase_data[i].item_tds_amount,
+                item_tds_id: +purchase_data[i].item_tds_id,
+                item_tds_percentage: +purchase_data[i].item_tds_percentage,
+                item_tds_type: +purchase_data[i].item_tds_type,
+                item_taxable_value: +purchase_data[i].item_taxable_value,
+                item_grand_total: +purchase_data[i].item_grand_total
             };
 
-            sales_data_temp.push(data_item);
+            purchase_data_temp.push(data_item);
         }
     }
 
-    sales_data = new Array();
-    sales_data.length = 0;
-    sales_data = sales_data_temp;
+    purchase_data = new Array();
+    purchase_data.length = 0;
+    purchase_data = purchase_data_temp;
 
-    var table_data = JSON.stringify(sales_data);
+    var table_data = JSON.stringify(purchase_data);
     $("#table_data").val(table_data);
 }

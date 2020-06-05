@@ -447,11 +447,11 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                                 <?php echo $key->service_hsn_sac_code; ?>)</td>
                                                         <?php } ?>
                                                         <td>
-                                                            <div class="form-group" style="display: table;">
-                                                                 <div class="input-group-addon" style="background-color: #d0e0fc;">
+                                                            <div class="form-group" style="display: table;" >
+                                                                 <!-- <div class="input-group-addon" style="background-color: #d0e0fc;">
                                                                     <a href="" data-toggle="modal" data-target="#hsn_modal" class="pull-right"><span class="fa fa-eye hsn"></span></a>
-                                                                </div>
-                                                                <input type="text" style="height: 36px;" class="form-control form-fixer text-left float_number" name="product_hsn_sac_code" value='<?php echo $key->product_hsn_sac_code ? $key->product_hsn_sac_code : ""; ?>'>
+                                                                </div> -->
+                                                                <input type="text" style="height: 36px;" class="form-control form-fixer text-left float_number" name="product_hsn_sac_code" value='<?php echo $key->product_hsn_sac_code ? $key->product_hsn_sac_code : ""; ?>' readonly>
                                                                 <span class="pull-right validation-color" style="color:red;margin: -12px 0 0 13px;" name="err_product_hsn_sac_code"></span>
                                                             </div>
                                                         </td>
@@ -465,7 +465,7 @@ $tax_cess         = $CI->tax_call_type('CESS');
                                                             ?>' data-rule='quantity' name='item_quantity'>
                                                         </td>
                                                         <td style="text-align:center">
-                                                            <select class="form-control select2" name="item_uom" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                                                            <select class="form-control select2" name="item_uom" style="width: 100%;" tabindex="-1" aria-hidden="true" disabled>
                                                                 <option value="">Select</option>
                                                                 <?php
                                                                 foreach ($uqc_product as $value) {
