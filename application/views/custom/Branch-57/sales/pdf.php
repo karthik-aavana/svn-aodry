@@ -913,11 +913,23 @@ if (@$converted_rate)
                 </div>
             </div>
         <?php } ?>
+        <div id="notices">
+            <div>
+                <b>Terms And Conditions:-</b>
+            </div>
+            <div class="notice">
+                    <p>1. Price Inclusive Of All Taxes</p>
+                    <p>2. Manufacturer Warranty Only</p>
+                    <p>3. Goods Once Sold Cannot Be Taken Back Or Exchanged</p>
+                    <p>4. For Service Issues Contact Service Center</p>
+                    <p>5. Subject To Bangalore Jurisdiction</p>
+            </div>
+        </div>
         <?php
         $notes_sub_module = 0;
        
         ?>        
-        <?php if ($data[0]->note1 != '' || $data[0]->note2 != '') { ?>   
+        <!-- <?php if ($data[0]->note1 != '' || $data[0]->note2 != '') { ?>   
             <table class="mt-50" style=" border-collapse: separate; border-spacing:10px;">
                 <tbody>
                     <tr>
@@ -951,7 +963,7 @@ if (@$converted_rate)
                     </tr>
                 </tbody>
             </table>  
-        <?php } ?>    
+        <?php } ?> -->    
         <?php if (isset($access_common_settings[0]->invoice_footer) && $access_common_settings[0]->invoice_footer != "") { ?>
             <div class="footer">
                 <?php echo $access_common_settings[0]->invoice_footer; ?>
