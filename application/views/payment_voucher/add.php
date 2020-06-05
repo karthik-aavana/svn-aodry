@@ -94,7 +94,7 @@ $this->load->view('layout/header');
                                     </div>
                                     <div class="col-sm-2 paid_amount_div">
                                         <div class="form-group">
-                                            <label for="Total amount">Total Paid Amount<span class="validation-color">*</span></label>
+                                            <label for="Total amount"></br>Total Paid Amount<span class="validation-color">*</span></label>
                                             <input type="text" class="form-control number_only" id="paid_amount_1" name="paid_amount" value="" readonly>
                                             <input type="hidden" class="form-control" id="remaining_amount_1" name="remaining_amount" value="" >
                                             <!-- <span id="err_remaining_amount_1" class="remaining_class"></span> -->
@@ -109,7 +109,7 @@ $this->load->view('layout/header');
                                     </div>
                                     <div class="col-sm-2 gain_loss_amount_div">
                                         <div class="form-group">
-                                            <label for="Invoice amount">Exchange Gain/loss</label>
+                                            <label for="Invoice amount"></br>Exchange Gain/loss</label>
                                             <div class="input-group">
                                                 <input type="hidden" name="icon_gain_loss_amount" value="plus">
                                                 <span class="input-group-addon toggle_plus" id="Input_addon_plus" name='Loss'>
