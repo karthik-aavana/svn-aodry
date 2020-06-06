@@ -171,17 +171,19 @@ table tbody tr td .label {
     font-weight: 500;
 }
 
-.finiacial-year {
-    padding: 14px 0 14px 100px;
+.finiacial-year{
+    padding: 14px 0 14px 36px;
     background: none;
     color: #012b72;
     border: none;
     font-weight: 700;
     font-size: 16px;
-    width: 70%;
+    width: 40%;
     cursor: auto;
     outline: 0;
+    
 }
+
 
 .skin-blue .main-header .navbar .sidebar-toggle {
     color: #2196F3;
@@ -288,7 +290,7 @@ table tbody tr td .label {
 }
 
 [data-toggle=tooltip] {
-    font-weight: 600;
+    font-weight: 500;
     font-family: 'Work Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     text-transform: capitalize !important;
 }
