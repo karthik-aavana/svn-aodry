@@ -191,7 +191,6 @@ $(document).ready(function () {
         });
         if(!flag) return !1;
 
-
         var grand_total = +$('#total_grand_total').val();
 
         if (grand_total == "" || grand_total == null || grand_total <= 0) {
