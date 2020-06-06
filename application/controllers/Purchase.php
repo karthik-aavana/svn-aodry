@@ -3908,7 +3908,8 @@ class Purchase extends MY_Controller {
                             unset($old_item_ids[$item_key]);
                             $purchase_item_id = $old_purchase_items[$item_key]->purchase_item_id;
                             array_push($not_deleted_ids, $purchase_item_id);
-                            $item_id = $value->item_id;
+                            //$item_id = $value->item_id;
+                            $item_id = ($value->item_id != 0) ?  $value->item_id : $product_id;
                             if($LeatherCraft_id == $this->session->userdata('SESS_BRANCH_ID')){
                                     $item_id =  $this->updateBarcodeProduct($item_id,$this->input->post('grn_number'),$this->input->post('supplier'));
                             }
@@ -3919,7 +3920,8 @@ class Purchase extends MY_Controller {
                                 if($LeatherCraft_id == $this->session->userdata('SESS_BRANCH_ID')){
                                     $item_id =  $this->createBatchProduct($value->item_id,$this->input->post('grn_number'),$this->input->post('supplier'));
                                 }else{
-                                    $item_id = $value->item_id;
+                                    //$item_id = $value->item_id;
+                                    $item_id = ($value->item_id != 0) ?  $value->item_id : $product_id;
                                 }
                                 $item_data['item_id'] = $item_id;
 
