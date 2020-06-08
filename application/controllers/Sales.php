@@ -5030,7 +5030,7 @@ class Sales extends MY_Controller{
         require_once APPPATH . "/third_party/PHPExcel.php";
         $object = new PHPExcel();
 
-        $table_columns = array("Date", "Store Code", "Store Name","Store Location", "Brand Name", "Category", "Sub Category", "Article Number", "Barcode", "Size", "Colour", "HSN Code","Invoice No", "Unit", "Sales Qty", "MRP Sales Per Unit","Basic Price", "Markdown Discount", "Selling Price", "Marginal Discount", "GST Output", "Taxable Value", "Tax", "Net Sales");
+        $table_columns = array("Date", "Store Code", "Store Name","Store Location", "Brand Name", "Category", "Sub Category", "Article Number", "Barcode", "Size", "Colour", "HSN Code","Invoice No", "Unit", "Sales Qty", "MRP Per Unit","Basic Price", "Markdown Discount", "Selling Price", "Marginal Discount", "GST Output", "Taxable Value", "Tax", "Net Sales");
 
         $column = 0;
 
@@ -5082,27 +5082,27 @@ class Sales extends MY_Controller{
                 $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $value->sales_date);
                 $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $value->customer_code);
                 $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $value->customer_name);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $value->store_location);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $value->brand_name);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $value->category_name);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $value->sub_category_name);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $value->product_code);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(7, $excel_row, $value->product_barcode);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, $size_val);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(9, $excel_row, $colour_val);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(10, $excel_row, $value->product_hsn_sac_code);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(10, $excel_row, $value->sales_invoice_number);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $value->uom);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $value->sales_item_quantity);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $price);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $value->sales_item_basic_total);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $value->sales_item_mrkd_discount_amount);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $value->sales_item_selling_price);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $value->sales_item_mrgn_discount_amount);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $value->sales_item_out_tax_amount);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $value->sales_item_taxable_value);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $tax);
-                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $value->sales_item_grand_total);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $value->store_location);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $value->brand_name);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $value->category_name);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $value->sub_category_name);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(7, $excel_row, $value->product_code);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, $value->product_barcode);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(9, $excel_row, $size_val);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(10, $excel_row, $colour_val);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $value->product_hsn_sac_code);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(12, $excel_row, $value->sales_invoice_number);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(13, $excel_row, $value->uom);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(14, $excel_row, $value->sales_item_quantity);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(15, $excel_row, $price);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(16, $excel_row, $value->sales_item_basic_total);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(17, $excel_row, $value->sales_item_mrkd_discount_amount);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(18, $excel_row, $value->sales_item_selling_price);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(19, $excel_row, $value->sales_item_mrgn_discount_amount);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(20, $excel_row, $value->sales_item_out_tax_amount);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(21, $excel_row, $value->sales_item_taxable_value);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(22, $excel_row, $tax);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(23, $excel_row, $value->sales_item_grand_total);
                 $excel_row++;
             }
         }
