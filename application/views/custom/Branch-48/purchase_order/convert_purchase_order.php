@@ -1174,7 +1174,7 @@ if ($charges_sub_module == 1) {
     var count_data = <?= $countData; ?>;
     var uom = <?=json_encode($uqc_product);?>;
     var hsn = <?=json_encode($hsn);?>;
-    //var item_gst = new Array();
+    var item_gst = new Array();
     var common_settings_round_off = "<?= $access_common_settings[0]->round_off_access ?>";
     var common_settings_amount_precision = "<?= $access_common_settings[0]->amount_precision ?>";
     var settings_tax_percentage = "<?= $access_common_settings[0]->tax_split_percentage ?>";
@@ -1185,7 +1185,7 @@ if ($charges_sub_module == 1) {
     var settings_description_visible = "<?= $access_settings[0]->description_visible ?>";
     var settings_tds_visible = "<?= $access_settings[0]->tds_visible ?>";
     var settings_item_editable = "<?= $access_settings[0]->item_editable ?>";
-    
+
 </script>
 <script src="<?php echo base_url('assets/custom/branch-'.$this->session->userdata('SESS_BRANCH_ID').'/js/purchase/'); ?>purchase.js"></script>
 <script src="<?php echo base_url('assets/custom/branch-'.$this->session->userdata('SESS_BRANCH_ID').'/js/purchase/'); ?>purchase_basic_common.js"></script>
