@@ -1249,7 +1249,7 @@ function preciseRowAmount(row) {
             .find('input[name^="item_taxable_value"]')
             .val(precise_amount(item_taxable_value));
         row
-            .find("#item_taxable_value_lbl_" + table_index)
+            .find("[id^='item_taxable_value_lbl_']")
             .text(precise_amount(item_taxable_value));
     }
     if (typeof item_tax_amount !== "undefined" && !isNaN(item_tax_amount)) {
@@ -1257,7 +1257,7 @@ function preciseRowAmount(row) {
             .find('input[name="item_tax_amount"]')
             .val(precise_amount(item_tax_amount));
         row
-            .find("#item_tax_lbl_" + table_index)
+            .find("[id^='item_tax_lbl_']")
             .text(precise_amount(item_tax_amount));
     }
     if (typeof item_tax_cess_amount !== "undefined" && !isNaN(item_tax_cess_amount)) {
@@ -1265,7 +1265,7 @@ function preciseRowAmount(row) {
             .find('input[name="item_tax_cess_amount"]')
             .val(precise_amount(item_tax_cess_amount));
         row
-            .find("#item_tax_cess_lbl_" + table_index)
+            .find("[id^='item_tax_cess_lbl_']")
             .text(precise_amount(item_tax_cess_amount));
     }
     if (typeof item_tax_amount_igst !== "undefined" && !isNaN(item_tax_amount_igst)) {
@@ -1288,7 +1288,7 @@ function preciseRowAmount(row) {
             .find('input[name^="item_tds_amount"]')
             .val(precise_amount(item_tds_amount));
         row
-            .find("#item_tds_lbl_" + table_index)
+            .find("[id^='item_tds_lbl_']")
             .text(precise_amount(item_tds_amount));
     }
 
@@ -1300,24 +1300,24 @@ function preciseRowAmount(row) {
             .find('input[name^="item_discount_amount"]')
             .val(precise_amount(item_discount_amount));
         row
-            .find("#item_discount_lbl_" + table_index)
+            .find("[id^='item_discount_lbl_']")
             .text(precise_amount(item_discount_amount));
 
         if (settings_item_editable == "no") {
             row
-                .find("#item_discount_hide_lbl_" + table_index)
+                .find("[id^='item_discount_hide_lbl_']")
                 .text(precise_amount(item_discount_amount));
         }
     }
 
     row.find('input[name^="item_price"]').val(precise_amount(item_price));
     row.find('input[name^="item_sub_total"]').val(precise_amount(item_sub_total));
-    row.find("#item_sub_total_lbl_" + table_index).text(precise_amount(item_sub_total));
+    row.find("[id^='item_sub_total_lbl_']").text(precise_amount(item_sub_total));
     row.find('input[name^="item_grand_total"]').val(precise_amount(item_grand_total));
 
     if (settings_item_editable == "no") {
         row.find("#item_price_hide_lbl_" + table_index).text(precise_amount(item_sub_total));
-        row.find("#item_grand_total_hide_lbl_" + table_index).text(precise_amount(item_grand_total));
+        row.find("[id^='item_grand_total_hide_lbl_']").text(precise_amount(item_grand_total));
     }
 }
 
