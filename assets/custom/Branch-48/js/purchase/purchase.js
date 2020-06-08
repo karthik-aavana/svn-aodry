@@ -5,7 +5,7 @@ $(document).ready(function () {
         }
     });
     
-    $(document).on("click", '#purchase_submit,#purchase_pay_now,#purchase_order_submit', function (event) {
+    $(document).on("click", '#purchase_submit,#purchase_pay_now', function (event) {
 
         var invoice_number = $('#invoice_number').val();
 
