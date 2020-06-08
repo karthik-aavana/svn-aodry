@@ -15055,7 +15055,8 @@ public function tds_report_sales_list(){
         $table  = "products P";
         $where = array(
             'P.branch_id'         => $this->ci->session->userdata('SESS_BRANCH_ID'),
-            'P.delete_status'     => 0 );
+            'P.delete_status'     => 0,
+            'SI.delete_status'    => 0);
         $join = [
              "sales_item SI"  => "P.product_id = SI.item_id and SI.item_type = 'product'" ,
              "sales S"   => "S.sales_id = SI.sales_id",
