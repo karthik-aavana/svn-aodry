@@ -1165,6 +1165,7 @@ var count_data = <?= $countData; ?>;
 var common_settings_round_off = "<?= $access_common_settings[0]->round_off_access ?>";
 var uom = <?=json_encode($uqc_product);?>;
 var hsn = <?=json_encode($hsn);?>;
+var item_gst = new Array();
 var common_settings_amount_precision = "<?= $access_common_settings[0]->amount_precision ?>";
 var settings_tax_percentage = "<?= $access_common_settings[0]->tax_split_percentage ?>";
 var common_settings_inventory_advanced = "<?= $inventory_access ?>";
