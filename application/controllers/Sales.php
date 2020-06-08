@@ -5107,7 +5107,7 @@ class Sales extends MY_Controller{
             }
         }
         $object_writer = PHPExcel_IOFactory::createWriter($object, 'Excel5');
-        $file_name = "Purchase Product Data.xls";
+        $file_name = "Sales Product Data.xls";
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="'.$file_name.'"');
         $object_writer->save('php://output');
