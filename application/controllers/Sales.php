@@ -5021,4 +5021,91 @@ class Sales extends MY_Controller{
                 "data"            => $send);
         echo json_encode($json_data);
     }
+    public function exportSalesExcel($id){
+       // $from_date = strtotime(date('Y-m-d'));
+        require_once APPPATH . "/third_party/PHPExcel.php";
+        $object = new PHPExcel();
+
+        $table_columns = array("Date", "Store Code", "Store Name","Store Location", "Brand Name", "Category", "Sub Category", "Article Number", "Barcode", "Size", "Colour", "HSN Code","Invoice No", "Unit", "Sales Qty", "MRP Sales Per Unit","Basic Price", "Markdown Discount", "Selling Price", "Marginal Discount", "GST Output", "Taxable Value", "Tax", "Net Sales");
+
+        $column = 0;
+
+        foreach($table_columns as $field){
+            $object->getActiveSheet()->setCellValueByColumnAndRow($column, 1, $field);
+            $column++;
+        }
+        $id = $this->encryption_url->decode($id);
+        $list_data = $this->common->sales_product_list_field($id);
+        $posts = $this->general_model->getPageJoinRecords($list_data);
+        $excel_row = 2;
+        if(!empty($posts)){            
+            foreach ($posts as $key => $value) {
+                $tax = $value->sales_item_tds_amount + $value->sales_item_igst_amount + $value->sales_item_sgst_amount + $value->sales_item_cgst_amount +  $value->sales_item_tax_cess_amount;
+                $qty = $value->sales_item_quantity;
+                $price = $value->sales_item_unit_price;
+                $discount = $value->sales_item_discount_amount;
+                $gross_sales = $qty * $price;
+                $net_sales = $gross_sales - $discount;
+                $combination_id = $value->product_combination_id;
+                    $colour_val = '-';
+                    $size_val = '-';
+                    if($combination_id != ''){
+                     $combination_data = $this->general_model->getRecords('*', 'product_combinations', array(
+                    'combination_id'   => $combination_id,
+                    'branch_id'     => $this->session->userdata("SESS_BRANCH_ID") ));
+                    $varient_value_id = $combination_data[0]->varient_value_id;
+
+                    $sql = "SELECT V.varient_key,VV.varients_value  FROM  varients_value VV
+                    JOIN varients V ON V.varients_id = VV.varients_id
+                     WHERE varients_value_id IN (".$varient_value_id.")";
+                     $qry = $this->db->query($sql);                    
+                     $key = '';
+                     if($qry->num_rows() > 0){
+                        $var_lal = $qry->result_array();
+                        foreach ($var_lal as $key1 => $val) {
+                            $key = strtolower($val['varient_key']);
+                            if($key == 'colour' || $key == 'colours' || $key == 'color'|| $key == 'colors'){
+                               $colour_val = $val['varients_value'];
+                            }
+
+                            if($key == 'size' || $key == 'sizes'){
+                               $size_val = $val['varients_value'];
+                            }
+                        }
+                    }
+                }
+
+                $object->getActiveSheet()->setCellValueByColumnAndRow(0, $excel_row, $value->sales_date);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(1, $excel_row, $value->customer_code);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $value->customer_name);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(2, $excel_row, $value->store_location);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(3, $excel_row, $value->brand_name);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(4, $excel_row, $value->category_name);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(5, $excel_row, $value->sub_category_name);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(6, $excel_row, $value->product_code);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(7, $excel_row, $value->product_barcode);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(8, $excel_row, $size_val);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(9, $excel_row, $colour_val);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(10, $excel_row, $value->product_hsn_sac_code);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(10, $excel_row, $value->sales_invoice_number);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $value->uom);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $value->sales_item_quantity);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $price);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $value->sales_item_basic_total);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $value->sales_item_mrkd_discount_amount);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $value->sales_item_selling_price);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $value->sales_item_mrgn_discount_amount);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $value->sales_item_out_tax_amount);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $value->sales_item_taxable_value);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $tax);
+                $object->getActiveSheet()->setCellValueByColumnAndRow(11, $excel_row, $value->sales_item_grand_total);
+                $excel_row++;
+            }
+        }
+        $object_writer = PHPExcel_IOFactory::createWriter($object, 'Excel5');
+        $file_name = "Purchase Product Data.xls";
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'.$file_name.'"');
+        $object_writer->save('php://output');
+    }
 }

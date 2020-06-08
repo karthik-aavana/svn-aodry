@@ -15050,7 +15050,35 @@ public function tds_report_sales_list(){
         );
         return $data;
     }
-
+    public function sales_product_list_field($id){
+        $string = "P.product_name, P.product_code, P.product_barcode, P.product_hsn_sac_code, P.product_id, P.product_combination_id, SI.*, S.sales_invoice_number, C.customer_name, C.customer_code, S.sales_date, D.department_name, SD.sub_department_name, U.uom, CT.category_name, B.branch_name, B.branch_code, SC.sub_category_name,BD.brand_name,sa.store_location";
+        $table  = "products P";
+        $where = array(
+            'P.branch_id'         => $this->ci->session->userdata('SESS_BRANCH_ID'),
+            'P.delete_status'     => 0 );
+        $join = [
+             "sales_item SI"  => "P.product_id = SI.item_id and SI.item_type = 'product'" ,
+             "sales S"   => "S.sales_id = SI.sales_id",
+             "department D"   => "D.department_id = S.department_id". "#" . "left",
+             "sub_department SD"   => "S.sub_department_id = SD.sub_department_id". "#" . "left",
+             "customer C" => "C.customer_id = S.sales_party_id",
+             "shipping_address sa" => "sa.shipping_party_id = C.customer_id",
+             "branch B" => "B.branch_id = P.branch_id",
+            'uqc U'      => 'U.id = P.product_unit_id  and SI.item_type = "product"' . '#' . 'left',
+            "category CT" => "CT.category_id=P.product_category_id",
+            "sub_category SC" => "SC.sub_category_id=P.product_subcategory_id". "#" . "left",
+            "brand BD" => "P.brand_id = BD.brand_id". "#" . "left"
+             ];
+        $group = array('S.sales_id,P.product_id');
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'join'  => $join,
+            'group'  => $group
+        );
+        return $data;
+    }
     public function distinct_brand_closing(){
         $string = "CASE P.brand_id when '0' then 'General' ELSE BR.brand_name END as brand_name,P.brand_id";
         $table  = "products P";
