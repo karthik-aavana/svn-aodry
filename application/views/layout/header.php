@@ -1381,7 +1381,7 @@ if (!function_exists('precise_amount')) {
                     }
                     ?>">                        
                         <button class="finiacial-year"> <!-- data-toggle="modal" data-target="#financial_year_model" -->
-                            <?php echo 'FY ' . $this->session->userdata('SESS_FINANCIAL_YEAR_TITLE'); ?>
+                            <?php echo 'FY ' . $this->session->userdata('SESS_FINANCIAL_YEAR_TITLE_WITH_MONTH'); ?>
                         </button>
                         <div class="navbar-custom-menu">
                             <ul class="nav navbar-nav">
