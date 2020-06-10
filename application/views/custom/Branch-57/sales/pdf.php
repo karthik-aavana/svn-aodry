@@ -925,6 +925,10 @@ if (@$converted_rate)
                     <p>5. Subject To Bangalore Jurisdiction</p>
             </div>
         </div>
+        <div>
+            <p align="right"><b>Name of the Signatory<br> Designation / Status</b></p>
+            <p align="right" style="margin-top:28px"><b>Signature/Digital Signature</b></p>
+        </div>
         <?php
         $notes_sub_module = 0;
        
