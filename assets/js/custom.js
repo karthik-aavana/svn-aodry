@@ -91,7 +91,9 @@ function ValidateInvoiceDate(){
                 if (parseInt(resp) <= 0) {
                     $('#err_date').text('Please check Financial year for this date!');
                     $('#invoice_date').attr('valid', '0');
-                    
+                }else{
+                    $('#err_date').text('');
+                    $('#invoice_date').attr('valid', '1');
                 }
             }
         });
