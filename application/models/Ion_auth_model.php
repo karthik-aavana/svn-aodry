@@ -1235,7 +1235,7 @@ class Ion_auth_model extends CI_Model
                 'SESS_LAST_CHECK'      => time(), );
         $this->db->select('groups.name')->from('users')->join('users_groups', 'users.id = users_groups.user_id')->join('groups', 'users_groups.group_id = groups.id')->where('username !=', 'superadmin')->where('users.id', $user->id);
         $session_data['SESS_USER_TYPE']               = $this->db->get()->result_array();
-        $branch_data                                  = $this->db->select('branch.financial_year_id,branch.firm_id,is_updated,concat(YEAR(tbl_financial_year.from_date),"-",YEAR(tbl_financial_year.to_date)) as financial_year_title,branch.branch_default_currency,currency.currency_symbol,currency.currency_code,currency.currency_text')->from('users')->join('branch', 'users.branch_id = branch.branch_id')->join('currency', 'currency.currency_id = branch.branch_default_currency')->join('tbl_financial_year', 'tbl_financial_year.year_id = branch.financial_year_id')->join('firm', 'firm.firm_id = branch.firm_id')->where('users.id', $user->id)->where('username !=', 'superadmin')->get()->row();
+        $branch_data                                  = $this->db->select('branch.financial_year_id,branch.firm_id,is_updated,concat(YEAR(tbl_financial_year.from_date),"-",YEAR(tbl_financial_year.to_date)) as financial_year_title,concat(DATE_FORMAT(tbl_financial_year.from_date, "%m"),"/",YEAR(tbl_financial_year.from_date),"-",DATE_FORMAT(tbl_financial_year.to_date, "%m"),"/",YEAR(tbl_financial_year.to_date)) as financial_year_title_with_month,branch.branch_default_currency,currency.currency_symbol,currency.currency_code,currency.currency_text')->from('users')->join('branch', 'users.branch_id = branch.branch_id')->join('currency', 'currency.currency_id = branch.branch_default_currency')->join('tbl_financial_year', 'tbl_financial_year.year_id = branch.financial_year_id')->join('firm', 'firm.firm_id = branch.firm_id')->where('users.id', $user->id)->where('username !=', 'superadmin')->get()->row();
 
         $current_date = date('Y-m-d H:i:s');
 
@@ -1272,6 +1272,7 @@ class Ion_auth_model extends CI_Model
         $session_data['SESS_FINANCIAL_YEAR_ID']       = $branch_data->financial_year_id;
         $session_data['SESS_DETAILS_UPDATED']         = $branch_data->is_updated;
         $session_data['SESS_FINANCIAL_YEAR_TITLE']    = trim($branch_data->financial_year_title);
+        $session_data['SESS_FINANCIAL_YEAR_TITLE_WITH_MONTH']    = trim($branch_data->financial_year_title_with_month);
         $this->session->set_userdata($session_data);
         $this->trigger_events('post_set_session');
         return TRUE;
