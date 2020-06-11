@@ -23,6 +23,15 @@ class General_model extends CI_Model{
       
       return $query->result_array();
     }
+    public function GetProductName_leathercraft(){
+        $this->db->select("LOWER(REPLACE(product_name, ' ', '')) as product_name");
+        $this->db->from('products');
+        $this->db->where('branch_id', $this->session->userdata('SESS_BRANCH_ID'));
+        $this->db->where('delete_status', '0');
+        $query = $this->db->get(); 
+      
+      return $query->result_array();
+    }
     public function GetServiceName(){
         $this->db->select('LOWER(service_name) as service_name');
         $this->db->from('services');
@@ -42,6 +51,16 @@ class General_model extends CI_Model{
       
       return $query->result_array();
     }
+    public function GetCategory_bulk_leathercraft($type){
+        $this->db->select("category_id,LOWER(REPLACE(category_name, ' ', '')) as category_name");
+        $this->db->from('category');
+        $this->db->where('category_type', $type);
+        $this->db->where('delete_status', '0');
+        $this->db->where('branch_id', $this->session->userdata('SESS_BRANCH_ID'));
+        $query = $this->db->get(); 
+      
+      return $query->result_array();
+    }
 
     public function GetBrand_bulk($type){
         $this->db->select('brand_id,LOWER(brand_name) as brand_name');
@@ -52,9 +71,29 @@ class General_model extends CI_Model{
       
       return $query->result_array();
     }
+    public function GetBrand_bulk_leathercraft($type){
+        $this->db->select("brand_id,LOWER(REPLACE(brand_name, ' ', '')) as brand_name");
+        $this->db->from('brand');
+        $this->db->where('delete_status', '0');
+        $this->db->where('branch_id', $this->session->userdata('SESS_BRANCH_ID'));
+        $query = $this->db->get(); 
+      
+      return $query->result_array();
+    }
 
     public function GetSubCategory_bulk($type){
         $this->db->select('su.sub_category_id,su.category_id as category_id_sub,LOWER(su.sub_category_name) as subcategory_name');
+        $this->db->from('sub_category su');
+        $this->db->join('category ca', 'su.category_id = ca.category_id');
+        $this->db->where('ca.category_type', $type);
+        $this->db->where('su.delete_status', '0');
+        $this->db->where('su.branch_id', $this->session->userdata('SESS_BRANCH_ID'));
+        $query = $this->db->get(); 
+      
+      return $query->result_array();
+    }
+    public function GetSubCategory_bulk_leathercraft($type){
+        $this->db->select("su.sub_category_id,su.category_id as category_id_sub,LOWER(REPLACE(su.sub_category_name, ' ', '')) as subcategory_name");
         $this->db->from('sub_category su');
         $this->db->join('category ca', 'su.category_id = ca.category_id');
         $this->db->where('ca.category_type', $type);
@@ -76,7 +115,7 @@ class General_model extends CI_Model{
     }
 
      public function Get_uqc_bulk_leathercraft($type){
-        $this->db->select('id as uom_id,LOWER(description) as uom');
+        $this->db->select("id as uom_id,LOWER(REPLACE(description, ' ', '')) as uom");
         $this->db->from('uqc');
         $this->db->where('delete_status', '0');
         $this->db->where('uom_type', $type);
