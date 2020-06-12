@@ -35,10 +35,17 @@ $(document).ready(function () {
         $("#shipping_address_div").hide();
     }
     $("#supplier").change(function () {
-        if ($("#supplier").val() != "") {
+        var party_id = $("#supplier").val();
+        if (party_id != "" && party_id != 0) {
+            // console.log(party_id);
+            $('#expense_table_body').find('tr').each(function(){
+                $(this).find('select[name="item_discount"]').attr('disabled' , false);
+                $(this).find('select[name="item_tax"]').attr('disabled' , false);
+                $(this).find('select[name="item_tax_cess"]').attr('disabled' , false);
+                $(this).find('input[name="item_tds_percentage"]').attr('disabled' , false);
+            })
             $("#shipping_address_div").show();
             // $('#modal_party_name').val($('#supplier').text());
-            var party_id = $("#supplier").val();
             $("#modal_party_id").val(party_id);
             $("#modal_party_type").val("supplier");
             $.ajax({
@@ -87,10 +94,19 @@ $(document).ready(function () {
                 }
             });
         } else {
-            $("#shipping_address_div").hide();
-            $("#modal_party_id").val("");
-            $("#modal_party_type").val("");
-            $("#shipping_address").html('<option value="">Select Shipping Address</option>');
+            if(party_id == 0){
+                $('#expense_table_body').find('tr').each(function(){
+                    $(this).find('select[name="item_discount"]').attr('disabled' , true);
+                    $(this).find('select[name="item_tax"]').attr('disabled' , true);
+                    $(this).find('select[name="item_tax_cess"]').attr('disabled' , true);
+                    $(this).find('input[name="item_tds_percentage"]').attr('disabled' , true);
+                });
+            }else{
+                $("#shipping_address_div").hide();
+                $("#modal_party_id").val("");
+                $("#modal_party_type").val("");
+                $("#shipping_address").html('<option value="">Select Shipping Address</option>');
+            }
         }
     });
     function ChangeTypeOfSupply(){
@@ -430,6 +446,7 @@ function add_row(data) {
     var item_tds_id = data[0].expense_tds_id;
     var item_tds_percentage = precise_amount(data[0].expense_tds_value);
     var item_tds_type = 'TDS';
+    var supplier_id = $('#supplier').val();
     
     if (item_tds_id == "") {
         item_tds_id = 0;
@@ -459,8 +476,12 @@ function add_row(data) {
             select_discount +=
                 '<div class="form-group" style="margin-bottom:0px !important;">';
         }
+        var is_disabled = '';
+        if(supplier_id == 0){
+            is_disabled = ' disabled="disabled" ';
+        }
         select_discount +=
-            '<select class="form-control open_discount form-fixer select2" name="item_discount" style="width: 100%;">';
+            '<select class="form-control open_discount form-fixer select2" ' + is_disabled + '  name="item_discount" style="width: 100%;">';
         select_discount += '<option value="">Select</option>';
         for (a = 0; a < data.discount.length; a++) {
             select_discount +=
@@ -520,9 +541,8 @@ function add_row(data) {
             }
         }
         select_tds += "</select></div>";*/
-        
         select_tax +=
-            '<select class="form-control open_tax form-fixer select2" name="item_tax" style="width: 100%;" '+gst_disable+'>';
+            '<select class="form-control open_tax form-fixer select2" ' + is_disabled +' name="item_tax" style="width: 100%;" '+gst_disable+'>';
         select_tax += '<option value="">Select</option>';
         for (a = 0; a < data.tax.length; a++) {
             if (item_tax_id == data.tax[a].tax_id) {
@@ -552,9 +572,8 @@ function add_row(data) {
             cess_select +=
                 '<div class="form-group" style="margin-bottom:0px !important;">';
         }
-        
         cess_select +=
-            '<select class="form-control open_tax form-fixer select2" name="item_tax_cess" style="width: 100%;" '+gst_disable+'>';
+            '<select class="form-control open_tax form-fixer select2" ' + is_disabled +' name="item_tax_cess" style="width: 100%;" '+gst_disable+'>';
         cess_select += '<option value="">Select</option>';
         for (a = 0; a < data.tax.length; a++) {
             if (item_tax_id == data.tax[a].tax_id) {
@@ -578,7 +597,7 @@ function add_row(data) {
         cess_select += "</select></div>";
     }
     if (settings_tds_visible == "yes") {
-        var select_tds = '<input type="text" class="form-control open_tds_modal pointer" name="item_tds_percentage" value="'+parseFloat(item_tds_percentage)+'%" readonly>';
+        var select_tds = '<input type="text" class="form-control open_tds_modal pointer" ' + is_disabled + ' name="item_tds_percentage" value="'+parseFloat(item_tds_percentage)+'%" readonly>';
         var tds_body = '<table id="tds_table" index="'+ table_index +'" class="table table-bordered table-striped sac_table ">\
                     <thead>\
                     <th>TAX Name</th>\

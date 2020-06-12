@@ -63,19 +63,26 @@ $this->load->view('layout/header');
                                         <label for="supplier">Supplier <span class="validation-color">*</span></label>
                                         <select class="form-control select2" id="supplier" name="supplier" style="width: 100%;">
                                             <?php
-                                            foreach ($supplier as $key) {
+                                            $is_others = '';
+                                             if($data[0]->expense_bill_payee_id == 0){ 
+                                                    $is_others = 'disabled="disabled"'; ?>
+                                                    <option value="0">Others</option>
+                                            <?php
+                                            }else{
+                                                foreach ($supplier as $key) {
 
-                                                if ($key->supplier_id == $data[0]->expense_bill_payee_id) {
-                                                    if($key->supplier_mobile != ''){
-                                                    ?>
-                                                    <option value='<?= $key->supplier_id; ?>' selected><?= $key->supplier_name.'('.$key->supplier_mobile.')'; ?></option>
-                                                    <?php
-                                                    }else{
-                                                    ?>
-                                                        <option value='<?= $key->supplier_id; ?>' selected><?= $key->supplier_name; ?></option>
-                                                    <?php
+                                                    if ($key->supplier_id == $data[0]->expense_bill_payee_id) {
+                                                        if($key->supplier_mobile != ''){
+                                                        ?>
+                                                        <option value='<?= $key->supplier_id; ?>' selected><?= $key->supplier_name.'('.$key->supplier_mobile.')'; ?></option>
+                                                        <?php
+                                                        }else{
+                                                        ?>
+                                                            <option value='<?= $key->supplier_id; ?>' selected><?= $key->supplier_name; ?></option>
+                                                        <?php
+                                                        }
+                                                        break;
                                                     }
-                                                    break;
                                                 }
                                             }
                                             ?>
@@ -293,13 +300,14 @@ $this->load->view('layout/header');
                                                                 ?>'>
                                                                 <input type='hidden' name='item_discount_percentage' value='<?= ($key->item_discount_percentage ? (float)($key->item_discount_percentage) : 0); ?>'>
                                                                 <input type='hidden' name='item_discount_amount' value='<?= ($key->expense_bill_item_discount_amount ? precise_amount($key->expense_bill_item_discount_amount) : 0); ?>'>
+        
                                                                 <div class="form-group" style="margin-bottom:0px !important;">
-                                                                    <select class="form-control open_discount form-fixer select2" name="item_discount" style="width: 100%;">
+                                                                    <select class="form-control open_discount form-fixer select2" name="item_discount" <?php echo $is_others ?> style="width: 100%;">
                                                                         <option value="">Select</option>
                                                                         <?php
                                                                         foreach ($discount as $key3 => $value3) {
                                                                             if ($value3->discount_id == $key->expense_bill_item_discount_id) {
-                                                                                echo "<option value='" . $value3->discount_id . "-" . (float)($value3->discount_value) . "' selected>" . (float)($value3->discount_value) . "%</option>";
+                                                                                echo "<option value='" . $value3->discount_id . "-" .  (float)($value3->discount_value) . "' selected>" . (float)($value3->discount_value) . "%</option>";
                                                                             } else {
                                                                                 echo "<option value='" . $value3->discount_id . "-" . (float)($value3->discount_value) . "'>" . (float)($value3->discount_value) . "%</option>";
                                                                             }
@@ -361,7 +369,7 @@ $this->load->view('layout/header');
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
-                                                                <input type="text" class="form-control open_tds_modal pointer" name="item_tds_percentage" value="<?= $tds_per ?>%" readonly>
+                                                                <input type="text" class="form-control open_tds_modal pointer" name="item_tds_percentage" <?php echo $is_others;?> value="<?= $tds_per ?>%" readonly>
 
                                                                 <input type='hidden' name='item_tds_id' value='<?= $key->expense_bill_item_tds_id ? $key->expense_bill_item_tds_id : 0 ?>'><input type='hidden' name='item_tds_type' value='<?= $key->tds_module_type ? $key->tds_module_type : '' ?>'>
                                                                 <input type='hidden' name='item_tds_amount' value='<?= $key->expense_bill_item_tds_amount ? precise_amount($key->expense_bill_item_tds_amount) : 0 ?>'><span id='item_tds_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?= $key->expense_bill_item_tds_amount ? precise_amount($key->expense_bill_item_tds_amount) : 0 ?></span>
@@ -375,7 +383,7 @@ $this->load->view('layout/header');
                                                                 <input type='hidden' name='item_tax_amount_igst' value='0'>
                                                                 <input type='hidden' name='item_tax_amount' value='<?= $key->expense_bill_item_tax_amount ? precise_amount($key->expense_bill_item_tax_amount) : 0 ?>'>
                                                                 <div class="form-group" style="margin-bottom:0px !important;">
-                                                                    <select class="form-control open_tax form-fixer select2" name="item_tax" style="width: 100%;">
+                                                                    <select class="form-control open_tax form-fixer select2" name="item_tax" <?php echo $is_others; ?> style="width: 100%;">
                                                                         <option value="">Select</option>
                                                                         <?php
                                                                         foreach ($tax as $key3 => $value3) {
@@ -393,7 +401,7 @@ $this->load->view('layout/header');
                                                                 <input type='hidden' name='item_tax_cess_percentage' value='<?= $key->expense_bill_item_tax_cess_percentage ? (float)($key->expense_bill_item_tax_cess_percentage) : 0; ?>'>
                                                                 <input type='hidden' name='item_tax_cess_amount' value='<?= $key->expense_bill_item_tax_cess_amount ? precise_amount($key->expense_bill_item_tax_cess_amount) : 0 ?>'>
                                                                 <div class="form-group" style="margin-bottom:0px !important;">
-                                                                    <select class="form-control open_tax form-fixer select2" name="item_tax_cess" style="width: 100%;" <?= $key->expense_bill_item_tax_cess_id; ?>>
+                                                                    <select class="form-control open_tax form-fixer select2" name="item_tax_cess" <?php echo $is_others; ?> style="width: 100%;" <?= $key->expense_bill_item_tax_cess_id; ?>>
                                                                         <option value="">Select</option>
                                                                         <?php
                                                                         foreach ($tax as $key3 => $value3) {

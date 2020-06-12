@@ -133,6 +133,9 @@ class Expense_bill extends MY_Controller
                             $nestedData['invoice'] = ' <a href="' . base_url('expense_bill/view/') . $expense_bill_id  . '">' . $post->expense_bill_invoice_number . '</a>' ." ".' <i class="fa fa-folder-open" aria-hidden="true" title="Open Attachment"></i>';
                         }
                     }
+                    if($post->expense_bill_payee_id == 0){
+                        $post->supplier_name = 'Others';
+                    }
                     $nestedData['payee']                     = $post->supplier_name;
                     $nestedData['grand_total']               = $this->precise_amount($post->expense_bill_grand_total,$access_common_settings[0]->amount_precision);
                     $nestedData['payable_amount']            = $this->precise_amount($post->supplier_receivable_amount,$access_common_settings[0]->amount_precision);
@@ -1719,12 +1722,18 @@ class Expense_bill extends MY_Controller
         }*/
         $ledgers['expense_bill_ledger_id'] = $expense_bill_ledger_id;
 
-        $string             = 'ledger_id,supplier_name';
-        $table              = 'supplier';
-        $where              = array('supplier_id' => $data_main['expense_bill_payee_id']);
-        $supplier_data      = $this->general_model->getRecords($string , $table , $where , $order = "");
-        $supplier_name = $supplier_data[0]->supplier_name;
-        $supplier_ledger_id = $supplier_data[0]->ledger_id;
+        if($expense_bill_payee_id != 0){
+
+            $string             = 'ledger_id,supplier_name';
+            $table              = 'supplier';
+            $where              = array('supplier_id' => $data_main['expense_bill_payee_id']);
+            $supplier_data      = $this->general_model->getRecords($string , $table , $where , $order = "");
+            $supplier_name      = $supplier_data[0]->supplier_name;
+            $supplier_ledger_id = $supplier_data[0]->ledger_id;
+
+        }else{
+            $supplier_name = 'Others';
+        }
 
         if(!$supplier_ledger_id){
             $supplier_ledger_id = $expense_ledger['SUPPLIER'];
@@ -2590,6 +2599,9 @@ class Expense_bill extends MY_Controller
         $data['product_exist'] = $product;
 
         $data['supplier'] = $this->supplier_call();
+        // echo '<pre>';
+        // print_r($data['supplier']);
+        // exit;
      
         if ($data['data'][0]->expense_bill_tax_amount > 0 || $data['access_settings'][0]->tax_type != "no_tax"){
 
