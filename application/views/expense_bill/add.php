@@ -69,6 +69,7 @@ $this->load->view('layout/header');
                                             </div>
                                             <select class="form-control select2" id="supplier" name="supplier">
                                                 <option value="">Select</option>
+                                                <option value="0">Others</option>
                                                 <?php
                                                 foreach ($supplier as $row) {
                                                     if($row->supplier_mobile != ''){

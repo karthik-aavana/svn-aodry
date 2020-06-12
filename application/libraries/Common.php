@@ -2402,7 +2402,7 @@ class Common
         $string = "e.*,s.supplier_name,s.supplier_id,u.first_name,u.last_name, (e.supplier_receivable_amount - e.expense_bill_paid_amount) as balance_payable";
         $table  = "expense_bill e";
         $join   = [
-            "supplier s"   => "e.expense_bill_payee_id=s.supplier_id",//'currency cur' => 'e.currency_id = cur.currency_id',
+            "supplier s"   => "e.expense_bill_payee_id=s.supplier_id " . '#' . 'left',//'currency cur' => 'e.currency_id = cur.currency_id',
             "users u"      => "u.id = e.added_user_id"];
         if($order_ser =='' || $dir == ''){
                 $order = [ 'e.expense_bill_id' => 'desc' ];
@@ -3874,7 +3874,7 @@ class Common
         $string = "pi.*,pr.expense_id as item_id,pr.expense_title as product_code,pr.expense_title as product_name,dt.discount_value,pr.expense_gst_id as product_tax_id,pr.expense_tds_id as product_tds_id,pr.expense_gst_value as product_tax_value,td.tax_name as tds_module_type,pr.expense_hsn_code";
         $table  = "expense_bill_item pi";
         $join   = [
-            'expense pr' => 'pi.expense_type_id = pr.expense_id',
+            'expense pr' => 'pi.expense_type_id = pr.expense_id' . '#' . 'left',
             'discount dt' => 'dt.discount_id = pi.expense_bill_item_discount_id' . '#' . 'left',
             'tax td'      => 'td.tax_id = pi.expense_bill_item_tds_id' . '#' . 'left'
         ];
@@ -15057,7 +15057,7 @@ public function tds_report_sales_list(){
             'P.branch_id'         => $this->ci->session->userdata('SESS_BRANCH_ID'),
             'P.delete_status'     => 0,
             'SI.delete_status'    => 0,
-            'SI.sales_id' => $id);
+            'SI.sales_id'         => $id);
         $join = [
              "sales_item SI"  => "P.product_id = SI.item_id and SI.item_type = 'product'" ,
              "sales S"   => "S.sales_id = SI.sales_id",
