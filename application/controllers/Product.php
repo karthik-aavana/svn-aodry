@@ -4444,7 +4444,7 @@ class Product extends MY_Controller
 
             /* presents all the needed */
             $Updata = array('uploadData' => $this->upload->data());
-
+            
             if (!empty($Updata['uploadData']['file_name'])) {
                 $import_xls_file = $Updata['uploadData']['file_name'];
                 $inputFileName = $path . $import_xls_file;
@@ -4453,18 +4453,18 @@ class Product extends MY_Controller
                     $objReader = PHPExcel_IOFactory::createReader($inputFileType);
                     $objPHPExcel = $objReader->load($inputFileName);
                     $allDataInSheet = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
-                     
-                    if(!empty($allDataInSheet)){
 
-                        if(strtolower($allDataInSheet[1]['A']) == 'article' && strtolower($allDataInSheet[1]['B']) == 'product name' && strtolower($allDataInSheet[1]['C']) == 'product type' && strtolower($allDataInSheet[1]['D']) == 'product hsn sac code' && strtolower($allDataInSheet[1]['E']) == 'category' && strtolower($allDataInSheet[1]['F']) == 'subcategory' && strtolower($allDataInSheet[1]['G']) == 'unit of measurement' && strtolower($allDataInSheet[1]['H']) == 'gst tax percentage' && strtolower($allDataInSheet[1]['I']) == 'tcs tax percentage' && strtolower($allDataInSheet[1]['J']) == 'markdown discount' && strtolower($allDataInSheet[1]['K']) == 'mrp' && strtolower($allDataInSheet[1]['L']) == 'serial number' && strtolower($allDataInSheet[1]['M']) == 'description' && strtolower($allDataInSheet[1]['N']) == 'marginal discount' && strtolower($allDataInSheet[1]['O']) == 'size' && strtolower($allDataInSheet[1]['P']) == 'colour' && strtolower($allDataInSheet[1]['Q']) == 'expiry date' && strtolower($allDataInSheet[1]['R']) == 'brand' && strtolower($allDataInSheet[1]['S']) == 'opening stock' && strtolower($allDataInSheet[1]['T']) == 'purchase price' && strtolower($allDataInSheet[1]['U']) == 'batch' && strtolower($allDataInSheet[1]['V']) == 'ean code/barcode'){
+                    if(!empty($allDataInSheet)){
+                        
+                        if(strtolower($allDataInSheet[1]['A']) == 'article*' && strtolower($allDataInSheet[1]['B']) == 'product name*' && strtolower($allDataInSheet[1]['C']) == 'product type*' && strtolower($allDataInSheet[1]['D']) == 'product hsn sac code*' && strtolower($allDataInSheet[1]['E']) == 'category*' && strtolower($allDataInSheet[1]['F']) == 'subcategory' && strtolower($allDataInSheet[1]['G']) == 'unit of measurement*' && strtolower($allDataInSheet[1]['H']) == 'gst tax percentage' && strtolower($allDataInSheet[1]['I']) == 'tcs tax percentage' && strtolower($allDataInSheet[1]['J']) == 'markdown discount' && strtolower($allDataInSheet[1]['K']) == 'mrp*' && strtolower($allDataInSheet[1]['L']) == 'serial number' && strtolower($allDataInSheet[1]['M']) == 'description' && strtolower($allDataInSheet[1]['N']) == 'marginal discount' && strtolower($allDataInSheet[1]['O']) == 'size' && strtolower($allDataInSheet[1]['P']) == 'colour' && strtolower($allDataInSheet[1]['Q']) == 'expiry date' && strtolower($allDataInSheet[1]['R']) == 'brand*' && strtolower($allDataInSheet[1]['S']) == 'opening stock' && strtolower($allDataInSheet[1]['T']) == 'purchase price' && strtolower($allDataInSheet[1]['U']) == 'batch' && strtolower($allDataInSheet[1]['V']) == 'ean code/barcode'){
                                 $header_row = array_shift($allDataInSheet);
                                 $product_exist = $this->general_model->GetProductName();
                                 $product_exist = array_column($product_exist, 'product_name', 'product_name');
                                 $hsn = $this->general_model->hsn_call_product_bulk();
                                 $hsn = array_column($hsn, 'hsn_code', 'hsn_code');
-                                $category = $this->general_model->GetCategory_bulk('product');
+                                $category = $this->general_model->GetCategory_bulk_leathercraft('product');
                                 $category = array_column($category, 'category_id', 'category_name');
-                                $sub_category = $this->general_model->GetSubCategory_bulk('product');
+                                $sub_category = $this->general_model->GetSubCategory_bulk_leathercraft('product');
                                 $sub_category_id = array_column($sub_category, 'category_id_sub','subcategory_name');
                                 $sub_category= array_column($sub_category, 'sub_category_id', 'subcategory_name');
                                 $uom = $this->general_model->Get_uqc_bulk_leathercraft('product');
@@ -4476,7 +4476,7 @@ class Product extends MY_Controller
                                 $discount = $this->general_model->Get_discount_bulk();
                                 $discount = array_column($discount, 'discount_id', 'discount_value');
                                 //$hsn = $this->array_flatten($hsn);
-                                $brand = $this->general_model->GetBrand_bulk('product');
+                                $brand = $this->general_model->GetBrand_bulk_leathercraft('product');
                                 $brand = array_column($brand, 'brand_id', 'brand_name');
                                 $access_settings          = $data['access_settings'];
                                 $primary_id               = "product_id";
@@ -4496,8 +4496,11 @@ class Product extends MY_Controller
                                     $product_type = strtolower(trim($row['C']));
                                     $hsn_number = trim($row['D']);
                                     $name_category= strtolower(trim($row['E']));
+                                    $name_category = str_replace(' ', '', $name_category);
                                     $name_subcategory= strtolower(trim($row['F']));
+                                    $name_subcategory = str_replace(' ', '', $name_subcategory);
                                     $unit_of_measurement= strtolower(trim($row['G']));
+                                    $unit_of_measurement = str_replace(' ', '', $unit_of_measurement);
                                     $product_gst= trim($row['H']);
                                     $product_gst = rtrim($product_gst, "%");
                                     $product_tcs= trim($row['I']);
@@ -4519,6 +4522,7 @@ class Product extends MY_Controller
                                     $product_name = trim($row['B']);
                                     $expiry_date = trim($row['Q']);
                                     $brand_name = trim($row['R']);
+                                    $brand_name = str_replace(' ', '', $brand_name);
                                     $opening_stock = trim($row['S']);
                                     $purchase_price = trim($row['T']);
                                     $expiry_date = date('Y-m-d',strtotime($expiry_date));
@@ -4529,24 +4533,23 @@ class Product extends MY_Controller
                                     $batch = $this->get_bulk_check_product_leathercraft($product_name,$product_code,0);
                                     $combination_id = NULL;
                                     if(count($batch) > 0){
-
                                         if($product_size != '' || $product_colour != '' ){
-                                          $value = '';
-                                          $var_val_id = '';
-                                          $n = 1;
-                                          $product_code_comb = $batch[0]->product_code;
-                                          $varient_product_id = $batch[0]->product_id;
-                                          if($product_colour != ''){
-                                             $colour_key_id = $this->get_varient_key_id('Colour');
-                                             $colour_id = $this->get_varient_value_id($product_colour,$colour_key_id);
-                                             $value .= $product_colour.' / ';
-                                             $var_val_id .= $colour_id.',';
-                                             $data_product_var_val[$n]['varients_value_id'] = $colour_id;
-                                             $data_product_var_val[$n]['varients_id'] =  $colour_key_id;
-                                             $data_product_var_val[$n]['product_varients_id'] =  $varient_product_id;
-                                             $data_product_var_val[$n]['delete_status'] =  0;
-                                             $n = $n+1;
-                                          }
+                                            $value = '';
+                                            $var_val_id = '';
+                                            $n = 1;
+                                            $product_code_comb = $batch[0]->product_code;
+                                            $varient_product_id = $batch[0]->product_id;
+                                            if($product_colour != ''){
+                                                $colour_key_id = $this->get_varient_key_id('Colour');
+                                                $colour_id = $this->get_varient_value_id($product_colour,$colour_key_id);
+                                                $value .= $product_colour.' / ';
+                                                $var_val_id .= $colour_id.',';
+                                                $data_product_var_val[$n]['varients_value_id'] = $colour_id;
+                                                $data_product_var_val[$n]['varients_id'] =  $colour_key_id;
+                                                $data_product_var_val[$n]['product_varients_id'] =  $varient_product_id;
+                                                $data_product_var_val[$n]['delete_status'] =  0;
+                                                $n = $n+1;
+                                            }
                                           if($product_size != ''){
                                             $size_key_id = $this->get_varient_key_id('Size');
                                             $size_value_id = $this->get_varient_value_id($product_size,$size_key_id);
@@ -4598,12 +4601,13 @@ class Product extends MY_Controller
                                     } else {
                                        if($product_size != '' || $product_colour != '' ){
                                           $is_varients = 'Y';                                           
+                                       }else{
+                                            $is_varients = 'N';
                                        }
                                        $combination_id = NULL;
                                         $product_batch = "BATCH-01";
                                     }
 
-                                    
                                     if(($product_type == 'semifinishedgoods' || $product_type == 'finishedgoods' || $product_type == 'rawmaterial')){
                                             $product_type = $product_type;
                                     }else{
@@ -4613,7 +4617,6 @@ class Product extends MY_Controller
                                                 $product_type = $p_type;
                                         }
                                     }
-                                     
 
                                     if($product_type != '' && !empty($product_type)){
                                         if(($product_type == 'semifinishedgoods' || $product_type == 'finishedgoods' || $product_type == 'rawmaterial')){
@@ -4754,16 +4757,16 @@ class Product extends MY_Controller
                                         if($brand_name != '' || !empty($brand_name)){
                                             if(isset($brand[strtolower($brand_name)])){
                                                 $brand_id = $brand[strtolower($brand_name)];
-                                            }/*else{
+                                            }else{
                                                 $is_add = false;
                                                 $error = "Brand name is Not Exist! Please Update Your Brand name";
                                                 $error_log .= $row['R'].' Brand name is Not Exist!';
-                                            }*/
-                                        }/*else{
+                                            }
+                                        }else{
                                             $is_add = false;
                                             $error = "Brand name is empty!";
                                             $error_log .= $row['R'].' Brand name is empty!';
-                                        }*/
+                                        }
                                     }
                                    // product_basic_price
                                     $basic_price = 0;
@@ -5000,7 +5003,7 @@ class Product extends MY_Controller
             /*$this->session->set_userdata('bulk_error', implode('<br>', $error_array)."<br>Error email has been sent to registered email ID"); */
             //print_r($errors_email);
         }
-        redirect("product", 'refresh');
+        //redirect("product", 'refresh');
     }
 
 
