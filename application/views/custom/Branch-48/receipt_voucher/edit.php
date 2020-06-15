@@ -136,7 +136,7 @@ $this->load->view('layout/header');?>
                               <span class="validation-color" id="err_receipt_amount_<?=$i;?>"></span>
                             </div>
                           </div>
-                          <!-- <div class="col-sm-2 gain_loss_amount_div">
+                          <div class="col-sm-2 gain_loss_amount_div" style="display: none;">
                             <div class="form-group">
                               <label for="Invoice amount">Exchange Gain/loss</label>
                               <div class="input-group">
@@ -149,7 +149,7 @@ $this->load->view('layout/header');?>
                               <span id='gain_visible' class="toggle_lbl">Gain(<?=($value->exchange_gain_loss_type == 'plus' ? '+' : '-')?>)</span>         
                               <span class="validation-color" id="err_grand_total_<?=$i;?>"></span>
                             </div>
-                          </div> -->
+                          </div>
                           <div class="col-sm-2 discount_div">
                             <div class="form-group">
                               <label for="discount_<?=$i;?>"><br/>Discount</label>
@@ -157,13 +157,13 @@ $this->load->view('layout/header');?>
                               <!-- <span class="validation-color" id="err_grand_total_<?=$i;?>"></span> -->
                             </div>
                           </div>
-                          <!-- <div class="col-sm-2 other_charges_div">
+                          <div class="col-sm-2 other_charges_div" style="display: none;">
                             <div class="form-group">
                               <label for="other_charges_<?=$i;?>"><br/>Other Charges</label>
                               <input  type="text" class="form-control number_only" id="other_charges_<?=$i;?>" name="other_charges" value="<?=($value->other_charges != '' ? precise_amount($value->other_charges) : '0.00');?>">
                               <span class="validation-color" id="err_grand_total_<?=$i;?>"></span>
                             </div>
-                          </div> -->
+                          </div>
                           <div class="col-sm-2 round_off_div">
                             <div class="form-group">
                               <label for="Invoice amount"><br/>Round Off(+/-)</label>
