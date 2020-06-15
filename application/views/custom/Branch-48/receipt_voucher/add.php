@@ -103,7 +103,7 @@ $this->load->view('layout/header');
                                 </div>
                                 <div class="col-sm-2 receipt_amount_div">
                                     <div class="form-group">
-                                        <label for="Receipt Amount">Receipt Amount <span class="validation-color">*</span></label>
+                                        <label for="Receipt Amount">Receipt<br/> Amount <span class="validation-color">*</span></label>
                                         <input type="text" class="form-control number_only" id="receipt_amount_1" name="receipt_amount" value="">
                                         <span class="validation-color" id="err_receipt_amount_1"></span>
                                     </div>
