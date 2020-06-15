@@ -203,8 +203,9 @@ $(document).ready(function () {
         var invoice_date = $('#add_voucher input[name=invoice_date]').val();
         var invoice_total = $('#add_voucher input[name=invoice_total]').val();
         var voucher_type =$('#add_voucher select[name=voucher_type]').val();
-        if( invoice_date == '' || voucher_type  == ''){// || invoice_narration == ''
+        if( invoice_date == '' || voucher_type  == '' || $('#invoice_date').attr('valid') == '0'){// || invoice_narration == ''
             /*alert('fill required fields');*/
+            $('#invoice_date').focus();
             alert_d.text = 'fill required fields';
             PNotify.error(alert_d);
             flag = false;

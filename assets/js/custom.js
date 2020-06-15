@@ -90,10 +90,53 @@ function ValidateInvoiceDate(){
             success: function (resp) {
                 if (parseInt(resp) <= 0) {
                     $('#err_date').text('Please check Financial year for this date!');
+                    $('#err_inv_dt').text('Please check Financial year for this date!');
                     $('#invoice_date').attr('valid', '0');
+                    
                 }else{
                     $('#err_date').text('');
+                    $('#err_inv_dt').text('');
                     $('#invoice_date').attr('valid', '1');
+                }
+            }
+        });
+    }
+}
+
+if($('#voucher_date').length > 0){
+    ValidateFyVoucherDate();
+}
+
+var dateXhrr = null;
+
+$(document).on('change','#voucher_date', function () {
+    ValidateFyVoucherDate();
+}).blur();
+
+function ValidateFyVoucherDate(){
+    var voucher_date = $("#voucher_date").val();
+    $('#err_voucher_date').text('');
+    var frm = $('#form');
+    var is_send = false;
+    
+    if(voucher_date != ''){
+        $(this).attr('valid', '1');
+        dateXhrr = $.ajax({
+            url: base_url + "general/ValidateFyVoucherDate",
+            type: "POST",
+            data: {voucher_date: voucher_date},
+            beforeSend : function()    {           
+                if(dateXhrr != null) {
+                    dateXhrr.abort();
+                }
+            },
+            success: function (resp) {
+                if (parseInt(resp) <= 0) {
+                    $('#err_voucher_date').text('Please check Financial year for this date!');
+                    $('#voucher_date').attr('valid', '0');
+                }else{
+                    $('#err_voucher_date').text('');
+                    $('#voucher_date').attr('valid', '1');
                 }
             }
         });

@@ -110,6 +110,13 @@ $(document).ready(function (){
             $('#err_customer').text("");
         }
         
+        if (date == null || date == "" || $('#voucher_date').attr('valid') == '0'){
+            $("#err_voucher_date").text(date_empty);
+            $('#voucher_date').focus();
+            return false;
+        } else{
+            $("#err_voucher_date").text("");
+        }
         /*for (var i = 1; i <= row_count; i++){
             var reference_number = $('#reference_number_' + i).val();
             var receipt_amount = $('#receipt_amount_' + i).val();
@@ -206,12 +213,6 @@ $(document).ready(function (){
             } 
         }
        
-        if (date == null || date == ""){
-            $("#err_voucher_date").text(date_empty);
-            return false;
-        } else{
-            $("#err_voucher_date").text("");
-        }
         if (!date.match(date_regex)){
             $('#err_voucher_date').text(date_invalid);
             return false;

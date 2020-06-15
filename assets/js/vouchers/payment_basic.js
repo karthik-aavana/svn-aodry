@@ -361,6 +361,14 @@ $(document).ready(function (){
                 $('#err_payment_amount_' + i).text("");
             }
         }*/
+
+        if (date == null || date == "" || $('#voucher_date').attr('valid') == '0'){
+            $("#err_voucher_date").text(date_empty);
+            $('#voucher_date').focus();
+            return false;
+        } else{
+            $("#err_voucher_date").text("");
+        }
         
         if (paying_by == null || paying_by == ""){
             $("#err_payment_mode").text(paying_by_empty);
@@ -421,12 +429,6 @@ $(document).ready(function (){
             } */
         }
        
-        if (date == null || date == ""){
-            $("#err_voucher_date").text(date_empty);
-            return false;
-        } else{
-            $("#err_voucher_date").text("");
-        }
         if (!date.match(date_regex)){
             $('#err_voucher_date').text(date_invalid);
             return false;

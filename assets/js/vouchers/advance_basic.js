@@ -70,8 +70,9 @@ $(document).ready(function ()
             receipt_amount = 0;
         }
 
-        if (date == null || date == ""){
+        if (date == null || date == "" || $('#voucher_date').attr('valid') == '0'){
             $("#err_date").text(date_empty);
+            $('#voucher_date').focus();
             return false;
         }else{
             $("#err_date").text("");
