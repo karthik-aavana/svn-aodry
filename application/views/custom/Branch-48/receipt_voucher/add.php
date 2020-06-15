@@ -287,5 +287,6 @@ $this->load->view('layout/header');
 var common_settings_round_off = "<?= $access_common_settings[0]->round_off_access ?>";
 var common_settings_amount_precision = "<?= $access_common_settings[0]->amount_precision ?>";
 </script>
-<script src="<?php echo base_url('assets/js/vouchers/') ?>receipt.js"></script>
+
 <script src="<?php echo base_url('assets/js/vouchers/') ?>receipt_basic.js"></script>
+<script src="<?php echo base_url('assets/custom/branch-'.$this->session->userdata('SESS_BRANCH_ID').'/js/vouchers/'); ?>receipt.js"></script>
