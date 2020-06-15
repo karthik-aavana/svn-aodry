@@ -386,7 +386,6 @@ class Expense_bill extends MY_Controller
         }else{
             $image_name = '';
         }
-
         $expense_bill_data = array(
             "expense_bill_date"                            => date('Y-m-d',strtotime($this->input->post('invoice_date'))) ,
             "expense_bill_invoice_number"                  => $invoice_number ,
@@ -641,6 +640,7 @@ class Expense_bill extends MY_Controller
     public function expense_bill_vouchers($section_modules , $data_main , $js_data , $branch){
         /*$invoice_from = $data_main['from_account'];
         $invoice_to   = $data_main['to_account'];*/
+        $expense_bill_payee_id = $data_main['expense_bill_payee_id'];
         $ledgers      = array();
 
         $access_sub_modules    = $section_modules['access_sub_modules'];
@@ -1618,9 +1618,7 @@ class Expense_bill extends MY_Controller
             $tds_slab_minus                = array();
             $tds_slab_items                = array();
             $data_main['total_tds_amount'] = 0;
-           
             foreach ($js_data as $key => $value){
-
                 if ($value['expense_bill_item_tds_percentage'] > 0){
                     
                     $string       = 'tds.section_name,td.tax_name';
@@ -1733,6 +1731,7 @@ class Expense_bill extends MY_Controller
 
         }else{
             $supplier_name = 'Others';
+            $supplier_ledger_id = 0;
         }
 
         if(!$supplier_ledger_id){
