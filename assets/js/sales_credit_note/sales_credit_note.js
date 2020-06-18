@@ -90,7 +90,7 @@ $(document).ready(function () {
 
     $("#invoice_date").blur(function (event) {
         var date = $('#invoice_date').val();
-        if (date == null || date == "" || $('#invoice_date').attr('valid') == '0') {
+        if (date == null || date == "") {
             $("#err_date").text("Please Enter Date");
             $('#err_date').focus();
             return !1
