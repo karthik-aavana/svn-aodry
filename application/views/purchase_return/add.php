@@ -37,7 +37,7 @@ $this->load->view('layout/header');
                                                 $date = date('d-m-Y');
                                             }
                                             ?>
-                                            <input type="text" style="background: #fff;" class="form-control datepicker" id="invoice_date" name="invoice_date" value="<?php echo $date; ?>" readonly>
+                                            <input type="text" style="background: #fff;" class="form-control datepicker" id="invoice_date" name="invoice_date" value="<?php echo $date; ?>">
 
                                             <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
                                         </div>

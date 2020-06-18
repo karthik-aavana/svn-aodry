@@ -105,7 +105,7 @@ $(document).ready(function () {
         var date = $('#invoice_date').val();
         if (date == null || date == "") {
             $("#err_date").text("Please Enter Date");
-            $('#date').focus();
+            $('#invoice_date').focus();
             return !1
         } else {
             $("#err_date").text("")

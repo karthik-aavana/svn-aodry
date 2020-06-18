@@ -48,6 +48,34 @@ class General extends MY_Controller
         echo $q->num_rows();
     }
 
+    public function ValidateStockRefDate(){
+        $reference_date = date('Y-m-d',strtotime($this->input->post('reference_date')));
+        $branch_id = $this->session->userdata('SESS_BRANCH_ID');
+        $this->db->select('from_date,to_date');
+        $this->db->where('branch_id',$branch_id);
+        $this->db->where('from_date <=',$reference_date);
+        $this->db->where('year_status','1');
+        $this->db->where('is_current','1');
+        $this->db->where('to_date >=',$reference_date);
+        $q = $this->db->get('tbl_financial_year');
+       
+        echo $q->num_rows();
+    }
+
+    public function ValidateBoeRefDate(){
+        $boe_date = date('Y-m-d',strtotime($this->input->post('boe_date')));
+        $branch_id = $this->session->userdata('SESS_BRANCH_ID');
+        $this->db->select('from_date,to_date');
+        $this->db->where('branch_id',$branch_id);
+        $this->db->where('from_date <=',$boe_date);
+        $this->db->where('year_status','1');
+        $this->db->where('is_current','1');
+        $this->db->where('to_date >=',$boe_date);
+        $q = $this->db->get('tbl_financial_year');
+       
+        echo $q->num_rows();
+    }
+
     public function validateBranchCode(){
         $branch_code = $this->input->post('branch_code');
         $flag = true;

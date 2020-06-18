@@ -60,6 +60,7 @@ $(document).on('click', '.remove_tds', function () {
     calculateTable(row);
 })
 
+//FY Validation for all billing invoice
 if($('#invoice_date').length > 0){
 	ValidateInvoiceDate();
 }
@@ -103,6 +104,7 @@ function ValidateInvoiceDate(){
     }
 }
 
+//FY Validation for all Voucher invoice date
 if($('#voucher_date').length > 0){
     ValidateFyVoucherDate();
 }
@@ -137,6 +139,88 @@ function ValidateFyVoucherDate(){
                 }else{
                     $('#err_voucher_date').text('');
                     $('#voucher_date').attr('valid', '1');
+                }
+            }
+        });
+    }
+}
+
+//FY Validation for all Stock reference date
+if($('#reference_date').length > 0){
+    ValidateStockRefDate();
+}
+
+var dateXh = null;
+
+$(document).on('change','#reference_date', function () {
+    ValidateStockRefDate();
+}).blur();
+
+function ValidateStockRefDate(){
+    var reference_date = $("#reference_date").val();
+    $('#err_voucher_date').text('');
+    var frm = $('#form');
+    var is_send = false;
+    
+    if(reference_date != ''){
+        $(this).attr('valid', '1');
+        dateXh = $.ajax({
+            url: base_url + "general/ValidateStockRefDate",
+            type: "POST",
+            data: {reference_date: reference_date},
+            beforeSend : function()    {           
+                if(dateXh != null) {
+                    dateXh.abort();
+                }
+            },
+            success: function (resp) {
+                if (parseInt(resp) <= 0) {
+                    $('#err_reference_date').text('Please check Financial year for this date!');
+                    $('#reference_date').attr('valid', '0');
+                }else{
+                    $('#err_reference_date').text('');
+                    $('#reference_date').attr('valid', '1');
+                }
+            }
+        });
+    }
+}
+
+//FY Validation for BOE date
+if($('#boe_date').length > 0){
+    ValidateBoeRefDate();
+}
+
+var dateBOE = null;
+
+$(document).on('change','#boe_date', function () {
+    ValidateBoeRefDate();
+}).blur();
+
+function ValidateBoeRefDate(){
+    var boe_date = $("#boe_date").val();
+    $('#err_voucher_date').text('');
+    var frm = $('#form');
+    var is_send = false;
+    
+    if(boe_date != ''){
+        $(this).attr('valid', '1');
+        dateBOE = $.ajax({
+            url: base_url + "general/ValidateBoeRefDate",
+            type: "POST",
+            data: {boe_date: boe_date},
+            beforeSend : function()    {           
+                if(dateBOE != null) {
+                    dateBOE.abort();
+                }
+            },
+            success: function (resp) {
+                if (parseInt(resp) <= 0) {
+                    $('#err_boe_date').text('Please check Financial year for this date!');
+                    $('#boe_date').attr('valid', '0');
+                }else{
+                    $('#err_boe_date').text('');
+                    $('#boe_date').attr('valid', '1');
                 }
             }
         });

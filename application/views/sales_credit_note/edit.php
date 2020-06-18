@@ -28,7 +28,7 @@ $this->load->view('layout/header');
                                     <div class="form-group">
                                         <label for="date">Credit Note Date<span class="validation-color">*</span></label>
                                         <div class="input-group date">              
-                                            <input type="text" style="background: #fff;" class="form-control datepicker" id="invoice_date" name="invoice_date" value="<?php echo date('d-m-Y',strtotime($data[0]->sales_credit_note_date)); ?>" readonly>
+                                            <input type="text" style="background: #fff;" class="form-control datepicker" id="invoice_date" name="invoice_date" value="<?php echo date('d-m-Y',strtotime($data[0]->sales_credit_note_date)); ?>">
                                             <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
                                         </div>
                                         <span class="validation-color" id="err_date"></span>

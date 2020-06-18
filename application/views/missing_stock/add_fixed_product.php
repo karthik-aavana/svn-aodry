@@ -137,8 +137,9 @@
             var move_product = $('#cmb_move_product').val()?$('#cmb_move_product').val():"";
             var comments = $('#txt_comments').val()?$('#txt_comments').val():"";
             
-            if (reference_date == null || reference_date == ""){
+            if (reference_date == null || reference_date == "" || $('#reference_date').attr('valid') == '0'){
                 $("#err_reference_date").text("Please Select Reference Date.");
+                $('#reference_date').focus();
                 return false;
             } else {
                 $("#err_reference_date").text("");

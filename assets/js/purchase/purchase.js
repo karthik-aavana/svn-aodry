@@ -5,7 +5,7 @@ $(document).ready(function () {
         }
     });
     
-    $(document).on("click", '#purchase_submit,#purchase_pay_now', function (event) {
+    $(document).on("click", '#purchase_submit,#purchase_pay_now,#purchase_order_submit', function (event) {
 
         var invoice_number = $('#invoice_number').val();
 
@@ -47,7 +47,7 @@ $(document).ready(function () {
 
         }
 
-        if ($('#invoice_date').val() == "") {
+        if ($('#invoice_date').val() == "" || $('#invoice_date').attr('valid') == '0') {
 
             $('#err_date').text("Please Select the Date.");
 

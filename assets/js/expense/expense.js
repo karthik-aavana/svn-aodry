@@ -70,7 +70,7 @@ $(document).ready(function () {
         } else {
             $('#err_invoice_number').text(" ");
         }
-        if ($('#invoice_date').val() == "") {
+        if ($('#invoice_date').val() == "" || $('#invoice_date').attr('valid') == '0') {
             $('#err_date').text("Please Select the Date.");
             $('#invoice_date').focus();
             return !1

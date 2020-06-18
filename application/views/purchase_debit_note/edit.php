@@ -30,7 +30,7 @@ $this->load->view('layout/header');
                                     <div class="form-group">
                                         <label for="date">Date<span class="validation-color">*</span></label>
                                         <div class="input-group date">              
-                                            <input type="text" style="background: #fff;" class="form-control datepicker" id="invoice_date" name="invoice_date" value="<?php echo date('d-m-Y',strtotime($data[0]->purchase_debit_note_date)); ?>" readonly>
+                                            <input type="text" style="background: #fff;" class="form-control datepicker" id="invoice_date" name="invoice_date" value="<?php echo date('d-m-Y',strtotime($data[0]->purchase_debit_note_date)); ?>">
                                             <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
                                         </div>
                                         <span class="validation-color" id="err_date"></span>
@@ -762,7 +762,7 @@ $this->load->view('layout/header');
                                     </div> </div>
                                 <div class="col-sm-12">
                                     <div class="box-footer">
-                                        <button type="submit" id="purchase_submit" name="purchase_submit" class="btn btn-info">Update</button>
+                                        <button type="submit" id="purchase_debit_note_submit" name="purchase_submit" class="btn btn-info">Update</button>
                                         <span class="btn btn-default" id="sale_cancel" onclick="cancel('purchase_debit_note')">Cancel</span>
                                     </div>
                                 </div>

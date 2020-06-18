@@ -2624,6 +2624,7 @@ class Sales_debit_note extends MY_Controller {
         $data['charges_sub_module_id'] = $this->config->item('charges_sub_module');
         $data['accounts_sub_module_id'] = $this->config->item('accounts_sub_module');
         $currency = $this->input->post('currency_id');
+        $access_settings = $section_modules['access_settings'];
 
         if ($section_modules['access_settings'][0]->invoice_creation == "automatic") {
             if ($this->input->post('invoice_number') != $this->input->post('invoice_number_old')) {

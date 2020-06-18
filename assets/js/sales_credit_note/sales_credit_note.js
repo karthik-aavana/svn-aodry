@@ -20,7 +20,7 @@ $(document).ready(function () {
             }
 
         }
-        if ($('#invoice_date').val() == "") {
+        if ($('#invoice_date').val() == "" || $('#invoice_date').attr('valid') == '0') {
             $('#err_date').text("Please Select the Date.");
             $('#invoice_date').focus();
             return !1
@@ -90,9 +90,9 @@ $(document).ready(function () {
 
     $("#invoice_date").blur(function (event) {
         var date = $('#invoice_date').val();
-        if (date == null || date == "") {
+        if (date == null || date == "" || $('#invoice_date').attr('valid') == '0') {
             $("#err_date").text("Please Enter Date");
-            $('#date').focus();
+            $('#err_date').focus();
             return !1
         } else {
             $("#err_date").text("")

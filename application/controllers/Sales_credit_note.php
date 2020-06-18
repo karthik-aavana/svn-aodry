@@ -2751,7 +2751,7 @@ class Sales_credit_note extends MY_Controller
         $data['shipping_sub_module_id']    = $this->config->item('shipping_sub_module');
         $data['charges_sub_module_id']     = $this->config->item('charges_sub_module');
         $data['accounts_sub_module_id']    = $this->config->item('accounts_sub_module');
-
+        $access_settings = $section_modules['access_settings'];
 
         $currency = $this->input->post('currency_id');
         if ($section_modules['access_settings'][0]->invoice_creation == "automatic")
