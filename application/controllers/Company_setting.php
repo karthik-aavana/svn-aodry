@@ -102,7 +102,7 @@ class Company_setting extends MY_Controller
         $data=array_merge($data,$section_modules);
 
         $data['data'] = $data['branch'];
-
+        
         $this->load->view('company_setting/edit_old', $data);
     }
 
@@ -322,7 +322,14 @@ class Company_setting extends MY_Controller
             /*$this->session->set_userdata('SESS_FINANCIAL_YEAR_ID', $this->input->post('financial_year_id'));*/
             $this->session->set_userdata('SESS_DEFAULT_CURRENCY', $this->input->post('currency_id'));
             $this->general_model->insertData('log', $log_data);
-        } redirect('company_setting', 'refresh');
+        } 
+        if($this->input->post('redirect')){
+            $this->session->set_flashdata('dashboard_message', 1);
+            redirect('auth/dashboard', 'refresh');
+        }else{
+            redirect('company_setting', 'refresh');
+        }
+        
     }
 
     public function remove_logo(){
