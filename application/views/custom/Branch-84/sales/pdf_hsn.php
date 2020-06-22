@@ -106,11 +106,14 @@ if (@$converted_rate)
                                     ?>
                                 <?php } ?></td>
                         </tr>
-                        <tr><td><b>Drug Licence# :</b> </td>
-                            <td><?=(@$branch[0]->drug_licence_no_1 && $branch[0]->drug_licence_no_1 != '' ? $branch[0]->drug_licence_no_1 : '')?></td>
-                        </tr>
-                        <tr><td><b>Food Licence# :</b> </td>
-                            <td><?=(@$branch[0]->drug_licence_no_2 && $branch[0]->drug_licence_no_2 != '' ? $branch[0]->drug_licence_no_2 : '')?></td>
+                        <tr>
+                            <table>
+                                <tr><td><b>DL# :</b> </td>
+                                    <td><?=(@$branch[0]->drug_licence_no_1 && $branch[0]->drug_licence_no_1 != '' ? $branch[0]->drug_licence_no_1 : '')?></td>
+                                    <td><b>FL# :</b> </td>
+                                    <td><?=(@$branch[0]->drug_licence_no_2 && $branch[0]->drug_licence_no_2 != '' ? $branch[0]->drug_licence_no_2 : '')?></td>
+                                </tr>
+                            </table>
                         </tr>
                     </table>
                 </td>
@@ -207,11 +210,16 @@ if (@$converted_rate)
                                 }
                                 ?></td>
                         </tr>
-                        <tr><td><b>Drug Licence# : </b></td>
-                            <td style="text-align: left;"><?=(@$data[0]->drug_licence_no && $data[0]->drug_licence_no != '' ? str_replace(',','<br>',$data[0]->drug_licence_no) : '')?></td>
-                        </tr>
-                        <tr><td><b>Food Licence# : </b></td>
-                            <td style="text-align: left;"><?=(@$data[0]->food_licence_number && $data[0]->food_licence_number != '' ? str_replace(',','<br>',$data[0]->food_licence_number) : '')?></td>
+                        <tr>
+                            <table>
+                                <tr>
+                                    <td><b>DL# : </b></td>
+                                        <td style="text-align: left;"><?=(@$data[0]->drug_licence_no && $data[0]->drug_licence_no != '' ? str_replace(',','<br>',$data[0]->drug_licence_no) : '')?></td>
+                                
+                                    <td><b>FL# : </b></td>
+                                        <td style="text-align: left;"><?=(@$data[0]->food_licence_number && $data[0]->food_licence_number != '' ? str_replace(',','<br>',$data[0]->food_licence_number) : '')?></td>
+                                </tr>
+                            </table>
                         </tr>
                     </table>                        
                 </td>
