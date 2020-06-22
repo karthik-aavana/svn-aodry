@@ -87,7 +87,7 @@ if (@$converted_rate)
                                 }
                                 ?></td>
                         </tr> -->
-                        <tr><td><b>PAN :</b> </td>
+                        <!-- <tr><td><b>PAN :</b> </td>
                             <td><?php
                                 if (isset($branch[0]->branch_pan_number)) {
                                     if ($branch[0]->branch_pan_number != "" || $branch[0]->branch_pan_number != null) {
@@ -96,7 +96,7 @@ if (@$converted_rate)
                                     ?>
                                 <?php } ?>
                             </td>
-                        </tr>
+                        </tr> -->
                         <tr><td><b>GSTIN :</b> </td>
                             <td><?php
                                 if (isset($branch[0]->branch_gstin_number)) {
@@ -187,7 +187,7 @@ if (@$converted_rate)
                                 }
                                 ?></td>
                         </tr> -->
-                        <tr><td><b>PAN : </b></td>
+                        <!-- <tr><td><b>PAN : </b></td>
                             <td style="text-align: left;"><?php
                                 if (isset($data[0]->customer_pan_number)) {
                                     if ($data[0]->customer_pan_number != "" || $data[0]->customer_pan_number != null) {
@@ -197,7 +197,7 @@ if (@$converted_rate)
                                 <?php } ?>
 
                             </td>
-                        </tr>
+                        </tr> -->
                         <tr><td><b>GSTIN : </b></td>
                             <td style="text-align: left;"><?php
                                 if (isset($data[0]->customer_gstin_number)) {
@@ -407,10 +407,25 @@ if (@$converted_rate)
 
                     </table>
                 </td>
-                <td colspan="6"></td>
+                <td colspan="5" style="text-align: left;">
+                    <table style="font-size:14px;">
+                        <tr><th style="text-align: right;">Taxable Amt:</th>
+                            <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->sales_sub_total)); ?></td>
+                        </tr>
+                        <tr><th style="text-align: right;">Total Disc:</th>
+                            <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->sales_discount_amount)); ?></td>
+                        </tr>
+                        <tr><th style="text-align: right;">Net Amt:</th>
+                            <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->sales_grand_total)); ?></td>
+                        </tr>
+                        <tr><th style="text-align: right;">Net Payable:</th>
+                            <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->sales_grand_total)); ?></td>
+                        </tr>
+                    </table>
+                </td>
             </tr>
-            <tr>
-            <td colspan="11" style="text-align: left;">
+            <!--<tr>
+             <td colspan="11" style="text-align: left;">
                 <table style="font-size:12px;">
                     <tr>
                         <th colspan="4">****GST Summary ****</th>
@@ -452,7 +467,7 @@ if (@$converted_rate)
                         <?php } ?>
                     <?php } ?>
                 </table>
-            </td>
+            </td> -->
             <!-- <td colspan="2" style="text-align: left;" style="border: none;">&nbsp;
                <table>
                     <tr>
@@ -465,24 +480,8 @@ if (@$converted_rate)
                     </tr>
                 </table>
             </td> -->
-            <!-- <td colspan="5" style="text-align: left; font-size:11px;">Bank Details:<br>Bank Name : <br> A/c No : <br> Branch Name : <br> IFSC Code :</td> -->
-            <td colspan="5" style="text-align: left;">
-                <table style="font-size:14px;">
-                    <tr><th style="text-align: right;">Taxable Amt:</th>
-                        <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->sales_sub_total)); ?></td>
-                    </tr>
-                    <tr><th style="text-align: right;">Total Disc:</th>
-                        <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->sales_discount_amount)); ?></td>
-                    </tr>
-                    <tr><th style="text-align: right;">Net Amt:</th>
-                        <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->sales_grand_total)); ?></td>
-                    </tr>
-                    <tr><th style="text-align: right;">Net Payable:</th>
-                        <td style="text-align: right;"><?= $this->numbertowords->formatInr(($data[0]->sales_grand_total)); ?></td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
+            <!-- <td colspan="5" style="text-align: left; font-size:11px;">Bank Details:<br>Bank Name : <br> A/c No : <br> Branch Name : <br> IFSC Code :</td> 
+        </tr>-->
         <tr>
             <th colspan="10" style="text-align: left;">Amount In Words : <b><?php echo $data[0]->currency_name . " " . $this->numbertowords->convert_number(precise_amount(($data[0]->sales_grand_total * $convert_rate)), $data[0]->unit, $data[0]->decimal_unit) . " Only"; ?></td>
             <th colspan="6" style="text-align: right;">Grand Total : <?php echo precise_amount($data[0]->sales_grand_total) ?></td>

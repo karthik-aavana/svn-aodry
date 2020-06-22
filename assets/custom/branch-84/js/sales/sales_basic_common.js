@@ -884,7 +884,7 @@ function add_row(data) {
             }
         })
     }
-    cols += "<td style='text-align:center'><input type='text' class='form-control form-fixer text-center float_number' value='1' data-rule='quantity' name='item_quantity' stock='"+stock+"'></td>";
+    cols += "<td style='text-align:center'><input type='text' class='form-control form-fixer text-center float_number' value='0' data-rule='quantity' name='item_quantity' stock='"+stock+"'></td>";
     cols += "<td style='text-align:center'><input type='text' class='form-control form-fixer text-center float_number' value='0' data-rule='free_quantity' name='free_item_quantity' stock='"+stock+"'></td>";
     cols += "<td style='text-align:center'>"+uom_select+"</td>";
     cols += "<td style='text-align:center'><input type='text' class='form-control form-fixer text-right float_number' name='item_mrp_price' value='" +

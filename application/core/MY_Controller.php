@@ -477,6 +477,11 @@ class MY_Controller extends CI_Controller
         }
 
         $first_prefix       = $access_settings[0]->settings_invoice_first_prefix;
+        if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath')){
+            if($first_prefix == "SAL"){
+                $first_prefix = $first_prefix.date("y");
+            }
+        }
         $last_prefix        = $access_settings[0]->settings_invoice_last_prefix;
         $invoice_type       = $access_settings[0]->invoice_type;
         $invoice_creation   = $access_settings[0]->invoice_creation;
