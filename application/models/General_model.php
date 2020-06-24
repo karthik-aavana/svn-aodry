@@ -124,7 +124,15 @@ class General_model extends CI_Model{
       
       return $query->result_array();
     }
-    
+    public function Get_warehouse_bulk_leathercraft($type){
+        $this->db->select("warehouse_id as warehouse_id,LOWER(REPLACE(warehouse_name, ' ', '')) as warehouse_name");
+        $this->db->from('warehouse');
+        $this->db->where('delete_status', '0');
+        $this->db->where('branch_id', $this->session->userdata('SESS_BRANCH_ID'));
+        $query = $this->db->get(); 
+      
+      return $query->result_array();
+    }
     public function Get_uom_bulk(){
         $this->db->select('id as uom_id,LOWER(uom) as uom');
         $this->db->from('uqc');
