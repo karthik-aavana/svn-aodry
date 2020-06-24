@@ -85,7 +85,11 @@ $(document).ready(function ()
                 $("#loader_coco").show();
                 },
                 success:function(result)
-                {                    
+                {         
+                    setTimeout(function () {// wait for 5 secs(2)
+                            $(document).find('[name=check_item]').trigger('change');
+                            //location.reload(); // then reload the page.(3)
+                        },500);       
                     if(result.flag){
 
                         $('#edit_tax').modal('hide');

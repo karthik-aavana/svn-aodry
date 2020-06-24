@@ -81,6 +81,7 @@
         var discount_percentage = $('#discount_percentage_modal_edit').val();        
         var description = $('#description_edit').val();
         var discount_id = $('#discount_id').val();
+        var float_num_regex = /^[+-]?([0-9]{1,2}[.])?[0-9]{1,2}$/;
         
         if (discount_percentage == null || discount_percentage == "")
         {
@@ -91,7 +92,7 @@
             $("#err_discount_percentage_edit").text("")
         }
 
-        if (!discount_percentage.match(price_regex))
+        if (!discount_percentage.match(float_num_regex))
         {
             $('#err_discount_percentage_edit').text(" Please Enter Valid Discount Value. ");
             return !1
@@ -118,10 +119,10 @@
                     $("#loader_coco").show();
                     }, 
                     success: function (result) {
-                        // setTimeout(function () {// wait for 5 secs(2)
-                        //     $(document).find('[name=check_item]').trigger('change');
-                        //     //location.reload(); // then reload the page.(3)
-                        // },500);
+                        setTimeout(function () {// wait for 5 secs(2)
+                            $(document).find('[name=check_item]').trigger('change');
+                            //location.reload(); // then reload the page.(3)
+                        },500);
                         if(result.flag){
                             $("#loader_coco").hide();
                             $('#edit_discount').modal('hide');
