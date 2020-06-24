@@ -445,7 +445,7 @@ class Report_model extends CI_Model
         return $json;
     }
 
-    public function getLedgerReportAry($dt){
+    public function getLedgerReportAry_backup($dt){
 
         $ledger_id = $dt['ledger_id'];
         $branch_id = $dt['branch_id'];
@@ -575,10 +575,10 @@ class Report_model extends CI_Model
         $result = $resp->result_array();
         if($result[0]['TotalAmount'] != null) $opening_balance += $result[0]['TotalAmount'];
 
-        $resp = $this->db->query("SELECT SUM(CASE WHEN dr_amount > 0 THEN voucher_amount ELSE (-voucher_amount) END) TotalAmount FROM `accounts_journal_voucher` ts JOIN tbl_journal_voucher v ON ts.journal_voucher_id=v.journal_voucher_id WHERE v.branch_id='{$branch_id}' AND ledger_id='{$ledger_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date >= '{$start_from_date}' AND v.voucher_date < '{$from_date}' )"); //(v.invoice_date BETWEEN '{$start_from_date}' AND '{$from_date}' )
+        /*$resp = $this->db->query("SELECT SUM(CASE WHEN dr_amount > 0 THEN voucher_amount ELSE (-voucher_amount) END) TotalAmount FROM `accounts_journal_voucher` ts JOIN tbl_journal_voucher v ON ts.journal_voucher_id=v.journal_voucher_id WHERE v.branch_id='{$branch_id}' AND ledger_id='{$ledger_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date >= '{$start_from_date}' AND v.voucher_date < '{$from_date}' )");*/ //(v.invoice_date BETWEEN '{$start_from_date}' AND '{$from_date}' )
        
-        $result = $resp->result_array();
-        if($result[0]['TotalAmount'] != null) $opening_balance += $result[0]['TotalAmount'];
+        /*$result = $resp->result_array();
+        if($result[0]['TotalAmount'] != null) $opening_balance += $result[0]['TotalAmount'];*/
 
         
         /* ------------ finish opening balance ------------ */
@@ -592,40 +592,312 @@ class Report_model extends CI_Model
         foreach ($all_ledger as $key => $value) {
             $ledger_name['ledger_'.$value['ledger_id']] = $value['ledger_name'];
         }
-        $resp = $this->db->query("SELECT *,'sales' as type FROM `accounts_sales_voucher` ts  JOIN (SELECT sales_voucher_id FROM accounts_sales_voucher WHERE ledger_id='{$dt['ledger_id']}') as t ON t.sales_voucher_id=ts.sales_voucher_id JOIN sales_voucher v ON ts.sales_voucher_id=v.sales_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+        $resp = $this->db->query("SELECT *,'sales' as type FROM `accounts_sales_voucher` ts  JOIN (SELECT sales_voucher_id FROM accounts_sales_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.sales_voucher_id JOIN sales_voucher v ON ts.sales_voucher_id=v.sales_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
         $sales_result = $resp->result_array();
 
-        $resp = $this->db->query("SELECT *,'purchase' as type FROM `accounts_purchase_voucher` ts  JOIN (SELECT purchase_voucher_id as sales_voucher_id FROM accounts_purchase_voucher WHERE ledger_id='{$dt['ledger_id']}') as t ON t.sales_voucher_id=ts.purchase_voucher_id JOIN purchase_voucher v ON ts.purchase_voucher_id=v.purchase_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0'  AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+        $resp = $this->db->query("SELECT *,'purchase' as type FROM `accounts_purchase_voucher` ts  JOIN (SELECT purchase_voucher_id as sales_voucher_id FROM accounts_purchase_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.purchase_voucher_id JOIN purchase_voucher v ON ts.purchase_voucher_id=v.purchase_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0'  AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
         $purchase_result = $resp->result_array();
 
-        $resp = $this->db->query("SELECT *,'advance' as type FROM `accounts_advance_voucher` ts  JOIN (SELECT advance_voucher_id as sales_voucher_id FROM accounts_advance_voucher WHERE ledger_id='{$dt['ledger_id']}') as t ON t.sales_voucher_id=ts.advance_voucher_id JOIN advance_voucher v ON ts.advance_voucher_id=v.advance_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+        $resp = $this->db->query("SELECT *,'advance' as type FROM `accounts_advance_voucher` ts  JOIN (SELECT advance_voucher_id as sales_voucher_id FROM accounts_advance_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.advance_voucher_id JOIN advance_voucher v ON ts.advance_voucher_id=v.advance_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
         $advance_result = $resp->result_array();
 
-        $resp = $this->db->query("SELECT *,'jouranl' as type FROM `accounts_general_voucher` ts  JOIN (SELECT general_voucher_id as sales_voucher_id FROM accounts_general_voucher WHERE ledger_id='{$dt['ledger_id']}') as t ON t.sales_voucher_id=ts.general_voucher_id JOIN general_voucher v ON ts.general_voucher_id=v.general_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+        $resp = $this->db->query("SELECT *,'jouranl' as type FROM `accounts_general_voucher` ts  JOIN (SELECT general_voucher_id as sales_voucher_id FROM accounts_general_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.general_voucher_id JOIN general_voucher v ON ts.general_voucher_id=v.general_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
         $journal_result = $resp->result_array();
 
-        $resp = $this->db->query("SELECT *,'payment' as type FROM `accounts_payment_voucher` ts  JOIN (SELECT payment_voucher_id as sales_voucher_id FROM accounts_payment_voucher WHERE ledger_id='{$dt['ledger_id']}') as t ON t.sales_voucher_id=ts.payment_voucher_id JOIN payment_voucher v ON ts.payment_voucher_id=v.payment_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+        $resp = $this->db->query("SELECT *,'payment' as type FROM `accounts_payment_voucher` ts  JOIN (SELECT payment_voucher_id as sales_voucher_id FROM accounts_payment_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.payment_voucher_id JOIN payment_voucher v ON ts.payment_voucher_id=v.payment_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
         $payment_result = $resp->result_array();
 
-        $resp = $this->db->query("SELECT *,'receipt' as type FROM `accounts_receipt_voucher` ts  JOIN (SELECT receipt_voucher_id as sales_voucher_id FROM accounts_receipt_voucher WHERE ledger_id='{$dt['ledger_id']}') as t ON t.sales_voucher_id=ts.receipt_voucher_id JOIN receipt_voucher v ON ts.receipt_voucher_id=v.receipt_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0'  AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+        $resp = $this->db->query("SELECT *,'receipt' as type FROM `accounts_receipt_voucher` ts  JOIN (SELECT receipt_voucher_id as sales_voucher_id FROM accounts_receipt_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.receipt_voucher_id JOIN receipt_voucher v ON ts.receipt_voucher_id=v.receipt_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0'  AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
         $receipt_result = $resp->result_array();
 
-        $resp = $this->db->query("SELECT *,'refund' as type FROM `accounts_refund_voucher` ts  JOIN (SELECT refund_voucher_id as sales_voucher_id FROM accounts_refund_voucher WHERE ledger_id='{$dt['ledger_id']}') as t ON t.sales_voucher_id=ts.refund_voucher_id JOIN refund_voucher v ON ts.refund_voucher_id=v.refund_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0'  AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+        $resp = $this->db->query("SELECT *,'refund' as type FROM `accounts_refund_voucher` ts  JOIN (SELECT refund_voucher_id as sales_voucher_id FROM accounts_refund_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.refund_voucher_id JOIN refund_voucher v ON ts.refund_voucher_id=v.refund_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0'  AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
         $refund_result = $resp->result_array();
 
-        $resp = $this->db->query("SELECT *,'expense' as type FROM `accounts_expense_voucher` ts JOIN (SELECT expense_voucher_id as sales_voucher_id FROM accounts_expense_voucher WHERE ledger_id='{$dt['ledger_id']}') as t ON t.sales_voucher_id=ts.expense_voucher_id JOIN expense_voucher v ON ts.expense_voucher_id=v.expense_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0'  AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') GROUP BY accounts_expense_id");
+        $resp = $this->db->query("SELECT *,'expense' as type FROM `accounts_expense_voucher` ts JOIN (SELECT expense_voucher_id as sales_voucher_id FROM accounts_expense_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.expense_voucher_id JOIN expense_voucher v ON ts.expense_voucher_id=v.expense_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0'  AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') GROUP BY accounts_expense_id");
 
         $exp_result = $resp->result_array();
 
-        $resp = $this->db->query("SELECT *,'bank' as type FROM `accounts_bank_voucher` ts  JOIN (SELECT bank_voucher_id as sales_voucher_id FROM accounts_bank_voucher WHERE ledger_id='{$dt['ledger_id']}') as t ON t.sales_voucher_id=ts.bank_voucher_id JOIN bank_voucher v ON ts.bank_voucher_id=v.bank_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0'  AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+        $resp = $this->db->query("SELECT *,'bank' as type FROM `accounts_bank_voucher` ts  JOIN (SELECT bank_voucher_id as sales_voucher_id FROM accounts_bank_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.bank_voucher_id JOIN bank_voucher v ON ts.bank_voucher_id=v.bank_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0'  AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
 
         $bank_result = $resp->result_array();
 
-        $resp = $this->db->query("SELECT *,'cash' as type FROM `accounts_cash_voucher` ts  JOIN (SELECT cash_voucher_id as sales_voucher_id FROM accounts_cash_voucher WHERE ledger_id='{$dt['ledger_id']}') as t ON t.sales_voucher_id=ts.cash_voucher_id JOIN cash_voucher v ON ts.cash_voucher_id=v.cash_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}')  AND ts.delete_status='0'");
+        $resp = $this->db->query("SELECT *,'cash' as type FROM `accounts_cash_voucher` ts  JOIN (SELECT cash_voucher_id as sales_voucher_id FROM accounts_cash_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.cash_voucher_id JOIN cash_voucher v ON ts.cash_voucher_id=v.cash_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0'  AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
 
         $cash_result = $resp->result_array();
 
-        $resp = $this->db->query("SELECT *,'contra' as type FROM `accounts_contra_voucher` ts  JOIN (SELECT contra_voucher_id as sales_voucher_id FROM accounts_contra_voucher WHERE ledger_id='{$dt['ledger_id']}') as t ON t.sales_voucher_id=ts.contra_voucher_id JOIN contra_voucher v ON ts.contra_voucher_id=v.contra_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+        $resp = $this->db->query("SELECT *,'contra' as type FROM `accounts_contra_voucher` ts  JOIN (SELECT contra_voucher_id as sales_voucher_id FROM accounts_contra_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.contra_voucher_id JOIN contra_voucher v ON ts.contra_voucher_id=v.contra_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+
+        $contra_result = $resp->result_array();
+
+        /*$resp = $this->db->query("SELECT *,'general' as type FROM `accounts_journal_voucher` ts  JOIN (SELECT journal_voucher_id as sales_voucher_id FROM accounts_journal_voucher WHERE ledger_id='{$dt['ledger_id']}') as t ON t.sales_voucher_id=ts.journal_voucher_id JOIN tbl_journal_voucher v ON ts.journal_voucher_id=v.journal_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+
+        $general_result = $resp->result_array();*/
+       
+        $result = array_merge($sales_result,$purchase_result,$advance_result,$payment_result,$receipt_result,$refund_result,$exp_result,$bank_result,$cash_result,$contra_result,$journal_result);//$general_result,
+        $date_array = array();
+        if(!empty($result)){
+            /*echo count($result);*/
+
+            foreach ($result as $key => $value) {
+                
+               // echo $date_asc;
+                $temp_voucher['voucher_'.$value['type'].$value['sales_voucher_id']][] = $value;
+            }
+            $i = 0;
+            
+            foreach ($temp_voucher as $key => $voucher) {
+
+                $ledger_detail = $this->findLedgerDetail($voucher,$dt['ledger_id']);
+                if(!empty($ledger_detail)){
+                   
+                    $amount_type = $ledger_detail['amount_type'];
+                    $ledger_amount = $ledger_detail['voucher_amount'];
+                    $is_first = true;
+                   
+                    $same_ledger_ary = array();
+                    foreach ($voucher as $key => $value) {
+                        $date_asc = strtotime($value['voucher_date']);
+                        $date_array[$date_asc] = $date_asc;  
+                        ksort($date_array);                    
+                        $value['amount_type'] = 'CR';
+                        if($value['dr_amount'] > 0) $value['amount_type'] = 'DR';
+                        if($value['ledger_id'] != $dt['ledger_id'] && $amount_type != $value['amount_type']){
+
+                            $final_report[$date_asc][$i]['voucher_date'] = $value['voucher_date'];
+                            /*$final_report[$i]['voucher_type'] = $value['voucher_type'];*/
+                            $final_report[$date_asc][$i]['voucher_id'] = $value['sales_voucher_id'];
+                            $final_report[$date_asc][$i]['voucher_type'] = $value['type'];
+                            $final_report[$date_asc][$i]['voucher_no'] = $value['voucher_number'];//$value['sales_voucher_id'];
+                            $final_report[$date_asc][$i]['voucher_number'] = $value['voucher_number'];
+                            $final_report[$date_asc][$i]['ledger'] = (@$ledger_name['ledger_'.$value['ledger_id']] ? $ledger_name['ledger_'.$value['ledger_id']] : '');
+
+                            if($is_first || in_array($value['ledger_id'], $same_ledger_ary)){//
+                                if($amount_type == 'DR'){
+                                    $final_report[$date_asc][$i]['DR'] = $ledger_amount;
+                                    $dr_total += $ledger_amount;
+                                }else{
+                                    $final_report[$date_asc][$i]['CR'] = $ledger_amount;
+                                    $cr_total += $ledger_amount;
+                                }
+                                $is_first = false;
+                            }
+                            array_push($same_ledger_ary,$value['ledger_id']);
+                            $i++;
+                        }
+                    }
+                }
+            
+            }
+        }
+        
+        $closing_balance = 0;
+        if($opening_balance < 0){
+            $cr_total = $cr_total + abs($opening_balance);
+        }else{
+            $dr_total = $dr_total + abs($opening_balance);
+        }
+
+        $closing_balance = $dr_total - $cr_total;
+        
+        if($closing_balance < 0){
+            $dr_total = $dr_total + abs($closing_balance);
+        }else{
+            $cr_total = $cr_total + abs($closing_balance);
+        }
+        $dr_total = number_format(abs($dr_total),2);
+        $cr_total = number_format(abs($cr_total),2);
+
+        $responce = array();
+        $responce['final_report'] = $final_report;
+        $responce['opening_balance'] = $opening_balance;
+        $responce['closing_balance'] = $closing_balance;
+        $responce['dr_total'] = $dr_total;
+        $responce['cr_total'] = $cr_total;
+        $responce['date_asc'] = $date_array;
+
+        return $responce;
+    }
+
+    public function getLedgerReportAry($dt){
+
+        $ledger_id = $dt['ledger_id'];
+        $branch_id = $dt['branch_id'];
+       
+        $from_date = $dt['from_date'];
+        $to_date = $dt['to_date'];
+        $current_yr = date('Y',strtotime($from_date));
+        $previous_year = $current_yr - 1;
+
+        /*********** if there is any default openeing balance **********/
+        $old_balance = 0;
+        $this->db->select('balance_id');
+        $this->db->where('balance_upto_date <=',$from_date);
+        $this->db->where('branch_id',$branch_id);
+        $qry = $this->db->get('tbl_default_balance_date');
+        
+        if($qry->num_rows() > 0){
+            $this->db->select('amount,amount_type');
+            $this->db->where('ledger_id',$ledger_id);
+            $this->db->where('status','1');
+            $this->db->where('branch_id',$branch_id);
+            $qry = $this->db->get('tbl_default_opening_balance');
+            if($qry->num_rows() > 0){
+                $old_bal = $qry->result_array();
+                $old_balance = $old_bal[0]['amount'];
+                if($old_bal[0]['amount_type'] == 'DR'){
+                    $old_balance = 0 - $old_balance;
+                }
+            }
+        }
+       
+        /* --------- Start to calculate opening balance -----------*/
+        $opening_balance = 0;
+        /*$this->db->select('closing_balance');
+        $this->db->where('year < ',$current_yr);
+        $this->db->where('ledger_id',$ledger_id);
+        $this->db->where('branch_id',$branch_id);
+        $this->db->order_by('year','DESC');
+        $this->db->limit(1);
+        $qry = $this->db->get('tbl_reports_bunch');
+        $close_resp = $qry->result_array();
+        if(!empty($close_resp)){
+            $opening_balance = $close_resp[0]['closing_balance'];
+        }
+
+        $opening_balance = $opening_balance + $old_balance;
+        $month = date('m',strtotime($from_date));
+
+        $quadrants = $this->config->item('quadrants');
+        $quadrants_colum = array();
+        foreach ($quadrants as $key => $value) {
+            if(in_array($month, $value)){
+                $current_months = $value;
+                break;
+            }
+            array_push($quadrants_colum, $key);
+        }*/
+
+        /* find before months quantrant balance */
+        /*if(!empty($quadrants_colum)){
+            $columns_name = implode(',', $quadrants_colum);
+          
+            $this->db->select("{$columns_name}");
+            $this->db->where('year =',$current_yr);
+            $this->db->where('ledger_id',$ledger_id);
+            $this->db->where('branch_id',$branch_id);
+            $months_report = $this->db->get('tbl_reports_bunch');
+            $q_months_report = $months_report->result_array();
+            if(!empty($q_months_report)){
+                foreach ($q_months_report[0] as $key => $value) {
+                    $opening_balance += $value;
+                }
+            }
+        }*/
+        /* find remaining months and date balance */
+        /*$start_from_date = date('Y-m-d',strtotime('01-'.$current_months[0].'-'.$current_yr));*/
+        $from_date = date('Y-m-d',strtotime($from_date));
+
+        $resp = $this->db->query("SELECT SUM(CASE WHEN dr_amount > 0 THEN voucher_amount ELSE (-voucher_amount) END) TotalAmount FROM `accounts_sales_voucher` ts JOIN sales_voucher v ON ts.sales_voucher_id=v.sales_voucher_id WHERE v.branch_id='{$branch_id}' AND ledger_id='{$ledger_id}' AND v.delete_status='0'  AND ts.delete_status='0' AND ( v.voucher_date < '{$from_date}' )"); //(v.invoice_date BETWEEN '{$start_from_date}' AND '{$from_date}' )
+            /*v.voucher_date >= '{$start_from_date}' AND*/
+        $result = $resp->result_array();
+        if($result[0]['TotalAmount'] != null) $opening_balance += $result[0]['TotalAmount'];
+
+        $resp = $this->db->query("SELECT SUM(CASE WHEN dr_amount > 0 THEN voucher_amount ELSE (-voucher_amount) END) TotalAmount FROM `accounts_purchase_voucher` ts JOIN purchase_voucher v ON ts.purchase_voucher_id=v.purchase_voucher_id WHERE v.branch_id='{$branch_id}' AND ledger_id='{$ledger_id}' AND v.delete_status='0'  AND ts.delete_status='0' AND (v.voucher_date < '{$from_date}' )"); //(v.invoice_date BETWEEN '{$start_from_date}' AND '{$from_date}' )
+       
+        $result = $resp->result_array();
+        if($result[0]['TotalAmount'] != null) $opening_balance += $result[0]['TotalAmount'];
+
+        $resp = $this->db->query("SELECT SUM(CASE WHEN dr_amount > 0 THEN voucher_amount ELSE (-voucher_amount) END) TotalAmount FROM `accounts_advance_voucher` ts JOIN advance_voucher v ON ts.advance_voucher_id=v.advance_voucher_id WHERE v.branch_id='{$branch_id}' AND ledger_id='{$ledger_id}' AND v.delete_status='0'  AND ts.delete_status='0' AND (v.voucher_date < '{$from_date}' )"); //(v.invoice_date BETWEEN '{$start_from_date}' AND '{$from_date}' )
+       
+        $result = $resp->result_array();
+        if($result[0]['TotalAmount'] != null) $opening_balance += $result[0]['TotalAmount'];
+
+        $resp = $this->db->query("SELECT SUM(CASE WHEN dr_amount > 0 THEN voucher_amount ELSE (-voucher_amount) END) TotalAmount FROM `accounts_general_voucher` ts JOIN general_voucher v ON ts.general_voucher_id=v.general_voucher_id WHERE v.branch_id='{$branch_id}' AND ledger_id='{$ledger_id}' AND v.delete_status='0'  AND ts.delete_status='0' AND (v.voucher_date < '{$from_date}' )"); //(v.invoice_date BETWEEN '{$start_from_date}' AND '{$from_date}' )
+       
+        $result = $resp->result_array();
+        if($result[0]['TotalAmount'] != null) $opening_balance += $result[0]['TotalAmount'];
+
+        $resp = $this->db->query("SELECT SUM(CASE WHEN dr_amount > 0 THEN voucher_amount ELSE (-voucher_amount) END) TotalAmount FROM `accounts_payment_voucher` ts JOIN payment_voucher v ON ts.payment_voucher_id=v.payment_id WHERE v.branch_id='{$branch_id}' AND ledger_id='{$ledger_id}' AND v.delete_status='0'  AND ts.delete_status='0' AND (v.voucher_date < '{$from_date}' )"); 
+        $result = $resp->result_array();
+        if($result[0]['TotalAmount'] != null) $opening_balance += $result[0]['TotalAmount'];
+
+        $resp = $this->db->query("SELECT SUM(CASE WHEN dr_amount > 0 THEN voucher_amount ELSE (-voucher_amount) END) TotalAmount FROM `accounts_receipt_voucher` ts JOIN receipt_voucher v ON ts.receipt_voucher_id=v.receipt_id WHERE v.branch_id='{$branch_id}' AND ledger_id='{$ledger_id}' AND v.delete_status='0'  AND ts.delete_status='0' AND (v.voucher_date < '{$from_date}' )"); 
+        $result = $resp->result_array();
+        if($result[0]['TotalAmount'] != null) $opening_balance += $result[0]['TotalAmount'];
+
+        $resp = $this->db->query("SELECT SUM(CASE WHEN dr_amount > 0 THEN voucher_amount ELSE (-voucher_amount) END) TotalAmount FROM `accounts_refund_voucher` ts JOIN refund_voucher v ON ts.refund_voucher_id=v.refund_id WHERE v.branch_id='{$branch_id}' AND ledger_id='{$ledger_id}' AND v.delete_status='0'  AND ts.delete_status='0' AND (v.voucher_date < '{$from_date}' )"); 
+        $result = $resp->result_array();
+        if($result[0]['TotalAmount'] != null) $opening_balance += $result[0]['TotalAmount'];
+
+        $resp = $this->db->query("SELECT SUM(CASE WHEN dr_amount > 0 THEN voucher_amount ELSE (-voucher_amount) END) TotalAmount FROM `accounts_expense_voucher` ts JOIN expense_voucher v ON ts.expense_voucher_id=v.expense_voucher_id WHERE v.branch_id='{$branch_id}' AND ledger_id='{$ledger_id}' AND v.delete_status='0'  AND ts.delete_status='0' AND (v.voucher_date < '{$from_date}' )"); 
+        $result = $resp->result_array();
+        if($result[0]['TotalAmount'] != null) $opening_balance += $result[0]['TotalAmount'];
+
+        $resp = $this->db->query("SELECT SUM(CASE WHEN dr_amount > 0 THEN voucher_amount ELSE (-voucher_amount) END) TotalAmount FROM `accounts_bank_voucher` ts JOIN bank_voucher v ON ts.bank_voucher_id=v.bank_voucher_id WHERE v.branch_id='{$branch_id}' AND ledger_id='{$ledger_id}' AND v.delete_status='0'  AND ts.delete_status='0' AND (v.voucher_date < '{$from_date}' )"); //(v.invoice_date BETWEEN '{$start_from_date}' AND '{$from_date}' )
+       
+        $result = $resp->result_array();
+        if($result[0]['TotalAmount'] != null) $opening_balance += $result[0]['TotalAmount'];
+
+        $resp = $this->db->query("SELECT SUM(CASE WHEN dr_amount > 0 THEN voucher_amount ELSE (-voucher_amount) END) TotalAmount FROM `accounts_cash_voucher` ts JOIN cash_voucher v ON ts.cash_voucher_id=v.cash_voucher_id WHERE v.branch_id='{$branch_id}' AND ledger_id='{$ledger_id}' AND v.delete_status='0'  AND ts.delete_status='0' AND (v.voucher_date < '{$from_date}' )"); //(v.invoice_date BETWEEN '{$start_from_date}' AND '{$from_date}' )
+       
+        $result = $resp->result_array();
+        if($result[0]['TotalAmount'] != null) $opening_balance += $result[0]['TotalAmount'];
+
+        $resp = $this->db->query("SELECT SUM(CASE WHEN dr_amount > 0 THEN voucher_amount ELSE (-voucher_amount) END) TotalAmount FROM `accounts_contra_voucher` ts JOIN contra_voucher v ON ts.contra_voucher_id=v.contra_voucher_id WHERE v.branch_id='{$branch_id}' AND ledger_id='{$ledger_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date < '{$from_date}' )"); //(v.invoice_date BETWEEN '{$start_from_date}' AND '{$from_date}' )
+       
+        $result = $resp->result_array();
+        if($result[0]['TotalAmount'] != null) $opening_balance += $result[0]['TotalAmount'];
+
+        $resp = $this->db->query("SELECT SUM(CASE WHEN dr_amount > 0 THEN voucher_amount ELSE (-voucher_amount) END) TotalAmount FROM `accounts_journal_voucher` ts JOIN tbl_journal_voucher v ON ts.journal_voucher_id=v.journal_voucher_id WHERE v.branch_id='{$branch_id}' AND ledger_id='{$ledger_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date < '{$from_date}' )"); //(v.invoice_date BETWEEN '{$start_from_date}' AND '{$from_date}' )
+       
+        $result = $resp->result_array();
+        if($result[0]['TotalAmount'] != null) $opening_balance += $result[0]['TotalAmount'];
+
+        
+        /* ------------ finish opening balance ------------ */
+        
+        $opening_balance = $opening_balance + $old_balance;
+        $temp_voucher = $final_report = array();
+        $dr_total = $cr_total = 0;
+
+        $all_ledger = $this->getAccountLedgers($dt['branch_id']);
+        foreach ($all_ledger as $key => $value) {
+            $ledger_name['ledger_'.$value['ledger_id']] = $value['ledger_name'];
+        }
+        $resp = $this->db->query("SELECT *,'sales' as type FROM `accounts_sales_voucher` ts  JOIN (SELECT sales_voucher_id FROM accounts_sales_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.sales_voucher_id JOIN sales_voucher v ON ts.sales_voucher_id=v.sales_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+        $sales_result = $resp->result_array();
+
+        $resp = $this->db->query("SELECT *,'purchase' as type FROM `accounts_purchase_voucher` ts  JOIN (SELECT purchase_voucher_id as sales_voucher_id FROM accounts_purchase_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.purchase_voucher_id JOIN purchase_voucher v ON ts.purchase_voucher_id=v.purchase_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0'  AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+        $purchase_result = $resp->result_array();
+
+        $resp = $this->db->query("SELECT *,'advance' as type FROM `accounts_advance_voucher` ts  JOIN (SELECT advance_voucher_id as sales_voucher_id FROM accounts_advance_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.advance_voucher_id JOIN advance_voucher v ON ts.advance_voucher_id=v.advance_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+        $advance_result = $resp->result_array();
+
+        $resp = $this->db->query("SELECT *,'jouranl' as type FROM `accounts_general_voucher` ts  JOIN (SELECT general_voucher_id as sales_voucher_id FROM accounts_general_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.general_voucher_id JOIN general_voucher v ON ts.general_voucher_id=v.general_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+        $journal_result = $resp->result_array();
+
+        $resp = $this->db->query("SELECT *,'payment' as type FROM `accounts_payment_voucher` ts  JOIN (SELECT payment_voucher_id as sales_voucher_id FROM accounts_payment_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.payment_voucher_id JOIN payment_voucher v ON ts.payment_voucher_id=v.payment_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+        $payment_result = $resp->result_array();
+
+        $resp = $this->db->query("SELECT *,'receipt' as type FROM `accounts_receipt_voucher` ts  JOIN (SELECT receipt_voucher_id as sales_voucher_id FROM accounts_receipt_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.receipt_voucher_id JOIN receipt_voucher v ON ts.receipt_voucher_id=v.receipt_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0'  AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+        $receipt_result = $resp->result_array();
+
+        $resp = $this->db->query("SELECT *,'refund' as type FROM `accounts_refund_voucher` ts  JOIN (SELECT refund_voucher_id as sales_voucher_id FROM accounts_refund_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.refund_voucher_id JOIN refund_voucher v ON ts.refund_voucher_id=v.refund_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0'  AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+        $refund_result = $resp->result_array();
+
+        $resp = $this->db->query("SELECT *,'expense' as type FROM `accounts_expense_voucher` ts JOIN (SELECT expense_voucher_id as sales_voucher_id FROM accounts_expense_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.expense_voucher_id JOIN expense_voucher v ON ts.expense_voucher_id=v.expense_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0'  AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') GROUP BY accounts_expense_id");
+
+        $exp_result = $resp->result_array();
+
+        $resp = $this->db->query("SELECT *,'bank' as type FROM `accounts_bank_voucher` ts  JOIN (SELECT bank_voucher_id as sales_voucher_id FROM accounts_bank_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.bank_voucher_id JOIN bank_voucher v ON ts.bank_voucher_id=v.bank_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0'  AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+
+        $bank_result = $resp->result_array();
+
+        $resp = $this->db->query("SELECT *,'cash' as type FROM `accounts_cash_voucher` ts  JOIN (SELECT cash_voucher_id as sales_voucher_id FROM accounts_cash_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.cash_voucher_id JOIN cash_voucher v ON ts.cash_voucher_id=v.cash_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0'  AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
+
+        $cash_result = $resp->result_array();
+
+        $resp = $this->db->query("SELECT *,'contra' as type FROM `accounts_contra_voucher` ts  JOIN (SELECT contra_voucher_id as sales_voucher_id FROM accounts_contra_voucher WHERE ledger_id='{$dt['ledger_id']}' AND delete_status='0') as t ON t.sales_voucher_id=ts.contra_voucher_id JOIN contra_voucher v ON ts.contra_voucher_id=v.contra_voucher_id WHERE v.branch_id='{$branch_id}' AND v.delete_status='0' AND ts.delete_status='0' AND (v.voucher_date BETWEEN '{$dt['from_date']}' AND '{$dt['to_date']}') ");
 
         $contra_result = $resp->result_array();
 
@@ -633,12 +905,10 @@ class Report_model extends CI_Model
 
         $general_result = $resp->result_array();
        
-        $result = array_merge($sales_result,$purchase_result,$advance_result,$general_result,$payment_result,$receipt_result,$refund_result,$exp_result,$bank_result,$cash_result,$contra_result,$journal_result);
+        $result = array_merge($sales_result,$purchase_result,$advance_result,$payment_result,$receipt_result,$refund_result,$exp_result,$bank_result,$cash_result,$contra_result,$journal_result);//$general_result,
         $date_array = array();
         if(!empty($result)){
             foreach ($result as $key => $value) {
-                
-               // echo $date_asc;
                 $temp_voucher['voucher_'.$value['type'].$value['sales_voucher_id']][] = $value;
             }
             $i = 0;
@@ -722,7 +992,7 @@ class Report_model extends CI_Model
         $voucher_amount = 0;
         $dr_amount = 0;
         $cr_amount = 0;
-      
+
         foreach ($voucher as $key => $v) {
             if($v['ledger_id'] == $ledger_id){
                
