@@ -26,185 +26,187 @@ $this->load->view('layout/header');
                         </h3>
                         <a href="javascript:void(0);" class="btn btn-sm btn-info pull-right add_button">Add Field</a>                        
                     </div>
-                    <form name="form" id="form" method="post" action="<?php echo base_url('customer/add_customer'); ?>"  encType="multipart/form-data">
-                        <div class="box-body">                      
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="customer_code">
-                                            Customer Code<span class="validation-color">*</span>
+                    <div class="box-body">
+                        <form name="form" id="form" method="post" action="<?php echo base_url('customer/add_customer'); ?>"  encType="multipart/form-data">
+                            <div class="box-body">                      
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="customer_code">
+                                                Customer Code<span class="validation-color">*</span>
+                                            </label>
+                                            <input type="text" class="form-control" id="reference_number" name="reference_number" style="display: none;" value="<?php echo $reference_number; ?>" readonly>
+                                            <input type="text" class="form-control" id="customer_code" name="customer_code" value="<?php echo $invoice_number; ?>" <?php
+                                            if ($access_settings[0]->invoice_readonly == 'yes') {
+                                                echo "readonly";
+                                            }
+                                            ?>>
+                                            <span class="validation-color" id="err_customer_code"><?php echo form_error('customer_code'); ?></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4 cust_type">
+                                        <label for="customer_type">
+                                            Customer Type<span class="validation-color">*</span>
                                         </label>
-                                        <input type="text" class="form-control" id="reference_number" name="reference_number" style="display: none;" value="<?php echo $reference_number; ?>" readonly>
-                                        <input type="text" class="form-control" id="customer_code" name="customer_code" value="<?php echo $invoice_number; ?>" <?php
-                                        if ($access_settings[0]->invoice_readonly == 'yes') {
-                                            echo "readonly";
-                                        }
-                                        ?>>
-                                        <span class="validation-color" id="err_customer_code"><?php echo form_error('customer_code'); ?></span>
+                                        <select class="form-control select2" id="customer_type" name="customer_type" style="width: 100%;">
+                                            <option value="">Select Type</option> 
+                                            <option value="company">Company</option>
+                                            <option value="individual">Firm</option>
+                                            <option value="private limited company">Private Limited Company</option>
+                                            <option value="proprietorship">Proprietorship</option>
+                                            <option value="partnership">Partnership</option>
+                                            <option value="one person company">One Person Company</option>
+                                            <option value="limited liability partnership">Limited Liability Partnership</option>
+                                        </select>
+                                        <span class="validation-color" id="err_customer_type"><?php echo form_error('customer_type'); ?></span>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="customer_name" id="cust_name" >
+                                            Company/Firm Name<span class="validation-color">*</span>
+                                        </label>
+                                        <label hidden="hidden" for="customer_name" id="comp_name">
+                                            Company Name<span class="validation-color">*</span>
+                                        </label>
+                                        <input type="hidden" name="ledger_id" id="customer_ledger_id" value="0">
+                                        <input type="hidden" name="customer_id" id="customer_id" value="0">
+                                        <input type="text"  class="form-control" id="customer_name" name="customer_name" maxlength="100">
+                                        <input type="hidden"  class="form-control" id="customer_name_used" name="customer_name_used" maxlength="90">
+                                        <span class="validation-color" id="err_customer_name"><?php echo form_error('customer_name'); ?></span>
                                     </div>
                                 </div>
-                                <div class="form-group col-md-4 cust_type">
-                                    <label for="customer_type">
-                                        Customer Type<span class="validation-color">*</span>
-                                    </label>
-                                    <select class="form-control select2" id="customer_type" name="customer_type" style="width: 100%;">
-                                        <option value="">Select Type</option> 
-                                        <option value="company">Company</option>
-                                        <option value="individual">Firm</option>
-                                        <option value="private limited company">Private Limited Company</option>
-                                        <option value="proprietorship">Proprietorship</option>
-                                        <option value="partnership">Partnership</option>
-                                        <option value="one person company">One Person Company</option>
-                                        <option value="limited liability partnership">Limited Liability Partnership</option>
-                                    </select>
-                                    <span class="validation-color" id="err_customer_type"><?php echo form_error('customer_type'); ?></span>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <label for="customer_name" id="cust_name" >
-                                        Company/Firm Name<span class="validation-color">*</span>
-                                    </label>
-                                    <label hidden="hidden" for="customer_name" id="comp_name">
-                                        Company Name<span class="validation-color">*</span>
-                                    </label>
-                                    <input type="hidden" name="ledger_id" id="customer_ledger_id" value="0">
-                                    <input type="hidden" name="customer_id" id="customer_id" value="0">
-                                    <input type="text"  class="form-control" id="customer_name" name="customer_name" maxlength="100">
-                                    <input type="hidden"  class="form-control" id="customer_name_used" name="customer_name_used" maxlength="90">
-                                    <span class="validation-color" id="err_customer_name"><?php echo form_error('customer_name'); ?></span>
-                                </div>
-                            </div>
-                            <div class="row"> 
-                                <div class="col-md-4">
-                                    <div class="form-group">                                   
-                                        <label for="pin_code">PIN Code</label>
-                                    <input class="form-control" type="text" name="txt_pin_code" id="txt_pin_code"  maxlength="12" />
-                                    <span class="validation-color" id="err_pin_code"><?php echo form_error('pin_number'); ?></span>
-                                    </div>    
-                                </div>                                
-                                <!--<div class="col-md-4">
-                                    <div class="form-group">                                   
-                                        <label for="pan">PAN Number</label>
-                                        <input type="text"  class="form-control" id="" name="" maxlength="">
-                                    </div>    
-                                </div>                                -->
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="cmb_country">
-                                            Country<span class="validation-color">*</span>
+                                <div class="row"> 
+                                    <div class="col-md-4">
+                                        <div class="form-group">                                   
+                                            <label for="pin_code">PIN Code</label>
+                                        <input class="form-control" type="text" name="txt_pin_code" id="txt_pin_code"  maxlength="12" />
+                                        <span class="validation-color" id="err_pin_code"><?php echo form_error('pin_number'); ?></span>
+                                        </div>    
+                                    </div>                                
+                                    <!--<div class="col-md-4">
+                                        <div class="form-group">                                   
+                                            <label for="pan">PAN Number</label>
+                                            <input type="text"  class="form-control" id="" name="" maxlength="">
+                                        </div>    
+                                    </div>                                -->
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="cmb_country">
+                                                Country<span class="validation-color">*</span>
+                                            </label>
+                                            <select class="form-control select2" id="cmb_country" class="country" name="cmb_country" style="width: 100%;">
+                                                <option value="">Select Country</option>
+                                                <?php
+                                                foreach ($country as $key) {
+                                                    ?>
+                                                    <option value='<?php echo $key->country_id ?>' <?=($key->country_id == 101 ? 'selected' : ''); ?> ><?php echo $key->country_name; ?> </option>
+                                                <?php } ?>
+                                            </select>
+                                            <span class="validation-color" id="err_country"></span>
+                                        </div>
+                                    </div>                               
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="cmb_state">
+                                                State <span class="validation-color">*</span>
+                                            </label>
+                                            <select class="form-control select2" id="cmb_state" class="state" name="cmb_state" style="width: 100%;">
+                                                <?php
+                                                foreach($state as $key){
+                                                    ?>
+
+                                                <option value="<?php echo $key->state_id ?>" <?=($key->state_id == $branch[0]->branch_state_id ? 'selected' : ''); ?> ><?php echo $key->state_name; ?></option>
+                                                 <?php } ?>
+                                            </select>
+                                            <span class="validation-color" id="err_state"></span>
+                                        </div>
+                                    </div>   
+                                    </div>
+                                    <div class="row">
+                                    <div class="form-group col-md-4">                                   
+                                        <label for="cmb_city">
+                                            City<span class="validation-color">*</span>
                                         </label>
-                                        <select class="form-control select2" id="cmb_country" class="country" name="cmb_country" style="width: 100%;">
-                                            <option value="">Select Country</option>
+                                        <select class="form-control select2" id="cmb_city" class="city" name="cmb_city" style="width: 100%;">
                                             <?php
-                                            foreach ($country as $key) {
-                                                ?>
-                                                <option value='<?php echo $key->country_id ?>' <?=($key->country_id == 101 ? 'selected' : ''); ?> ><?php echo $key->country_name; ?> </option>
+                                            foreach($city as $key){ ?>
+                                            <option value="<?php echo $key->city_id?>" <?=($key->city_id == $branch[0]->branch_city_id ? 'selected' : '');?>><?php echo $key->city_name?></option>
                                             <?php } ?>
                                         </select>
-                                        <span class="validation-color" id="err_country"></span>
-                                    </div>
-                                </div>                               
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="cmb_state">
-                                            State <span class="validation-color">*</span>
+                                        <span class="validation-color" id="err_city"></span>
+                                    </div>                                
+                                    <!--<div class="col-md-4">
+                                        <div class="form-group">                                   
+                                            <label for="zip_code">Zip Code</label>
+                                            <input type="text"  class="form-control" id="" name="" maxlength="5">
+                                        </div>    
+                                    </div>                                -->
+                                    <div class="form-group col-md-4">
+                                        <label for="address">
+                                            Address<span class="validation-color">*</span>
                                         </label>
-                                        <select class="form-control select2" id="cmb_state" class="state" name="cmb_state" style="width: 100%;">
-                                            <?php
-                                            foreach($state as $key){
-                                                ?>
-
-                                            <option value="<?php echo $key->state_id ?>" <?=($key->state_id == $branch[0]->branch_state_id ? 'selected' : ''); ?> ><?php echo $key->state_name; ?></option>
-                                             <?php } ?>
-                                        </select>
-                                        <span class="validation-color" id="err_state"></span>
-                                    </div>
-                                </div>   
+                                        <textarea class="form-control" id="address" rows="2" name="address" maxlength="1000"></textarea>
+                                        <span class="validation-color" id="err_address"><?php echo form_error('address'); ?></span>
+                                    </div> 
+                                     <div class="form-group col-md-4">
+                                        <label for="gst">GST Number</label>
+                                            <input type="text"  class="form-control" id="gst_number" name="gst_number" maxlength="15">
+                                            <span class="validation-color" id="err_gstin"><?php echo form_error('gstin'); ?></span>
+                                    </div> 
                                 </div>
                                 <div class="row">
-                                <div class="form-group col-md-4">                                   
-                                    <label for="cmb_city">
-                                        City<span class="validation-color">*</span>
-                                    </label>
-                                    <select class="form-control select2" id="cmb_city" class="city" name="cmb_city" style="width: 100%;">
-                                        <?php
-                                        foreach($city as $key){ ?>
-                                        <option value="<?php echo $key->city_id?>" <?=($key->city_id == $branch[0]->branch_city_id ? 'selected' : '');?>><?php echo $key->city_name?></option>
-                                        <?php } ?>
-                                    </select>
-                                    <span class="validation-color" id="err_city"></span>
-                                </div>                                
-                                <!--<div class="col-md-4">
-                                    <div class="form-group">                                   
-                                        <label for="zip_code">Zip Code</label>
-                                        <input type="text"  class="form-control" id="" name="" maxlength="5">
-                                    </div>    
-                                </div>                                -->
-                                <div class="form-group col-md-4">
-                                    <label for="address">
-                                        Address<span class="validation-color">*</span>
-                                    </label>
-                                    <textarea class="form-control" id="address" rows="2" name="address" maxlength="1000"></textarea>
-                                    <span class="validation-color" id="err_address"><?php echo form_error('address'); ?></span>
-                                </div> 
-                                 <div class="form-group col-md-4">
-                                    <label for="gst">GST Number</label>
-                                        <input type="text"  class="form-control" id="gst_number" name="gst_number" maxlength="15">
-                                        <span class="validation-color" id="err_gstin"><?php echo form_error('gstin'); ?></span>
-                                </div> 
-                            </div>
-                            <div class="row">
-                                <div class="form-group col-md-4">
-                                    <label for="pan_number">PAN Number</label>
-                                    <input class="form-control" type="text" name="txt_pan_number" id="txt_pan_number" maxlength="20" />
-                                    <span class="validation-color" id="err_pan_number"><?php echo form_error('pan_number'); ?></span>
+                                    <div class="form-group col-md-4">
+                                        <label for="pan_number">PAN Number</label>
+                                        <input class="form-control" type="text" name="txt_pan_number" id="txt_pan_number" maxlength="20" />
+                                        <span class="validation-color" id="err_pan_number"><?php echo form_error('pan_number'); ?></span>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="contact_person">Contact Person Name</label>
+                                        <input class="form-control" type="text" name="txt_contact_person" id="txt_contact_person" maxlength="50" />
+                                        <span class="validation-color" id="err_contact_person"><?php echo form_error('contact_person'); ?></span>
+                                    </div>  
+                                    <div class="form-group col-md-4">
+                                        <label for="contact_number">Contact Number</label>
+                                        <input class="form-control" type="number" name="txt_contact_number" id="txt_contact_number" maxlength="16" />
+                                        <span class="validation-color" id="err_contact_number"><?php echo form_error('contact_number'); ?></span>
+                                    </div>
                                 </div>
-                                <div class="form-group col-md-4">
-                                    <label for="contact_person">Contact Person Name</label>
-                                    <input class="form-control" type="text" name="txt_contact_person" id="txt_contact_person" maxlength="50" />
-                                    <span class="validation-color" id="err_contact_person"><?php echo form_error('contact_person'); ?></span>
-                                </div>  
-                                <div class="form-group col-md-4">
-                                    <label for="contact_number">Contact Number</label>
-                                    <input class="form-control" type="number" name="txt_contact_number" id="txt_contact_number" maxlength="16" />
-                                    <span class="validation-color" id="err_contact_number"><?php echo form_error('contact_number'); ?></span>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label for="email_address">Email<span class="validation-color"></span></label>
+                                        <input class="form-control" type="text" name="email_address" id="email_address" maxlength="50" />
+                                        <span class="validation-color" id="err_email_address"><?php echo form_error('email_address'); ?></span>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="due_days">Due Days</label>
+                                        <input class="form-control" type="number" name="due_days" id="due_days" min = '0' max = '365' />
+                                        <span class="validation-color" id="err_due_days"><?php echo form_error('due_days'); ?></span>
+                                    </div>
+                                     <div class="form-group col-md-4">
+                                        <label for="tan_number">TAN Number</label>
+                                        <input class="form-control" type="text" name="txt_tan_number" id="txt_tan_number" maxlength="20"  />
+                                        <span class="validation-color" id="err_tan_number"><?php echo form_error('tan_number'); ?></span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col-md-4">
-                                    <label for="email_address">Email<span class="validation-color"></span></label>
-                                    <input class="form-control" type="text" name="email_address" id="email_address" maxlength="50" />
-                                    <span class="validation-color" id="err_email_address"><?php echo form_error('email_address'); ?></span>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                    <label for="department">Department</label>
+                                    <input type="text" class="form-control" id="department" name="department" value="">
+                                    <span class="validation-color" id="err_department"><?php echo form_error('department'); ?></span>
+                                    </div>  
                                 </div>
-                                <div class="form-group col-md-4">
-                                    <label for="due_days">Due Days</label>
-                                    <input class="form-control" type="number" name="due_days" id="due_days" min = '0' max = '365' />
-                                    <span class="validation-color" id="err_due_days"><?php echo form_error('due_days'); ?></span>
                                 </div>
-                                 <div class="form-group col-md-4">
-                                    <label for="tan_number">TAN Number</label>
-                                    <input class="form-control" type="text" name="txt_tan_number" id="txt_tan_number" maxlength="20"  />
-                                    <span class="validation-color" id="err_tan_number"><?php echo form_error('tan_number'); ?></span>
+                                <div class="row">
+                                    <div class="field_wrapper"></div>  
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col-md-4">
-                                <label for="department">Department</label>
-                                <input type="text" class="form-control" id="department" name="department" value="">
-                                <span class="validation-color" id="err_department"><?php echo form_error('department'); ?></span>
-                                </div>  
-                            </div>
-                            </div>
-                            <div class="row">
-                                <div class="field_wrapper"></div>  
-                            </div>
-                            <div class="box-footer">
-                                <button type="submit" id="customer_submit" class="btn btn-info">
-                                    Add</button>
-                                <span class="btn btn-default" id="cancel" onclick="cancel('customer')"><!-- Cancel -->
-                                    Cancel</span>
-                            </div>
-                        </div>                      
-                    </form>
+                                <div class="box-footer">
+                                    <button type="submit" id="customer_submit" class="btn btn-info">
+                                        Add</button>
+                                    <span class="btn btn-default" id="cancel" onclick="cancel('customer')"><!-- Cancel -->
+                                        Cancel</span>
+                                </div>
+                            </div>                      
+                        </form>
+                    </div>    
                 </div>   
             </div>
         </div>

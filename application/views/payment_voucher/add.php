@@ -94,7 +94,7 @@ $this->load->view('layout/header');
                                     </div>
                                     <div class="col-sm-2 paid_amount_div">
                                         <div class="form-group">
-                                            <label for="Total amount"></br>Total Paid Amount<span class="validation-color">*</span></label>
+                                            <label for="Total amount"><br/>Total Paid Amount<span class="validation-color">*</span></label>
                                             <input type="text" class="form-control number_only" id="paid_amount_1" name="paid_amount" value="" readonly>
                                             <input type="hidden" class="form-control" id="remaining_amount_1" name="remaining_amount" value="" >
                                             <!-- <span id="err_remaining_amount_1" class="remaining_class"></span> -->
