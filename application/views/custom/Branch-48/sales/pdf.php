@@ -395,7 +395,7 @@ if (@$converted_rate)
                             } ?>
                         </td>
                         <td style="text-align: right;"><?php echo precise_amount(($value->sales_item_unit_price * $convert_rate)); ?></td>
-                        <td style="text-align: right;"><?php echo precise_amount(($value->sales_item_basic_total * $convert_rate)); ?></td>
+                        <td style="text-align: right;"><?php echo precise_amount(($value->sales_item_unit_price * $value->sales_item_quantity * $convert_rate)); ?></td>
                         <!-- <?php
                         if ($discount_exist > 0) {
                             ?>
@@ -525,7 +525,7 @@ if (@$converted_rate)
                     </tr>
                     <?php
                     $i++;
-                    $sales_total_basic_price += $value->sales_item_basic_total; 
+                    $sales_total_basic_price += ($value->sales_item_unit_price * $value->sales_item_quantity); 
                     $quantity = bcadd($quantity, $value->sales_item_quantity);
                     $price = bcadd($price, $value->sales_item_unit_price, 2);
                     $grand_total = bcadd($grand_total, $value->sales_item_grand_total, 2);
