@@ -624,7 +624,7 @@ $this->load->view('layout/header');
     </div>
 </div>
 </div>
-<div class="modal fade" id="debit_report_select_columns" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-3" aria-hidden="true">
+<div class="modal fade" id="debit_report_select_columns" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-3" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">                
@@ -639,7 +639,7 @@ $this->load->view('layout/header');
                         <div class="col-md-12">
                             <div class="col-md-6">
                                 <input type="checkbox" name="date" id="date"  value="0" checked> 
-                                <label for="date" >Invoice Date</label><br>
+                                <label for="date">Invoice Date</label><br>
 
                                 <input type="checkbox"  name="invoice" id="invoice" value="1" checked>
                                 <label for="invoice">Invoice Number</label><br>

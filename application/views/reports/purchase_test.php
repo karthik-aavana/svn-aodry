@@ -620,7 +620,7 @@ $this->load->view('layout/header');
     </div>
 </div>
 </div>
-<div class="modal fade" id="purchase_report_select_columns" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-3" aria-hidden="true">
+<div class="modal fade" id="purchase_report_select_columns" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-3" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">                

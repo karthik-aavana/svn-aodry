@@ -87,16 +87,15 @@ $this->load->view('layout/header');
                                             </div>
                                         </div>
                                         <div class="row">
-                                             <div class="col-sm-3" style="display: none">
-                    <div class="form-group">
-                      <label for="type_of_supply">Type of Supply <span class="validation-color">*</span></label>
-                      <select class="form-control select2" id="type_of_supply" name="type_of_supply" >
-                        <option value="regular" <?php echo "selected"; ?>>Regular</option>
-                      </select>
-
-                      <span class="validation-color" id="err_type_supply"></span>
-                    </div>
-                  </div>
+                                            <div class="col-sm-3" style="display: none">
+                                                <div class="form-group">
+                                                    <label for="type_of_supply">Type of Supply <span class="validation-color">*</span></label>
+                                                        <select class="form-control select2" id="type_of_supply" name="type_of_supply" >
+                                                            <option value="regular" <?php echo "selected"; ?>>Regular</option>
+                                                        </select>
+                                                        <span class="validation-color" id="err_type_supply"></span>
+                                                </div>
+                                            </div>
                                             <div class="col-sm-3" style="display: none">
                                                 <div class="form-group">
                                                     <label for="type_of_supply">Billing Country <span class="validation-color">*</span></label>
@@ -140,7 +139,7 @@ $this->load->view('layout/header');
                                                     <span class="validation-color" id="err_billing_state"><?php echo form_error('billing_state'); ?></span>
                                                 </div>
                                             </div>
-                                          <div class="col-sm-3" style="display: none">
+                                            <div class="col-sm-3" style="display: none">
                                                 <div class="form-group">
                                                     <label for="currency_id">Billing Currency <span class="validation-color">*</span></label>
                                                     <select class="form-control select2" id="currency_id" name="currency_id">
@@ -160,30 +159,32 @@ $this->load->view('layout/header');
                                                     <span class="validation-color" id="err_currency_id"></span>
                                                 </div>
                                             </div>
-                                             <div class="col-sm-3 gst_payable_div" >
+                                            <div class="col-sm-3 gst_payable_div" >
                                                 <div class="form-group">
-                                            <label for="gst_payable">GST Payable(Reverse Charge) <span class="validation-color">*</span></label>
-                                            <br/>
-                                            <div class="radio">
-                                            <label class="radio-inline">
-                                                        <input type="radio" name="gst_payable" value="yes" <?php
-                                                                if ($data[0]->gst_payable == "yes") {
-                                                                    echo 'checked="checked"';
-                                                                }
-                                                                ?> /> Yes
-                                                    </label>
-                                                    <label class="radio-inline">
-                                                        <input type="radio" name="gst_payable" value="no"  <?php
-                                                                if ($data[0]->gst_payable == "no") {
-                                                                    echo 'checked="checked"';
-                                                                }
-                                                                ?> /> No
-                                                    </label>
+                                                    <label for="gst_payable">GST Payable(Reverse Charge) <span class="validation-color">*</span></label>
+                                                    <br/>
+                                                        <div class="radio">
+                                                            <label class="radio-inline">
+                                                                <input type="radio" name="gst_payable" value="yes" <?php
+                                                                    if ($data[0]->gst_payable == "yes") {
+                                                                        echo 'checked="checked"';
+                                                                    }
+                                                                    ?> /> Yes
+                                                            </label>
+                                                            <label class="radio-inline">
+                                                                <input type="radio" name="gst_payable" value="no"  <?php
+                                                                    if ($data[0]->gst_payable == "no") {
+                                                                        echo 'checked="checked"';
+                                                                    }
+                                                                    ?> /> No
+                                                            </label>
+                                                        </div>
+                                                    <br/>
+                                                    <span class="validation-color" id="err_gst_payable"></span>
                                                 </div>
-                                            <br/>
-                                            <span class="validation-color" id="err_gst_payable"></span>
-                                        </div>
                                             </div>
+                                        </div>
+                                        <div class="row">    
                                             <div class="col-sm-3">
                                                 <div class="form-group">
                                                     <label for="paying_by">Payment Mode <span class="validation-color">*</span></label>

@@ -774,7 +774,7 @@ $this->load->view('layout/header');
         </div> 
     </div>
 </div>
-<div class="modal fade" id="gst_debit_report_select_columns" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-3" aria-hidden="true">
+<div class="modal fade" id="gst_debit_report_select_columns" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-3" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">                
@@ -853,7 +853,7 @@ $this->load->view('layout/header');
                 </div>
                 <div class="modal-footer">
                     <button id='select_column' class="btn btn-primary" >Submit</button>
-                    <button type="button" class="btn btn-primary tbl-btn" data-dismiss="modal">Cancel</button>
+                   <!--  <button type="button" class="btn btn-primary tbl-btn" data-dismiss="modal">Cancel</button> -->
                 </div>
         </div>
     </div>

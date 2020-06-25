@@ -7580,6 +7580,7 @@ div.dataTables_paginate ul.pagination {
     background-color: #012b72;
     color: #fff;
     margin-right: 15px;
+    margin-bottom: 6px;
 }
 
 #list_datatable tr th a {

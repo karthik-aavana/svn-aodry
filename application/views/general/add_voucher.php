@@ -205,7 +205,7 @@
         //alert("fdsf"+cr_dr);
 
         if (inv_dt == '' || inv_dt == null) {
-            $("#err_inv_dt").text("Please Select Invoice111 Date");
+            $("#err_inv_dt").text("Please Select Invoice Date");
             return false;
         } else {
             $("#err_inv_dt").text("");

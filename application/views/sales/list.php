@@ -181,7 +181,7 @@ $this->load->view('layout/header');
     </div>
 </div>
 
-<div id="e_way_bill_modal" class="modal fade" role="dialog">
+<div id="e_way_bill_modal" class="modal fade" role="dialog" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -492,14 +492,14 @@ $this->load->view('sales/compose_mail');
 
 
                    if (sales_e_way_bill_date == '' || sales_e_way_bill_number == null) {
-                        $('#err_date').text('Please enter your E way bill date');
+                        $('#err_date').text('Please select your E-way bill date');
                         return false;
                     } else {
                         $('#err_date').text('');
                     }
 
                     if (sales_e_way_bill_number == '' || sales_e_way_bill_number == null) {
-                        $('#err_number').text('Please enter your way bill number');
+                        $('#err_number').text('Please enter your E-way bill number');
                         return false;
                     } else {
                         $('#err_number').text('');

@@ -138,7 +138,7 @@ $this->load->view('layout/header');?>
                           </div>
                           <div class="col-sm-2 gain_loss_amount_div">
                             <div class="form-group">
-                              <label for="Invoice amount">Exchange Gain/loss</label>
+                              <label for="Invoice amount"><br/>Exchange Gain/loss</label>
                               <div class="input-group">
                                 <input type="hidden" name="icon_gain_loss_amount" value="<?=$value->exchange_gain_loss_type;?>">
                                 <span class="input-group-addon toggle_plus" id="Input_addon_plus" name='Gain'>
