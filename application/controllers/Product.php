@@ -3757,7 +3757,7 @@ class Product extends MY_Controller
        foreach ($combination_data as $com) {
             $nestedData['product_code'] = $com->product_code;
             $nestedData['name'] = $com->combinations;
-            $nestedData['action'] = '<input type="checkbox" name="combination[]" value="'.$com->combination_id.'"'.$disabled.'>';
+            $nestedData['action'] = '<input type="checkbox" name="combination[]" value="'.$com->combination_id.'"'.$check_product.'>';
             $send[] = $nestedData;
        }
         $data_fin = array('data'=>$send);
@@ -4456,7 +4456,7 @@ class Product extends MY_Controller
 
                     if(!empty($allDataInSheet)){
                         
-                        if(strtolower($allDataInSheet[1]['A']) == 'article*' && strtolower($allDataInSheet[1]['B']) == 'product name*' && strtolower($allDataInSheet[1]['C']) == 'product type*' && strtolower($allDataInSheet[1]['D']) == 'product hsn sac code*' && strtolower($allDataInSheet[1]['E']) == 'category*' && strtolower($allDataInSheet[1]['F']) == 'subcategory' && strtolower($allDataInSheet[1]['G']) == 'unit of measurement*' && strtolower($allDataInSheet[1]['H']) == 'gst tax percentage' && strtolower($allDataInSheet[1]['I']) == 'tcs tax percentage' && strtolower($allDataInSheet[1]['J']) == 'markdown discount' && strtolower($allDataInSheet[1]['K']) == 'mrp*' && strtolower($allDataInSheet[1]['L']) == 'serial number' && strtolower($allDataInSheet[1]['M']) == 'description' && strtolower($allDataInSheet[1]['N']) == 'marginal discount' && strtolower($allDataInSheet[1]['O']) == 'size' && strtolower($allDataInSheet[1]['P']) == 'colour' && strtolower($allDataInSheet[1]['Q']) == 'expiry date' && strtolower($allDataInSheet[1]['R']) == 'brand*' && strtolower($allDataInSheet[1]['S']) == 'opening stock' && strtolower($allDataInSheet[1]['T']) == 'purchase price' && strtolower($allDataInSheet[1]['U']) == 'batch' && strtolower($allDataInSheet[1]['V']) == 'ean code/barcode'){
+                        if(strtolower($allDataInSheet[1]['A']) == 'article*' && strtolower($allDataInSheet[1]['B']) == 'product name*' && strtolower($allDataInSheet[1]['C']) == 'product type*' && strtolower($allDataInSheet[1]['D']) == 'product hsn sac code*' && strtolower($allDataInSheet[1]['E']) == 'category*' && strtolower($allDataInSheet[1]['F']) == 'subcategory' && strtolower($allDataInSheet[1]['G']) == 'unit of measurement*' && strtolower($allDataInSheet[1]['H']) == 'gst tax percentage' && strtolower($allDataInSheet[1]['I']) == 'tcs tax percentage' && strtolower($allDataInSheet[1]['J']) == 'markdown discount' && strtolower($allDataInSheet[1]['K']) == 'mrp*' && strtolower($allDataInSheet[1]['L']) == 'serial number' && strtolower($allDataInSheet[1]['M']) == 'description' && strtolower($allDataInSheet[1]['N']) == 'marginal discount' && strtolower($allDataInSheet[1]['O']) == 'size' && strtolower($allDataInSheet[1]['P']) == 'colour' && strtolower($allDataInSheet[1]['Q']) == 'expiry date' && strtolower($allDataInSheet[1]['R']) == 'brand*' && strtolower($allDataInSheet[1]['S']) == 'opening stock' && strtolower($allDataInSheet[1]['T']) == 'purchase price' && strtolower($allDataInSheet[1]['U']) == 'batch' && strtolower($allDataInSheet[1]['V']) == 'ean code/barcode' && strtolower($allDataInSheet[1]['W']) == 'warehouse*'){
                                 $header_row = array_shift($allDataInSheet);
                                 $product_exist = $this->general_model->GetProductName();
                                 $product_exist = array_column($product_exist, 'product_name', 'product_name');
@@ -4465,10 +4465,12 @@ class Product extends MY_Controller
                                 $category = $this->general_model->GetCategory_bulk_leathercraft('product');
                                 $category = array_column($category, 'category_id', 'category_name');
                                 $sub_category = $this->general_model->GetSubCategory_bulk_leathercraft('product');
-                                $sub_category_id = array_column($sub_category, 'category_id_sub','subcategory_name');
-                                $sub_category= array_column($sub_category, 'sub_category_id', 'subcategory_name');
+                                /*$sub_category_id = array_column($sub_category, 'category_id_sub','subcategory_name');
+                                $sub_category= array_column($sub_category, 'sub_category_id', 'subcategory_name');*/
                                 $uom = $this->general_model->Get_uqc_bulk_leathercraft('product');
-                                $uom = array_column($uom, 'uom_id', 'uom');                                
+                                $uom = array_column($uom, 'uom_id', 'uom');
+                                $warehouse = $this->general_model->Get_warehouse_bulk_leathercraft();
+                                $warehouse = array_column($warehouse, 'warehouse_id', 'warehouse_name');                                
                                 $gst = $this->general_model->Get_tax_bulk('GST');
                                 $gst = array_column($gst, 'tax_id', 'tax_value');
                                 $tcs = $this->general_model->Get_tax_bulk('TCS');
@@ -4528,6 +4530,8 @@ class Product extends MY_Controller
                                     $expiry_date = date('Y-m-d',strtotime($expiry_date));
                                     $product_batch = trim($row['U']);
                                     $product_barcode = trim($row['V']);
+                                    $warehouse_name = trim($row['W']);
+                                    $warehouse_name = str_replace(' ', '', $warehouse_name);
                                     $parent_id = 0;
                                     /*$product_code   = $this->generate_invoice_number($access_settings, $primary_id, $table_name, $date_field_name, $current_date);*/
                                     $batch = $this->get_bulk_check_product_leathercraft($product_name,$product_code,0);
@@ -4625,16 +4629,22 @@ class Product extends MY_Controller
                                                            $product_category_id = $category[$name_category];
                                                            $product_sku = $this->get_product_sku_bulk($product_code,$product_category_id);
                                                             if($name_subcategory != '' || !empty($name_subcategory)){
-                                                                if(isset($sub_category_id[$name_subcategory])){
-                                                                    $subcategory_cat_value = $sub_category_id[$name_subcategory];
-                                                                    if($product_category_id == $subcategory_cat_value){
+                                                                $subcategory_id = array();
+                                                                foreach($sub_category as $val){
+                                                                    if($val['category_id_sub'] == $product_category_id){
+                                                                        $subcategory_id[$val['subcategory_name']] = $val['sub_category_id'];
+                                                                    }
+                                                                }
+                                                                if(isset($subcategory_id[$name_subcategory])){
+                                                                     $product_subcategory_id = $subcategory_id[$name_subcategory];
+                                                                    /*if($product_category_id == $subcategory_cat_value){
                                                                         $product_subcategory_id = $sub_category[$name_subcategory];
                                                                     }else {
                                                                         $product_subcategory_id = '';
-                                                                        /*$is_add = false;
-                                                                        $error = "SubCategory Name is Not Exist! For Entered Category Name";
-                                                                        $error_log .= $row['F'].' Undefined SubCategory Name! <br>';*/
-                                                                    }
+                                                                        //$is_add = false;
+                                                                        //$error = "SubCategory Name is Not Exist! For Entered Category Name";
+                                                                        //$error_log .= $row['F'].' Undefined SubCategory Name! <br>';
+                                                                    }*/
                                                                 }else {
                                                                     /*$is_add = false;
                                                                     $error = "SubCategory Name is Not Exist! Please Update Your SubCategory Name";
@@ -4766,6 +4776,22 @@ class Product extends MY_Controller
                                             $error_log .= $row['R'].' Brand name is empty!';
                                         }
                                     }
+                                    $warehouse_id = 0;
+                                    if($is_add){
+                                        if($warehouse_name != '' || !empty($warehouse_name)){
+                                            if(isset($warehouse[strtolower($warehouse_name)])){
+                                                $warehouse_id = $warehouse[strtolower($warehouse_name)];
+                                            }else{
+                                                $is_add = false;
+                                                $error = "Warehouse name is Not Exist! Please Update Your Warehouse name";
+                                                $error_log .= $row['R'].' Warehouse name is Not Exist!';
+                                            }
+                                        }else{
+                                            $is_add = false;
+                                            $error = "Warehouse name is empty!";
+                                            $error_log .= $row['R'].' Brand name is empty!';
+                                        }
+                                    }
                                    // product_basic_price
                                     $basic_price = 0;
                                     $gst_amt_basic = 0;
@@ -4824,7 +4850,8 @@ class Product extends MY_Controller
                                             "margin_discount_value" => $marginal_discount_product,
                                             "margin_discount_id" => $marginal_discount_product_id,
                                             "brand_id" => $brand_id,
-                                            "product_barcode" => $product_barcode
+                                            "product_barcode" => $product_barcode,
+                                            "warehouse_id" => $warehouse_id
                                         );
                                         if($expiry_date != '1970-01-01'){
                                             $headers["exp_date"] = $expiry_date;
@@ -4925,6 +4952,7 @@ class Product extends MY_Controller
                                                         "margin_discount_id" => $marginal_discount_product_id,
                                                         "brand_id" => $brand_id,
                                                         "product_barcode" => $product_barcode,
+                                                        "warehouse_id" => $warehouse_id,
                                                         "product_combination_id" => $combination_id
                                                     );
 
@@ -5001,7 +5029,7 @@ class Product extends MY_Controller
             /*$this->session->set_userdata('bulk_error', implode('<br>', $error_array)."<br>Error email has been sent to registered email ID"); */
             //print_r($errors_email);
         }
-        //redirect("product", 'refresh');
+        redirect("product", 'refresh');
     }
 
 
