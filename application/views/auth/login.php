@@ -151,7 +151,8 @@
                             <!-- <p class="login-box-msg text-left">This is a secure system and you will need to provide your login details to access the site.</p> -->
                             <?php
                                 if(@$message){
-                                    if(strtolower(trim($message)) == 'password successfully changed'){ ?>
+                                    preg_match('/(success)/', $message, $matches);
+                                    if(!empty($matches)){ ?>
                                         <div id="infoMessage" style="color: green;margin-top: 10px;"><?php echo $message; ?></div>
                                     <?php }else{ ?>
                                         <div id="infoMessage" style="color: red;margin-top: 10px;"><?php echo $message; ?></div>
