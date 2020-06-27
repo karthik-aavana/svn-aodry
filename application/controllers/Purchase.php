@@ -898,16 +898,14 @@ class Purchase extends MY_Controller {
                     }
                 }
             }
-        } /* else {
-          redirect('purchase' , 'refresh');
-          }
-          $action = $this->input->post('submit'); */
-        redirect('purchase', 'refresh');
-        /* if ($action == 'add') {
-          }else{
-          $purchase_id = $this->encryption_url->encode($purchase_id);
-          redirect('receipt_voucher/add_purchase_receipt/' . $purchase_id , 'refresh');
-          } */
+        }
+        $action = $this->input->post('submit'); 
+        if ($action == 'pay_now') {
+            $purchase_id = $this->encryption_url->encode($purchase_id);
+            redirect('payment_voucher/add_purchase_payment/' . $purchase_id , 'refresh');
+        }else{
+            redirect('purchase' , 'refresh');
+        }
     }
 
     public function purchase_vouchers($section_modules, $data_main, $js_data, $branch) {
