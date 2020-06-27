@@ -41,6 +41,7 @@
                                         <th>Selling Price</th>
                                         <th>Cost Price</th>
                                         <th>MRP</th>
+                                        <th>Warehouse</th>
                                         <th>Ages</th>
                                     </tr>
                                 </thead>
@@ -106,6 +107,7 @@ $(document).ready(function() {
                 {"data": "selling_price"},
                 {"data": "cost_price"},
                 {"data": "mrp"},
+                {"data": "warehouse"},
                 {"data": "ages"}
             ],
             "columnDefs": [{

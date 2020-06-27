@@ -310,7 +310,8 @@ class Stock extends MY_Controller {
                 13 => 'map',
                 14 => 'gst',
                 15 => 'selling_price',
-                16 => 'ages'
+                16 => 'warehouse',
+                17 => 'ages'
             );
 
  
@@ -421,6 +422,7 @@ class Stock extends MY_Controller {
                     $nestedData['product_batch'] = $post->product_batch;
                     $nestedData['cost_price'] = $this->precise_amount($purchase_price,$access_common_settings[0]->amount_precision);
                     $nestedData['mrp'] = $this->precise_amount($post->product_mrp_price,$access_common_settings[0]->amount_precision);
+                    $nestedData['warehouse'] = $post->warehouse_name;
                     $purchase_date = $post->purchase_date;
                     if(!empty($purchase_date)){
                         $present_date =date('Y-m-d');
