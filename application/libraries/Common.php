@@ -14755,7 +14755,7 @@ public function tds_report_sales_list(){
     }
 
     public function get_closing_stock_report(){
-       $string = "P.product_name, P.product_code, P.product_barcode, P.product_hsn_sac_code, P.product_id, P.product_basic_price, P.product_quantity, P.product_combination_id, (select SUM(SI.sales_item_quantity) from sales_item SI where P.product_id = SI.item_id and SI.item_type = 'product'  AND SI.delete_status = 0) as sales_qty, AVG(SI.sales_item_unit_price) as price, SUM(SI.sales_item_igst_amount) as igst, SUM(SI.sales_item_sgst_amount) as sgst, SUM(SI.sales_item_cgst_amount) as cgst, D.department_name, SD.sub_department_name, U.uom, CT.category_name, B.branch_name, B.branch_code, SC.sub_category_name, BD.brand_name, P.product_opening_quantity, (select SUM(PI.purchase_item_quantity) from purchase_item PI where `P`.`product_id` = `PI`.`item_id` and `PI`.`item_type` = 'product'  AND PI.delete_status = 0) as purchase_qty, PI.purchase_id, P.product_batch, C.supplier_name,C.supplier_code, sa.store_location, P.product_mrp_price, P.product_selling_price, P.product_price, AVG(PI.purchase_item_unit_price) as purchase_price, PU.purchase_date";
+       $string = "P.product_name, P.product_code, P.product_barcode, P.product_hsn_sac_code, P.product_id, P.product_basic_price, P.product_quantity, P.product_combination_id, (select SUM(SI.sales_item_quantity) from sales_item SI where P.product_id = SI.item_id and SI.item_type = 'product'  AND SI.delete_status = 0) as sales_qty, AVG(SI.sales_item_unit_price) as price, SUM(SI.sales_item_igst_amount) as igst, SUM(SI.sales_item_sgst_amount) as sgst, SUM(SI.sales_item_cgst_amount) as cgst, D.department_name, SD.sub_department_name, U.uom, CT.category_name, B.branch_name, B.branch_code, SC.sub_category_name, BD.brand_name, P.product_opening_quantity, (select SUM(PI.purchase_item_quantity) from purchase_item PI where `P`.`product_id` = `PI`.`item_id` and `PI`.`item_type` = 'product'  AND PI.delete_status = 0) as purchase_qty, PI.purchase_id, P.product_batch, C.supplier_name,C.supplier_code, sa.store_location, P.product_mrp_price, P.product_selling_price, P.product_price, AVG(PI.purchase_item_unit_price) as purchase_price, PU.purchase_date, wr.warehouse_name";
         $table  = "products P";
         $where = array(
             'P.branch_id' => $this->ci->session->userdata('SESS_BRANCH_ID'),
@@ -14773,7 +14773,8 @@ public function tds_report_sales_list(){
             'uqc U' => 'U.id = P.product_unit_id' . '#' . 'left',
             "category CT" => "CT.category_id=P.product_category_id",
             "sub_category SC" => "SC.sub_category_id=P.product_subcategory_id". "#" . "left",
-            "brand BD" => "P.brand_id = BD.brand_id". "#" . "left"
+            "brand BD" => "P.brand_id = BD.brand_id". "#" . "left",
+            "warehouse wr" => "P.warehouse_id = wr.warehouse_id". "#" . "left"
              ];
         $group = array('P.product_id');
         $filter = array(
@@ -14788,7 +14789,8 @@ public function tds_report_sales_list(){
                         'P.product_barcode',
                         'P.product_hsn_sac_code',
                         'U.uom',
-                        'P.product_opening_quantity'
+                        'P.product_opening_quantity',
+                        'wr.warehouse_name'
                     );
         
         $order = ["PI.purchase_id" => "desc"];
