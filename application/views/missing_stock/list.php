@@ -98,6 +98,8 @@ $this->load->view('missing_stock/edit_fixed_stock');
          var table =  $('#list_datatable').DataTable({
             "processing": true,
             "serverSide": true,
+            "iDisplayLength": 15,
+            "lengthMenu": [ [15, 25, 50,100, -1], [15, 25, 50,100, "All"] ],
             "ajax": {
                 "url": base_url + "missing_stock",
                 "dataType": "json",

@@ -188,7 +188,7 @@ $this->load->view('layout/header');
                 <button type="button" class="close" data-dismiss="modal">
                     &times;
                 </button>
-                <h4 class="modal-title">E Way Bill</h4>
+                <h4 class="modal-title">E-Way Bill</h4>
             </div>
             <div class="modal-body">
                 <div id="loader">
@@ -207,8 +207,8 @@ $this->load->view('layout/header');
                 <div class="table-responsive">
                     <table id="excess_table" class="table custom_datatable table-bordered table-striped table-hover" >
                         <thead>
-                        <th>E Way Bill Date </th>
-                        <th>E Way Bill Number</th>
+                        <th>E-Way Bill Date </th>
+                        <th>E-Way Bill Number</th>
                         </thead>
                         <tbody>
                             <td>
@@ -324,6 +324,8 @@ $this->load->view('sales/compose_mail');
                 "processing": true,
                 "serverSide": true,
                 "responsive": false,
+                "iDisplayLength": 15,
+                    "lengthMenu": [ [15, 25, 50,100, -1], [15, 25, 50,100, "All"] ],
                 "ajax": {
                     "url": base_url + "sales",
                     "dataType": "json",

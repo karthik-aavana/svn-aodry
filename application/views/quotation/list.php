@@ -63,6 +63,8 @@ $(document).ready(function() {
     $('#list_datatable').DataTable({
         "processing": true,
         "serverSide": true,
+        "iDisplayLength": 15,
+            "lengthMenu": [ [15, 25, 50,100, -1], [15, 25, 50,100, "All"] ],
         'language': {
             'loadingRecords': '&nbsp;',
             'processing': ' <h1 class="ml8"><span class="letters-container"> <span class="letters letters-left"><img src="<?php echo base_url('assets/'); ?>images/loader-icon.png" width="30px"></span></span><span class="circle circle-white"></span><span class="circle circle-dark"></span><span class="circle circle-container"><span class="circle circle-dark-dashed"></span></span></h1>'

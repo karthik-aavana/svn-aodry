@@ -134,6 +134,8 @@ $this->load->view('layout/header');
             "processing": true,
             "serverSide": true,
             "scrollX": true,
+            "iDisplayLength": 15,
+            "lengthMenu": [ [15, 25, 50,100, -1], [15, 25, 50,100, "All"] ],
             "ajax": {
                 "url": base_url + "product_stock",
                 "dataType": "json",

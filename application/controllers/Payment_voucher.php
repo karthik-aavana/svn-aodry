@@ -53,19 +53,23 @@ class Payment_voucher extends MY_Controller
 
             $totalData     = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
+              if($limit > -1){
+                $list_data['limit'] = $limit;
+                $list_data['start'] = $start;
+            }
 
             if (empty($this->input->post('search')['value']))
             {
-                $list_data['limit']  = $limit;
-                $list_data['start']  = $start;
+                // $list_data['limit']  = $limit;
+                // $list_data['start']  = $start;
                 $list_data['search'] = 'all';
                 $posts               = $this->general_model->getPageJoinRecords($list_data);
             }
             else
             {
                 $search              = $this->input->post('search')['value'];
-                $list_data['limit']  = $limit;
-                $list_data['start']  = $start;
+                // $list_data['limit']  = $limit;
+                // $list_data['start']  = $start;
                 $list_data['search'] = $search;
                 $posts               = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered       = $this->general_model->getPageJoinRecordsCount($list_data);

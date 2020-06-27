@@ -102,7 +102,7 @@ $this->load->view('layout/header');
                                     </div>
                                     <div class="col-sm-2 payment_amount_div">
                                         <div class="form-group">
-                                            <label for="payment Amount">Paid<br/>Amount <span class="validation-color">*</span></label>
+                                            <label for="payment Amount"><br/>Paid Amount <span class="validation-color">*</span></label>
                                             <input type="text" class="form-control number_only" id="payment_amount_1" name="payment_amount" value="">
                                             <span class="validation-color" id="err_payment_amount_1"></span>
                                         </div>
@@ -151,7 +151,7 @@ $this->load->view('layout/header');
                                     </div>
                                     <div class="col-sm-2 pending_amount_div">
                                         <div class="form-group">
-                                            <label for="Invoice amount">Pending<br/>Amount<span class="validation-color">*</span></label>
+                                            <label for="Invoice amount"><br/>Pending Amount<span class="validation-color">*</span></label>
                                             <input  type="text" class="float_number form-control" id="pending_amount_1" name="pending_amount" value="" readonly>
                                             <input  type="hidden" class="float_number form-control" id="invoice_total_1" name="invoice_total" value="">
                                             <span class="validation-color" id="err_grand_total_1"></span>

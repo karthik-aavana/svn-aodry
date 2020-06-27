@@ -77,6 +77,8 @@ $this->load->view('general/delete_modal');
         var table = $('#list_datatable').DataTable({
             "processing": true,
             "serverSide": true,
+            "iDisplayLength": 15,
+            "lengthMenu": [ [15, 25, 50,100, -1], [15, 25, 50,100, "All"] ],
             "ajax": {
                 "url": base_url + "groups",
                 "dataType": "json",

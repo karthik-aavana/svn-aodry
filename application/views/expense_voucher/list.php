@@ -100,6 +100,8 @@ $this->load->view('general/delete_modal');
             "processing": true,
             "serverSide": true,
             "responsive": true,
+            "iDisplayLength": 15,
+            "lengthMenu": [ [15, 25, 50,100, -1], [15, 25, 50,100, "All"] ],
             "ajax": {
                 "url": base_url + "expense_voucher",
                 "dataType": "json",

@@ -74,8 +74,8 @@ $this->load->view('layout/header');
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="customer">Actual receipt amount<span class="validation-color">*</span>
-                                            <img src="<?= base_url('assets/images/toltip-icon.png') ?>" data-toggle="tooltip" title=" No: 41, 2nd floor, 3rd Main, 60 Feet Road, Sanjay Nagar, RMV 2nd Stage, Bengaluru-560094." width="20px;" style="margin-left: 5px;" ></label>
-                                        <input type="text" class="form-control number_only" id="total_receipt_amount" name="total_receipt_amount" value="">
+                                           <!--  <img src="<?= base_url('assets/images/toltip-icon.png') ?>" data-toggle="tooltip" title=" No: 41, 2nd floor, 3rd Main, 60 Feet Road, Sanjay Nagar, RMV 2nd Stage, Bengaluru-560094." width="20px;" style="margin-left: 5px;" > --></label>
+                                       <input type="text" class="form-control number_only" id="total_receipt_amount" name="total_receipt_amount" value="">
                                         <span class="validation-color" id="err_total_receipt_amount"></span>
                                     </div>
                                 </div>                       

@@ -76,6 +76,8 @@ $this->load->view('receipt_voucher/compose_mail');
             "processing": true,
             "serverSide": true,
             "responsive": true,
+             "iDisplayLength": 15,
+            "lengthMenu": [ [15, 25, 50,100, -1], [15, 25, 50,100, "All"] ],
             "ajax": {
                 "url": base_url + "receipt_voucher",
                 "dataType": "json",

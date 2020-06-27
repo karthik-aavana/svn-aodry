@@ -89,6 +89,8 @@ $this->load->view('layout/header');
             "processing": true,
             "serverSide": true,
             "responsive": true,
+            "iDisplayLength": 15,
+            "lengthMenu": [ [15, 25, 50,100, -1], [15, 25, 50,100, "All"] ],
             "ajax": {
                 "url": base_url + "general_voucher/transaction_purpose_list",
                 "dataType": "json",
