@@ -5884,23 +5884,27 @@ class Common
                    cu.country_name as supplier_country_name";
         $table = "expense_bill eb";
         $join  = [
-            'supplier s'   => 'eb.expense_bill_payee_id = s.supplier_id',
-            'cities ct'    => 's.supplier_city_id = ct.city_id',
+            'supplier s'   => 'eb.expense_bill_payee_id = s.supplier_id#left' ,
+            'cities ct'    => 's.supplier_city_id = ct.city_id#left',
             'states cs'    => 's.supplier_state_id = cs.state_id'.'#'.'left',
             'countries cu' => 's.supplier_country_id = cu.country_id'.'#'.'left',
             'shipping_address sa' => 'sa.shipping_party_id = eb.expense_bill_payee_id' . '#' . 'left'];
             //'currency cur' => 'cur.currency_id = eb.currency_id',
         // $where['eb.expense_bill_id'] = $expense_bill_id;
         $where =  array(
-            'eb.expense_bill_id' => $expense_bill_id,
-            'sa.shipping_party_type' => 'supplier',
-            'sa.primary_address' => 'yes'
+            'eb.expense_bill_id' => $expense_bill_id
         );
+        
+        /*'sa.shipping_party_type' => 'supplier',
+        'sa.primary_address' => 'yes'*/
+
+        $group = array('`eb`.`expense_bill_id`');
         $data = array(
             'string' => $string,
             'table'  => $table,
             'where'  => $where,
-            'join'   => $join
+            'join'   => $join,
+            'group'  => $group
         );
         return $data;
     }

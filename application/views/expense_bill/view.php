@@ -43,6 +43,7 @@ $this->load->view('layout/header');
                         <div class="row">
                             <div class="col-sm-4">
                                 <?php
+                            if($data[0]->expense_bill_payee_id != 0){ 
                                 if (isset($data[0]->supplier_name) && $data[0]->supplier_name != "") {
                                     ?>
                                     <h4 style="text-transform: capitalize;"><?= $data[0]->supplier_name ?></h4>
@@ -96,7 +97,10 @@ $this->load->view('layout/header');
                                     $data[0]->supplier_mobile
                                     ?>
                                 <?php } ?>
-                                <br>                               
+                            <?php }else{ ?>
+                                <h4 style="text-transform: capitalize;">Others</h4>
+                            <?php } ?>
+                                <br>                             
                                 <?php
                                 if (isset($branch[0]->firm_name) && $branch[0]->firm_name != "") {
                                     ?>

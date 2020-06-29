@@ -48,7 +48,7 @@ class Expense_bill extends MY_Controller
             $list_data['search'] = 'all';
             $totalData           = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered       = $totalData;
-             if($limit > -1){
+            if($limit > -1){
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
             }
@@ -3144,6 +3144,7 @@ class Expense_bill extends MY_Controller
         } 
         $expense_bill_data = $this->common->expense_bill_list_field1($id);
         $data['data']      = $this->general_model->getJoinRecords($expense_bill_data['string'], $expense_bill_data['table'], $expense_bill_data['where'], $expense_bill_data['join']);
+
         $string            = "ei.*,e.*";
         $from              = "expense_bill_item ei";
         $join              = [
@@ -3179,11 +3180,16 @@ class Expense_bill extends MY_Controller
             }
         } 
 
-        if($data['data'][0]->expense_bill_tax_cess_amount > 0){
+        if($data['data'][0]->expense_bill_tax_cess_amount > 0 ){
             $cess_exist = 1;
         }
-        $is_utgst = $this->general_model->checkIsUtgst($data['data'][0]->expense_bill_billing_state_id);
+        $is_utgst = '';
+        if($data['data'][0]->expense_bill_payee_id != 0){
 
+            $is_utgst = $this->general_model->checkIsUtgst($data['data'][0]->expense_bill_billing_state_id);
+        }else{
+            $data['data'][0]->supplier_name = 'Others';
+        }
         $data['igst_exist'] = $igst;
         $data['cgst_exist'] = $cgst;
         $data['sgst_exist'] = $sgst;
@@ -3194,9 +3200,7 @@ class Expense_bill extends MY_Controller
         $currency = $this->getBranchCurrencyCode();
         $data['currency_code']     = $currency[0]->currency_code;
         $data['currency_symbol']   = $currency[0]->currency_symbol;
-        /*echo "<pre>";
-        print_r($data);
-        exit();*/
+
         $this->load->view("expense_bill/view", $data);
     }
 
