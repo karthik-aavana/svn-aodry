@@ -15142,4 +15142,40 @@ public function tds_report_sales_list(){
         );
         return $data;
     }
+
+    public function product_item_suggestions_field(){
+
+        $string = "p.*, product_id as item_id,product_code as item_code,product_hsn_sac_code as hsn_sac_code,product_name as item_name,'product' as item_type,delete_status,branch_id,product_batch,product_quantity,product_opening_quantity";
+        $table  = "products p";
+        $where = array(
+           'delete_status' => 0,
+           'is_varients'   => 'N',
+           'branch_id'     => $this->ci->session->userdata('SESS_BRANCH_ID'));
+        $order = [
+           "product_id" => "asc"];
+        
+        $data = array(
+           'string' => $string,
+           'table'  => $table,
+           'where'  => $where,
+           'order'  => $order
+        );
+        return $data;
+    }
+    public function services_item_suggestion_field(){
+
+        $string = "s.*,service_id as item_id,service_code as item_code,service_hsn_sac_code as hsn_sac_code,service_name as item_name,'service' as item_type,delete_status,branch_id, '' as product_batch, 0 as product_quantity,0 as product_opening_quantity , '' as product_barcode";
+        $table  = "services s";
+        $where = array(
+           'delete_status' => 0,
+           'branch_id'     => $this->ci->session->userdata('SESS_BRANCH_ID'));
+        $order = [
+           "service_id" => "desc"];
+        $data = array(
+           'string' => $string,
+           'table'  => $table,
+           'where'  => $where
+        );
+        return $data;
+    }
 }
