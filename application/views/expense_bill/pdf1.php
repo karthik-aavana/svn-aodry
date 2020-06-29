@@ -35,110 +35,10 @@ function precise_amount($val) {
                 /*if ($pdf_results['show_from'] == 'yes') {*/
                     ?>
                     <td width="45%" valign="top" style="border:<?php echo ($pdf_results['bordered'] == 'yes') ? '' : 'none'; ?>;">
-                        <b>From,</b><br>
-                        <b style="text-transform: capitalize;">
-                            <?php
-                            if (isset($branch[0]->branch_name)) {
-                                echo $branch[0]->branch_name;
-                            }
-                            ?>
-                        </b>
-                        <br>
-                        <?php
-                        /*if ($pdf_results['address'] == 'yes') {*/
-                            if (isset($branch[0]->branch_address)) {
-                                echo str_replace(array(
-                                    "\r\n",
-                                    "\\r\\n",
-                                    "\n",
-                                    "\\n"), "<br>", $branch[0]->branch_address);
-                                ?>
-                                <br>
-                                <?php
-                            }
-                        /*}*/
-                        /*if ($pdf_results['state'] == 'yes') {*/
-                            if (isset($state[0]->state_name)) {
-                                echo $state[0]->state_name . ",";
-                            }
-                        /*}*/
-                        ?> <?php
-                        /*if ($pdf_results['country'] == 'yes') {*/
-                            if (isset($country[0]->country_name)) {
-                                echo $country[0]->country_name . ".";
-                                ?>
-                                <?php
-                            }
-                        /*}*/
-                        /*if ($pdf_results['mobile'] == 'yes') {*/
-                            if (isset($branch[0]->branch_mobile)) {
-                                if ($branch[0]->branch_mobile != "" || $branch[0]->branch_mobile != null) {
-                                    echo '<br>Mobile No : ' . $branch[0]->branch_mobile;
-                                }
-                            }
-                            ?>
-                            <?php
-                            /*if ($pdf_results['landline'] == 'yes') {*/
-                                if (isset($branch[0]->branch_land_number)) {
-                                    if ($branch[0]->branch_land_number != "") {
-                                        echo ' | Landline No : ' . $branch[0]->branch_land_number;
-                                    }
-                                }
-                           /* }*/
-                            ?>
-                            <?php
-                        /*}*/
-                        if (isset($branch[0]->branch_email_address)) {
-                            // && ($pdf_results['email'] == 'yes')
-                            if ($branch[0]->branch_email_address != "") {
-                                echo '<br>E-mail : ' . $branch[0]->branch_email_address;
-                            }
-                            ?>
-                            <?php
-                        }
-                        if (isset($branch[0]->branch_gstin_number)) {
-                            // && ($pdf_results['gst'] == 'yes')
-                            if ($branch[0]->branch_gstin_number != "" || $branch[0]->branch_gstin_number != null) {
-                                echo " | GSTIN : " . $branch[0]->branch_gstin_number;
-                            }
-                            ?>
-                            <?php
-                        }
-                        ?>
-                        <?php
-                        if (isset($branch[0]->branch_pan_number) && $branch[0]->branch_pan_number != "" ) {
-                            //&& ($pdf_results['pan'] == 'yes')
-                            if ($branch[0]->branch_pan_number != "" || $branch[0]->branch_pan_number != null) {
-                                echo "<br />PAN : " . $branch[0]->branch_pan_number;
-                            }
-                            ?>
-                            <?php
-                        }
-                        ?>
-                        <?php
-                        if (isset($branch[0]->branch_import_export_code_number)) {
-                            // && ($pdf_results['iec'] == 'yes')
-                            if ($branch[0]->branch_import_export_code_number != "" || $branch[0]->branch_import_export_code_number != null) {
-                                echo " | IEC : " . $branch[0]->branch_import_export_code_number;
-                            }
-                            ?>
-                            <?php
-                        }
-                        if (isset($branch[0]->branch_lut_number)) {// && ($pdf_results['lut'] == 'yes')
-                            if ($branch[0]->branch_lut_number != "" || $branch[0]->branch_lut_number != null) {
-                                echo "<br />LUT : " . $branch[0]->branch_lut_number;
-                            }
-                            ?>
-                            <?php
-                        }
-                        if (isset($branch[0]->branch_cin_number)) {// && ($pdf_results['lut'] == 'yes')
-                            if ($branch[0]->branch_cin_number != "" || $branch[0]->branch_cin_number != null) {
-                                echo " | CIN : " . $branch[0]->branch_cin_number;
-                            }
-                        }
-                        ?>
-                        <br><br>
-                        <b>To,</b><br>
+                       <span class="capitalize">From,</span><br>
+                       <div class="h-5">
+                        </div>
+                        <?php if($data[0]->expense_bill_payee_id != 0) { ?>  
                         <b style="text-transform: capitalize;"><?php
                             if (isset($data[0]->supplier_name)) {
                                 // && ($pdf_results['to_company'] == 'yes')
@@ -248,6 +148,116 @@ function precise_amount($val) {
                             }
                         }
                     ?>
+                <?php }else{ ?>
+                    <b style="text-transform: capitalize;">Others</b>
+
+                <?php } ?>
+                    <br><div class="h-5">
+                    </div><br>               
+                    <span class="capitalize">To,</span><br>
+                        <b class="capitalize">
+                            <?php
+                            if (isset($branch[0]->branch_name)) {
+                                echo $branch[0]->branch_name;
+                            }
+                            ?>
+                        </b>
+                        <br>
+                        <?php
+                        /*if ($pdf_results['address'] == 'yes') {*/
+                            if (isset($branch[0]->branch_address)) {
+                                echo str_replace(array(
+                                    "\r\n",
+                                    "\\r\\n",
+                                    "\n",
+                                    "\\n"), "<br>", $branch[0]->branch_address);
+                                ?>
+                                <br>
+                                <?php
+                            }
+                        /*}*/
+                        /*if ($pdf_results['state'] == 'yes') {*/
+                            if (isset($state[0]->state_name)) {
+                                echo $state[0]->state_name . ",";
+                            }
+                        /*}*/
+                        ?> <?php
+                        /*if ($pdf_results['country'] == 'yes') {*/
+                            if (isset($country[0]->country_name)) {
+                                echo $country[0]->country_name . ".";
+                                ?>
+                                <?php
+                            }
+                        /*}*/
+                        /*if ($pdf_results['mobile'] == 'yes') {*/
+                            if (isset($branch[0]->branch_mobile)) {
+                                if ($branch[0]->branch_mobile != "" || $branch[0]->branch_mobile != null) {
+                                    echo '<br>Mobile No : ' . $branch[0]->branch_mobile;
+                                }
+                            }
+                            ?>
+                            <?php
+                            /*if ($pdf_results['landline'] == 'yes') {*/
+                                if (isset($branch[0]->branch_land_number)) {
+                                    if ($branch[0]->branch_land_number != "") {
+                                        echo ' | Landline No : ' . $branch[0]->branch_land_number;
+                                    }
+                                }
+                           /* }*/
+                            ?>
+                            <?php
+                        /*}*/
+                        if (isset($branch[0]->branch_email_address)) {
+                            // && ($pdf_results['email'] == 'yes')
+                            if ($branch[0]->branch_email_address != "") {
+                                echo '<br>E-mail : ' . $branch[0]->branch_email_address;
+                            }
+                            ?>
+                            <?php
+                        }
+                        if (isset($branch[0]->branch_gstin_number)) {
+                            // && ($pdf_results['gst'] == 'yes')
+                            if ($branch[0]->branch_gstin_number != "" || $branch[0]->branch_gstin_number != null) {
+                                echo " | GSTIN : " . $branch[0]->branch_gstin_number;
+                            }
+                            ?>
+                            <?php
+                        }
+                        ?>
+                        <?php
+                        if (isset($branch[0]->branch_pan_number) && $branch[0]->branch_pan_number != "" ) {
+                            //&& ($pdf_results['pan'] == 'yes')
+                            if ($branch[0]->branch_pan_number != "" || $branch[0]->branch_pan_number != null) {
+                                echo "<br />PAN : " . $branch[0]->branch_pan_number;
+                            }
+                            ?>
+                            <?php
+                        }
+                        ?>
+                        <?php
+                        if (isset($branch[0]->branch_import_export_code_number)) {
+                            // && ($pdf_results['iec'] == 'yes')
+                            if ($branch[0]->branch_import_export_code_number != "" || $branch[0]->branch_import_export_code_number != null) {
+                                echo " | IEC : " . $branch[0]->branch_import_export_code_number;
+                            }
+                            ?>
+                            <?php
+                        }
+                        if (isset($branch[0]->branch_lut_number)) {// && ($pdf_results['lut'] == 'yes')
+                            if ($branch[0]->branch_lut_number != "" || $branch[0]->branch_lut_number != null) {
+                                echo "<br />LUT : " . $branch[0]->branch_lut_number;
+                            }
+                            ?>
+                            <?php
+                        }
+                        if (isset($branch[0]->branch_cin_number)) {// && ($pdf_results['lut'] == 'yes')
+                            if ($branch[0]->branch_cin_number != "" || $branch[0]->branch_cin_number != null) {
+                                echo " | CIN : " . $branch[0]->branch_cin_number;
+                            }
+                        }
+                        ?>
+                        <br><br>
+                        
                     </td>                    
                     <td valign="top" width="34%" class="bg-table">                   
                     Expense Bill Date:
