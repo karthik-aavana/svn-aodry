@@ -579,6 +579,9 @@ if ($charges_sub_module == 1) {
 var sales_data = new Array();
 var branch_state_list =<?php echo json_encode($state); ?>;
 var item_gst = new Array();
+var discount_ary= <?=json_encode($discount);?>;
+var tax_data = <?=json_encode($tax);?>;
+var items_jsn = [];
 var common_settings_round_off = "<?= $access_common_settings[0]->round_off_access ?>";
 var common_settings_amount_precision = "<?= $access_common_settings[0]->amount_precision ?>";
 var settings_tax_percentage = "<?= $access_common_settings[0]->tax_split_percentage ?>";
@@ -589,8 +592,12 @@ var settings_description_visible = "<?= $access_settings[0]->description_visible
 var settings_tds_visible = "<?= $access_settings[0]->tds_visible ?>";
 var settings_item_editable = "<?= $access_settings[0]->item_editable ?>";</script>
 <script src="<?php echo base_url('assets/js/sales/'); ?>sales.js"></script>
-
+<?php 
+if($this->session->userdata('SESS_BRANCH_ID') == 121){ ?>
+<script src="<?php echo base_url('assets/custom/Branch-121/js/sales/'); ?>sales_basic_common.js"></script>
+<?php }else{ ?>
 <script src="<?php echo base_url('assets/js/sales/'); ?>sales_basic_common.js"></script>
+<?php } ?>
 <script type="<?php echo base_url('assets/js/sales/')?>ship_to.js"></script>
 <script type="text/javascript">
     $('#err_sales_code').text('Please select the customer to do sales.');

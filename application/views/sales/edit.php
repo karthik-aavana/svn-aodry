@@ -416,6 +416,7 @@ $this->load->view('layout/header');
                                                 <?php
                                                 $i = 0;
                                                 $tot = 0;
+                                                $items_jsn = array();
                                                 foreach ($items as $key) {
                                                     ?>
                                                     <tr id="<?= $i ?>">
@@ -592,6 +593,7 @@ $this->load->view('layout/header');
                                                         }
                                                         ?></tr>
                                                     <?php
+                                                    $items_jsn[$key->item_type.$key->item_id] = $i;
                                                     $sales_data[$i] = $sales_temp;
                                                     $i++;
                                                 } $sales = htmlspecialchars(json_encode($sales_data));
@@ -921,7 +923,10 @@ $this->load->view('sub_modules/shipping_address_modal');
 <?php } ?>
 <script type="text/javascript">
     var sales_data = <?php echo json_encode($sales_data); ?>;
+    var items_jsn = <?php echo json_encode($items_jsn); ?>;
     var branch_state_list = <?php echo json_encode($state); ?>;
+    var discount_ary= <?=json_encode($discount);?>;
+    var tax_data = <?=json_encode($tax);?>;
     var count_data = <?= $countData; ?>;
     var common_settings_round_off = "<?= $access_common_settings[0]->round_off_access ?>";
     var common_settings_amount_precision = "<?= $access_common_settings[0]->amount_precision ?>";
@@ -936,4 +941,9 @@ $this->load->view('sub_modules/shipping_address_modal');
 </script>
 <script src="<?php echo base_url('assets/js/sales/'); ?>sales.js"></script>
 
+<?php 
+if($this->session->userdata('SESS_BRANCH_ID') == 121){ ?>
+<script src="<?php echo base_url('assets/custom/Branch-121/js/sales/'); ?>sales_basic_common.js"></script>
+<?php }else{ ?>
 <script src="<?php echo base_url('assets/js/sales/'); ?>sales_basic_common.js"></script>
+<?php } ?>

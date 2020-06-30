@@ -1,7 +1,6 @@
 var mapping = {};
 var allPros = {};
 var allSers = {};
-var addedItems = {};
 
 if (typeof count_data === "undefined" || count_data === null) {
     var count_data = 0;
@@ -691,6 +690,9 @@ function add_row(data) {
     var branch_country_id = data.branch_country_id;
     var branch_state_id = data.branch_state_id;
     var branch_id = data.branch_id;
+    if(typeof data[0] !== 'undefined'){
+        var data = data[0];
+    }
 
     if (item_type == "service") {
         var item_code = data.service_code;
@@ -1430,7 +1432,7 @@ function preciseRowAmount(row) {
         row.find("#item_grand_total_hide_lbl_" + table_index).text(precise_amount(item_grand_total));
     }
 }
-var items_jsn = [];
+
 function generateJson(row) {
     var table_index = +row.find('input[name^="item_key_value"]').val();
     var item_price = +parseFloat(row.find('input[name^="item_price"]').val());
