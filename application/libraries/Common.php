@@ -2264,13 +2264,15 @@ class Common
             'DATE_FORMAT(q.quotation_date, "%d-%m-%Y")',
             'q.quotation_invoice_number',
             'q.quotation_grand_total');
+        $group = array('q.quotation_id');
         $data = array(
             'string' => $string,
             'table'  => $table,
             'where'  => $where,
             'join'   => $join,
             'filter' => $filter,
-            'order'  => $order
+            'order'  => $order,
+            'group' => $group
         );
         return $data;
     }
