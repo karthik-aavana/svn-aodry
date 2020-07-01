@@ -22,6 +22,9 @@
                 <h4 class="modal-title">Connect to Sales</h4>
             </div>
             <div class="modal-body">
+                  <div id="loader">
+                        <h1 class="ml8"><span class="letters-container"> <span class="letters letters-left"><img src="<?php echo base_url('assets/'); ?>images/loader-icon.png" width="40px"></span></span><span class="circle circle-white"></span><span class="circle circle-dark"></span><span class="circle circle-container"><span class="circle circle-dark-dashed"></span></span></h1>
+                    </div>
                 <div class="table-responsive">
                     <table id="connectSaleList" class="table custom_datatable table-bordered table-striped table-hover" >
                         <thead>
@@ -45,6 +48,7 @@
         </div>
     </div>
 </div>
+<script src="<?php echo base_url('assets/js/') ?>icon-loader.js"></script>
 <script>
 //data:{'value': jsonvalue, 'key': jsonkey,'product_code':product_code},
 //var table =  $('#connectSaleList').DataTable({});
@@ -108,10 +112,16 @@
                     dataType: 'JSON',
                     method: 'POST',
                     data: {'advance_amount': total, 'advance_id': advance_id, 'valueJSON': valueJSON, 'customer_id': customer_id},
-                    success: function (result) {
+                       beforeSend: function(){
+                     // Show image container
+                    $("#connectSales #loader").show();
+                    },
+
+                    success: function (result) {                       
                         setTimeout(function () {
                             location.reload();
                         });
+                         $("#connectSales #loader").hide();
                     }
                 });
             }
