@@ -35,7 +35,7 @@ $this->load->view('layout/header');
                             <?php
                             if (in_array($investments_module_id, $active_add)) {
                             ?>
-                                <a class="btn btn-sm btn-info pull-right" href="<?php echo base_url('investments/add'); ?>">Add Investments</a>
+                                <a class="btn btn-sm btn-info pull-right" data-toggle="modal" data-target="#add_investments_modal" >Add Investments</a>
                             <?php } ?>
                         </div>
                     </div>
@@ -63,14 +63,13 @@ $this->load->view('layout/header');
 <?php
 $this->load->view('layout/footer');
 $this->load->view('general/delete_modal');
+$this->load->view('investments/add')
 ?>
 <script>
     $(document).ready(function () {
         $('#list_datatable').DataTable({
             "processing": true,
             "serverSide": true,
-            "iDisplayLength": 15,
-            "lengthMenu": [ [15, 25, 50,100, -1], [15, 25, 50,100, "All"] ],
             "ajax": {
                 "url": base_url + "investments",
                 "dataType": "json",

@@ -210,6 +210,8 @@ $this->load->view('layout/footer');
             'searching': true,
             "bStateSave": true,
             'ordering':  true,
+             "iDisplayLength": 15,
+            "lengthMenu": [ [15, 25, 50,100, -1], [15, 25, 50,100, "All"] ],
             'columns' : [
                 {'data':'id'},
                 {'data' : 'ledger_name'},
@@ -226,7 +228,7 @@ $this->load->view('layout/footer');
             /*"dom" : '<"top"i>rt<"bottom"flp><"clear">',*/
             "fnDrawCallback": function(oSettings) {
                 var rowCount = this.fnSettings().fnRecordsDisplay();
-                if (rowCount <= 10) {
+                if (rowCount <= 15) {
                     $('.dataTables_length, .dataTables_paginate').hide();
                 } else {
                     $('.dataTables_length, .dataTables_paginate').show();

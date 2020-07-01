@@ -6,6 +6,9 @@
                 <h4 class="modal-title">Add User Group</h4>
             </div>
             <div class="modal-body">
+                 <div id="loader">
+                        <h1 class="ml8"><span class="letters-container"> <span class="letters letters-left"><img src="<?php echo base_url('assets/'); ?>images/loader-icon.png" width="40px"></span></span><span class="circle circle-white"></span><span class="circle circle-dark"></span><span class="circle circle-container"><span class="circle circle-dark-dashed"></span></span></h1>
+                    </div>
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group">
@@ -32,6 +35,7 @@
         </div>
     </div>
 </div>
+<script src="<?php echo base_url('assets/js/') ?>icon-loader.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
         $("#submit").click(function(event) {
@@ -45,7 +49,7 @@
                 $("#err_add_groups").text("");
             }
             if (!group_name.match(name_regex)){
-                $('#err_add_groups').text("Please Enter Valid Gruop Name.");
+                $('#err_add_groups').text("Please Enter Valid Group Name.");
                 return !1
             } else {
                 $("#err_add_groups").text("")
@@ -62,8 +66,12 @@
                     dataType: 'JSON',
                     method: 'POST',
                     data:{'group_name': group_name, 'description': description_groups},
-                    success: function (result) {
+                    beforeSend: function(){                
+                        $("#add_user_group_modal #loader").show();
+                    },
+                    success: function (result) {                        
                         console.log(result);
+                          $("#add_user_group_modal #loader").hide();
                         if(result.resl == 'duplicate'){
                             $('#err_add_groups').text('Group Name Already Exist');
                             return !1

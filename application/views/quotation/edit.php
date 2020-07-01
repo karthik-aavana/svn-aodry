@@ -132,7 +132,7 @@ $this->load->view('layout/header');
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="type_of_supply">Type of Supply <span class="validation-color">*</span></label>
-                                        <select class="form-control" id="type_of_supply" name="type_of_supply" readonly>
+                                        <select class="form-control" id="type_of_supply" name="type_of_supply">
                                             <?php if ($data[0]->quotation_type_of_supply == 'regular') { ?>
                                                 <option value="regular" selected="selected">Regular</option>
                                             <?php } else { ?>
