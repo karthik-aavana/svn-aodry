@@ -1696,6 +1696,9 @@ class Report extends MY_Controller {
                     if(in_array($expense_bill_module_id, $data['active_view'])){
                         $nestedData['invoice'] = ' <a href="' . base_url('expense_bill/view/') . $expense_bill_id . '">' . $post->expense_bill_invoice_number . '</a>';
                     }
+                    if($post->expense_bill_payee_id == 0){
+                        $post->supplier_name = 'Others';
+                    }
                     $nestedData['supplier'] = $post->supplier_name;
                     $nestedData['grand_total'] = $this->session->userdata('SESS_DEFAULT_CURRENCY_SYMBOL') .' '.$this->precise_amount($post->expense_bill_item_grand_total, 2);
                     

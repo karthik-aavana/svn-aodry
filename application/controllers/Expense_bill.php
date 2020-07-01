@@ -3315,7 +3315,7 @@ class Expense_bill extends MY_Controller
         $rep                 = str_replace("\\", '', $pdf_json);
         $data['pdf_results'] = json_decode($rep, true);       
 
-        $html                           = $this->load->view('expense_bill/pdf1', $data, true);
+        $html                           = $this->load->view('expense_bill/pdf', $data, true);
         include APPPATH . "third_party/dompdf/autoload.inc.php";
         //and now im creating new instance dompdf
         $dompdf = new Dompdf\Dompdf();

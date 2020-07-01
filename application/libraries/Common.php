@@ -2345,7 +2345,7 @@ class Common
                 END as sgst, eb.expense_bill_item_grand_total";
         $table  = "expense_bill e";
         $join   = [
-            "supplier s"   => "e.expense_bill_payee_id=s.supplier_id",//'currency cur' => 'e.currency_id = cur.currency_id',
+            "supplier s"   => "e.expense_bill_payee_id=s.supplier_id#left",//'currency cur' => 'e.currency_id = cur.currency_id',
             "expense_bill_item eb" =>"e.expense_bill_id = eb.expense_bill_id",
             "expense ep" =>"eb.expense_type_id = ep.expense_id",
             "users u"      => "u.id = e.added_user_id",
