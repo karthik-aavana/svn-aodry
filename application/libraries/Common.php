@@ -2342,7 +2342,7 @@ class Common
     public function expense_bill_list_field()
     {
         $string = "e.*,s.supplier_name,s.supplier_id,u.first_name,u.last_name,IFNULL(MAX(f.date), DATE_ADD(e.expense_bill_date,INTERVAL s.payment_days DAY)) as receivable_date,IFNULL(DATEDIFF(f.date, CONVERT_TZ(CURRENT_TIMESTAMP,'-07:00','+05:30')), DATEDIFF(DATE_ADD(e.expense_bill_date,INTERVAL s.payment_days  DAY), CONVERT_TZ(CURRENT_TIMESTAMP,'-07:00','+05:30'))) as due, ep.expense_id, ep.expense_title, eb.    expense_bill_item_tds_amount, eb.expense_bill_item_igst_amount, eb.expense_bill_item_cgst_amount, eb.expense_bill_item_sgst_amount, eb.expense_bill_item_taxable_value, st.is_utgst, CASE st.is_utgst when '1' then eb.expense_bill_item_sgst_amount ELSE 0 END as utgst, CASE st.is_utgst when '0' then eb.expense_bill_item_sgst_amount ELSE 0
-                END as sgst, eb.expense_bill_item_grand_total,e.expense_bill_payee_id";
+                END as sgst, eb.expense_bill_item_grand_total";
         $table  = "expense_bill e";
         $join   = [
             "supplier s"   => "e.expense_bill_payee_id=s.supplier_id"."#"."left",//'currency cur' => 'e.currency_id = cur.currency_id',
