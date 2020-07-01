@@ -1704,6 +1704,7 @@ class Report extends MY_Controller {
                     
                     $nestedData['pending_amount'] = $this->precise_amount($post->expense_bill_grand_total - $post->expense_bill_paid_amount, 2);
                     $nestedData['receivable_date'] = date('d-m-Y', strtotime($post->receivable_date));
+                    $post->due = ($post->due == '' ? '-' : $post->due);
                     $nestedData['due'] = $post->due;
                     $nestedData['paid_amount'] = $this->precise_amount($post->expense_bill_paid_amount, 2);
                     if ($post->expense_bill_paid_amount == 0) {
