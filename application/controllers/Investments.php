@@ -44,19 +44,15 @@ class Investments extends MY_Controller {
             $list_data['search'] = 'all';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
-            if($limit > -1){
+            if (empty($this->input->post('search')['value'])) {
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
-            }
-            if (empty($this->input->post('search')['value'])) {
-                // $list_data['limit'] = $limit;
-                // $list_data['start'] = $start;
                 $list_data['search'] = 'all';
                 $posts = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search = $this->input->post('search')['value'];
-                // $list_data['limit'] = $limit;
-                // $list_data['start'] = $start;
+                $list_data['limit'] = $limit;
+                $list_data['start'] = $start;
                 $list_data['search'] = $search;
                 $posts = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -72,7 +68,9 @@ class Investments extends MY_Controller {
                         <div class="btn-group">';
 
                     if (in_array($data['investments_module_id'], $data['active_edit'])) {
-                        $cols .= '<span><a href="' . base_url('investments/edit/') . $shareholder_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="btn btn-app"><i class="fa fa-pencil"></i></a></span>';
+                       /* $cols .= '<span><a href="' . base_url('investments/edit/') . $shareholder_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="btn btn-app"><i class="fa fa-pencil"></i></a></span>';*/
+
+                       $cols .= '<span data-toggle="modal" data-target="#edit_investments_modal" data-backdrop="static" data-keyboard="false"><a data-id="' . $shareholder_id . '" data-toggle="tooltip" data-placement="bottom" title="Edit" class="edit_investment btn btn-app"><i class="fa fa-pencil"></i></a></span>';
                     }
 
                     if (in_array($data['investments_module_id'], $data['active_delete'])) {  $ledger_id =$post->ledger_id;  
@@ -202,15 +200,20 @@ class Investments extends MY_Controller {
                 'financial_year_id' => $this->session->userdata('SESS_FINANCIAL_YEAR_ID'),
                 'branch_id' => $this->session->userdata('SESS_BRANCH_ID'),
                 'message' => 'Investments Updated');
-                $this->general_model->insertData($table, $log_data);            
+                $this->general_model->insertData($table, $log_data);   
+            $result['flag'] = true;
+            $result['msg'] = $successMsg;         
 
-            redirect('investments', 'refresh');
+            //redirect('investments', 'refresh');
         } else {
             $errorMsg = 'Investments Update Unsuccessful';
             $this->session->set_flashdata('partner_error',$errorMsg);
             $this->session->set_flashdata('fail', 'Investments can not be Updated.');
-            redirect("investments", 'refresh');
+            $result['flag'] = false;
+            $result['msg'] = $errorMsg;
+           // redirect("investments", 'refresh');
         }
+        echo json_encode($result);
     }
 
     public function add_investments() {
@@ -289,12 +292,16 @@ class Investments extends MY_Controller {
                 'branch_id' => $this->session->userdata('SESS_BRANCH_ID'),
                 'message' => 'Investments Inserted');
             $this->general_model->insertData($table, $log_data);
-           
+           $result['flag'] = true;
+           $result['msg'] = $successMsg;
         }else{
             $errorMsg = 'Investments Add Unsuccessful';
+            $result['flag'] = false;
+            $result['msg'] = $errorMsg;
             $this->session->set_flashdata('partner_error',$errorMsg);
         }
-        redirect("investments", 'refresh');
+        //redirect("investments", 'refresh');
+        echo json_encode($result);
     }
 
     public function delete() {
@@ -439,6 +446,45 @@ class Investments extends MY_Controller {
              $table = "tbl_transaction_purpose_option";
             $this->general_model->updateData($table, $option_array, $where);
         }
+    }
+
+     public function get_investmentcode() {
+        $investments_module_id = $this->config->item('investments_module');
+        $data['module_id'] = $investments_module_id;
+        $modules = $this->modules;
+        $privilege = "add_privilege";
+        $data['privilege'] = "add_privilege";
+        $section_modules = $this->get_section_modules($investments_module_id, $modules, $privilege);
+
+        /* presents all the needed */
+        $data = array_merge($data, $section_modules);
+        $access_settings = $data['access_settings'];
+        $primary_id = "investments_id";
+        $table_name = "tbl_investments";
+        $date_field_name = "added_date";
+        $current_date = date('Y-m-d');
+        $invoice_number = $this->generate_invoice_number($access_settings, $primary_id, $table_name, $date_field_name, $current_date);
+        $result['invoice_number']= $invoice_number;
+        echo json_encode($result);
+    }
+
+    public function get_investment($id)
+    {
+        $id                   = $this->encryption_url->decode($id);
+        $investments_module_id   = $this->config->item('investments_module');
+        $data['module_id']    = $investments_module_id;
+        $modules              = $this->modules;
+        $privilege            = "edit_privilege";
+        $data['privilege']    = "edit_privilege";
+        $section_modules      = $this->get_section_modules($investments_module_id, $modules, $privilege);
+        
+        /* presents all the needed */
+        $data=array_merge($data,$section_modules);
+
+        $data = $this->general_model->getRecords('*', 'tbl_investments', array(
+                'investments_id'   => $id,
+                'delete_status' => 0 ));
+        echo json_encode($data);
     }
 
 
