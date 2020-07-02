@@ -7,6 +7,9 @@
                 <h4 class="modal-title">Edit User Group</h4>
             </div>
             <div class="modal-body">
+                <div id="loader">
+                        <h1 class="ml8"><span class="letters-container"> <span class="letters letters-left"><img src="<?php echo base_url('assets/'); ?>images/loader-icon.png" width="40px"></span></span><span class="circle circle-white"></span><span class="circle circle-dark"></span><span class="circle circle-container"><span class="circle circle-dark-dashed"></span></span></h1>
+                    </div>
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group">
@@ -20,7 +23,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group">
-                            <label for="description_edit">Description</span></label>
+                            <label for="description_edit">Description<span class="validation-color">*</span></label>
                             <textarea class="form-control" id="description_edit" name="description_edit" maxlength="200" value="<?php echo set_value('description_edit'); ?>"></textarea>
                             <span class="validation-color" id="err_description_edit"><?php echo form_error('err_description_edit'); ?></span>
                         </div>
@@ -34,6 +37,8 @@
         </div>
     </div>
 </div>
+<script src="<?php echo base_url('assets/js/') ?>icon-loader.js"></script>
+
 <script type="text/javascript">
     $(document).on("click", ".edit_groups", function () {
         var id = $(this).data('id');
@@ -63,7 +68,7 @@
                 $("#err_groups_edit").text("");
             }
             if (!edit_groups.match(name_regex)){
-                $('#err_groups_edit').text("Please Enter Valid Gruop Name.");
+                $('#err_groups_edit').text("Please Enter Valid Group Name.");
                 return !1
             } else {
                 $("#err_groups_edit").text("")
@@ -80,7 +85,11 @@
                     dataType: 'JSON',
                     method: 'POST',
                     data:{'group_id': group_id, 'group_name': edit_groups, 'description': description_edit},
+                      beforeSend: function(){                
+                        $("#edit_user_group_modal #loader").show();
+                    },
                     success: function (result) {
+                         $("#edit_user_group_modal #loader").hide();
                         if(result.resl == 'duplicate'){
                             $('#err_groups_edit').text('Group Name Already Exist');
                             return !1

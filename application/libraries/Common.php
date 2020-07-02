@@ -2341,11 +2341,11 @@ class Common
     //     'followup f'=>'f.type_id = e.expense_bill_id AND f.type="expense bill"'.'#'.'left'];
     public function expense_bill_list_field()
     {
-        $string = "e.*,s.supplier_name,s.supplier_id,u.first_name,u.last_name,IFNULL(MAX(f.date), DATE_ADD(e.expense_bill_date,INTERVAL s.payment_days DAY)) as receivable_date,IFNULL(DATEDIFF(f.date, CONVERT_TZ(CURRENT_TIMESTAMP,'-07:00','+05:30')), DATEDIFF(DATE_ADD(e.expense_bill_date,INTERVAL s.payment_days  DAY), CONVERT_TZ(CURRENT_TIMESTAMP,'-07:00','+05:30'))) as due, ep.expense_id, ep.expense_title, eb.    expense_bill_item_tds_amount, eb.expense_bill_item_igst_amount, eb.expense_bill_item_cgst_amount, eb.expense_bill_item_sgst_amount, eb.expense_bill_item_taxable_value, st.is_utgst, CASE st.is_utgst when '1' then eb.expense_bill_item_sgst_amount ELSE 0 END as utgst, CASE st.is_utgst when '0' then eb.expense_bill_item_sgst_amount ELSE 0
-                END as sgst, eb.expense_bill_item_grand_total";
+        $string = "e.*,s.supplier_id,u.first_name,u.last_name,IFNULL(MAX(f.date), DATE_ADD(e.expense_bill_date,INTERVAL s.payment_days DAY)) as receivable_date,IFNULL(DATEDIFF(f.date, CONVERT_TZ(CURRENT_TIMESTAMP,'-07:00','+05:30')), DATEDIFF(DATE_ADD(e.expense_bill_date,INTERVAL s.payment_days  DAY), CONVERT_TZ(CURRENT_TIMESTAMP,'-07:00','+05:30'))) as due, ep.expense_id, ep.expense_title, eb.    expense_bill_item_tds_amount, eb.expense_bill_item_igst_amount, eb.expense_bill_item_cgst_amount, eb.expense_bill_item_sgst_amount, eb.expense_bill_item_taxable_value, st.is_utgst, CASE st.is_utgst when '1' then eb.expense_bill_item_sgst_amount ELSE 0 END as utgst, CASE st.is_utgst when '0' then eb.expense_bill_item_sgst_amount ELSE 0
+                END as sgst, eb.expense_bill_item_grand_total, CASE e.expense_bill_payee_id WHEN '0' THEN 'Others' ELSE s.supplier_name  END as supplier_name";
         $table  = "expense_bill e";
         $join   = [
-            "supplier s"   => "e.expense_bill_payee_id=s.supplier_id",//'currency cur' => 'e.currency_id = cur.currency_id',
+            "supplier s"   => "e.expense_bill_payee_id=s.supplier_id"."#"."left",//'currency cur' => 'e.currency_id = cur.currency_id',
             "expense_bill_item eb" =>"e.expense_bill_id = eb.expense_bill_id",
             "expense ep" =>"eb.expense_type_id = ep.expense_id",
             "users u"      => "u.id = e.added_user_id",
