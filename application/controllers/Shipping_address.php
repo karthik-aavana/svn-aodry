@@ -237,7 +237,25 @@ class Shipping_Address extends MY_Controller {
                 $shipping_address_data['customer_id'] = $shipping_address_data['shipping_party_id'];
                 $this->customerhook->UpdateCustomerAddress($shipping_address_data);
             }*/
-
+            if($this->input->post('primary_address_edit') == 'yes'){
+                $customer_data = array(
+                    "customer_address" => $this->input->post('party_address_edit'),
+                    "customer_country_id" => $this->input->post('cmb_country_edit1'),
+                    "customer_state_id" => $this->input->post('cmb_state_edit'),
+                    "customer_city_id" => $this->input->post('cmb_city_edit'),
+                    "contact_person" => $this->input->post('contact_person_name_edit'),
+                    "customer_gstin_number" => $this->input->post('gst_number_edit'),
+                    "updated_date" => date('Y-m-d'),
+                    "updated_user_id" => $this->session->userdata('SESS_USER_ID'),
+                    "branch_id" => $this->session->userdata('SESS_BRANCH_ID'),
+                    "customer_postal_code" => $this->input->post('edit_pin_code'),
+                    "customer_mobile" => $this->input->post('contact_number_edit'),
+                    "customer_email"  => $this->input->post('txt_email_edit')
+                );
+                $table = "customer";
+                $where = array("customer_id" => $this->input->post('company_name_edit'));
+                $this->general_model->updateData($table, $customer_data, $where);
+            }
             $successMsg = 'Shipping Address Updated Successfully';
             $this->session->set_flashdata('shipping_address_success',$successMsg);
             $table = "log";
