@@ -172,7 +172,7 @@ $(document).ready(function ()
 
 
         if (grand_total == "" || grand_total == null || grand_total == 0.00 || isNaN(grand_total)){
-            $("#err_receipt_amount").text("Please Enter Receipt Amount");
+            $("#err_receipt_amount").text("Please Match Advance Amount With Grand Total");
             return false;
         }else{
             $("#err_receipt_amount").text("");
