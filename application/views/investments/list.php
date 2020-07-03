@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 $this->load->view('layout/header');
 ?>
-<div class="content-wrapper">	
+<div class="content-wrapper">   
     <div class="fixed-breadcrumb">
         <ol class="breadcrumb abs-ol">
             <li>
@@ -35,7 +35,7 @@ $this->load->view('layout/header');
                             <?php
                             if (in_array($investments_module_id, $active_add)) {
                             ?>
-                                <a class="btn btn-sm btn-info pull-right" data-toggle="modal" data-target="#add_investments_modal" >Add Investments</a>
+                                <a class="btn btn-sm btn-info pull-right add_investments" data-toggle="modal" data-target="#add_investments_modal" >Add Investments</a>
                             <?php } ?>
                         </div>
                     </div>
@@ -63,15 +63,53 @@ $this->load->view('layout/header');
 <?php
 $this->load->view('layout/footer');
 $this->load->view('general/delete_modal');
-$this->load->view('investments/add')
+$this->load->view('investments/add');
+$this->load->view('investments/edit');
 ?>
 <script>
+    var dTable = '';
     $(document).ready(function () {
-        $('#list_datatable').DataTable({
+        dTable = getAllInvestment();
+        <?php 
+        $category_success = $this->session->flashdata('category_success');
+        $category_error = $this->session->flashdata('category_error');
+        ?>
+        var alert_success = '<?= $category_success; ?>';
+        var alert_failure = '<?= $category_error; ?>';
+        if(alert_success != ''){
+            alert_d.text = alert_success;
+            PNotify.success(alert_d);
+        }else if(alert_failure != ''){
+            alert_d.text = alert_failure;
+            PNotify.error(alert_d);
+        }
+    });
+    $('body').on('change', 'input[type="checkbox"][name="check_item"]', function () {
+        var i = 0;
+        $.each($("input[name='check_item']:checked"), function () {
+            i++;
+        });
+        if (i == 1)
+        {
+            var row = $("input[name='check_item']:checked").closest("tr");
+            var action_button = row.find('.action_button').html();
+            $('#plus_btn').hide();
+            $('.filter_body').html(action_button);
+            $('#filter').show();
+        } else
+        {
+            $('#plus_btn').show();
+            $('#filter').hide();
+            $('.filter_body').html('');
+        }
+    });
+    function getAllInvestment(){
+        var table = $('#list_datatable').DataTable({
             "processing": true,
             "serverSide": true,
-             "iDisplayLength": 15,
-            "lengthMenu": [ [15, 25, 50,100, -1], [15, 25, 50,100, "All"] ],
+            "paging": true,
+            "searching": true,
+            "ordering": true,
             "ajax": {
                 "url": base_url + "investments",
                 "dataType": "json",
@@ -90,25 +128,6 @@ $this->load->view('investments/add')
             });
 
              anime.timeline({loop:!0}).add({targets:".ml8 .circle-white",scale:[0,3],opacity:[1,0],easing:"easeInOutExpo",rotateZ:360,duration:8e3}),anime({targets:".ml8 .circle-dark-dashed",rotateZ:360,duration:8e3,easing:"linear",loop:!0});
-        <?php 
-        $partner_success = $this->session->flashdata('partner_success');
-        $partner_error = $this->session->flashdata('partner_error');
-        ?>
-        var alert_success = '<?= $partner_success; ?>';
-        var alert_failure = '<?= $partner_error; ?>';
-        if(alert_success != ''){
-            alert_d.text = alert_success;
-            PNotify.success(alert_d);
-        }else if(alert_failure != ''){
-            alert_d.text = alert_failure;
-            PNotify.error(alert_d);
-        }       
-        $(document).on('change', 'input[name="check_item"]', function() {       
-            $("input[name='check_item']").not(this).prop('checked', false);  
-        });
-        $('.upload_customer_popup').click(function(){
-            $('#upload_customer_doc').modal({show: true, backdrop: 'static', keyboard: false});
-        });
-        
-    });
+        return table;
+    }
 </script>

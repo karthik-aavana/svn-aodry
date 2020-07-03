@@ -540,7 +540,7 @@ Class General_voucher extends MY_Controller
         
         if(!empty($errors_email)){
             $to = $this->session->userdata('SESS_IDENTITY');
-            $to = 'chetna.b@aavana.in';
+            
             array_unshift($header_row, 'Errors');
             array_unshift($errors_email,$header_row);
             $resp = $this->send_csv_mail($errors_email,'Voucher Bulk Import Error Logs, <br><br> PFA,',"Voucher bulk upload error logs in <{$import_xls_file}>",$to);
