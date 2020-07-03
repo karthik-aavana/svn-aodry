@@ -25,6 +25,7 @@
                                 <input class="form-control" type="text" name="investment_name_e" id="investment_name_e" maxlength="30" />
                                     <span class="validation-color" id="err_investment_name_e"></span>
                                     <input type="hidden" name="investment_id_e" id="investment_id_e" value="0">
+                                    <input type="hidden" name="ledger_id" id="ledger_id" value="">
                                     <input type="hidden" class="form-control" id="investment_name_used_e" name="investment_name_used_e" maxlength="90">
                         </div>
                     </div>      
@@ -52,7 +53,8 @@
             success : function(result) {
                 $('#investment_id_e').val(result[0].investments_id);
                 $('#investment_code_e').val(result[0].investments_code);
-                $('#investment_name_e').val(result[0].investments_type).change();
+                $('#investment_name_e').val(result[0].investments_type);
+                $('#ledger_id').val(result[0].ledger_id);
             }
         });
     });
@@ -63,6 +65,7 @@
             var investment_code = $('#investment_code_e').val() ? $('#investment_code_e').val() : "";
             var investment_name = $('#investment_name_e').val() ? $('#investment_name_e').val() : "";  
             var investment_id = $('#investment_id_e').val();
+            var ledger_id = $('#ledger_id').val();
             var name_regex1 = /^[a-zA-Z\[\]/@()#$%&\-.+,\d\-_\s\']+$/;
         
         if (investment_name == null || investment_name == "") {
@@ -89,7 +92,8 @@
                 data : {
                     'investment_code' : investment_code,
                     'investment_name' : investment_name,
-                    'investment_id' : investment_id
+                    'investment_id' : investment_id,
+                    'ledger_id' : ledger_id
                 },
                  beforeSend: function(){
                     // Show image container
