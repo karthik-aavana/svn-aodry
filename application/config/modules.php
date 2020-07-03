@@ -117,6 +117,7 @@ $config['product_stock_report'] = 110;
 $config['gstr1_report_module'] = 111;
 $config['team_module'] = 112;
 $config['outlet_module'] = 113;
+$config['warehouse_module'] = 115;
 
 //submodule list
 $config['transporter_sub_module'] = 2;

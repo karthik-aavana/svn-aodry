@@ -3250,6 +3250,20 @@ class Common
         );
         return $data;
     }
+    public function warehouse_field()
+    {
+        $string = "warehouse_id,warehouse_name";
+        $table  = "warehouse";
+        $where = array(
+            'delete_status' => 0,
+            'branch_id'     => $this->ci->session->userdata('SESS_BRANCH_ID'));
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where
+        );
+        return $data;
+    }
 
     public function discount_field1()
     {
@@ -6036,7 +6050,36 @@ class Common
         );
         return $data;
     }
-
+    public function warehouse_list_field()
+    {
+        $string = 'wr.*,c.city_name,co.country_name,st.state_name';
+        $table  = 'warehouse wr';
+        // $join['contact_person cp']='cp.contact_person_id=cust.customer_contact_person_id';
+        $join['cities c']     = 'wr.warehouse_city_id=c.city_id' . '#' . 'left';
+        $join['states st']    = 'wr.warehouse_state_id=st.state_id';
+        $join['countries co'] = 'wr.warehouse_country_id=co.country_id';
+        $where = array(
+            'wr.branch_id'     => $this->ci->session->userdata('SESS_BRANCH_ID'),
+            'wr.delete_status' => 0
+        );
+        $order = [
+            "wr.warehouse_id" => "desc"];
+        $filter = array(
+            'wr.warehouse_name',
+            'co.country_name',
+            'st.state_name',
+            'c.city_name'
+        );
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'join'   => $join,
+            'filter' => $filter,
+            'order'  => $order
+        );
+        return $data;
+    }
     public function customer_list_field()
     {
         $string = 'cust.*,c.city_name,co.country_name,st.state_name,u.first_name,u.last_name';

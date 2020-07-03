@@ -176,25 +176,44 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                             <span class="validation-color" id="err_grn_date"></span>
                                         </div>
                                     </div>
-                                    <div class="col-sm-3" style="display: none;">
-                                    <div class="form-group">
-                                        <label for="department">Department<span class="validation-color">*</span></label>
-                                         <div class="input-group">
-                                            <div class="input-group-addon">
-                                                <a data-backdrop="static" data-keyboard="false" href="#" data-toggle="modal" data-target="#department_modal" class="open_department_modal pull-right">+</a>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label for="warehouse">Warehouse<span class="validation-color">*</span></label>
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <a data-backdrop="static" data-keyboard="false" href="#" data-toggle="modal" data-target="#warehouse_modal" class="open_warehouse_modal pull-right">+</a>
+                                                </div>
+                                                <select class="form-control select2" id="cmb_warehouse" name="cmb_warehouse" > 
+                                                <option value="">Select Warehouse</option>
+                                                <?php
+                                                foreach ($warehouse as  $value) {
+                                                echo "<option value='".$value->warehouse_id."'>".$value->warehouse_name."</option>";
+                                                }
+                                                ?>    
+                                                </select>
                                             </div>
-                                        <select class="form-control select2" id="cmb_department" name="cmb_department" > 
-                                            <option value="">Select Department</option>
-                                        <?php
-                                        foreach ($department as  $value) {
-                                            echo "<option value='".$value->department_id."'>".$value->department_name."</option>";
-                                        }
-                                        ?>    
-                                        </select>
+                                            <span class="validation-color" id="err_warehouse"></span>
+                                        </div>
                                     </div>
-                                        <span class="validation-color" id="err_department"></span>
+                                    <div class="col-sm-3" style="display: none;">
+                                        <div class="form-group">
+                                            <label for="department">Department<span class="validation-color">*</span></label>
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <a data-backdrop="static" data-keyboard="false" href="#" data-toggle="modal" data-target="#department_modal" class="open_department_modal pull-right">+</a>
+                                                </div>
+                                                <select class="form-control select2" id="cmb_department" name="cmb_department" > 
+                                                <option value="">Select Department</option>
+                                                <?php
+                                                foreach ($department as  $value) {
+                                                echo "<option value='".$value->department_id."'>".$value->department_name."</option>";
+                                                }
+                                                ?>    
+                                                </select>
+                                            </div>
+                                            <span class="validation-color" id="err_department"></span>
+                                        </div>
                                     </div>
-                                </div>
                                 <div class="col-sm-3"  style="display: none;">
                                     <div class="form-group">
                                          <label for="subdepartment">Subdepartment</label>

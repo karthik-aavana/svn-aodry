@@ -347,6 +347,7 @@ class Purchase extends MY_Controller {
         $data['charges_sub_module_id'] = $this->config->item('charges_sub_module');
         $data['accounts_sub_module_id'] = $this->config->item('accounts_sub_module');
         $data['brands'] = $this->brand_call();
+        $data['warehouse'] = $this->warehouse_call();
         $data['supplier'] = $this->supplier_call();
        
         $data['currency'] = $this->currency_call();
@@ -741,7 +742,7 @@ class Purchase extends MY_Controller {
 
                     if ($value != null && $value != '') {
                         if($LeatherCraft_id == $this->session->userdata('SESS_BRANCH_ID')){
-                           $item_id =  $this->createBatchProduct($value->item_id,$this->input->post('grn_number'),$this->input->post('supplier'));
+                           $item_id =  $this->createBatchProduct($value->item_id,$this->input->post('grn_number'),$this->input->post('supplier'),$this->input->post('cmb_warehouse'));
                         }else{
                             $item_id = $value->item_id;
                         }
@@ -3302,6 +3303,7 @@ class Purchase extends MY_Controller {
         ));
 
         $data['brands'] = $this->brand_call();
+        $data['warehouse'] = $this->warehouse_call();
 
         $item_types = $this->general_model->getRecords('item_type,purchase_item_description', 'purchase_item', array(
             'purchase_id' => $id));
@@ -3393,6 +3395,7 @@ class Purchase extends MY_Controller {
               } */
             $product_items = $this->common->purchase_items_product_list_field($id);
             $purchase_product_items = $this->general_model->getJoinRecords($product_items['string'], $product_items['table'], $product_items['where'], $product_items['join']);
+            $data['data'][0]->warehouse_id = $purchase_product_items[0]->warehouse_id;
         }
 
         $data['items'] = array_merge($purchase_product_items, $purchase_service_items);
@@ -3913,14 +3916,14 @@ class Purchase extends MY_Controller {
                             //$item_id = $value->item_id;
                             $item_id = ($value->item_id != 0) ?  $value->item_id : $product_id;
                             if($LeatherCraft_id == $this->session->userdata('SESS_BRANCH_ID')){
-                                    $item_id =  $this->updateBarcodeProduct($item_id,$this->input->post('grn_number'),$this->input->post('supplier'));
+                                    $item_id =  $this->updateBarcodeProduct($item_id,$this->input->post('grn_number'),$this->input->post('supplier'),$this->input->post('cmb_warehouse'));
                             }
                             
                             $where = array('purchase_item_id' => $purchase_item_id);
                             $this->general_model->updateData($table, $item_data, $where);
                         } else {
                                 if($LeatherCraft_id == $this->session->userdata('SESS_BRANCH_ID')){
-                                    $item_id =  $this->createBatchProduct($value->item_id,$this->input->post('grn_number'),$this->input->post('supplier'));
+                                    $item_id =  $this->createBatchProduct($value->item_id,$this->input->post('grn_number'),$this->input->post('supplier'),$this->input->post('cmb_warehouse'));
                                 }else{
                                     //$item_id = $value->item_id;
                                     $item_id = ($value->item_id != 0) ?  $value->item_id : $product_id;
@@ -5129,7 +5132,7 @@ class Purchase extends MY_Controller {
         $object_writer->save('php://output');
     }
 
-    function createBatchProduct($item_id,$grn_number,$supplier_id){
+    function createBatchProduct($item_id,$grn_number,$supplier_id,$warehouse_id){
         $barcode = '';
 
         $sup_data  = $this->general_model->getRecords('supplier_code', 'supplier', array(
@@ -5240,11 +5243,12 @@ class Purchase extends MY_Controller {
             $product_data['product_combination_id'] = $data[0]->product_combination_id;
             $product_data['product_barcode'] = $barcode;
             $product_data['GRN'] = $grn_number;
+            $product_data['warehouse_id'] = $warehouse_id;
 
             $product_id = $this->general_model->insertData('products', $product_data);
             
         }else{  
-            $update_barcode = array('product_barcode' => $barcode,'GRN' => $grn_number);
+            $update_barcode = array('product_barcode' => $barcode,'GRN' => $grn_number,'warehouse_id' => $warehouse_id);
             $this->general_model->updateData('products', $update_barcode, array('product_id' => $item_id));           
           $product_id = $item_id;   
         }
@@ -5254,7 +5258,7 @@ class Purchase extends MY_Controller {
     }
 
 
-    function updateBarcodeProduct($item_id,$grn_number,$supplier_id){
+    function updateBarcodeProduct($item_id,$grn_number,$supplier_id,$warehouse_id){
         $barcode = '';
 
         $sup_data  = $this->general_model->getRecords('supplier_code', 'supplier', array(
@@ -5301,7 +5305,7 @@ class Purchase extends MY_Controller {
             $barcode = $vendor_code.$grn_number.$article_code. $colour_code.$size_val;
         
               
-            $update_barcode = array('product_barcode' => $barcode,'GRN' => $grn_number);
+            $update_barcode = array('product_barcode' => $barcode,'GRN' => $grn_number,'warehouse_id' => $warehouse_id);
             $this->general_model->updateData('products', $update_barcode, array('product_id' => $item_id));           
           $product_id = $item_id;   
         
