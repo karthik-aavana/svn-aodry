@@ -229,7 +229,7 @@ $branch_id = $this->session->userdata('SESS_BRANCH_ID');
                                         <label for="warehouse">Warehouse<span class="validation-color">*</span></label>
                                          <div class="input-group">
                                             <div class="input-group-addon">
-                                                <a data-backdrop="static" data-keyboard="false" href="#" data-toggle="modal" data-target="#warehouse_modal" class="open_warehouse_modal pull-right">+</a>
+                                                <!-- <a data-backdrop="static" data-keyboard="false" href="#" data-toggle="modal" data-target="#warehouse_modal" class="open_warehouse_modal pull-right">+</a> -->
                                             </div>
                                         <select class="form-control select2" id="cmb_warehouse" name="cmb_warehouse" > 
                                             <option value="">Select Warehouse</option>
