@@ -580,7 +580,8 @@ class Ion_auth_model extends CI_Model
         $query = $this->db->select($this->identity_column . ', email,first_name,last_name, id,branch_id,branch_code, password, active, last_login')->where([
                         $this->identity_column => $identity,
                         'branch_code'          => $branch_code ])->where('username !=', 'superadmin')->limit(1)->order_by('id', 'desc')->get($this->tables['users']);
-
+        /*print_r($this->db->last_query());
+        exit;*/
         if ($this->is_max_login_attempts_exceeded($identity))
         {
             $this->hash_password($password);
@@ -1265,6 +1266,7 @@ class Ion_auth_model extends CI_Model
             $session_data['SESS_PACKAGE_STATUS'] = 1;
         }
 
+        $session_data['SESS_FIRM_ID']        = $branch_data->firm_id;
         $session_data['SESS_DEFAULT_CURRENCY']        = $branch_data->branch_default_currency;
         $session_data['SESS_DEFAULT_CURRENCY_SYMBOL'] = $branch_data->currency_symbol;
         $session_data['SESS_DEFAULT_CURRENCY_CODE']   = $branch_data->currency_code;
@@ -1275,6 +1277,7 @@ class Ion_auth_model extends CI_Model
         $session_data['SESS_FINANCIAL_YEAR_TITLE_WITH_MONTH']    = trim($branch_data->financial_year_title_with_month);
         $this->session->set_userdata($session_data);
         $this->trigger_events('post_set_session');
+        
         return TRUE;
     }
 
