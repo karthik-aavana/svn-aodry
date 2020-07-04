@@ -2399,7 +2399,7 @@ class Common
         return $data;
     }
 
-    public function expense_bill_list_field_1($order_ser='',$dir = '')
+     public function expense_bill_list_field_1($order_ser='',$dir = '')
     {
         $string = "e.*,s.supplier_name,s.supplier_id,u.first_name,u.last_name, (e.supplier_receivable_amount - e.expense_bill_paid_amount) as balance_payable";
         $table  = "expense_bill e";
@@ -3137,7 +3137,7 @@ class Common
     }
 
     public function product_varient_field($product_id = ""){
-        $string = 'p.product_name as item_name, p.product_id as item_id, "product" as item_type, "code128" as item_barcode_symbology,  " - " as varient_name,u.uom as varient_unit, c.category_name, p.product_code as item_code, p.product_sku, p.product_selling_price as selling_price, p.product_serail_no, c.category_code ';
+        $string = 'p.product_name as item_name, p.product_id as item_id, "product" as item_type, "code128" as item_barcode_symbology,  " - " as varient_name,u.uom as varient_unit, c.category_name, p.product_barcode as item_code, p.product_sku, p.product_selling_price as selling_price, p.product_serail_no, c.category_code ';
         $table = "products p";
         $join  = ["category c"          => "c.category_id=p.product_category_id",
                 "uqc u"  => "u.id = p.product_unit_id"
@@ -3734,9 +3734,7 @@ class Common
         
         $string = "*,(product_quantity + product_opening_quantity) as product_closing_quantity";
         $table  = "products";
-        $where = array(
-            'delete_status' => 0,
-            'branch_id'=>$this->ci->session->userdata('SESS_BRANCH_ID'));
+        $where = array('delete_status' => 0,'branch_id'=>$this->ci->session->userdata('SESS_BRANCH_ID'));
         $data = array(
             'string' => $string,
             'table'  => $table,
@@ -3790,9 +3788,9 @@ class Common
         }
     }
 
-     public function product_suggestions_field($item_access, $term){
+    public function product_suggestions_field($item_access, $term){
         
-            $sql = 'SELECT product_name as item_name,product_id as item_id,"product" as item_type,"code128" as item_barcode_symbology, product_code as item_code FROM products where delete_status=0 and branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . ' and product_name like "%' . $term . '%" order by product_name desc';
+            $sql = 'SELECT product_name as item_name,product_id as item_id,"product" as item_type,"code128" as item_barcode_symbology, product_code as item_code FROM products where delete_status=0 and branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . ' and (product_name like "%' . $term . '%" OR product_code like "%' . $term . '%" OR product_barcode like "%' . $term . '%" ) order by product_name desc';
             // $data=$this->db->query($sql)->result();
             return $sql;
        
@@ -3876,7 +3874,7 @@ class Common
         $string = "pi.*,pr.expense_id as item_id,pr.expense_title as product_code,pr.expense_title as product_name,dt.discount_value,pr.expense_gst_id as product_tax_id,pr.expense_tds_id as product_tds_id,pr.expense_gst_value as product_tax_value,td.tax_name as tds_module_type,pr.expense_hsn_code";
         $table  = "expense_bill_item pi";
         $join   = [
-            'expense pr' => 'pi.expense_type_id = pr.expense_id' . '#' . 'left',
+            'expense pr' => 'pi.expense_type_id = pr.expense_id#left',
             'discount dt' => 'dt.discount_id = pi.expense_bill_item_discount_id' . '#' . 'left',
             'tax td'      => 'td.tax_id = pi.expense_bill_item_tds_id' . '#' . 'left'
         ];
@@ -4166,6 +4164,7 @@ class Common
         );
         return $data;
     }
+
     public function sales_items_product_inventory_list_field($sales_id)
     {
         $string = "si.*,pr.product_inventory_varients_id as product_id,pr.varient_code as product_code,pr.varient_name as product_name, p.product_hsn_sac_code,pr.purchase_price as product_price,dt.discount_value as item_discount_percentage,pr.varient_unit as product_unit,p.product_tax_id as item_tax_id,p.product_tax_value as item_tax_percentage,td.tax_name as tds_module_type";
@@ -4188,6 +4187,7 @@ class Common
         );
         return $data;
     }
+    
     public function delivery_challan_items_product_list_field($delivery_challan_id)
     {
         $string = "pi.*,pr.product_id,pr.product_code,pr.product_name, pr.product_hsn_sac_code,pr.product_price,dt.discount_value as item_discount_percentage,U.uom as product_unit";
@@ -4580,6 +4580,7 @@ class Common
         );
         return $data;
     }
+    
     public function delivery_challan_list_field1($delivery_challan_id)
     {
         $string = "d.*,st1.state_name as place_of_supply,
@@ -6244,7 +6245,7 @@ class Common
     public function product_list_field(){
         $string             = "p.*,c.category_name,u.first_name,u.last_name,m.uom";
         $table              = "products p";
-        $join['category c'] = "c.category_id=p.product_category_id" . '#' . 'left';
+        $join['category c'] = "c.category_id=p.product_category_id#left";
         $join['users u']    = "u.id = p.added_user_id";
         $join['uqc m']    = 'm.id = p.product_unit_id' . '#' . 'left';
         $where = array(
@@ -15065,7 +15066,7 @@ public function tds_report_sales_list(){
             'P.branch_id'         => $this->ci->session->userdata('SESS_BRANCH_ID'),
             'P.delete_status'     => 0,
             'SI.delete_status'    => 0,
-            'SI.sales_id'         => $id);
+            'SI.sales_id' => $id);
         $join = [
              "sales_item SI"  => "P.product_id = SI.item_id and SI.item_type = 'product'" ,
              "sales S"   => "S.sales_id = SI.sales_id",
@@ -15184,4 +15185,207 @@ public function tds_report_sales_list(){
         );
         return $data;
     }
+
+
+    public function outlet_list_field($order_ser='', $dir = '')
+    {
+        $string = "ot.*,b.branch_name,u.first_name,u.last_name,cur.currency_symbol, cur.currency_code, cur.currency_text";// cur.currency_symbol, cur.currency_code, cur.currency_text
+        $table  = "outlet ot";
+        $join   = [
+            "branch b"   => "ot.to_branch_id = b.branch_id",
+            'currency cur' => 'ot.currency_id = cur.currency_id#left',
+            "users u"    => "ot.added_user_id = u.id"];
+        
+        if($order_ser =='' || $dir == ''){
+            $order = [ 'ot.outlet_id' => 'desc' ];
+        }else{
+            $order = [ $order_ser => $dir ];
+        }
+        $where = array(
+            'ot.delete_status'     => 0,
+            'ot.branch_id'         => $this->ci->session->userdata('SESS_BRANCH_ID'),
+            'ot.financial_year_id' => $this->ci->session->userdata('SESS_FINANCIAL_YEAR_ID')
+        );
+
+        if (isset($id) && $id != 0 && $id != ""){
+            $where = array(
+                'ot.outlet_id' => $id,
+                'ot.branch_id'  => $this->ci->session->userdata('SESS_BRANCH_ID')
+            );
+        }
+        $filter = array(
+            'b.branch_name',
+            'ot.outlet_invoice_number',
+            'DATE_FORMAT(ot.outlet_date, "%d-%m-%Y")',
+            'ot.outlet_grand_total');
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'join'   => $join,
+            'filter' => $filter,
+            'order'  => $order
+        );
+        return $data;
+    }
+
+    public function inlet_list_field($order_ser='', $dir = '')
+    {
+        $string = "t.*,b.branch_name,COUNT(inlet_item_id) as total_items";// cur.currency_symbol, cur.currency_code, cur.currency_text
+        $table  = "inlet t";
+        $join   = [
+            "inlet_item i"   => "t.inlet_id = i.inlet_id",
+            "branch b"   => "t.from_branch_id = b.branch_id"];
+        
+        if($order_ser =='' || $dir == ''){
+            $order = [ 't.outlet_id' => 'desc' ];
+        }else{
+            $order = [ $order_ser => $dir ];
+        }
+        $where = array(
+            't.delete_status'     => 0,
+            'i.delete_status'     => 0,
+            't.branch_id'         => $this->ci->session->userdata('SESS_BRANCH_ID'),
+            /*'t.financial_year_id' => $this->ci->session->userdata('SESS_FINANCIAL_YEAR_ID')*/
+        );
+
+        if (isset($id) && $id != 0 && $id != ""){
+            $where = array(
+                't.inlet_id' => $id,
+                't.branch_id'  => $this->ci->session->userdata('SESS_BRANCH_ID')
+            );
+        }
+        $group = array('outlet_id');
+        $filter = array(
+            'b.branch_name',
+            't.inlet_invoice_number',
+            'DATE_FORMAT(t.inlet_date, "%d-%m-%Y")',
+            't.inlet_grand_total');
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'join'   => $join,
+            'filter' => $filter,
+            'order'  => $order,
+            'group'  => $group
+        );
+        
+        return $data;
+    }
+
+    public function inlet_items_product_list_field($inlet_id)
+    {
+        $string = "si.*,pr.product_id,pr.product_code,pr.product_name,pr.packing,pr.mfg_date,pr.exp_date,pr.product_image,pr.product_hsn_sac_code,pr.product_price,dt.discount_value as item_discount_percentage,pr.product_tax_id as item_tax_id,pr.product_tax_value as item_tax_percentage,td.tax_name as tds_module_type,pr.product_batch,U.uom as product_unit, US.uom as product_unit_inlet,pr.product_quantity,pr.product_opening_quantity";//SUM(pr.product_quantity + pr.product_opening_quantity) as stock,
+        $table  = "inlet_item si";
+        $join   = [
+            'products pr' => 'si.item_id = pr.product_id',
+            'discount dt' => 'dt.discount_id = si.inlet_item_discount_id' . '#' . 'left',
+            'tax td'      => 'td.tax_id = si.inlet_item_tds_id' . '#' . 'left',
+            'uqc U'      => 'U.id = pr.product_unit_id' . '#' . 'left',
+            'uqc US'      => 'US.id = si.inlet_item_uom_id' . '#' . 'left',
+        ];
+        $where = [
+            'si.inlet_id'      => $inlet_id,
+            'si.delete_status' => 0];
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'join'   => $join
+        );
+        return $data;
+    }
+    public function outlet_items_product_list_field($outlet_id)
+    {
+        $string = "si.*,pr.product_id,pr.product_code,pr.product_name,pr.packing,pr.mfg_date,pr.exp_date,b.brand_name,pr.product_image,  pr.product_hsn_sac_code,pr.product_price,dt.discount_value as item_discount_percentage,pr.product_tax_id as item_tax_id,pr.product_tax_value as item_tax_percentage,td.tax_name as tds_module_type,pr.product_batch,U.uom as product_unit, US.uom as product_unit_outlet,pr.product_quantity,pr.product_opening_quantity";//SUM(pr.product_quantity + pr.product_opening_quantity) as stock,
+        $table  = "outlet_item si";
+        $join   = [
+            'products pr' => 'si.item_id = pr.product_id',
+            'discount dt' => 'dt.discount_id = si.outlet_item_discount_id' . '#' . 'left',
+            'tax td'      => 'td.tax_id = si.outlet_item_tds_id' . '#' . 'left',
+            'uqc U'      => 'U.id = pr.product_unit_id' . '#' . 'left',
+            'uqc US'      => 'US.id = si.outlet_item_uom_id' . '#' . 'left',
+            'brand b'      => 'b.brand_id = pr.brand_id' . '#' . 'left',
+        ];
+        $where = [
+            'si.outlet_id'      => $outlet_id,
+            'si.delete_status' => 0];
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'join'   => $join
+        );
+        return $data;
+    }
+
+    public function inlet_list_field1($inlet_id)
+    {
+        $string = "i.*,st1.state_name as place_of_supply,
+                   co.country_name as billing_country,
+                   cur.*,
+                   st1.state_name as branch_state_name,
+                   st1.state_short_code,
+                   ct.city_name as customer_city,b.branch_address,
+                   b.branch_gstin_number,
+                   b.company_name,
+                   b.branch_email_address,
+                   b.branch_postal_code,
+                   b.branch_mobile,
+                   b.branch_pan_number,
+                   b.branch_cin_number,
+                   ";
+        $table = "inlet i";
+        $join  = [
+            'currency cur'   => 'i.currency_id = cur.currency_id',
+            'branch b'       => 'i.from_branch_id = b.branch_id',
+            'cities ct'      => 'b.branch_city_id = ct.city_id' . '#' . 'left',
+            'states st1'     => 'b.branch_state_id = st1.state_id' . '#' . 'left',
+            'countries co'   => 'b.branch_country_id = co.country_id' . '#' . 'left'
+        ];
+        $where['i.inlet_id'] = $inlet_id;
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'join'   => $join
+        );
+        return $data;
+    }
+
+    public function outlet_list_field1($outlet_id)
+    {
+        $string = "i.*,st1.state_name as place_of_supply,
+                   co.country_name as billing_country,
+                   cur.*,
+                   st1.state_name as branch_state_name,
+                   st1.state_short_code,
+                   ct.city_name as customer_city,b.branch_address,
+                   b.branch_gstin_number,
+                   b.company_name,
+                   b.branch_email_address,
+                   b.branch_postal_code,
+                   b.branch_mobile,
+                   b.branch_pan_number,
+                   b.branch_cin_number,
+                   ";
+        $table = "outlet i";
+        $join  = [
+            'currency cur'   => 'i.currency_id = cur.currency_id',
+            'branch b'       => 'i.to_branch_id = b.branch_id',
+            'cities ct'      => 'b.branch_city_id = ct.city_id' . '#' . 'left',
+            'states st1'     => 'b.branch_state_id = st1.state_id' . '#' . 'left',
+            'countries co'   => 'b.branch_country_id = co.country_id' . '#' . 'left'
+        ];
+        $where['i.outlet_id'] = $outlet_id;
+        $data = array(
+            'string' => $string,
+            'table'  => $table,
+            'where'  => $where,
+            'join'   => $join
+        );
+        return $data;
+    }
+
 }
