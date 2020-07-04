@@ -248,6 +248,7 @@ $this->load->view('layout/header');
                             <div class="form-group">
                                 <select class="select2" multiple="multiple"  id="filter_supplier_name"  name="filter_supplier_name">
                                     <option value="" >Select Supplier</option>
+                                    <option value="0">Others</option>
                                     <?php
                                     foreach ($supplier as $key => $value)
                                     {
