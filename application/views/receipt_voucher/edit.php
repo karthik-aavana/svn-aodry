@@ -122,7 +122,7 @@ $this->load->view('layout/header');?>
                           </div>
                           <div class="col-sm-2 paid_amount_div">
                             <div class="form-group">
-                              <label for="Total amount">Total Received Amount<span class="validation-color">*</span></label>
+                              <label for="Total amount">Total Received<br/>Amount<span class="validation-color">*</span></label>
                               <input type="text" class="form-control" id="paid_amount_<?=$i;?>" name="paid_amount" value="<?=precise_amount($value->invoice_paid_amount);?>" readonly>
                               <input type="hidden" class="form-control" id="remaining_amount_<?=$i;?>" name="remaining_amount" value="<?=$value->invoice_pending;?>" >
                               <!-- <span id="err_remaining_amount_<?=$i;?>" class="remaining_class"></span> -->
