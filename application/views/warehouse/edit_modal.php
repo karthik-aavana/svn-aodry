@@ -35,7 +35,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="">Country<span class="validation-color">*</span></label>
-                                <select class="form-control" id="cmb_country_edit1" name="cmb_country_edit1" style="width: 100%;">
+                                <select class="form-control country select2" id="cmb_country_edit1" name="cmb_country_edit1" style="width: 100%;">
                                     <?php
                                     foreach ($country as $row) {
                                         echo "<option value='" . $row->country_id . "'>" . $row->country_name . "</option>";
@@ -68,9 +68,12 @@
                     <div class="row">
                         <div class="col-sm-12">  
                             <div class="form-group">
-                                <label for="warehouse_address_edit">Warehouse Address<span class="validation-color">*</span> </label>
-                                <input type="text" class="form-control" id="warehouse_address_edit" name="warehouse_address_edit" value=""  maxlength="120">
+                                <label for="warehouse_address_edit">Warehouse Address<span class="validation-color">*</span></label>
+                                <textarea class="form-control" id="warehouse_address_edit" rows="2" name="warehouse_address_edit" maxlength="1000"></textarea>
                                 <span class="validation-color" id="err_warehouse_address_edit"><?php echo form_error('warehouse_address_edit'); ?></span>
+                                <!-- <label for="warehouse_address_edit">Warehouse Address<span class="validation-color">*</span> </label>
+                                <input type="text" class="form-control" id="warehouse_address_edit" name="warehouse_address_edit" value=""  maxlength="120">
+                                <span class="validation-color" id="err_warehouse_address_edit"><?php echo form_error('warehouse_address_edit'); ?></span> -->
                             </div>  
                         </div>
                     </div>
@@ -86,6 +89,7 @@
     </div>
 </div>
 <script>
+    var warehouse_name_count_edit = 0;
     $('#cmb_country_edit1').change(function () {
       var id = $(this).val();
         $('#cmb_state_edit').empty();
@@ -143,20 +147,50 @@
             dataType: 'JSON',
             method: 'POST',
             success: function (result) {
-                console.log(result);
+                var data = result['data'];
+                $('#cmb_country_edit1').val(data[0].warehouse_country_id).trigger('change');
                 var state_list = result['state_list'];
                 var city_list = result['city_list'];
                 $('#cmb_state_edit').append(state_list);
                 $('#cmb_city_edit').append(city_list);
-                var data = result['data'];
                 $('#warehouse_id_edit').val(data[0].warehouse_id);
                 $('#warehouse_name_edit').val(data[0].warehouse_name);
                 $('#warehouse_address_edit').val(data[0].warehouse_address);
-                $('#cmb_country_edit1').val(data[0].warehouse_country_id);
                 $('#cmb_state_edit').val(data[0].warehouse_state_id);
                 $('#cmb_city_edit').val(data[0].warehouse_city_id);
             }
         });
+    });
+    $('[name=warehouse_name_edit]').on('keyup', function() {
+        var warehouse_name_edit = $(this).val();
+        var warehouse_id_edit = $('#warehouse_id_edit').val();
+        if (warehouse_name_edit != '') {
+            if (typeof xhr != 'undefined') {
+                if (xhr.readyState != 4) xhr.abort();
+            }
+            $('#err_warehouse_name_edit').text('');
+            xhr = $.ajax({
+                url: base_url + 'warehouse/WarehouseNameValidationEdit',
+                type: 'post',
+                data: {
+                    warehouse_name_edit : warehouse_name_edit,
+                    warehouse_id_edit : warehouse_id_edit
+                },
+                dataType: 'json',
+                success: function(json) {
+                    if (json[0].num > 0) {
+                        $('#err_warehouse_name_edit').text('Name already used!');
+                        warehouse_name_count_edit = 1;
+                        return false;
+                    }else{
+                        warehouse_name_count_edit = 0;
+                    }
+                },
+                complete: function() {
+
+                }
+            })
+        }
     });
     $(document).ready(function () {
         $("#warehouse_update").click(function (event) {
@@ -196,24 +230,28 @@
                 $("#err_warehouse_address_edit").text("");
             }
             var form_data = $('#frm_warehouse_edit').serializeArray();
-             $("#loader").show();
-            $.ajax({
-                url: base_url + 'warehouse/edit_warehouse',
-                dataType: 'JSON',
-                method: 'POST',
-                data: form_data,
-                 beforeSend: function(){
-                     // Show image container
-                    $("#loader").show();
-                },
-                success: function (result) {
-                    setTimeout(function () {
-                        location.reload();
-                        $("#loader").hide();
-                    });
-                }
-            });
-            anime.timeline({loop:!0}).add({targets:".ml8 .circle-white",scale:[0,3],opacity:[1,0],easing:"easeInOutExpo",rotateZ:360,duration:8e3}),anime({targets:".ml8 .circle-dark-dashed",rotateZ:360,duration:8e3,easing:"linear",loop:!0});
+            if(warehouse_name_count_edit != 1){
+                $("#loader").show();
+                $.ajax({
+                    url: base_url + 'warehouse/edit_warehouse',
+                    dataType: 'JSON',
+                    method: 'POST',
+                    data: form_data,
+                     beforeSend: function(){
+                         // Show image container
+                        $("#loader").show();
+                    },
+                    success: function (result) {
+                        setTimeout(function () {
+                            location.reload();
+                            $("#loader").hide();
+                        });
+                    }
+                });
+                anime.timeline({loop:!0}).add({targets:".ml8 .circle-white",scale:[0,3],opacity:[1,0],easing:"easeInOutExpo",rotateZ:360,duration:8e3}),anime({targets:".ml8 .circle-dark-dashed",rotateZ:360,duration:8e3,easing:"linear",loop:!0});
+            }else{
+                $('#err_warehouse_name_edit').text('Name already used!');
+            }
     });
 
         });

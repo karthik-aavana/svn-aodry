@@ -275,4 +275,22 @@ class Warehouse extends MY_Controller {
             redirect("warehouse", 'refresh');
         }
     }
+    public function WarehouseNameValidation(){
+        $warehouse_name = strtoupper(trim($this->input->post('warehouse_name')));
+        $data = $this->general_model->getRecords('count(*) num', 'warehouse', array(
+            'branch_id' => $this->session->userdata('SESS_BRANCH_ID'),
+            'delete_status' => 0,
+            'warehouse_name' => $warehouse_name));
+        echo json_encode($data);
+    }
+    public function WarehouseNameValidationEdit(){
+        $warehouse_name = strtoupper(trim($this->input->post('warehouse_name_edit')));
+        $warehouse_id = $this->input->post('warehouse_id_edit');
+        $data = $this->general_model->getRecords('count(*) num', 'warehouse', array(
+            'branch_id' => $this->session->userdata('SESS_BRANCH_ID'),
+            'delete_status' => 0,
+            'warehouse_id !=' => $warehouse_id,
+            'warehouse_name' => $warehouse_name));
+        echo json_encode($data);
+    }
 }

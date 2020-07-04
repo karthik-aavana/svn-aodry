@@ -70,9 +70,12 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="form-group">
-                                <label for="warehouse_address">Warehouse Address<span class="validation-color">*</span> </label>
-                                <input type="text" class="form-control" id="warehouse_address" name="warehouse_address" value="" maxlength="120">
+                                <label for="warehouse_address">Warehouse Address<span class="validation-color">*</span></label>
+                                <textarea class="form-control" id="warehouse_address" rows="2" name="warehouse_address" maxlength="1000"></textarea>
                                 <span class="validation-color" id="err_warehouse_address"><?php echo form_error('warehouse_address'); ?></span>
+                                <!-- <label for="warehouse_address">Warehouse Address<span class="validation-color">*</span> </label>
+                                <input type="text" class="form-control" id="warehouse_address" name="warehouse_address" value="" maxlength="120"> 
+                                <span class="validation-color" id="err_warehouse_address"><?php echo form_error('warehouse_address'); ?></span>-->
                             </div>  
                         </div>  
                     </div>
@@ -89,6 +92,7 @@
 </div>
 </div>
 <script>
+    var warehouse_name_count = 0;
     $('#cmb_country').change(function () {
         var id = $(this).val();
         $('#cmb_state').empty();
@@ -138,6 +142,35 @@
             }
         });
     });
+    $('[name=warehouse_name]').on('keyup', function() {
+        var warehouse_name = $(this).val();
+        if (warehouse_name != '') {
+            if (typeof xhr != 'undefined') {
+                if (xhr.readyState != 4) xhr.abort();
+            }
+            $('#err_warehouse_name').text('');
+            xhr = $.ajax({
+                url: base_url + 'warehouse/WarehouseNameValidation',
+                type: 'post',
+                data: {
+                    warehouse_name: warehouse_name
+                },
+                dataType: 'json',
+                success: function(json) {
+                    if (json[0].num > 0) {
+                        $('#err_warehouse_name').text('Name already used!');
+                        warehouse_name_count = 1;
+                        return false;
+                    }else{
+                        warehouse_name_count = 0;
+                    }
+                },
+                complete: function() {
+
+                }
+            })
+        }
+    });
     $("#warehouse_submit").click(function (event) {
         var warehouse_name = $('#warehouse_name').val();
         var warehouse_address = $('#warehouse_address').val();
@@ -173,10 +206,11 @@
             $("#err_warehouse_address").text("Please Enter Warehouse Address.");
             return false;
         } else {
-            $("#err_party_address").text("");
+            $("#err_warehouse_address").text("");
         }
         var form_data = $('#frm_warehouse_add').serializeArray();
-        $.ajax({
+        if(warehouse_name_count != 1){
+            $.ajax({
             url: base_url + 'warehouse/add_warehouse',
             dataType: 'JSON',
             method: 'POST',
@@ -192,7 +226,10 @@
 
                 });                
             }
-        });
-         anime.timeline({loop:!0}).add({targets:".ml8 .circle-white",scale:[0,3],opacity:[1,0],easing:"easeInOutExpo",rotateZ:360,duration:8e3}),anime({targets:".ml8 .circle-dark-dashed",rotateZ:360,duration:8e3,easing:"linear",loop:!0});
+            });
+             anime.timeline({loop:!0}).add({targets:".ml8 .circle-white",scale:[0,3],opacity:[1,0],easing:"easeInOutExpo",rotateZ:360,duration:8e3}),anime({targets:".ml8 .circle-dark-dashed",rotateZ:360,duration:8e3,easing:"linear",loop:!0});
+        }else{
+            $('#err_warehouse_name').text('Name already used!');
+        }
     });
 </script>

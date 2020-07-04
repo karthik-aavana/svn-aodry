@@ -3892,7 +3892,7 @@ class Common
     }
     public function purchase_items_product_list_field($purchase_id, $return_quantity = "")
     {
-        $string = "pi.*,p.currency_id,pr.product_id,pr.product_code,pr.product_name, pr.product_hsn_sac_code,pr.product_price,dt.discount_value,U.uom as product_unit,pr.product_tax_id,pr.product_batch,pr.product_tds_id,pr.product_tax_value,td.tax_name as tds_module_type";
+        $string = "pi.*,p.currency_id,pr.product_id,pr.product_code,pr.product_name,pr.warehouse_id, pr.product_hsn_sac_code,pr.product_price,dt.discount_value,U.uom as product_unit,pr.product_tax_id,pr.product_batch,pr.product_tds_id,pr.product_tax_value,td.tax_name as tds_module_type";
         $table  = "purchase_item pi";
         $join   = [            
             'products pr' => 'pi.item_id = pr.product_id',
