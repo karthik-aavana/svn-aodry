@@ -895,7 +895,7 @@ $this->load->view('recurrence/recurrence_invoice_modal');
                 "serverSide": true, 
                 "scrollX": true,
                 "iDisplayLength": 50,
-                "lengthMenu": [ [10, 25, 50,100, -1], [10, 25, 50,100, "All"] ],
+                 "lengthMenu": [ [15, 25, 50, 100, -1], [15, 25, 50, 100, "All"] ],
                 "ajax": {
                     "url": base_url + "report/payment_voucher_report",
                     "dataType": "json",

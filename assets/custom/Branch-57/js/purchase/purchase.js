@@ -136,6 +136,15 @@ $(document).ready(function () {
             $('#err_grn_date').text("");
         }
 
+        if ($('#cmb_warehouse').val() == "") {
+
+            $('#err_warehouse').text("Please Select Warehouse.");
+
+            $('#cmb_warehouse').focus();
+            return !1
+        }else{
+            $('#err_warehouse').text("");
+        }
 
         if ($('#shipping_address').val() == "") {
 

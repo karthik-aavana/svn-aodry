@@ -35,6 +35,8 @@
         });
         function table_load(id) {
             comp_table = $('#damagedStockHistory').DataTable({
+                "iDisplayLength": 15,
+                    "lengthMenu": [ [15, 25, 50,100, -1], [15, 25, 50,100, "All"] ],
                 'ajax': {
                     url: base_url + 'product_stock/damaged_history/' + id,
                     type: 'post'

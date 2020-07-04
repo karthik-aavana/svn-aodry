@@ -61,6 +61,8 @@
         });
         function table_load(id) {
             comp_table = $('#connectSaleList').DataTable({
+                 "iDisplayLength": 15,
+                    "lengthMenu": [ [15, 25, 50,100, -1], [15, 25, 50,100, "All"] ],
                 'ajax': {
                     url: base_url + 'advance_voucher/get_advance_sales/' + id,
                     type: 'post',

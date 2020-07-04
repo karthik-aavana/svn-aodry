@@ -886,6 +886,11 @@ public function generate_branch_number($access_settings, $primary_id, $table_nam
         $data          = $this->general_model->getRecords($brand_data['string'], $brand_data['table'], $brand_data['where']);
         return $data;
     }
+    public function warehouse_call(){
+        $brand_data = $this->common->warehouse_field();
+        $data          = $this->general_model->getRecords($brand_data['string'], $brand_data['table'], $brand_data['where']);
+        return $data;
+    }
 
     public function discount_call1()
     {

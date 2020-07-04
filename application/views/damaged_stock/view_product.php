@@ -39,6 +39,8 @@
 
         function table_load(id) {
             comp_table = $('#view_damaged_stock').DataTable({
+                "iDisplayLength": 15,
+                    "lengthMenu": [ [15, 25, 50,100, -1], [15, 25, 50,100, "All"] ],
                 'ajax': {
                     url: base_url + 'damaged_stock/damaged_history/' + id,
                     type: 'post'
