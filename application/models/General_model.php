@@ -7704,11 +7704,11 @@ class General_model extends CI_Model{
                         if ($i == 0 || $j == 0)
                         {
                             $this->db->group_start();
-                            $this->db->where('t.party_id', $value);
+                            $this->db->where('t.supplier_name', $value);
                         }
                         else
                         {
-                            $this->db->or_where('t.party_id', $value);
+                            $this->db->or_where('t.supplier_name', $value);
                         } $i++;
                         $j++;
                     } $this->db->group_end();
@@ -15629,11 +15629,11 @@ class General_model extends CI_Model{
                         if ($i == 0 || $j == 0)
                         {
                             $this->db->group_start();
-                            $this->db->where('t.party_id', $value);
+                            $this->db->where('t.supplier_name', $value);
                         }
                         else
                         {
-                            $this->db->or_where('t.party_id', $value);
+                            $this->db->or_where('t.supplier_name', $value);
                         } $i++;
                         $j++;
                     } $this->db->group_end();
@@ -25035,11 +25035,11 @@ class General_model extends CI_Model{
                         if ($i == 0 || $j == 0)
                         {
                             $this->db->group_start();
-                            $this->db->where('t.party_id', $value);
+                            $this->db->where('t.supplier_name', $value);
                         }
                         else
                         {
-                            $this->db->or_where('t.party_id', $value);
+                            $this->db->or_where('t.supplier_name', $value);
                         } $i++;
                         $j++;
                     } $this->db->group_end();

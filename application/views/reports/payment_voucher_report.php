@@ -248,12 +248,12 @@ $this->load->view('layout/header');
                             <div class="form-group">
                                 <select class="select2" multiple="multiple"  id="filter_supplier_name"  name="filter_supplier_name">
                                     <option value="" >Select Supplier</option>
-                                    <option value="0">Others</option>
+                                    <option value="Others">Others</option>
                                     <?php
                                     foreach ($supplier as $key => $value)
                                     {
                                         ?>
-                                        <option value="<?= $value->supplier_id ?>"><?= $value->supplier_name ?></option>
+                                        <option value="<?= $value->supplier_name ?>"><?= $value->supplier_name ?></option>
                                         <?php
                                     }
                                     ?>
