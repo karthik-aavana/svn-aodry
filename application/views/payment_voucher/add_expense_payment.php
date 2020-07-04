@@ -83,22 +83,29 @@ $this->load->view('layout/header');
                         <div class="form-group">
                           <label for="supplier">supplier <span class="validation-color">*</span></label>
                           <select class="form-control select2" id="supplier" name="supplier" style="width: 100%;">
+                          <?php
+                                if($data[0]->expense_bill_payee_id == 0){ ?>
+                                    <option value="0">Others</option>
+                                <?php
+                                }else {
+                                ?>
                               <?php
-                              foreach ($supplier as $row)
-                              {
-                                  if ($row->supplier_id == $data[0]->expense_bill_payee_id)
-                                  {
-                                    if($row->supplier_mobile != ''){
+                                foreach ($supplier as $row)
+                                {
+                                    if ($row->supplier_id == $data[0]->expense_bill_payee_id)
+                                    {
+                                      if($row->supplier_mobile != ''){
+                                        ?>
+                                        <option value="<?= $row->supplier_id ?>"><?= $row->supplier_name.'('.$row->supplier_mobile.')' ?></option>
+                                      <?php
+                                      }else{
                                       ?>
-                                      <option value="<?= $row->supplier_id ?>"><?= $row->supplier_name.'('.$row->supplier_mobile.')' ?></option>
-                                    <?php
-                                    }else{
-                                    ?>
-                                    <option value="<?= $row->supplier_id ?>"><?= $row->supplier_name ?></option>
-                                    <?php  
-                                    }
+                                      <option value="<?= $row->supplier_id ?>"><?= $row->supplier_name ?></option>
+                                      <?php  
+                                      }
+                                  }
                                 }
-                            }
+                              }
                             ?>
                           </select>
                           <span class="validation-color" id="err_supplier"></span>

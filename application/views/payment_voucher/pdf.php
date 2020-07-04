@@ -146,6 +146,7 @@ function formatinr($input){
                         ?></span>
                         <br><br>
                     <span class="capitalize">To,</span><br>
+                    <?php if($data[0]->party_id != 0) { ?>  
                     <b class="capitalize"><?php
                         if (isset($data[0]->supplier_name)) {
                             echo strtolower($data[0]->supplier_name);
@@ -189,7 +190,11 @@ function formatinr($input){
                             echo '<br>E-mail : ' . $data[0]->supplier_email;
                         }
                     }
-                    ?>  
+                    ?>
+                    <?php }else{ ?>
+                    <b style="text-transform: capitalize;">Others</b>
+
+                <?php } ?>  
                 </td>                
             </tr>
         </table>
@@ -252,7 +257,17 @@ function formatinr($input){
         </table> -->
         <div class="mt-50">
             <p style="line-height: 1.5">
-                Paid to <b><?php echo strtoupper(strtolower($data[0]->supplier_name));?> </b>
+                <?php
+                if($data[0]->party_id != 0){ ?>
+
+                    Paid to <b><?php echo strtoupper(strtolower($data[0]->supplier_name));?> </b>
+                <?php
+                }else{ ?>
+                     Paid to <b><?php echo strtoupper(strtolower('Others'));?> </b>
+                <?php
+                }
+                ?>
+               <!--  Paid to <b><?php echo strtoupper(strtolower($data[0]->supplier_name));?> </b> -->
                 <br>Amount (<img class="img" src="<?php echo FCPATH . '/assets/images/currency/'.$currency_symbol_pdf; ?>" style="height: 9px"  />)<b> <?php echo formatinr($data[0]->receipt_amount); ?> /-</b>
                 </p>
                 <p class="amount_text">

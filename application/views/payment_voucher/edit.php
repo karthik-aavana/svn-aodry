@@ -57,17 +57,25 @@ $this->load->view('layout/header');?>
                         <div class="form-group">
                           <label for="supplier">supplier <span class="validation-color">*</span></label>
                           <select class="form-control select2" id="supplier" name="supplier" style="width: 100%;">
+                            <?php 
+                            if($data[0]->party_id == 0){ ?> 
+                              <option value="0">Others</option>
                             <?php
-                            if($data[0]->supplier_mobile != ''){
+                            }else{
                             ?>
-                            <option value="<?php echo $data[0]->party_id ?>"><?php echo $data[0]->supplier_name.'('.$data[0]->supplier_mobile.')' ?></option> 
-                            <?php
-                            }
-                            else{
-                              ?>
-                              <option value="<?php echo $data[0]->party_id ?>"><?php echo $data[0]->supplier_name ?></option>
                               <?php
-                            }?>
+                              if($data[0]->supplier_mobile != ''){
+                              ?>
+                              <option value="<?php echo $data[0]->party_id ?>"><?php echo $data[0]->supplier_name.'('.$data[0]->supplier_mobile.')' ?></option> 
+                              <?php
+                              }
+                              else{
+                                ?>
+                                <option value="<?php echo $data[0]->party_id ?>"><?php echo $data[0]->supplier_name ?></option>
+                                <?php
+                              }
+                            }
+                          ?>
                           </select>
                           <span class="validation-color" id="err_supplier"></span>
                         </div>

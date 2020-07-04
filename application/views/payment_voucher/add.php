@@ -56,6 +56,12 @@ $this->load->view('layout/header');
                                             <label for="supplier">Supplier <span class="validation-color">*</span></label>
                                             <select class="form-control select2" id="supplier" name="supplier">
                                                 <option value="">Select</option>
+                                                <?php
+                                                if($payment_type_check == 'expense'){ ?>
+                                                    <option value="0">Others</option>
+                                                <?php
+                                                }
+                                                ?>
                                                 <?php foreach ($supplier as $row) { 
                                                     if($row->supplier_mobile != ''){
                                                     ?>

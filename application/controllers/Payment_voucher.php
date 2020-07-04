@@ -86,6 +86,10 @@ class Payment_voucher extends MY_Controller
                     $purchase_id = $this->encryption_url->encode($post->reference_id);
                     $nestedData['voucher_date']              = date('d-m-Y',strtotime($post->voucher_date));
                     $nestedData['voucher_number']            = '<a href="' . base_url('payment_voucher/view_details/') . $payment_id . '">' . $post->voucher_number . '</a>';
+
+                    if($post->party_id == 0){
+                        $post->supplier_name = 'Others';
+                    }
                     $nestedData['supplier']                  = $post->supplier_name;
                     $reference_number          = str_replace(",", ",<br/>", $post->reference_number);
                     if($post->reference_type == 'expense'){
@@ -106,7 +110,7 @@ class Payment_voucher extends MY_Controller
                     $nestedData['currency_converted_amount'] = $this->precise_amount($post->converted_receipt_amount, $access_common_settings[0]->amount_precision);
                     $nestedData['to_account']                = $post->to_account;
                     $nestedData['added_user']                = $post->first_name . ' ' . $post->last_name;
-					$cols = '<div class="box-body hide action_button"><div class="btn-group">';
+                    $cols = '<div class="box-body hide action_button"><div class="btn-group">';
                     if (in_array($payment_voucher_module_id, $data['active_view'])){
                         $cols .= '<span><a data-toggle="tooltip" data-placement="bottom" href="' . base_url('payment_voucher/view_details/') . $payment_id . '"  title="View Payment Voucher" class="btn btn-app"><i class="fa fa-eye"></i></a></span>';
                         $cols .= '<span><a data-toggle="tooltip" data-placement="bottom" href="' . base_url('payment_voucher/pdf/') . $payment_id . '" target="_blank" title="Download PDF" class="btn btn-app"><i class="fa fa-file-pdf-o"></i></a></span>';
@@ -135,7 +139,7 @@ class Payment_voucher extends MY_Controller
                     }
 
                     $cols .= '</div></div>';
- 					$nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
+                    $nestedData['action'] = $cols.'<input type="checkbox" name="check_item" class="form-check-input checkBoxClass minimal">';
                     
                     $send_data[]          = $nestedData;
                 }
@@ -519,13 +523,21 @@ class Payment_voucher extends MY_Controller
             $from_acc     = $this->input->post('payment_mode');
         }
 
-        $supplier = $this->general_model->getRecords('ledger_id,supplier_name', 'supplier', array(
-            'supplier_id' => $this->input->post('supplier')));
+        if($this->input->post('supplier') != 0){
 
-        $supplier_name = $supplier[0]->supplier_name;
-        $supplier_ledger_id = $supplier[0]->ledger_id;
+            $supplier = $this->general_model->getRecords('ledger_id,supplier_name', 'supplier', array(
+                        'supplier_id' => $this->input->post('supplier')));
+                        $supplier_name = $supplier[0]->supplier_name;
+                        $supplier_ledger_id = $supplier[0]->ledger_id;
+        }else{
+
+            $get_ledger = $this->db->query("SELECT ledger_id , ledger_name as supplier_name FROM  tbl_ledgers WHERE ledger_name = 'Others' AND branch_id = " . $this->session->userdata('SESS_BRANCH_ID'));
+                $supplier = $get_ledger->result();
+                    $supplier_name = $supplier[0]->supplier_name;
+                    $supplier_ledger_id   = $supplier[0]->ledger_id;
+        }
+
         
-
         /*$ledger_to   = $supplier[0]->ledger_id;*/
         $cheque_date = ($this->input->post('cheque_date') != '' ? date('Y-m-d', strtotime($this->input->post('cheque_date'))) : '');
 
@@ -1876,11 +1888,20 @@ class Payment_voucher extends MY_Controller
             $from_acc     = $this->input->post('payment_mode');
         }
 
-        $supplier = $this->general_model->getRecords('ledger_id,supplier_name', 'supplier', array(
-            'supplier_id' => $this->input->post('supplier')));
-        $ledger_to   = $supplier[0]->ledger_id;
-        $supplier_name = $supplier[0]->supplier_name;
-        $supplier_ledger_id = $supplier[0]->ledger_id;
+       if($this->input->post('supplier') != 0){
+
+            $supplier = $this->general_model->getRecords('ledger_id,supplier_name', 'supplier', array(
+                        'supplier_id' => $this->input->post('supplier')));
+                        $supplier_name = $supplier[0]->supplier_name;
+                        $supplier_ledger_id = $supplier[0]->ledger_id;
+        }else{
+
+            $get_ledger = $this->db->query("SELECT ledger_id , ledger_name as supplier_name FROM  tbl_ledgers WHERE ledger_name = 'Others' AND branch_id = " . $this->session->userdata('SESS_BRANCH_ID'));
+                $supplier = $get_ledger->result();
+                    $supplier_name = $supplier[0]->supplier_name;
+                    $supplier_ledger_id   = $supplier[0]->ledger_id;
+        }
+
         $cheque_date = date('Y-m-d', strtotime($this->input->post('cheque_date')));
 
         if (!$cheque_date){

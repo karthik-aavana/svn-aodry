@@ -2084,7 +2084,7 @@ class Common
        
         $table  = "payment_voucher pv";
         $join   = [
-            "supplier s"   => "pv.party_id = s.supplier_id",            
+            "supplier s"   => "pv.party_id = s.supplier_id#left",            
             'currency cur' => 'pv.currency_id = cur.currency_id'. '#' .'left',
             "users u"      => "pv.added_user_id = u.id"];
         if($order_ser =='' || $dir == ''){
@@ -2128,7 +2128,7 @@ class Common
  
         $table  = "payment_voucher pv";
         $join   = [
-            "supplier s"   => "pv.party_id = s.supplier_id",
+            "supplier s"   => "pv.party_id = s.supplier_id#left",
             "payment_invoice_reference pr" => "pv.payment_id = pr.payment_id",
             "purchase p" => 'p.purchase_id = pr.reference_id'. '#' .'left',
             "expense_bill e" => 'e.expense_bill_id = pr.reference_id'. '#' .'left',
