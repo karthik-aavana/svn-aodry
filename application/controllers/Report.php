@@ -3404,6 +3404,9 @@ class Report extends MY_Controller {
                     $recivable_date = $post->voucher_date;
                     $payment_id = $this->encryption_url->encode($post->payment_id);
                     $purchase_id = $this->encryption_url->encode($post->purchase_id);
+                    if($post->party_id == 0){
+                        $post->supplier_name = 'Others';
+                    }
                     $nestedData['supplier'] = $post->supplier_name;
                     $nestedData['invoice'] = $post->voucher_number;
                     if(in_array($payment_voucher_module_id, $data['active_view'])){
