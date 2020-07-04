@@ -37,6 +37,8 @@
             var id = $(this).data('id');
             comp_table.destroy();
             comp_table = $('#editable_damaged_product').DataTable({
+                "iDisplayLength": 15,
+                    "lengthMenu": [ [15, 25, 50,100, -1], [15, 25, 50,100, "All"] ],
                 'ajax': {
                     url: base_url + 'product_stock/product_details',
                     type: 'post',

@@ -110,6 +110,8 @@ $this->load->view('investments/edit');
             "paging": true,
             "searching": true,
             "ordering": true,
+             "iDisplayLength": 15,
+            "lengthMenu": [ [15, 25, 50,100, -1], [15, 25, 50,100, "All"] ],
             "ajax": {
                 "url": base_url + "investments",
                 "dataType": "json",

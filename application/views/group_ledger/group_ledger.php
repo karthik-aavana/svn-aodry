@@ -309,6 +309,8 @@ $this->load->view('group_ledger/add_group_ledger');
             'searching': true,
             "bStateSave": true,
             'ordering': true,
+             "iDisplayLength": 15,
+            "lengthMenu": [ [15, 25, 50,100, -1], [15, 25, 50,100, "All"] ],
             'columns': [
                 {'data': 'ledger_id'},
                 {'data': 'main_group_name'},

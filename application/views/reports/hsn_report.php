@@ -717,8 +717,8 @@ $this->load->view('layout/footer');
                 "processing": true,
                 "serverSide": true,
                 "scrollX": true,
-                "iDisplayLength": 50,
-                "lengthMenu": [ [10, 25, 50, 100], [10, 25, 50, 100] ],
+               "iDisplayLength": 50,
+                 "lengthMenu": [ [15, 25, 50, 100, -1], [15, 25, 50, 100, "All"] ],
                 "ajax": {
                     "url": base_url + "report/hsn_report",
                     "dataType": "json",
