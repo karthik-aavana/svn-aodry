@@ -1,10 +1,55 @@
+function get_billing_addrs(data){
+    var cols = "";
+    for (i = 0; i < data.length; i++) {
+            cols += "<tr>";
+            cols += "<td>" +data[i].shipping_code+ "</td>"; 
+            cols += "<td>" +data[i].contact_person+ "</td>"; 
+            cols += "<td>" +data[i].shipping_address+ "</td>"; 
+            cols += "<td>" +data[i].gst+ "</td>"; 
+            cols += "<td>" +data[i].state+ "</td>"; 
+            cols += "<td>" +data[i].action+ "</td>"; 
+            cols += "</tr>";
+            
+    }
+    $("#billing_address_table_body").html(cols);
+}
+
+function get_shipping_addrs(data){
+    var cols = "";
+    for (i = 0; i < data.length; i++) {
+            cols += "<tr>";
+            cols += "<td>" +data[i].shipping_code+ "</td>"; 
+            cols += "<td>" +data[i].contact_person+ "</td>"; 
+            cols += "<td>" +data[i].shipping_address+ "</td>"; 
+            cols += "<td>" +data[i].gst+ "</td>"; 
+            cols += "<td>" +data[i].state+ "</td>"; 
+            cols += "<td>" +data[i].action+ "</td>"; 
+            cols += "</tr>";
+            
+    }
+    $("#customer_address_table_body").html(cols);
+}
+
 $(document).ready(function () {
-        var comp_table = $('#customer_address_table').DataTable();
+        //var comp_table = $('#customer_address_table').DataTable();
         $(document).on("click", "#shipping_pop", function () {
             var billing_state = $('#billing_state').val();
             var party_id = $("#ship_to").val();
             var ship_add = $('[name=shipping_address]').val();
-            comp_table.destroy();
+
+            $.ajax({
+                url: base_url + "general/get_shipping_popup",
+                type: "post",
+                dataType: "JSON",
+                data: {'billing_state': billing_state, 'party_id': party_id, 'shipping_id': ship_add},
+                success: function (data) {
+                    var table_data = data.data;
+                    get_shipping_addrs(table_data);
+
+                    $("#customer_addr").modal();
+                }
+            });
+            /*comp_table.destroy();
             comp_table = $('#customer_address_table').DataTable({
                 'ajax': {
                     url: base_url + 'general/get_shipping_popup',
@@ -21,27 +66,40 @@ $(document).ready(function () {
                     {'data': 'state'},
                     {'data': 'action'}
                 ]
-            });
+            });*/
 
             /*if(ship_add){
              console.log($('#customer_addr').find('[name=apply][value="'+ship_add+'"]'),ship_add);
              $('#customer_addr').find('[name=apply][value="'+ship_add+'"]').prop('checked',true);
              }*/
-            $("#customer_addr").modal();
+            //$("#customer_addr").modal();
         });
 
-        var biling_table = $('#billing_address_table').DataTable();
+        //var biling_table = $('#billing_address_table').DataTable();
         $(document).on("click", "#customer_pop", function () {
             $("#billing_addr").modal();
         });
 
-        var comp_table = $('#customer_address_table').DataTable();
+        //var comp_table = $('#customer_address_table').DataTable();
         $(document).on("click", "#shipping_pop_edit", function () {
             var billing_state = $('#billing_state').val();
             var party_id = $("#ship_to").val();
-            comp_table.destroy();
+            //comp_table.destroy();
             var shipping_id = $('[name=shipping_address]').val();
-            comp_table = $('#customer_address_table').DataTable({
+
+            $.ajax({
+                url: base_url + "general/get_shipping_popup_edit",
+                type: "post",
+                dataType: "JSON",
+                data: {'billing_state': billing_state, 'party_id': party_id, 'shipping_id': shipping_id},
+                success: function (data) {
+                    var table_data = data.data;
+                    get_shipping_addrs(table_data);
+
+                    $("#customer_addr").modal();
+                }
+            });
+            /*comp_table = $('#customer_address_table').DataTable({
                 'ajax': {
                     url: base_url + 'general/get_shipping_popup_edit',
                     type: 'post',
@@ -57,8 +115,8 @@ $(document).ready(function () {
                     {'data': 'state'},
                     {'data': 'action'}
                 ]
-            });
-            $("#customer_addr").modal();
+            });*/
+            //$("#customer_addr").modal();
         });
         
         $(document).on("change", "#customer", function () {
@@ -72,7 +130,9 @@ $(document).ready(function () {
                 data: {'party_id': party_id},
                 success: function (data) {
                     var table_data = data.data;
-                       var biling_table = $('#billing_address_table').DataTable();
+                    get_billing_addrs(table_data);
+                    
+                       /*var biling_table = $('#billing_address_table').DataTable();
                        biling_table.destroy();
                        biling_table = $('#billing_address_table').DataTable({
                            data: table_data,
@@ -88,7 +148,10 @@ $(document).ready(function () {
                                $("#same_as_billing").prop('checked', true);
                                $(":input#same_as_billing").trigger('change');
                            }
-                       });
+                       });*/
+                    $("#same_as_billing").prop('checked', true);
+                    $(":input#same_as_billing").trigger('change');
+
                     if(data['recordsTotal'] == 1){
                        var val = data['shipping_address_id'];
                        $("#shipping_address").val(val);
@@ -108,7 +171,21 @@ $(document).ready(function () {
                 var billing_state = $('#billing_state').val();
                 var party_id = $("#ship_to").val();
                 var ship_add = '';
-                comp_table.destroy();
+                
+
+                $.ajax({
+                    url: base_url + "general/get_shipping_popup",
+                    type: "post",
+                    dataType: "JSON",
+                    data: {'billing_state': billing_state, 'party_id': party_id, 'shipping_id': ship_add},
+                    success: function (data) {
+                        var table_data = data.data;
+                        get_shipping_addrs(table_data);
+
+                        $("#customer_addr").modal();
+                    }
+                });
+                /*comp_table.destroy();
                 comp_table = $('#customer_address_table').DataTable({
                     'ajax': {
                         url: base_url + 'general/get_shipping_popup',
@@ -125,13 +202,13 @@ $(document).ready(function () {
                         {'data': 'state'},
                         {'data': 'action'}
                     ]
-                });
+                });*/
 
                 /*if(ship_add){
                  console.log($('#customer_addr').find('[name=apply][value="'+ship_add+'"]'),ship_add);
                  $('#customer_addr').find('[name=apply][value="'+ship_add+'"]').prop('checked',true);
                  }*/
-                $("#customer_addr").modal();
+                //$("#customer_addr").modal();
         });
     });
 
@@ -357,3 +434,4 @@ $(document).ready(function () {
         });
     });
    */
+
