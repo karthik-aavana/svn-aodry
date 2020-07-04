@@ -116,8 +116,9 @@ $config['closing_stock_report'] = 109;
 $config['product_stock_report'] = 110;
 $config['gstr1_report_module'] = 111;
 $config['team_module'] = 112;
-$config['outlet_module'] = 113;
-$config['warehouse_module'] = 115;
+$config['outlet_module'] = 114;
+$config['inlet_module'] = 115;
+$config['warehouse_module'] = 116;
 
 //submodule list
 $config['transporter_sub_module'] = 2;
@@ -242,6 +243,10 @@ $config['general_bill_table'] = "general_bill";
 $config['general_voucher_table'] = "general_voucher";
 $config['contra_voucher_table'] = "contra_voucher";
 $config['leads_table'] = "leads";
+$config['outlet_table'] = "outlet";
+$config['inlet_table'] = "inlet";
+$config['outlet_item_table'] = "outlet_item";
+$config['inlet_item_table'] = "inlet_item";
 
 $config['Sundry Debtors'] = "Sundry Debtors";
 $config['Sundry Creditors'] = "Sundry Creditors";
