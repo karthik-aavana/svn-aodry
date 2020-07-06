@@ -14674,7 +14674,8 @@ public function tds_report_sales_list(){
         $table  = "products P";
         $where = array(
             'P.branch_id'         => $this->ci->session->userdata('SESS_BRANCH_ID'),
-            'P.delete_status'     => 0 );
+            'P.delete_status'     => 0,
+            'PS.delete_status'    => 0);
        
         $join = [
              "purchase_item PI"  => "P.product_id = PI.item_id and PI.item_type = 'product'" ,
@@ -14689,6 +14690,7 @@ public function tds_report_sales_list(){
             "brand BD" => "P.brand_id = BD.brand_id". "#" . "left"
              ];
         $group = array('PS.purchase_id,P.product_id');
+        $order = ["P.product_id" => "desc"];
        $filter = array(
             'P.product_name',
             'C.supplier_code',
@@ -14711,7 +14713,8 @@ public function tds_report_sales_list(){
             'where'  => $where,
             'join'  => $join,
             'filter' => $filter,
-            'group'  => $group
+            'group'  => $group,
+            'order'  => $order
         );
         return $data;
     }
@@ -14767,6 +14770,7 @@ public function tds_report_sales_list(){
         $where = array(
             'P.branch_id' => $this->ci->session->userdata('SESS_BRANCH_ID'),
             'P.delete_status'  => 0,
+            'PU.delete_status' => 0,
             'P.product_combination_id != ' => NULL );
         $join = [
              "purchase_item PI"  => "P.product_id = PI.item_id and PI.item_type = 'product' AND PI.delete_status = 0". "#" . "left" ,

@@ -51,7 +51,6 @@
                             <div class="form-group">
                                 <label for="">State<span class="validation-color">*</span></label>
                                 <select class="form-control state select2" id="cmb_state_edit" name="cmb_state_edit" style="width: 100%;">
-                                    <option value="">Select State</option>
                                 </select>
                                 <span class="validation-color" id="err_state_edit"><?php echo form_error('cmb_state_edit'); ?></span>
                             </div>
