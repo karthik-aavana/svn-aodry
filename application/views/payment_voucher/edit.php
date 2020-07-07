@@ -110,7 +110,7 @@ $this->load->view('layout/header');?>
                           <input type="hidden" name="is_edit" value="<?=$value->is_edit;?>">
                           <div class="col-sm-2 reference_number_div" style="width: 20%">
                             <div class="form-group">
-                              <label for="supplier">Reference<br/>Number<span class="validation-color">*</span></label>
+                              <label for="supplier"><br/>Reference Number<span class="validation-color">*</span></label>
                               <a type="buttion" href="#" class="<?=($i == 1 ? 'add_row_button' : 'remove_row_button');?> pull-right">(<?=($i == 1 ? '+' : '-');?>)</a>
                               <select class="reference_number form-control select2" id="reference_number_<?=$i;?>" name="reference_number">
                                 <option value="">Select</option>
@@ -144,7 +144,7 @@ $this->load->view('layout/header');?>
                           </div>
                           <div class="col-sm-2 payment_amount_div">
                             <div class="form-group">
-                              <label for="payment Amount">Paid<br/>Amount <span class="validation-color">*</span></label>
+                              <label for="payment Amount"><br/>Paid Amount <span class="validation-color">*</span></label>
                               <input type="text" class="form-control number_only" id="payment_amount_<?=$i;?>" name="payment_amount" value="<?=precise_amount($value->invoice_payment_amount);?>">
                               
                               <span class="validation-color" id="err_payment_amount_<?=$i;?>"></span>
@@ -194,7 +194,7 @@ $this->load->view('layout/header');?>
                           </div>
                           <div class="col-sm-2 pending_amount_div">
                             <div class="form-group">
-                              <label for="Invoice amount">Pending<br/>Amount<span class="validation-color">*</span></label>
+                              <label for="Invoice amount"><br/>Pending Amount<span class="validation-color">*</span></label>
                               <input  type="text" class="float_number form-control" id="pending_amount_<?=$i;?>" name="pending_amount" value="<?=($value->invoice_pending != '' && $value->invoice_pending > 0 ? precise_amount($value->invoice_pending) : '0.00');?>" readonly>
                               <input  type="hidden" class="float_number form-control" id="invoice_total_<?=$i;?>" name="invoice_total" value="<?=($value->invoice_total != '' ? precise_amount($value->invoice_total) : '0.00');?>">
                               <span class="validation-color" id="err_grand_total_<?=$i;?>"></span>

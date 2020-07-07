@@ -97,7 +97,7 @@ $(document).ready(function () {
 
         if ($('#billing_state').val() == "") {
 
-            $('#err_billing_state').text("Please Select the Billing State.");
+            $('#err_billing_state').text("Please Select Place of Supply.");
 
             $('#err_billing_state').focus();
 

@@ -34,12 +34,17 @@ $(document).ready(function () {
 
     $(document).on('click',".save_bulk",function(){
         var bulk_voucher = $('#upload_bulk_voucher [name=bulk_voucher]').val();
-        if(bulk_voucher == ''){
-            /*alert('Select file to upload!');*/
-            alert_d.text = 'Select file to upload!';
-            PNotify.error(alert_d);
-            return false;
-        }
+        if(bulk_voucher != ''){
+           /*alert('Select file to upload!');*/
+           $('#upload_doc').hide();
+           alert_d.text = 'success file to upload!';
+           PNotify.success(alert_d);
+           return true;
+       }else{
+           alert_d.text = 'select file to upload!';
+           PNotify.error(alert_d);
+           return false;
+       }
     })
 
     $(document).on('click','.delete_voucher',function(){
