@@ -166,7 +166,8 @@ class Warehouse extends MY_Controller {
 
         $country_id = $data['data'][0]->warehouse_country_id;
         $state_id = $data['data'][0]->warehouse_state_id;
-        $output_state = '<option value="">Select State</option>';
+       // $output_state = '<option value="">Select State</option>';
+         $output_state = '';
         $string_st = 'st.*';
         $table_st = 'states st';
         $where_st = array('st.country_id' => $country_id);
