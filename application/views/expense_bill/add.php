@@ -171,9 +171,9 @@ $this->load->view('layout/header');
                                 $product_inventory_modal = 0;
                                 $item_modal = 0;
                                 ?>
-                                <div class="col-sm-12 search_expense_code">
+                                <!-- <div class="col-sm-12 search_expense_code">
                                     <input id="input_expense_code" class="form-control" type="text" name="input_expense_code" placeholder="Enter Expense Name" >
-                                </div>
+                                </div> -->
                                 <div class="col-sm-12">
                                     <span class="validation-color" id="err_expense_code"></span>
                                 </div>
@@ -208,13 +208,76 @@ $this->load->view('layout/header');
                                                         <th class="span2" width="9%">TDS/TCS(%)</th>
                                                     <?php } ?>
                                                     <?php if ($access_settings[0]->tax_type == 'gst' || $access_settings[0]->tax_type == 'single_tax') { ?>
+                                                         <?php if ($access_settings[0]->gst_visible == 'yes') { ?>
                                                         <th class="span2" width="9%">GST(%)</th>
                                                         <th class="span2" width="9%">Cess(%)</th>
+                                                        <?php } ?>
                                                     <?php } ?>
                                                     <th class="span2" width="11%">Total</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="expense_table_body">
+                                                <tr id="0">
+                                                    <td colspan="2">
+                                                        <input id="input_expense_code" class="form-control" type="text" name="input_expense_code" placeholder="Enter Product/Service Code/Name">
+                                                    </td>
+                                                    <?php 
+                                                   if($access_settings[0]->description_visible == 'yes'){
+                                                   ?>
+                                                    <td>
+                                                        <input type="text" class="form-control form-fixer" name="item_description" autocomplete="off">
+                                                    </td>
+                                                    <td style="text-align:center">
+                                                        <input type="text" class="form-control form-fixer text-center float_number" value="1" data-rule="quantity" name="item_quantity">
+                                                    </td>
+                                                    <?php } ?>
+                                                    <td>
+                                                        <input type="text" class="form-control form-fixer text-right float_number" name="item_price" value="0.00"><span id="item_sub_total_lbl_0" class="pull-right">0.00</span>
+                                                    </td>
+                                                    <?php
+                                                    if ($access_settings[0]->discount_visible == 'yes') {
+                                                        ?>
+                                                    <td>
+                                                        <div class="form-group" style="margin-bottom:0px !important;">
+                                                            <select class="form-control open_discount form-fixer select2 select2-hidden-accessible" name="item_discount" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                                                                <option value="">Select</option>
+                                                            </select>
+                                                        </div><span id="item_discount_lbl_0" class="pull-right" style="color:red;">0.00</span>
+                                                    </td>
+                                                    <?php } ?>
+                                                    <?php
+                                                    if ($access_settings[0]->tax_type == 'gst' || $access_settings[0]->tax_type == 'single_tax') {
+                                                        if ($access_settings[0]->discount_visible == 'yes'){ ?>
+                                                    <td style="text-align:center">
+                                                        <span id="item_taxable_value_lbl_0">0.00</span></td>
+                                                        <?php } ?>
+                                                    <?php } ?>
+                                                     <?php if ($access_settings[0]->tds_visible == 'yes') { ?>
+                                                    <td>
+                                                        <input type="text" class="form-control pointer" name="item_tds_percentage" value="0%" readonly=""><span id="item_tds_lbl_0" class="pull-right" style="color:red;">0.00</span></td>
+                                                    <?php }?>
+                                                    <?php if ($access_settings[0]->tax_type == 'gst' || $access_settings[0]->tax_type == 'single_tax') { ?>
+                                                        <?php if ($access_settings[0]->gst_visible == 'yes') { ?>
+                                                            <td>
+                                                                <div class="form-group" style="margin-bottom:0px !important;">
+                                                                    <select class="form-control open_tax form-fixer select2 select2-hidden-accessible" name="item_tax" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                                                                        <option value="">Select</option>
+                                                                    </select>
+                                                                </div><span id="item_tax_lbl_0" class="pull-right" style="color:red;">0.00</span>
+                                                            </td>
+                                                        <td>
+                                                            <div class="form-group" style="margin-bottom:0px !important;">
+                                                                <select class="form-control open_tax form-fixer select2 select2-hidden-accessible" name="item_tax_cess" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                                                                    <option value="">Select</option>
+                                                                </select>
+                                                            </div><span id="item_tax_cess_lbl_0" class="pull-right" style="color:red;">0.00</span>
+                                                        </td>
+                                                        <?php } ?>
+                                                    <?php } ?>
+                                                    <td>
+                                                        <input type="text" class="float_number form-control form-fixer text-right" name="item_grand_total">
+                                                    </td>
+                                                </tr>
                                             </tbody>
                                         </table>
                                         <input type="hidden" name="branch_country_id" id="branch_country_id" value="<?php echo $branch[0]->branch_country_id; ?>">
@@ -430,23 +493,54 @@ if ($item_modal == 1) {
     <script src="<?php echo base_url('assets/js/sub_modules/'); ?>charges_sub_module.js"></script>
 <?php } ?>
 <script type="text/javascript">
-                                            var expense_data = new Array();
-                                            var branch_state_list = <?php echo json_encode($state); ?>;
-                                            var item_gst = new Array();
-                                            var common_settings_round_off = "<?= $access_common_settings[0]->round_off_access ?>";
-                                            var common_settings_amount_precision = "<?= $access_common_settings[0]->amount_precision ?>";
-                                            var settings_tax_percentage = "<?= $access_common_settings[0]->tax_split_percentage ?>";
-                                            var common_settings_inventory_advanced = "";
-                                            var settings_tax_type = "<?= $access_settings[0]->tax_type ?>";
-                                            var settings_discount_visible = "<?= $access_settings[0]->discount_visible ?>";
-                                            var settings_description_visible = "<?= $access_settings[0]->description_visible ?>";
-                                            var settings_tds_visible = "<?= $access_settings[0]->tds_visible ?>";
-                                            var settings_item_editable = "<?= $access_settings[0]->item_editable ?>";
+    var expense_data = new Array();
+    var branch_state_list = <?php echo json_encode($state); ?>;
+    var item_gst = new Array();
+    var common_settings_round_off = "<?= $access_common_settings[0]->round_off_access ?>";
+    var discount_ary = <?php echo json_encode($discount); ?>;
+    var tax_ary = <?php echo json_encode($tax); ?>;
+    var common_settings_amount_precision = "<?= $access_common_settings[0]->amount_precision ?>";
+    var settings_tax_percentage = "<?= $access_common_settings[0]->tax_split_percentage ?>";
+    var common_settings_inventory_advanced = "";
+    var settings_tax_type = "<?= $access_settings[0]->tax_type ?>";
+    var settings_discount_visible = "<?= $access_settings[0]->discount_visible ?>";
+    var settings_description_visible = "<?= $access_settings[0]->description_visible ?>";
+    var settings_gst_visible = "<?=$access_settings[0]->gst_visible?>";
+    var settings_tds_visible = "<?= $access_settings[0]->tds_visible ?>";
+    var settings_item_editable = "<?= $access_settings[0]->item_editable ?>";
 </script>
 <script src="<?php echo base_url('assets/js/expense/'); ?>expense.js"></script>
 <script src="<?php echo base_url('assets/js/expense/'); ?>expense_basic_common.js"></script>
 <script type="text/javascript">
-                                            $('#err_expense_code').text('Please select the supplier to do expense.');
-                                            $('.search_expense_code').hide();
-                                            $('#input_expense_code').prop('disabled', true);
+    $('#err_expense_code').text('Please select the supplier to do expense.');
+    $('.search_expense_code').hide();
+    $('#input_expense_code').prop('disabled', true);
 </script>
+<style type="text/css">
+    .autocomplete-suggestions {width: 800px !important;text-overflow: initial !important; overflow-x: visible;}
+    .autocomplete-suggestions .autocomplete-suggestion{width: 750px !important;text-overflow: initial !important;overflow-x: visible; }
+    .autocomplete-suggestions span.stock_span{color : red;float: right;}
+    #discount_modal{
+        color: red;
+        float: right;
+        margin: 0 !important;
+        position: relative;
+        top: -25px;
+        right: 0;
+        font-size: 20px;
+    }
+
+    a.gst_plus,a.discount_plus{    
+        color: red;
+        float: right;
+        margin: 0 !important;
+        position: relative;
+        top: -25px;
+        right: 0;
+        font-size: 20px;
+    }
+    table tr th a.gst_plus:hover, table tr th a.gst_plus:focus,table tr th a.discount_plus:hover, table tr th a.discount_plus:focus{
+        color: red;
+    }
+
+</style>
