@@ -3081,6 +3081,29 @@ class Purchase extends MY_Controller {
         echo json_encode($data);
     }
 
+    function get_all_items(){
+
+        $product_data = $this->common->product_item_suggestions_field();
+        $data = $this->general_model->getRecords($product_data['string'] , $product_data['table'] , 
+            $product_data['where']);
+        $pros = array();
+        foreach ($data as $key => $value) {
+           $pros[$value->item_id] = $value;
+        }
+        $service_data = $this->common->services_item_suggestion_field();
+        $data = $this->general_model->getRecords($service_data['string'] , $service_data['table'] , 
+            $service_data['where']);
+        $serv = array();
+        foreach ($data as $key => $value) {
+           $serv[$value->item_id] = $value; 
+        }
+        $json_data = array(
+            'product_data' => $pros,
+            'service_data' => $serv
+        );
+        echo json_encode($json_data);
+    }
+
     public function get_table_items($code) {
         /* 0-id, 1-type, 2-discount, 3-tax , */
 

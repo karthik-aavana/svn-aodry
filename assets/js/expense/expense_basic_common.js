@@ -1,4 +1,7 @@
 var mapping = {};
+var allExp = {};
+var addedItems = {};
+
 if (typeof count_data === "undefined" || count_data === null) {
     var count_data = 0;
 }
@@ -164,66 +167,155 @@ $(document).ready(function () {
             $("#invoice_number").val(old_reference);
         }
     });
+
+    function isInRange(currentElement,term) {
+        var n = currentElement.item_name.toLowerCase();
+        
+        if(n.includes(this)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     // get items to table starts
     $('#input_expense_code').autoComplete({
-        minChars: 1,
+        minChars: 0,
         cache: false,
         source: function (term, suggest) {
             term = term.toLowerCase();
+            if(term == '') term = '-';
             var isnum = /^\d+$/.test(term);
-            $.ajax({
-                url: base_url + "expense_bill/get_expense_suggestions/" + term ,
-                type: "GET",
-                dataType: "json",
-                success: function (data) {
-                    var suggestions = [];
-                    for (var i = 0; i < data.length; ++i) {
-                        suggestions.push(data[i].item_name);
-                        var item_code = data[i].item_code;
-                        item_code = item_code.replace(" ", "_");
-                        var code = item_code.toString().split(' ');
-                        mapping[code[0]] = data[i].item_id + '-'+ settings_discount_visible + '-' + settings_tax_type;
-                    }
-                  // && isnum == true
-                    if (i == 1 && term.length > 7 ) {
+            if (common_settings_inventory_advanced == "") {
+                var inventory_advanced = "no";
+            } else {
+                var inventory_advanced = common_settings_inventory_advanced;
+            }
+            var isnum = /^\d+$/.test(term);
+            var suggestions = [];
 
-                        $.ajax({
-                            url: base_url + 'expense_bill/get_table_items/' + mapping[data[0].item_code],
-                            type: "GET",
-                            dataType: "JSON",
-                            success: function (data1) {
-                                
-                                $('#table-total').show();
-                                add_row(data1);
-                                call_css();
-                                $('#input_expense_code').val('')
-                            }
-                        });
-                        suggest('');
-                    } else {
-                        suggest(suggestions);
-                    }
+            if(term.length < 0){
+
+                var filterExp  =  Object.values(allExp).filter(isInRange,term);
+                console.log(filterExp,555);
+
+            }else{
+
+                var filterExp = allExp;
+                console.log(filterExp ,666);
+            }
+
+            if(filterExp.length == 1){
+                item_id  = filterExp.item_id;
+                if(addedItems['pro_' +item_id]){
+                    var row_index = addedItems['pro_' +item_id];
+                    var table_row = $("#"+ row_index);
+                    var quantity = table_row.find('input[name^="item_quantity"]').val();
+                    quantity = ++quantity;
+                    table_row.find('input[name=^"item_quantity"]').val(quantity);
+                    new_item = false;
+                    calculateTable(table_row);
+                }else{
+                    $('#table-total').show();
+                    add_row(filterExp[0]);
                 }
-            })
+
+                $('#input_expense_code').val("");
+            }else{
+                $.each(filterExp, function(k,v){
+                    console.log(k,v ,1111111111);
+                    suggestions.push(v.item_name);
+                    var pro_name = v.item_name;
+                    pro_name = pro_name.replace(/\s/g, "");
+                    pro_name = pro_name.replace(/\//g, "");
+                    pro_name = pro_name.replace(/-/g, "");
+
+                        var item_code = pro_name;
+                        var code = item_code.toString().split(' ');
+                        mapping[code[0]] =
+                            v.item_id +
+                            "-" +
+                            settings_discount_visible +
+                            "-" +
+                            settings_tax_type;
+                });
+            }
+            suggest(suggestions);
         },
         onSelect: function (event, ui) {
-            ui = ui.replace(" ", "_");
-            var code = ui.toString().split(' ');
-          //  console.log(code,ui,3333333333);
-            $.ajax({
-                url: base_url + 'expense_bill/get_table_items/' + mapping[code[0]],
-                type: "GET",
-                dataType: "JSON",
-                success: function (data) {
 
-                    $('#table-total').show();
-                    add_row(data);
-                    call_css();
-                    $('#input_expense_code').val('')
-                }
-            })
+            var code = ui;
+            var pro_name = '';
+
+            pro_name = code.replace(/\s/g, "");
+            pro_name = pro_name.replace(/\//g, "");
+            pro_name = pro_name.replace(/-/g, "");
+
+            k = pro_name;
+            var item = mapping[k].toString().split("-");
+            console.log(item,11);
+            var item_id = item[0];
+            
+            $('#table-total').show();
+                add_row(allExp[item_id]);
+                call_css();
+            $('#input_expense_code').val("");
         }
-    });
+    });    
+
+            // $.ajax({
+            //     url: base_url + "expense_bill/get_expense_suggestions/" + term ,
+            //     type: "GET",
+            //     dataType: "json",
+            //     success: function (data) {
+            //         var suggestions = [];
+            //         for (var i = 0; i < data.length; ++i) {
+            //             suggestions.push(data[i].item_name);
+            //             var item_code = data[i].item_code;
+            //             item_code = item_code.replace(" ", "_");
+            //             var code = item_code.toString().split(' ');
+            //             mapping[code[0]] = data[i].item_id + '-'+ settings_discount_visible + '-' + settings_tax_type;
+            //         }
+            //       // && isnum == true
+            //         if (i == 1 && term.length > 7 ) {
+
+            //             $.ajax({
+            //                 url: base_url + 'expense_bill/get_table_items/' + mapping[data[0].item_code],
+            //                 type: "GET",
+            //                 dataType: "JSON",
+            //                 success: function (data1) {
+                                
+            //                     $('#table-total').show();
+            //                     add_row(data1);
+            //                     call_css();
+            //                     $('#input_expense_code').val('')
+            //                 }
+            //             });
+            //             suggest('');
+            //         } else {
+            //             suggest(suggestions);
+            //         }
+            //     }
+            // })
+    //     },
+    //     onSelect: function (event, ui) {
+    //         ui = ui.replace(" ", "_");
+    //         var code = ui.toString().split(' ');
+    //       //  console.log(code,ui,3333333333);
+    //         $.ajax({
+    //             url: base_url + 'expense_bill/get_table_items/' + mapping[code[0]],
+    //             type: "GET",
+    //             dataType: "JSON",
+    //             success: function (data) {
+
+    //                 $('#table-total').show();
+    //                 add_row(data);
+    //                 call_css();
+    //                 $('#input_expense_code').val('')
+    //             }
+    //         })
+    //     }
+    // });
     // get items to table ends
     //delete rows
     $("#expense_table_body").on("click", "a.deleteRow", function (event) {
@@ -430,21 +522,37 @@ function reCalculateTable(){
             calculateTable(row);
         });
 }
+
+getAllProducts();
+function getAllProducts(){
+
+    $.ajax({
+        url : base_url + "expense_bill/get_all_items",
+        type : "POST",
+        dataType : "JSON",
+        success : function(data){
+            console.log(data);
+            allExp = data;
+        }
+    });
+}
+
 //function to add new row to datatable
 function add_row(data) {
+    console.log(data);
     var flag = 0;
     var item_id = data.item_id;
     
     var branch_country_id = data.branch_country_id;
     var branch_state_id = data.branch_state_id;
     var branch_id = data.branch_id;
-    var item_name = data[0].product_name;
-    var item_hsn_sac_code = data[0].expense_hsn_code 
+    var item_name = data.item_name;
+    var item_hsn_sac_code = data.expense_hsn_code 
     var item_price = precise_amount(0);
-    var item_tax_id = data[0].product_tax_id;
-    var item_tax_percentage = precise_amount(data[0].product_tax_value);
-    var item_tds_id = data[0].expense_tds_id;
-    var item_tds_percentage = precise_amount(data[0].expense_tds_value);
+    var item_tax_id = data.product_tax_id;
+    var item_tax_percentage = precise_amount(data.product_tax_value);
+    var item_tds_id = data.expense_tds_id;
+    var item_tds_percentage = precise_amount(data.expense_tds_value);
     var item_tds_type = 'TDS';
     var supplier_id = $('#supplier').val();
     
@@ -483,14 +591,14 @@ function add_row(data) {
         select_discount +=
             '<select class="form-control open_discount form-fixer select2" ' + is_disabled + '  name="item_discount" style="width: 100%;">';
         select_discount += '<option value="">Select</option>';
-        for (a = 0; a < data.discount.length; a++) {
+        for (a = 0; a < discount_ary.length; a++) {
             select_discount +=
                 '<option value="' +
-                data.discount[a].discount_id +
+                discount_ary[a].discount_id +
                 "-" +
-                precise_amount(data.discount[a].discount_value) +
+                precise_amount(discount_ary[a].discount_value) +
                 '" >' +
-                parseFloat(data.discount[a].discount_value) +
+                parseFloat(discount_ary[a].discount_value) +
                 "%</option>";
         }
         select_discount += "</select></div>";
@@ -521,22 +629,22 @@ function add_row(data) {
         select_tds +=
             '<select class="form-control open_tax form-fixer select2" name="item_tds_percentage" style="width: 100%;">';
         select_tds += '<option value="">Select</option>';
-        for (a = 0; a < data.tax.length; a++) {
-            if (item_tds_id == data.tax[a].tax_id) {
+        for (a = 0; a < tax_ary.length; a++) {
+            if (item_tds_id == tax_ary[a].tax_id) {
                 var selected = "selected";
             } else {
                 var selected = "";
             }
             
-            var t = data.tax[a].tax_name;
+            var t = tax_ary[a].tax_name;
             if(t.toLowerCase() == item_tds_type.toLowerCase()){
                 select_tds +=
                     '<option value="'+
-                    precise_amount(data.tax[a].tax_value) +
+                    precise_amount(tax_ary[a].tax_value) +
                     '" ' +
                     selected +
-                    " tds_id='"+data.tax[a].tax_id+"' type='"+data.tax[a].tax_name+"'>" +
-                    precise_amount(data.tax[a].tax_value) +
+                    " tds_id='"+tax_ary[a].tax_id+"' type='"+tax_ary[a].tax_name+"'>" +
+                    precise_amount(tax_ary[a].tax_value) +
                     "</option>";
             }
         }
@@ -544,22 +652,22 @@ function add_row(data) {
         select_tax +=
             '<select class="form-control open_tax form-fixer select2" ' + is_disabled +' name="item_tax" style="width: 100%;" '+gst_disable+'>';
         select_tax += '<option value="">Select</option>';
-        for (a = 0; a < data.tax.length; a++) {
-            if (item_tax_id == data.tax[a].tax_id) {
+        for (a = 0; a < tax_ary.length; a++) {
+            if (item_tax_id == tax_ary[a].tax_id) {
                 var selected = "selected";
             } else {
                 var selected = "";
             }
-            if(data.tax[a].tax_name == 'GST'){
+            if(tax_ary[a].tax_name == 'GST'){
                 select_tax +=
                     '<option value="' +
-                    data.tax[a].tax_id +
+                    tax_ary[a].tax_id +
                     "-" +
-                    parseFloat(data.tax[a].tax_value) +
+                    parseFloat(tax_ary[a].tax_value) +
                     '" ' +
                     selected +
                     " >" +
-                    parseFloat(data.tax[a].tax_value) +
+                    parseFloat(tax_ary[a].tax_value) +
                     "%</option>";
             }
         }
@@ -575,22 +683,22 @@ function add_row(data) {
         cess_select +=
             '<select class="form-control open_tax form-fixer select2" ' + is_disabled +' name="item_tax_cess" style="width: 100%;" '+gst_disable+'>';
         cess_select += '<option value="">Select</option>';
-        for (a = 0; a < data.tax.length; a++) {
-            if (item_tax_id == data.tax[a].tax_id) {
+        for (a = 0; a < tax_ary.length; a++) {
+            if (item_tax_id == tax_ary[a].tax_id) {
                 var selected = "selected";
             } else {
                 var selected = "";
             }
-            if(data.tax[a].tax_name == 'CESS'){
+            if(tax_ary[a].tax_name == 'CESS'){
                 cess_select +=
                     '<option value="' +
-                    data.tax[a].tax_id +
+                    tax_ary[a].tax_id +
                     "-" +
-                    parseFloat(data.tax[a].tax_value) +
+                    parseFloat(tax_ary[a].tax_value) +
                     '" ' +
                     selected +
                     " >" +
-                    parseFloat(data.tax[a].tax_value) +
+                    parseFloat(tax_ary[a].tax_value) +
                     "%</option>";
             }
         }
@@ -605,19 +713,19 @@ function add_row(data) {
                     </thead>\
                     <tbody>';
         
-        for (a = 0; a < data.tax.length; a++) {
-            if(data.tax[a].tax_name == 'TDS' || data.tax[a].tax_name == 'TCS'){
-                tax_name = data.tax[a].tax_name;
+        for (a = 0; a < tax_ary.length; a++) {
+            if(tax_ary[a].tax_name == 'TDS' || tax_ary[a].tax_name == 'TCS'){
+                tax_name = tax_ary[a].tax_name;
                 if(item_tds_type.toLowerCase() == tax_name.toLowerCase()){
                     var selected = "";
-                    if (item_tds_id == data.tax[a].tax_id) {
+                    if (item_tds_id == tax_ary[a].tax_id) {
                         selected = "selected";
                     }
                     tds_body += '<tr>\
-                            <td>'+data.tax[a].tax_name+'(Sec '+data.tax[a].section_name+') @ '+parseFloat(data.tax[a].tax_value) +'%</td>\
+                            <td>'+tax_ary[a].tax_name+'(Sec '+tax_ary[a].section_name+') @ '+parseFloat(tax_ary[a].tax_value) +'%</td>\
                             <td><div class="radio">\
-                                    <label><input type="radio" name="tds_tax" value="'+parseFloat(data.tax[a].tax_value) +
-                       '"'+selected +" tds_id='"+data.tax[a].tax_id+"' typ='"+data.tax[a].tax_name+"'></label>\
+                                    <label><input type="radio" name="tds_tax" value="'+parseFloat(tax_ary[a].tax_value) +
+                       '"'+selected +" tds_id='"+tax_ary[a].tax_id+"' typ='"+tax_ary[a].tax_name+"'></label>\
                                 </div></td></tr>";
                 }
             }
@@ -634,22 +742,22 @@ function add_row(data) {
         select_tds +=
             '<select class="form-control open_tax form-fixer select2" name="item_tds_percentage" style="width: 100%;">';
         select_tds += '<option value="">Select</option>';
-        for (a = 0; a < data.tax.length; a++) {
-            if (item_tds_id == data.tax[a].tax_id) {
+        for (a = 0; a < tax_ary.length; a++) {
+            if (item_tds_id == tax_ary[a].tax_id) {
                 var selected = "selected";
             } else {
                 var selected = "";
             }
            
-            var t = data.tax[a].tax_name;
+            var t = tax_ary[a].tax_name;
             if(t.toLowerCase() == item_tds_type.toLowerCase()){
                 select_tds +=
                     '<option value="'+
-                    precise_amount(data.tax[a].tax_value) +
+                    precise_amount(tax_ary[a].tax_value) +
                     '" ' +
                     selected +
-                    " tds_id='"+data.tax[a].tax_id+"' type='"+data.tax[a].tax_name+"'>" +
-                    precise_amount(data.tax[a].tax_value) +
+                    " tds_id='"+tax_ary[a].tax_id+"' type='"+tax_ary[a].tax_name+"'>" +
+                    precise_amount(tax_ary[a].tax_value) +
                     "</option>";
             }
         }
@@ -667,7 +775,7 @@ function add_row(data) {
         "><input type='hidden' name='item_type' value='product'><input type='hidden' name='item_code' value=''></td>";
         cols += "<td>" + item_name;
         if(item_hsn_sac_code != ''){
-            cols += "<br>(P) (HSN/SAC: " + item_hsn_sac_code + ")";
+            cols += "<br>(HSN: " + item_hsn_sac_code + ")";
         }
         cols += "</td>";
     

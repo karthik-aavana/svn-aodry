@@ -3347,6 +3347,17 @@ class Expense_bill extends MY_Controller
         $mpdf->Output($data['data'][0]->expense_bill_invoice_number . '.pdf', 'I');*/
     }
 
+    function get_all_items(){
+
+        $expense_data = $this->common->expences_suggestions_field();
+        $data = $this->general_model->getQueryRecords($expense_data);
+        $Exp = array();
+        foreach ($data as $key => $value) {
+           $Exp[$value->item_id] = $value;
+        }
+        echo json_encode($Exp);
+    }
+
     public function delete()
     {
         $id                              = $this->input->post('delete_id');
