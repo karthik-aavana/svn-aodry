@@ -1416,6 +1416,7 @@ class Purchase_order extends MY_Controller {
             $data['tax_tcs']          = $this->tax_call_type('TCS');
             $data['tax_gst']          = $this->tax_call_type('GST');
             $data['tax_section'] = $this->tax_section_call();
+            $data['warehouse'] = $this->warehouse_call();
             /*if ($data['inventory_access'] == "yes") {
                 $data['get_product_inventory'] = $this->get_product_inventory();
                 $data['varients_key'] = $this->general_model->getRecords('*', 'varients', array(
