@@ -259,7 +259,7 @@ class Firm extends MY_Controller
 	            $this->general_model->insertData('common_settings',$common_settings_data);
 
 	            $this->default_ledger_group_entry($branch_id);
-	           // $this->default_discount_entry($branch_id);
+	            $this->default_discount_entry($branch_id);
                 $this->default_transaction_purpose($branch_id);
 	            $this->default_tax_entry($branch_id);
                
@@ -528,7 +528,7 @@ class Firm extends MY_Controller
                         $this->general_model->insertData('common_settings',$common_settings_data);
 
                         $this->default_ledger_group_entry($branch_id);
-                       // $this->default_discount_entry($branch_id);
+                        $this->default_discount_entry($branch_id);
                         $this->default_transaction_purpose($branch_id);
                         $this->default_tax_entry($branch_id);
                        
@@ -1128,67 +1128,67 @@ class Firm extends MY_Controller
 
 	function default_discount_entry($branch_id)
 	{
-		$discount_data[]=array('discount_name'=>'Slab@ 0%',
+		/*$discount_data[]=array('discount_name'=>' Discount@0%',
 								'discount_value'=>'0.00',
 								"added_date" => date('Y-m-d'),
 	                            "added_user_id" => '1',
 								'branch_id'=>$branch_id
-							);
-		$discount_data[]=array('discount_name'=>'Slab@ 2%',
+							);*/
+		$discount_data[]=array('discount_name'=>'Discount',
 								'discount_value'=>'2.00',
 								"added_date" => date('Y-m-d'),
 	                            "added_user_id" => '1',
 								'branch_id'=>$branch_id
 							);
-		$discount_data[]=array('discount_name'=>'Slab@ 5%',
+		$discount_data[]=array('discount_name'=>'Discount',
 								'discount_value'=>'5.00',
 								"added_date" => date('Y-m-d'),
 	                            "added_user_id" => '1',
 								'branch_id'=>$branch_id
 							);
-		$discount_data[]=array('discount_name'=>'Slab@ 8%',
+		$discount_data[]=array('discount_name'=>'Discount',
 								'discount_value'=>'8.00',
 								"added_date" => date('Y-m-d'),
 	                            "added_user_id" => '1',
 								'branch_id'=>$branch_id
 							);
-		$discount_data[]=array('discount_name'=>'Slab@ 10%',
+		$discount_data[]=array('discount_name'=>'Discount',
 								'discount_value'=>'10.00',
 								"added_date" => date('Y-m-d'),
 	                            "added_user_id" => '1',
 								'branch_id'=>$branch_id
 							);
-		$discount_data[]=array('discount_name'=>'Slab@ 12%',
+		$discount_data[]=array('discount_name'=>'Discount',
 								'discount_value'=>'12.00',
 								"added_date" => date('Y-m-d'),
 	                            "added_user_id" => '1',
 								'branch_id'=>$branch_id
 							);
-		$discount_data[]=array('discount_name'=>'Slab@ 15%',
+		$discount_data[]=array('discount_name'=>'Discount',
 								'discount_value'=>'15.00',
 								"added_date" => date('Y-m-d'),
 	                            "added_user_id" => '1',
 								'branch_id'=>$branch_id
 							);
-		$discount_data[]=array('discount_name'=>'Slab@ 18%',
+		$discount_data[]=array('discount_name'=>'Discount',
 								'discount_value'=>'18.00',
 								"added_date" => date('Y-m-d'),
 	                            "added_user_id" => '1',
 								'branch_id'=>$branch_id
 							);
-		$discount_data[]=array('discount_name'=>'Slab@ 20%',
+		$discount_data[]=array('discount_name'=>'Discount',
 								'discount_value'=>'20.00',
 								"added_date" => date('Y-m-d'),
 	                            "added_user_id" => '1',
 								'branch_id'=>$branch_id
 							);
-		$discount_data[]=array('discount_name'=>'Slab@ 24%',
+		$discount_data[]=array('discount_name'=>'Discount',
 								'discount_value'=>'24.00',
 								"added_date" => date('Y-m-d'),
 	                            "added_user_id" => '1',
 								'branch_id'=>$branch_id
 							);
-		$discount_data[]=array('discount_name'=>'Slab@ 25%',
+		$discount_data[]=array('discount_name'=>'Discount',
 								'discount_value'=>'25.00',
 								"added_date" => date('Y-m-d'),
 	                            "added_user_id" => '1',
@@ -1205,6 +1205,7 @@ class Firm extends MY_Controller
         $qry = $this->db->get('tax_section');
         $default_ry = $qry->result_array();
         $tax_data = array();
+        $tax_gst = array();
 
         foreach ($default_ry as $key => $value) {
            
@@ -1219,67 +1220,67 @@ class Firm extends MY_Controller
                             );
             
         }
-		/*$tax_data[]=array('tax_name'=>'Slab@ 0%',
+		$tax_gst[]=array('tax_name'=>'GST',
 							'tax_value'=>'0.00',
 							"added_date" => date('Y-m-d'),
                             "added_user_id" => '1',
 							'branch_id'=>$branch_id
 						);
-		$tax_data[]=array('tax_name'=>'Exempted',
+		/*$tax_gst[]=array('tax_name'=>'Exempted',
 							'tax_value'=>'0.00',
 							"added_date" => date('Y-m-d'),
                             "added_user_id" => '1',
 							'branch_id'=>$branch_id
-						);
-		$tax_data[]=array('tax_name'=>'Slab@ 5%',
+						);*/
+		$tax_gst[]=array('tax_name'=>'GST',
 							'tax_value'=>'5.00',
 							"added_date" => date('Y-m-d'),
                             "added_user_id" => '1',
 							'branch_id'=>$branch_id
 						);
-		$tax_data[]=array('tax_name'=>'Slab@ 9%',
+		$tax_gst[]=array('tax_name'=>'GST',
 							'tax_value'=>'9.00',
 							"added_date" => date('Y-m-d'),
                             "added_user_id" => '1',
 							'branch_id'=>$branch_id
 						);
-		$tax_data[]=array('tax_name'=>'Slab@ 12%',
+		$tax_gst[]=array('tax_name'=>'GST',
 							'tax_value'=>'12.00',
 							"added_date" => date('Y-m-d'),
                             "added_user_id" => '1',
 							'branch_id'=>$branch_id
 						);
-		$tax_data[]=array('tax_name'=>'Slab@ 18%',
+		$tax_gst[]=array('tax_name'=>'GST',
 							'tax_value'=>'18.00',
 							"added_date" => date('Y-m-d'),
                             "added_user_id" => '1',
 							'branch_id'=>$branch_id
 						);
-		$tax_data[]=array('tax_name'=>'Slab@ 20%',
+		$tax_gst[]=array('tax_name'=>'GST',
 							'tax_value'=>'20.00',
 							"added_date" => date('Y-m-d'),
                             "added_user_id" => '1',
 							'branch_id'=>$branch_id
 						);
-		$tax_data[]=array('tax_name'=>'Slab@ 24%',
+		$tax_gst[]=array('tax_name'=>'GST',
 							'tax_value'=>'24.00',
 							"added_date" => date('Y-m-d'),
                             "added_user_id" => '1',
 							'branch_id'=>$branch_id
 						);
-		$tax_data[]=array('tax_name'=>'Slab@ 28%',
+		$tax_gst[]=array('tax_name'=>'GST',
 							'tax_value'=>'28.00',
 							"added_date" => date('Y-m-d'),
                             "added_user_id" => '1',
 							'branch_id'=>$branch_id
 						);
-		$tax_data[]=array('tax_name'=>'Slab@ 30%',
+		$tax_gst[]=array('tax_name'=>'GST',
 							'tax_value'=>'30.00',
 							"added_date" => date('Y-m-d'),
                             "added_user_id" => '1',
 							'branch_id'=>$branch_id
-						);*/
-		$this->general_model->insertBatchData('tax',$tax_data);
+						);
+		$this->general_model->insertBatchData('tax',$tax_gst);
 	}
 
 	function default_settings_entry($branch_id){
@@ -1894,6 +1895,36 @@ class Firm extends MY_Controller
                             "gst_visible" => 'yes',
                             'branch_id'=>$branch_id
                         );
+                    $settings_data[]=array('settings_invoice_first_prefix'=>'OUT',
+                            'settings_invoice_last_prefix'=>'number',
+                            "invoice_seperation" => '/',
+                            "invoice_type" => 'regular',
+                            'invoice_creation'=>'automatic',
+                            'invoice_readonly'=>'yes',
+                            "item_access" => 'product',
+                            "note_split" => 'yes',
+                            "module_id" => '114',
+                            "pdf_settings" => '',
+                            "tds_visible" => 'no',
+                            "tcs_visible" => 'no',
+                            "gst_visible" => 'yes',
+                            'branch_id'=>$branch_id
+                        );
+                    $settings_data[]=array('settings_invoice_first_prefix'=>'INL',
+                            'settings_invoice_last_prefix'=>'number',
+                            "invoice_seperation" => '/',
+                            "invoice_type" => 'regular',
+                            'invoice_creation'=>'automatic',
+                            'invoice_readonly'=>'yes',
+                            "item_access" => 'product',
+                            "note_split" => 'yes',
+                            "module_id" => '115',
+                            "pdf_settings" => '',
+                            "tds_visible" => 'no',
+                            "tcs_visible" => 'no',
+                            "gst_visible" => 'yes',
+                            'branch_id'=>$branch_id
+                        );
 		$this->general_model->insertBatchData('settings',$settings_data);
 	}
 
@@ -1959,6 +1990,14 @@ class Firm extends MY_Controller
                             "module_id" => '32',
 							'branch_id'=>$branch_id
 						);
+        $active_sub_modules_data[]=array('sub_module_id'=>'7',
+                            "module_id" => '114',
+                            'branch_id'=>$branch_id
+                        );
+        $active_sub_modules_data[]=array('sub_module_id'=>'7',
+                            "module_id" => '115',
+                            'branch_id'=>$branch_id
+                        );
 		$this->general_model->insertBatchData('active_sub_modules',$active_sub_modules_data);
 	}
 
