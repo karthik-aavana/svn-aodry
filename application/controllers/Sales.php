@@ -66,14 +66,14 @@ class Sales extends MY_Controller{
                 $list_data['start'] = $start;
             }
             if (empty($this->input->post('search')['value'])){
-                // $list_data['limit']  = $limit;
-                // $list_data['start']  = $start;
+                /*$list_data['limit']  = $limit;
+                $list_data['start']  = $start;*/
                 $list_data['search'] = 'all';
                 $posts               = $this->general_model->getPageJoinRecords($list_data);
             } else {
                 $search              = $this->input->post('search')['value'];
-                // $list_data['limit']  = $limit;
-                // $list_data['start']  = $start;
+                /*$list_data['limit']  = $limit;
+                $list_data['start']  = $start;*/
                 $list_data['search'] = $search;
                 $posts               = $this->general_model->getPageJoinRecords($list_data);
                 $totalFiltered       = $this->general_model->getPageJoinRecordsCount($list_data);
@@ -91,7 +91,7 @@ class Sales extends MY_Controller{
                     $sales_invoice_number = $post->sales_invoice_number;
                     if($post->sales_brand_invoice_number != '') $sales_invoice_number = $post->sales_brand_invoice_number;
                     $nestedData['customer']    = $post->customer_name . ' (<a href="' . base_url('sales/view/') . $sales_id . '">' . $sales_invoice_number . '</a>)<br> ';
-                    if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('LeatherCraft')){
+                    if($this->session->userdata('SESS_FIRM_ID') == $this->config->item('LeatherCraft')){
                         $nestedData['customer']    = $post->customer_name .' - '.$post->store_location . ' (<a href="' . base_url('sales/view/') . $sales_id . '">' . $sales_invoice_number . '</a>)<br> ';
                     }
                     $nestedData['grand_total'] = $currency_symbol . ' ' . $this->precise_amount($post->sales_grand_total , $access_common_settings[0]->amount_precision) . ' (INV)';
@@ -3899,7 +3899,7 @@ class Sales extends MY_Controller{
             elseif($invoice_type == "triplicate"){
                 $data['invoice_type'] = "TRIPLICATE FOR TRANSPORTER";
             }
-        if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath')){
+        if($this->session->userdata('SESS_FIRM_ID') == $this->config->item('Sanath')){
             
             $orientation = $this->input->post('cmb_orient');
             if($orientation == '' || $orientation == NULL){            
@@ -3941,7 +3941,7 @@ class Sales extends MY_Controller{
         $pdf_json            = $data['access_settings'][0]->pdf_settings;
         $rep                 = str_replace("\\" , '' , $pdf_json);
         $data['pdf_results'] = json_decode($rep , true);
-        if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath')){
+        if($this->session->userdata('SESS_FIRM_ID') == $this->config->item('Sanath')){
             if($print_type == 'cash_invoice'){
                 $html = $this->load->view('sales/half_pdf' , $data , true);
             }elseif($print_type == 'tabular'){
@@ -3977,7 +3977,7 @@ class Sales extends MY_Controller{
         /*$dompdf->set_option('isHtml5ParserEnabled', true);*/
         // THE FOLLOWING LINE OF CODE IS YOUR CONCERN
        // $customPaper = array(0,0,360,360);
-        if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath')){
+        if($this->session->userdata('SESS_FIRM_ID') == $this->config->item('Sanath')){
             if($paper_size == 'half'){
                  $dompdf->setPaper(array(0,0,595.28,420));
              }else{
@@ -4804,7 +4804,7 @@ class Sales extends MY_Controller{
             $rep                 = str_replace("\\" , '' , $pdf_json);
             $data['pdf_results'] = json_decode($rep , true);
             /*$html                 = $this->load->view('sales/pdf_view3' , $data , true);*/
-            if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath')){
+            if($this->session->userdata('SESS_FIRM_ID') == $this->config->item('Sanath')){
                 $html = $this->load->view('sales/pdf_hsn' , $data , true);
             }else{
                 $html = $this->load->view('sales/pdf' , $data , true);

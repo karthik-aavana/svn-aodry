@@ -42,7 +42,7 @@ class Shipping_Address extends MY_Controller {
             $order = $columns[$this->input->post('order')[0]['column']];
             $dir = $this->input->post('order')[0]['dir'];
             
-            if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('LeatherCraft')){
+            if($this->session->userdata('SESS_FIRM_ID') == $this->config->item('LeatherCraft')){
                 $list_data = $this->common->shipping_address_list_field_leathercraft();
             }else{
                 $list_data = $this->common->shipping_address_list_field();

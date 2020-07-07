@@ -614,7 +614,7 @@ class Supplier extends MY_Controller {
         $data['opening_balance'] = 0;
         $data['opening_balance_id'] = 0;
         $data['opening_balance_editable'] = 1;
-        if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath')){
+        if($this->session->userdata('SESS_FIRM_ID') == $this->config->item('Sanath')){
             $this->db->select('id,amount');
             $this->db->where('ledger_id',$data['data'][0]->ledger_id);
             $this->db->from('tbl_default_opening_balance');

@@ -388,7 +388,7 @@ class Payment_voucher extends MY_Controller
 
         $data['data'] = $this->general_model->getRecords($invoice_data['string'], $invoice_data['table'], $invoice_data['where'], $invoice_data['order']);
 
-        if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath')){
+        if($this->session->userdata('SESS_FIRM_ID') == $this->config->item('Sanath')){
             $this->db->select('ledger_id');
             $this->db->where('supplier_id',$supplier_id);
             $this->db->from('supplier');

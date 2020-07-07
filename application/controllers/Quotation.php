@@ -82,7 +82,7 @@ class Quotation extends MY_Controller {
                     if (in_array($quotation_module_id, $data['active_view'])) {
                         $nestedData['customer'] = $post->customer_name . ' (<a href="' . base_url('quotation/view/') . $quotation_id . '">' . $post->quotation_invoice_number . '</a>) ';
                     }
-                    if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('LeatherCraft')){
+                    if($this->session->userdata('SESS_FIRM_ID') == $this->config->item('LeatherCraft')){
                         $nestedData['customer'] = $post->customer_name .' - '. $post->store_location. ' (<a href="' . base_url('quotation/view/') . $quotation_id . '">' . $post->quotation_invoice_number . '</a>) ';
                     }
                     $nestedData['grand_total'] = $post->currency_symbol . ' ' . $this->precise_amount($post->quotation_grand_total, $access_common_settings[0]->amount_precision);
@@ -1557,7 +1557,7 @@ class Quotation extends MY_Controller {
         $rep = str_replace("\\", '', $pdf_json);
         $data['pdf_results'] = json_decode($rep, true);
         
-        if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath')){
+        if($this->session->userdata('SESS_FIRM_ID') == $this->config->item('Sanath')){
             $hsn_data = $this->common->hsn_quotation_list_item_field1($id);
             $data['hsn'] = $this->general_model->getPageJoinRecords($hsn_data);
         }
@@ -1669,7 +1669,7 @@ class Quotation extends MY_Controller {
                 $email_sub_module = 1;
             }
         }
-        if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath')){
+        if($this->session->userdata('SESS_FIRM_ID') == $this->config->item('Sanath')){
             $hsn_data = $this->common->hsn_quotation_list_item_field1($id);
             $data['hsn'] = $this->general_model->getPageJoinRecords($hsn_data);
         }

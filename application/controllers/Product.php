@@ -775,7 +775,7 @@ class Product extends MY_Controller
                     $varient_value_id = $combination_data[0]->varient_value_id;
 
                     $insert_product[$i]["product_code"] = $product_code.'-0'.$a;
-                    if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('LeatherCraft')) $insert_product[$i]["product_code"] = $product_code;
+                    if($this->session->userdata('SESS_FIRM_ID') == $this->config->item('LeatherCraft')) $insert_product[$i]["product_code"] = $product_code;
                     $insert_product[$i]["product_name"] = $product_name.'/'.$combination_name;
                     $insert_product[$i]["product_hsn_sac_code"] = $this->input->post('product_hsn_sac_code');
                     $insert_product[$i]["product_category_id"] = $this->input->post('product_category');
@@ -2315,7 +2315,7 @@ class Product extends MY_Controller
                     $combination_name = $combination_data[0]->combinations;
 
                     $insert_product[$i]["product_code"] = $product_code.'-0'.$a;
-                    if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('LeatherCraft')) $insert_product[$i]["product_code"] = $product_code;
+                    if($this->session->userdata('SESS_FIRM_ID') == $this->config->item('LeatherCraft')) $insert_product[$i]["product_code"] = $product_code;
                     $insert_product[$i]["product_name"] = $product_name_edit.'/'.$combination_name;
                     $insert_product[$i]["product_hsn_sac_code"] = $this->input->post('product_hsn_sac_code');
                     $insert_product[$i]["product_category_id"] = $this->input->post('product_category');
@@ -4861,7 +4861,6 @@ class Product extends MY_Controller
                                         if($expiry_date != '1970-01-01'){
                                             $headers["exp_date"] = $expiry_date;
                                         }
-                                        
 
                                         if($is_varients == 'N'){
                                             $headers["product_combination_id"] = $combination_id;
