@@ -477,7 +477,7 @@ class MY_Controller extends CI_Controller
         }
 
         $first_prefix       = $access_settings[0]->settings_invoice_first_prefix;
-        if($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath')){
+        if($this->session->userdata('SESS_FIRM_ID') == $this->config->item('Sanath')){
             if($first_prefix == "SAL"){
                 $first_prefix = $first_prefix.date("y");
             }
