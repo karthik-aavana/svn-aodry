@@ -910,6 +910,7 @@ class Report extends MY_Controller {
             $list_data['search'] = 'all';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
             $totalFiltered = $totalData;
+
             if (empty($this->input->post('search')['value'])) {
                 $list_data['limit'] = $limit;
                 $list_data['start'] = $start;
@@ -1623,7 +1624,6 @@ class Report extends MY_Controller {
             $list_data['search'] = 'all';
             $list_data['section'] = 'expense_bill';
             $totalData = $this->general_model->getPageJoinRecordsCount($list_data);
-
             $totalFiltered = $totalData;
             if($limit > -1){
                 $list_data['limit'] = $limit;
@@ -3404,9 +3404,6 @@ class Report extends MY_Controller {
                     $recivable_date = $post->voucher_date;
                     $payment_id = $this->encryption_url->encode($post->payment_id);
                     $purchase_id = $this->encryption_url->encode($post->purchase_id);
-                    if($post->party_id == 0){
-                        $post->supplier_name = 'Others';
-                    }
                     $nestedData['supplier'] = $post->supplier_name;
                     $nestedData['invoice'] = $post->voucher_number;
                     if(in_array($payment_voucher_module_id, $data['active_view'])){

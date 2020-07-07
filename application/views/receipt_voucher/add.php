@@ -83,9 +83,9 @@ $this->load->view('layout/header');
                             <select id="common_select" style="display: none;">
                             </select>
                             <div class="row row_count main_row" row="1" id="ToClone">
-                                <div class="col-sm-2 reference_number_div" style="width: 21.5%">
+                                <div class="col-sm-2 reference_number_div" style="width: 20%">
                                     <div class="form-group">
-                                        <label for="customer">Reference<br/>Number<span class="validation-color">*</span></label>
+                                        <label for="customer"><br/>Reference Number<span class="validation-color">*</span></label>
                                         <a type="buttion" href="#" class="add_row_button pull-right">(+)</a>
                                         <select class="reference_number form-control select2"  id="reference_number_1" name="reference_number">
                                             <option value="">Select</option>
