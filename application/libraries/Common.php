@@ -3655,8 +3655,8 @@ class Common
         );
         return $data;
     }
-    public function expences_suggestions_field($term){
-        $sql = 'SELECT * FROM ((SELECT  expense_id as item_id,expense_title as item_code,branch_id,delete_status,expense_title as item_name FROM  expense where delete_status=0 and branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . ' and expense_title like "%' . $term . '%" order by expense_id desc)) AS u where u.delete_status=0 && u.branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . '';
+    public function expences_suggestions_field(){
+        $sql = 'SELECT * FROM ((SELECT  expense_id as item_id,expense_title as item_code,branch_id,delete_status,expense_title as item_name ,expense_hsn_code FROM  expense where delete_status=0 and branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . ' order by expense_id desc)) AS u where u.delete_status=0 && u.branch_id=' . $this->ci->session->userdata('SESS_BRANCH_ID') . '';
         return $sql;
     }
 
