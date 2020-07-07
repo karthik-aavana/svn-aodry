@@ -453,6 +453,22 @@ if (!function_exists('precise_amount')) {
                                                             </i>Stock Movement
                                                         </a>
                                                     </li> 
+                                                <?php } 
+                                                if (in_array($this->config->item('outlet_module'), $active_modules)){?>  
+                                                    <li>
+                                                        <a href="<?= base_url('outlet'); ?>">
+                                                            <i class="">
+                                                            </i>Outlet product
+                                                        </a>
+                                                    </li> 
+                                                <?php } 
+                                                if (in_array($this->config->item('inlet_module'), $active_modules)){?>  
+                                                    <li>
+                                                        <a href="<?= base_url('inlet'); ?>">
+                                                            <i class="">
+                                                            </i>Inlet product
+                                                        </a>
+                                                    </li> 
                                                 <?php } ?>
                                             </ul>
                                             <?php }} ?>
