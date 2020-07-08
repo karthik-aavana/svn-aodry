@@ -3135,7 +3135,7 @@ class Payment_voucher extends MY_Controller
 
         // $email_sub_module_id             = $this->config->item('email_sub_module');
         /*echo $payment_voucher_id;*/
-        if($this->config->item('Sanath') == $this->session->userdata('SESS_BRANCH_ID')){
+        if($this->config->item('Sanath') == $this->session->userdata('SESS_FIRM_ID')){
             $all_payment = $this->allPayment($payment_voucher_id);
             $payments = array();
             

@@ -859,7 +859,7 @@ class Sales extends MY_Controller{
         $tax_data      = array();
         $tds_data      = array();
 
-        if($this->config->item('LeatherCraft') != $this->session->userdata('SESS_BRANCH_ID')){
+        if($this->config->item('LeatherCraft') != $this->session->userdata('SESS_FIRM_ID')){
             if ($item_code[2] == 'yes')
             {
                 $discount_data = $this->discount_call();

@@ -294,7 +294,7 @@ class Purchase extends MY_Controller {
                     }
                     $LeatherCraft_id = $this->config->item('LeatherCraft');
 
-                    if($LeatherCraft_id == $this->session->userdata('SESS_BRANCH_ID')){
+                    if($LeatherCraft_id == $this->session->userdata('SESS_FIRM_ID')){
                         $cols .= '<span><a href="' .base_url('purchase/exportProductExcel/') . $purchase_id.'" target="_blank" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="View Voucher"><i class="fa fa-eye"></i></a></span>';
                     }
                     
@@ -741,7 +741,7 @@ class Purchase extends MY_Controller {
                     /*SK Customization*/
 
                     if ($value != null && $value != '') {
-                        if($LeatherCraft_id == $this->session->userdata('SESS_BRANCH_ID')){
+                        if($LeatherCraft_id == $this->session->userdata('SESS_FIRM_ID')){
                            $item_id =  $this->createBatchProduct($value->item_id,$this->input->post('grn_number'),$this->input->post('supplier'),$this->input->post('cmb_warehouse'));
                         }else{
                             $item_id = $value->item_id;
@@ -3071,7 +3071,7 @@ class Purchase extends MY_Controller {
         $section_modules = $this->get_section_modules($purchase_module_id, $modules, $privilege);*/
         if($term == '-') $term ='';
         $LeatherCraft_id = $this->config->item('LeatherCraft');
-        if($LeatherCraft_id == $this->session->userdata('SESS_BRANCH_ID')){
+        if($LeatherCraft_id == $this->session->userdata('SESS_FIRM_ID')){
             $suggestions_query = $this->common->item_suggestions_field_leathercrafr($item_access, $term);
         }else{
             $suggestions_query = $this->common->item_suggestions_field($item_access, $term);
@@ -3938,14 +3938,14 @@ class Purchase extends MY_Controller {
                             array_push($not_deleted_ids, $purchase_item_id);
                             //$item_id = $value->item_id;
                             $item_id = ($value->item_id != 0) ?  $value->item_id : $product_id;
-                            if($LeatherCraft_id == $this->session->userdata('SESS_BRANCH_ID')){
+                            if($LeatherCraft_id == $this->session->userdata('SESS_FIRM_ID')){
                                     $item_id =  $this->updateBarcodeProduct($item_id,$this->input->post('grn_number'),$this->input->post('supplier'),$this->input->post('cmb_warehouse'));
                             }
                             
                             $where = array('purchase_item_id' => $purchase_item_id);
                             $this->general_model->updateData($table, $item_data, $where);
                         } else {
-                                if($LeatherCraft_id == $this->session->userdata('SESS_BRANCH_ID')){
+                                if($LeatherCraft_id == $this->session->userdata('SESS_FIRM_ID')){
                                     $item_id =  $this->createBatchProduct($value->item_id,$this->input->post('grn_number'),$this->input->post('supplier'),$this->input->post('cmb_warehouse'));
                                 }else{
                                     //$item_id = $value->item_id;

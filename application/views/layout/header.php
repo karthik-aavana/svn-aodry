@@ -234,7 +234,7 @@ if (!function_exists('precise_amount')) {
                                             </li>
                                             <?php }
                                             if (in_array($this->config->item('delivery_challan_module'), $active_modules)){
-                                                if($this->config->item('LeatherCraft') == $this->session->userdata("SESS_BRANCH_ID")){
+                                                if($this->config->item('LeatherCraft') == $this->session->userdata("SESS_FIRM_ID")){
                                             ?>
                                             <li>
                                                 <a href="<?php echo base_url('delivery_challan'); ?>">
@@ -331,7 +331,7 @@ if (!function_exists('precise_amount')) {
                                             </li>
                                             <?php }
                                                 if (in_array($this->config->item('delivery_challan_module'), $active_modules)){
-                                                    if($this->config->item('LeatherCraft') != $this->session->userdata("SESS_BRANCH_ID")){
+                                                    if($this->config->item('LeatherCraft') != $this->session->userdata("SESS_FIRM_ID")){
                                             ?>
                                             <li>
                                                 <a href="<?php echo base_url('delivery_challan'); ?>">
@@ -367,7 +367,7 @@ if (!function_exists('precise_amount')) {
                                     if(in_array($this->config->item('sales_stock_report'), $active_modules) ||in_array($this->config->item('purchase_stock_report'), $active_modules) || in_array($this->config->item('closing_stock_report'), $active_modules) || in_array($this->config->item('stock_module'), $active_modules) || in_array($this->config->item('damaged_stock_module'), $active_modules) || in_array($this->config->item('missing_stock_module'), $active_modules)){?>
                                     <li class="has-children">
                                         <a href="">Stock Management</a>
-                                        <?php if ($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('LeatherCraft')) { 
+                                        <?php if ($this->session->userdata('SESS_FIRM_ID') == $this->config->item('LeatherCraft')) { 
                                             if(in_array($this->config->item('sales_stock_report'), $active_modules) || in_array($this->config->item('purchase_stock_report'), $active_modules) || in_array($this->config->item('closing_stock_report'), $active_modules)){ ?>
                                             <ul class="is-hidden">
                                                 <?php 
@@ -495,7 +495,7 @@ if (!function_exists('precise_amount')) {
                                                     </a>
                                                 </li>
                                             <?php } ?>
-                                            <?php if ($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath') || $this->session->userdata('SESS_BRANCH_ID') == $this->config->item('LeatherCraft')) { 
+                                            <?php if ($this->session->userdata('SESS_FIRM_ID') == $this->config->item('Sanath') || $this->session->userdata('SESS_FIRM_ID') == $this->config->item('LeatherCraft')) { 
                                                 if (in_array($this->config->item('brand_module'), $active_modules)){?>
                                                     <li>
                                                         <a href="<?= base_url(); ?>brand">
@@ -504,7 +504,7 @@ if (!function_exists('precise_amount')) {
                                                     </li>
                                                 <?php }
                                                 } ?>
-                                            <?php if ($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('ILKKA')) { 
+                                            <?php if ($this->session->userdata('SESS_FIRM_ID') == $this->config->item('ILKKA')) { 
                                                 if (in_array($this->config->item('brand_module'), $active_modules)){?>
                                                     <li>
                                                         <a href="<?= base_url(); ?>brand">
@@ -1330,7 +1330,7 @@ if (!function_exists('precise_amount')) {
                                             </li>
                                             <?php }
                                             ?>
-                                            <?php if ($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('LeatherCraft')) { 
+                                            <?php if ($this->session->userdata('SESS_FIRM_ID') == $this->config->item('LeatherCraft')) { 
                                                 if (in_array($this->config->item('department_module'), $active_modules))
                                                 {?>
                                                 <li>
@@ -1418,7 +1418,7 @@ if (!function_exists('precise_amount')) {
                                    </a>
                                 </li>
                                 <?php } ?>
-                                <!-- <?php if ($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('LeatherCraft')) { ?>
+                                <!-- <?php if ($this->session->userdata('SESS_FIRM_ID') == $this->config->item('LeatherCraft')) { ?>
                                     <li class="quick_sales">
                                         <a href="<?php echo base_url() ?>sales/add" >
                                             <i class="fa fa-fw fa-shopping-cart" >
@@ -2107,7 +2107,7 @@ if (!function_exists('precise_amount')) {
                                     </i>
                                 </span>
                             </a>
-                            <?php if ($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('LeatherCraft')) { 
+                            <?php if ($this->session->userdata('SESS_FIRM_ID') == $this->config->item('LeatherCraft')) { 
                                 if(in_array($this->config->item('sales_stock_report'), $active_modules) || in_array($this->config->item('purchase_stock_report'), $active_modules) || in_array($this->config->item('closing_stock_report'), $active_modules)){ ?>
                                     <ul class="treeview-menu">
                                         <?php
@@ -2142,7 +2142,7 @@ if (!function_exists('precise_amount')) {
                                         <?php } ?>   
                                     </ul>
                                 <?php } ?> 
-                            <?php } elseif($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath')){ 
+                            <?php } elseif($this->session->userdata('SESS_FIRM_ID') == $this->config->item('Sanath')){ 
                                 if(in_array($this->config->item('sales_stock_report'), $active_modules) || in_array($this->config->item('purchase_stock_report'), $active_modules) || in_array($this->config->item('closing_stock_report'), $active_modules)) { ?>
                                     <ul class="treeview-menu">
                                         <?php if(in_array($this->config->item('sales_stock_report'), $active_modules)){?>
@@ -2510,7 +2510,7 @@ if (!function_exists('precise_amount')) {
                                                     </a>
                                                 </li>
                                             <?php } ?>
-                                            <?php if ($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('Sanath') || $this->session->userdata('SESS_BRANCH_ID') == $this->config->item('LeatherCraft')) { if (in_array($this->config->item('brand_module'), $active_modules)){?>
+                                            <?php if ($this->session->userdata('SESS_FIRM_ID') == $this->config->item('Sanath') || $this->session->userdata('SESS_FIRM_ID') == $this->config->item('LeatherCraft')) { if (in_array($this->config->item('brand_module'), $active_modules)){?>
                                                     <li>
                                                         <a href="<?= base_url(); ?>brand">
                                                             Brand 
@@ -2518,7 +2518,7 @@ if (!function_exists('precise_amount')) {
                                                     </li>
                                                 <?php } ?>
                                             <?php } ?>
-                                            <?php if ($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('ILKKA')) { 
+                                            <?php if ($this->session->userdata('SESS_FIRM_ID') == $this->config->item('ILKKA')) { 
                                                 if (in_array($this->config->item('brand_module'), $active_modules)){?>
                                                     <li>
                                                         <a href="<?= base_url(); ?>brand">
@@ -2671,7 +2671,7 @@ if (!function_exists('precise_amount')) {
                                             <span>Transaction Purpose</span>
                                         </a>
                                     </li> 
-                                <?php } if ($this->session->userdata('SESS_BRANCH_ID') == $this->config->item('LeatherCraft')) { ?>
+                                <?php } if ($this->session->userdata('SESS_FIRM_ID') == $this->config->item('LeatherCraft')) { ?>
                                     <?php 
                                     if (in_array($this->config->item('department_module'), $active_modules)) {?>
                                         <li>

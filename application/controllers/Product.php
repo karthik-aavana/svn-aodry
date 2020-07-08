@@ -2462,7 +2462,7 @@ class Product extends MY_Controller
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
          $LeatherCraft_id = $this->config->item('LeatherCraft');
-        if($LeatherCraft_id == $this->session->userdata("SESS_BRANCH_ID") ){
+        if($LeatherCraft_id == $this->session->userdata("SESS_FIRM_ID") ){
             $sql = "SELECT product_id FROM products WHERE `product_combination_id` IN (SELECT combination_id FROM product_combinations WHERE product_id = " . $product_id . " AND status = 'Y')";
                         $qry = $this->db->query($sql);
                         if($qry->num_rows() > 0){
@@ -3760,7 +3760,7 @@ class Product extends MY_Controller
                 'branch_id'     => $this->session->userdata("SESS_BRANCH_ID") ));
         $LeatherCraft_id = $this->config->item('LeatherCraft');
         $check_product = '';
-        if($LeatherCraft_id == $this->session->userdata("SESS_BRANCH_ID") ){
+        if($LeatherCraft_id == $this->session->userdata("SESS_FIRM_ID") ){
             $check_product = 'checked';
         }
        foreach ($combination_data as $com) {

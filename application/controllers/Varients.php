@@ -237,7 +237,7 @@ class Varients extends MY_Controller {
                     'branch_id' => $this->session->userdata('SESS_BRANCH_ID'));
                  
                 $LeatherCraft_id = $this->config->item('LeatherCraft');
-                if($LeatherCraft_id == $this->session->userdata('SESS_BRANCH_ID')){
+                if($LeatherCraft_id == $this->session->userdata('SESS_FIRM_ID')){
                      $data  = $this->general_model->getRecords('count(*) num', 'varients_value', array('branch_id' => $this->session->userdata('SESS_BRANCH_ID'), 'delete_status' => 0, 'varients_id'  => $varient_key));
                     $code = $data[0]->num;
                     $varient_data['variant_value_code'] = (int) $code + 1;
