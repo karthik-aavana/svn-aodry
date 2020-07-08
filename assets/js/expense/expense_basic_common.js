@@ -197,12 +197,10 @@ $(document).ready(function () {
             if(term.length < 0){
 
                 var filterExp  =  Object.values(allExp).filter(isInRange,term);
-                console.log(filterExp,555);
 
             }else{
 
                 var filterExp = allExp;
-                console.log(filterExp ,666);
             }
 
             if(filterExp.length == 1){
@@ -223,7 +221,6 @@ $(document).ready(function () {
                 $('#input_expense_code').val("");
             }else{
                 $.each(filterExp, function(k,v){
-                    console.log(k,v ,1111111111);
                     suggestions.push(v.item_name);
                     var pro_name = v.item_name;
                     pro_name = pro_name.replace(/\s/g, "");
@@ -253,7 +250,6 @@ $(document).ready(function () {
 
             k = pro_name;
             var item = mapping[k].toString().split("-");
-            console.log(item,11);
             var item_id = item[0];
             
             $('#table-total').show();
@@ -531,7 +527,6 @@ function getAllProducts(){
         type : "POST",
         dataType : "JSON",
         success : function(data){
-            console.log(data);
             allExp = data;
         }
     });
@@ -539,7 +534,6 @@ function getAllProducts(){
 
 //function to add new row to datatable
 function add_row(data) {
-    console.log(data);
     var flag = 0;
     var item_id = data.item_id;
     
