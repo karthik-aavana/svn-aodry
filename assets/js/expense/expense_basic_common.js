@@ -872,7 +872,7 @@ function add_row(data) {
             "</td>";
     }
     //tax area
-    if (tax_exist == 1) {
+    if (tax_exist == 1  && settings_gst_visible == "yes") {
         if (input_type == "hidden") {
             cols +=
                 "<td style='text-align:center'>" +
