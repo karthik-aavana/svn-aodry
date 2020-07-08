@@ -5,6 +5,18 @@ $(document).ready(function () {
         }
     });
     
+    $(document).on("click", '#purchase_order_submit', function (event) {
+        if ($('#cmb_warehouse').val() == "") {
+
+            $('#err_warehouse').text("Please Select Warehouse.");
+
+            $('#cmb_warehouse').focus();
+            return !1
+        }else{
+            $('#err_warehouse').text("");
+        }
+    });
+    
     $(document).on("click", '#purchase_submit,#purchase_pay_now', function (event) {
 
         var invoice_number = $('#invoice_number').val();
