@@ -40,7 +40,6 @@ $(document).ready(function () {
     $("#supplier").change(function () {
         var party_id = $("#supplier").val();
         if (party_id != "" && party_id != 0) {
-            // console.log(party_id);
             $('#expense_table_body').find('tr').each(function(){
                 $(this).find('select[name="item_discount"]').attr('disabled' , false);
                 $(this).find('select[name="item_tax"]').attr('disabled' , false);
@@ -184,7 +183,6 @@ $(document).ready(function () {
         cache: false,
         source: function (term, suggest) {
             term = term.toLowerCase();
-            if(term == '') term = '-';
             var isnum = /^\d+$/.test(term);
             if (common_settings_inventory_advanced == "") {
                 var inventory_advanced = "no";
@@ -194,12 +192,10 @@ $(document).ready(function () {
             var isnum = /^\d+$/.test(term);
             var suggestions = [];
 
-            if(term.length < 0){
+            if(term.length > 0){
 
                 var filterExp  =  Object.values(allExp).filter(isInRange,term);
-
             }else{
-
                 var filterExp = allExp;
             }
 
@@ -872,7 +868,7 @@ function add_row(data) {
             "</td>";
     }
     //tax area
-    if (tax_exist == 1  && settings_gst_visible == "yes") {
+    if (tax_exist == 1) {
         if (input_type == "hidden") {
             cols +=
                 "<td style='text-align:center'>" +
