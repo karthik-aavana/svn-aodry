@@ -381,7 +381,7 @@ $this->load->view('layout/header');
                                                             <div class="input-group" style="width: 100%">
                                                             <?php if (in_array($product_module_id, $active_add)) { $item_modal = 1;  ?>
                                                             <div class="input-group-addon">
-                                                                <a href="#" data-toggle="modal"  data-target="#product_inventory_modal" class="open_product_modal pull-left">+</a></div>
+                                                                <a href="#" data-toggle="modal"  data-target="#item_modal" class="open_product_modal pull-left">+</a></div>
                                                             <?php } ?>
                                                             <input id="input_purchase_code" class="form-control" type="text" name="input_purchase_code" placeholder="Enter Product/Service Code/Name" >
                                                                 

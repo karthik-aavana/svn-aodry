@@ -633,6 +633,10 @@ function add_row(data) {
     var branch_state_id = data.branch_state_id;
     var branch_id = data.branch_id;
 
+    if(typeof data[0] !== 'undefined'){
+       var data = data[0];
+    }
+
     if (item_type == "service") {
         var item_code = data.service_code;
         var item_name = data.service_name;

@@ -111,13 +111,13 @@ $(document).ready(function () {
         var tablerowCount = $('#expense_table_body tr').length;
         if (tablerowCount < 1) {
             $("#err_product").text("Please Select Items");
-            $('#input_purchase_code').focus();
+            $('#input_expense_code').focus();
             return !1
         }
         var grand_total = +$('#total_grand_total').val();
         if (grand_total == "" || grand_total == null || grand_total <= 0) {
             $("#err_product").text("Total Amount Should be equal or greater than Zero.");
-            $('#input_purchase_code').focus();
+            $('#input_expense_code').focus();
             return !1
         } else {
             $("#err_product").text("")

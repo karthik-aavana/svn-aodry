@@ -539,14 +539,26 @@ $this->load->view('layout/header');
                                                 ?>
                                                  <tr id="0">
                                                     
-                                                    <td colspan="2"><input id="input_sales_code" class="form-control" type="text" name="input_sales_code" placeholder="Enter Product/Service Code/Name" ></td>
-                                                    <?php
+                                                   <?php 
+                                                        $colspan = 2;
+                                                        if ($access_settings[0]->description_visible == 'yes') { $colspan++; } ?>
+                                                        <td colspan="<?=$colspan;?>">
+                                                            <div class="input-group" style="width: 100%">
+                                                            <?php if (in_array($product_module_id, $active_add)) { $item_modal = 1;  ?>
+                                                            <div class="input-group-addon">
+                                                                <a href="#" data-toggle="modal"  data-target="#item_modal" class="open_product_modal pull-left">+</a></div>
+                                                            <?php } ?>
+                                                            <input id="input_sales_code" class="form-control" type="text" name="input_sales_code" placeholder="Enter Product/Service Code/Name" >
+                                                                
+                                                            </div>
+                                                        </td>
+                                                    <!-- <?php
                                                     if ($access_settings[0]->description_visible == 'yes') {
                                                         ?>
                                                     <td>
                                                         <input type="text" class="form-control form-fixer" name="item_description" autocomplete="off">
                                                     </td>
-                                                    <?php } ?>
+                                                    <?php } ?> -->
                                                     <td style="text-align:center">
                                                         <input type="text" class="form-control form-fixer text-center float_number" value="0" data-rule="quantity" name="item_quantity">
                                                     </td>

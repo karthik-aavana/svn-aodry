@@ -334,7 +334,7 @@ $this->load->view('layout/header');
                                                             <div class="input-group" style="width: 100%">
                                                             <?php if (in_array($product_module_id, $active_add)) { $item_modal = 1;  ?>
                                                             <div class="input-group-addon">
-                                                                <a href="#" data-toggle="modal"  data-target="#product_inventory_modal" class="open_product_modal pull-left">+</a></div>
+                                                                <a href="#" data-toggle="modal"  data-target="#item_modal" class="open_product_modal pull-left">+</a></div>
                                                             <?php } ?>
                                                             <input id="input_purchase_code" class="form-control" type="text" name="input_purchase_code" placeholder="Enter Product/Service Code/Name" >
                                                                 
@@ -641,7 +641,6 @@ if ($charges_sub_module == 1) {
     var branch_state_list = <?php echo json_encode($state); ?>;
     var item_gst = new Array();
     var branch_state_list = <?php echo json_encode($state); ?>;
-    var discount_ary = <?php echo json_encode($discount); ?>;
     var common_settings_round_off = "<?= $access_common_settings[0]->round_off_access ?>";
     var discount_ary = <?php echo json_encode($discount); ?>;
     var tax_ary = <?php echo json_encode($tax); ?>;

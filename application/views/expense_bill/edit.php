@@ -882,6 +882,7 @@ if ($charges_sub_module == 1) {
     var settings_discount_visible = "<?= $access_settings[0]->discount_visible ?>";
     var settings_description_visible = "<?= $access_settings[0]->description_visible ?>";
     var settings_tds_visible = "<?= $access_settings[0]->tds_visible ?>";
+    var settings_gst_visible  = "<?= $access_settings[0]->gst_visible?>";
     var settings_item_editable = "<?= $access_settings[0]->item_editable ?>";
 </script>
 <script src="<?php echo base_url('assets/js/expense/'); ?>expense.js"></script>

@@ -347,33 +347,25 @@ $this->load->view('layout/header');
                                             </thead>
                                             <tbody id="sales_table_body">
                                                 <tr id="0">
-                                                   <td colspan="2"><input id="input_sales_code" class="form-control" type="text" name="input_sales_code" placeholder="Enter Product/Service Code/Name"></td>
                                                    <?php 
-                                                   if($access_settings[0]->description_visible == 'yes'){
-                                                   ?>
-                                                    <td>
-                                                        <input type="text" class="form-control form-fixer" name="item_description" autocomplete="off">
-                                                    </td>
-                                                    <?php } ?>
-                                                    <td style="text-align:center">
-                                                        <input type="text" class="form-control form-fixer text-center float_number" value="1" data-rule="quantity" name="item_quantity">
-                                                    </td>
-                                                    <!--  <td style="text-align:center">
-                                                        <input type="text" class="form-control form-fixer text-center float_number" value="1" data-rule="quantity" name="free_item_quantity">
-                                                    </td> -->
-                                                        <!-- <td>
-                                                            <div class="form-group" style="margin-bottom:0px !important;">
-                                                                <select class="form-control form-fixer select2 select2-hidden-accessible" name="item_unit" style="width: 100%;" tabindex="-1" aria-hidden="true">
-                                                                    <option value="">Select</option>
-                                                                </select>
+                                                        $colspan = 2;
+                                                        if ($access_settings[0]->description_visible == 'yes') { $colspan++; } ?>
+                                                        <td colspan="<?=$colspan;?>">
+                                                            <div class="input-group" style="width: 100%">
+                                                            <?php if (in_array($product_module_id, $active_add)) { $item_modal = 1;  ?>
+                                                            <div class="input-group-addon">
+                                                                <a href="#" data-toggle="modal"  data-target="#item_modal" class="open_product_modal pull-left">+</a></div>
+                                                            <?php } ?>
+                                                            <input id="input_sales_code" class="form-control" type="text" name="input_sales_code" placeholder="Enter Product/Service Code/Name" >
+                                                                
                                                             </div>
-                                                        </td> -->
-                                                   <!--  <td>
-                                                        <input type="text" class="form-control form-fixer text-right float_number" name="item_mrp_price" value="0.00">
-                                                    </td> -->
-                                                    <td>
-                                                        <input type="text" class="form-control form-fixer text-right float_number" name="item_price" value="0.00"><span id="item_sub_total_lbl_0" class="pull-right">0.00</span>
-                                                    </td>
+                                                        </td>
+                                                        <td style="text-align:center">
+                                                            <input type="text" class="form-control form-fixer text-center float_number" value="1" data-rule="quantity" name="item_quantity">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control form-fixer text-right float_number" name="item_price" value="0.00"><span id="item_sub_total_lbl_0" class="pull-right">0.00</span>
+                                                        </td>
                                                     <?php
                                                     if ($access_settings[0]->discount_visible == 'yes') {
                                                         ?>
@@ -746,5 +738,4 @@ if($this->session->userdata('SESS_BRANCH_ID') == 121){ ?>
     table tr th a.gst_plus:hover, table tr th a.gst_plus:focus,table tr th a.discount_plus:hover, table tr th a.discount_plus:focus{
         color: red;
     }
-
 </style>
