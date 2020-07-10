@@ -16,12 +16,12 @@ class Ledger_view extends MY_Controller {
     }
 
     function index($id= 0){
-        $report_module_id         = $this->config->item('report_module');
-        $data['module_id']               = $report_module_id;
+        $ledger_view_report_module_id         = $this->config->item('ledger_view_report_module');
+        $data['module_id']               = $ledger_view_report_module_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
         $data['privilege']               = $privilege;
-        $section_modules                 = $this->get_section_modules($report_module_id, $modules, $privilege);
+        $section_modules                 = $this->get_section_modules($ledger_view_report_module_id, $modules, $privilege);
 
         $data['ledgers']   = $this->ledger_model->GetLedgersName();
         $data['ledger_id'] = $this->encryption_url->decode($id);

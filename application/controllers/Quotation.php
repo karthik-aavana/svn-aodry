@@ -108,7 +108,7 @@ class Quotation extends MY_Controller {
                                     <i class="fa fa-pencil"></i></a></span>';
                         }
                     }
-                    if (in_array($sales_module_id, $data['active_edit']) && $is_complate == '0') {
+                    if (in_array($sales_module_id, $data['active_add']) && $is_complate == '0') {
                         $cols .= '<span><a href="' . base_url('quotation/convert_quotation/') . $quotation_id . '" class="btn btn-app" data-placement="bottom" data-toggle="tooltip" title="Move to Sales">
                                     <i class="fa fa-reply"></i>
                             </a></span>';

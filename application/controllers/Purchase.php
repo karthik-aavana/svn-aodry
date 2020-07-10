@@ -3418,7 +3418,9 @@ class Purchase extends MY_Controller {
               } */
             $product_items = $this->common->purchase_items_product_list_field($id);
             $purchase_product_items = $this->general_model->getJoinRecords($product_items['string'], $product_items['table'], $product_items['where'], $product_items['join']);
-            $data['data'][0]->warehouse_id = $purchase_product_items[0]->warehouse_id;
+            if(!empty($purchase_product_items)){
+                $data['data'][0]->warehouse_id = $purchase_product_items[0]->warehouse_id;
+            }
         }
 
         $data['items'] = array_merge($purchase_product_items, $purchase_service_items);

@@ -32,10 +32,17 @@ $this->load->view('layout/header');
                         <div class="box-header with-border box-body filter_body">
                             <div class="btn-group">
                                 <span><a href="#" class="btn btn-app view" data-toggle="tooltip" data-placement="bottom" data-original-title="View <?= ucwords(str_replace("_", ' ', $voucher_type));?> Voucher"> <i class="fa fa-eye"></i> </a></span>
-                                <span><a href="#" target="_blank" class="btn btn-app pdf" data-toggle="tooltip" data-placement="bottom" title="Download PDF"><i class="fa fa-file-pdf-o"></i></a></span>
+                                <?php if (in_array($sales_module_id, $active_view)) {?>
+                                    <span><a href="#" target="_blank" class="btn btn-app pdf" data-toggle="tooltip" data-placement="bottom" title="Download PDF"><i class="fa fa-file-pdf-o"></i></a></span>
+                                <?php } ?>
                                 <!-- <span> <a href="#" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Email Bill"> <i class="fa fa-envelope-o"></i> </a></span> -->
-                                <span><a href="javascript:void(0);" class="btn btn-app edit" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit <?= ucwords(str_replace("_", ' ', $voucher_type));?> Voucher" > <i class="fa fa-pencil"></i> </a></span>
-                                <span class="delete_button" data-backdrop="static" data-keyboard="false" href="#" data-toggle="modal" data-target="#delete_modal" data-id="" data-path="<?= $voucher_type ?>/delete" data-return="<?= $voucher_type ?>_voucher" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app" data-placement="bottom" data-toggle="tooltip" title="Delete <?= ucwords(str_replace("_", ' ', $voucher_type));?> Voucher"> <i class="fa fa-trash-o"></i> </a></span>
+                                <?php
+                                    if (in_array($sales_module_id, $active_edit)) {?>
+                                    <span><a href="javascript:void(0);" class="btn btn-app edit" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit <?= ucwords(str_replace("_", ' ', $voucher_type));?> Voucher" > <i class="fa fa-pencil"></i> </a></span>
+                                <?php }
+                                if (in_array($sales_module_id, $active_delete)) {?>
+                                    <span class="delete_button" data-backdrop="static" data-keyboard="false" href="#" data-toggle="modal" data-target="#delete_modal" data-id="" data-path="<?= $voucher_type ?>/delete" data-return="<?= $voucher_type ?>_voucher" data-delete_message="If you delete this record then its assiociated records also will be delete!! Do you want to continue?"> <a class="btn btn-app" data-placement="bottom" data-toggle="tooltip" title="Delete <?= ucwords(str_replace("_", ' ', $voucher_type));?> Voucher"> <i class="fa fa-trash-o"></i> </a></span>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>                   

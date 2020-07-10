@@ -106,21 +106,24 @@ class purchase_voucher extends MY_Controller
     function view_details($id)
     {
         $purchase_voucher_id                = $this->encryption_url->decode($id);
-        $purchase_voucher_module_id         = $this->config->item('purchase_voucher_module');
+        $voucher_details = $this->common->purchase_voucher_details($purchase_voucher_id);
+        $data['data']    = $this->general_model->getJoinRecords($voucher_details['string'], $voucher_details['table'], $voucher_details['where'], $voucher_details['join']);
+        if($data['data'][0]->reference_type == 'purchase_credit_note'){
+            $purchase_voucher_module_id         = $this->config->item('purchase_credit_note_voucher');
+        }elseif($data['data'][0]->reference_type == 'purchase_debit_note') {
+            $purchase_voucher_module_id         = $this->config->item('purchase_debit_note_voucher');
+        }else{
+            $purchase_voucher_module_id         = $this->config->item('purchase_voucher_module');
+        }
         $data['module_id']               = $purchase_voucher_module_id;
         $data['purchase_voucher_module_id'] = $purchase_voucher_module_id;
         $modules                         = $this->modules;
         $privilege                       = "view_privilege";
         $data['privilege']               = $privilege;
-        // exit;
-
-                $section_modules            = $this->get_section_modules($purchase_voucher_module_id, $modules, $privilege);
+        $section_modules            = $this->get_section_modules($purchase_voucher_module_id, $modules, $privilege);
         /* presents all the needed */
         $data=array_merge($data,$section_modules);
 
-        $voucher_details = $this->common->purchase_voucher_details($purchase_voucher_id);
-        $data['data']    = $this->general_model->getJoinRecords($voucher_details['string'], $voucher_details['table'], $voucher_details['where'], $voucher_details['join']);
-       
         $this->load->view('purchase_voucher/view_details', $data);
     }
 

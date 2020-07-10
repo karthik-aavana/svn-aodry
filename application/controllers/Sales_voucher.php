@@ -26,6 +26,7 @@ class sales_voucher extends MY_Controller {
         $data = array_merge($data, $section_modules);
 
         $email_sub_module_id = $this->config->item('email_sub_module');
+        $data['sales_module_id'] = $this->config->item('sales_module');
         $data['voucher_type'] = 'sales';
         if (!empty($this->input->post())) {
             $voucher_type = 'sales';
@@ -95,20 +96,23 @@ class sales_voucher extends MY_Controller {
 
     function view_details($id) {
         $sales_voucher_id = $this->encryption_url->decode($id);
-        $sales_voucher_module_id = $this->config->item('sales_voucher_module');
+        $voucher_details = $this->common->sales_voucher_details($sales_voucher_id);
+        $data['data'] = $this->general_model->getJoinRecords($voucher_details['string'], $voucher_details['table'], $voucher_details['where'], $voucher_details['join']);
+        if($data['data'][0]->reference_type == 'sales_credit_note'){
+            $purchase_voucher_module_id         = $this->config->item('sales_credit_note_voucher');
+        }elseif($data['data'][0]->reference_type == 'sales_debit_note') {
+            $purchase_voucher_module_id         = $this->config->item('sales_debit_note_voucher');
+        }else{
+            $sales_voucher_module_id         = $this->config->item('sales_voucher_module');
+        }
         $data['module_id'] = $sales_voucher_module_id;
         $data['sales_voucher_module_id'] = $sales_voucher_module_id;
         $modules = $this->modules;
         $privilege = "view_privilege";
         $data['privilege'] = $privilege;
-        // exit;
-
         $section_modules = $this->get_section_modules($sales_voucher_module_id, $modules, $privilege);
         /* presents all the needed */
         $data = array_merge($data, $section_modules);
-
-        $voucher_details = $this->common->sales_voucher_details($sales_voucher_id);
-        $data['data'] = $this->general_model->getJoinRecords($voucher_details['string'], $voucher_details['table'], $voucher_details['where'], $voucher_details['join']);
 
         $this->load->view('sales_voucher/view_details', $data);
     }
