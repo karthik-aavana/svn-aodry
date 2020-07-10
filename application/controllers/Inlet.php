@@ -71,7 +71,7 @@ class Inlet extends MY_Controller{
                     $nestedData['branch_name'] = $post->branch_name;
                     $nestedData['total_items'] = $this->precise_amount($post->total_items , $access_common_settings[0]->amount_precision);
                     //$nestedData['added_user'] = $post->first_name . ' ' . $post->last_name;
-                    /*0=pending,1=completed,2=on-hold,3=processing,4=failed,5=canceled*/
+                    /*  0=pending,1=completed,2=on-hold,3=processing,4=partial,5=failed,6=canceled*/
                     $inlet_status = $post->transferred_status;
                     if ($inlet_status == 0){
                         $nestedData['transfer_status'] = '<span class="label label-default">Pending</span>';
@@ -82,7 +82,7 @@ class Inlet extends MY_Controller{
                     }else if ($inlet_status == 3){
                         $nestedData['transfer_status'] = '<span class="label label-primary">Processing</span>';
                     }else if ($inlet_status == 4){
-                        $nestedData['transfer_status'] = '<span class="label label-danger">Failed</span>';
+                        $nestedData['transfer_status'] = '<span class="label label-info">Partial</span>';
                     }else{
                         $nestedData['transfer_status'] = '<span class="label label-danger">Canceled</span>';
                     }
@@ -95,7 +95,7 @@ class Inlet extends MY_Controller{
                     }
                     if (in_array($inlet_module_id , $data['active_edit']))
                     {
-                        if ($inlet_status == 0) {
+                        if ($inlet_status == 0 || $inlet_status == 4) {
                             $cols .= '<span><a href="' . base_url('inlet/transfer_stock/') . $inlet_id . '" class="btn btn-app" data-toggle="tooltip" data-placement="bottom" title="Confirm and transfer stock"><i class="fa fa-pencil"></i></a></span>';
                         }
                     }

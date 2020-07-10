@@ -255,6 +255,7 @@ $this->load->view('layout/header');
                                                 <?php
                                                 $i = 0;
                                                 $tot = 0;
+                                                $txtAry = array();
                                                 foreach ($items as $key) {
                                                     ?>
                                                     <tr id="<?= $i ?>">
@@ -273,9 +274,11 @@ $this->load->view('layout/header');
                                                             <br>
                                                             <?php echo $key->product_batch; ?>
                                                         </td>
+                                                        <?php if ($access_settings[0]->description_visible == 'yes') { ?>
                                                         <td>
                                                             <input type='text' class='form-control form-fixer' name='item_description' value='<?= $key->outlet_item_description; ?>'>
                                                         </td>
+                                                        <?php } ?>
                                                         <td>
                                                             <input type='text' class='form-control form-fixer text-center float_number' value='<?php
                                                             echo $key->outlet_item_quantity ? $key->outlet_item_quantity : 0;
@@ -291,6 +294,7 @@ $this->load->view('layout/header');
                                                             echo $key->outlet_item_sub_total ? precise_amount($key->outlet_item_sub_total) : 0;
                                                             ?>' name='item_sub_total'>
                                                         </td>
+                                                        <?php if ($access_settings[0]->discount_visible == 'yes') { ?>
                                                         <td>
                                                             <input type='hidden' name='item_discount_id' value='<?php
                                                             echo $key->outlet_item_discount_id ? $key->outlet_item_discount_id : 0;
@@ -317,10 +321,20 @@ $this->load->view('layout/header');
                                                                 echo $key->outlet_item_discount_amount ? precise_amount($key->outlet_item_discount_amount) : 0;
                                                                 ?></span>
                                                         </td>
+                                                        <?php } ?>
                                                         <!-- tax area -->
+                                                        <?php
+                                                        if ($access_settings[0]->tax_type == 'gst' || $access_settings[0]->tax_type == 'single_tax') {
+                                                        if ($access_settings[0]->discount_visible == 'yes') {
+                                                            ?>
                                                         <td align='right'>
                                                             <input type='hidden' name='item_taxable_value' value='<?= ($key->outlet_item_taxable_value ? $key->outlet_item_taxable_value : 0); ?>'> <span id='item_taxable_value_lbl_<?= $i ?>'><?= $key->outlet_item_taxable_value ? precise_amount($key->outlet_item_taxable_value) : 0; ?></span>
                                                         </td>
+                                                        <?php
+                                                            }
+                                                        }
+                                                        ?>
+                                                        <?php if ($access_settings[0]->tds_visible == 'yes') { ?>
                                                         <td style='text-align:center'>
                                                             <?php
                                                             if ($key->tds_module_type == "" || $key->tds_module_type == null) {
@@ -369,8 +383,19 @@ $this->load->view('layout/header');
                                                             <input type='hidden' name='item_tds_type' value='<?= $key->tds_module_type ? $key->tds_module_type : ' ' ?>'>
                                                             <input type='hidden' name='item_tds_amount' value='<?= $key->outlet_item_tds_amount ? precise_amount($key->outlet_item_tds_amount) : 0 ?>'><span id='item_tds_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?= $key->outlet_item_tds_amount ? precise_amount($key->outlet_item_tds_amount) : 0 ?></span>
                                                         </td>
+                                                        <?php } ?>
                                                         <!-- tds area -->
+                                                        <?php if ($access_settings[0]->gst_visible == 'yes') { ?>
                                                         <td>
+                                                            <?php 
+                                                            if($key->outlet_item_tax_amount > 0){
+                                                                if(isset($txtAry[$key->outlet_item_tax_percentage])){
+                                                                    $txtAry[$key->outlet_item_tax_percentage] += precise_amount($key->outlet_item_tax_amount);
+                                                                }else{
+                                                                    $txtAry[$key->outlet_item_tax_percentage] = precise_amount($key->outlet_item_tax_amount);
+                                                                }
+                                                            }
+                                                            ?>
                                                             <input type='hidden' name='item_tax_id' value='<?= $key->outlet_item_tax_id ? $key->outlet_item_tax_id : 0 ?>'>
                                                             <input type='hidden' name='item_tax_percentage' value='<?= $key->outlet_item_tax_percentage ? precise_amount($key->outlet_item_tax_percentage) : 0 ?>'>
                                                             <input type='hidden' name='item_tax_amount_cgst' value='0'>
@@ -384,12 +409,13 @@ $this->load->view('layout/header');
                                                                     foreach ($tax as $key3 => $value3) {
                                                                         if ($value3->tax_name == 'GST') {
                                                                             echo "
-                                                                <option value='" . $value3->tax_id . "-" . ($value3->tax_value) . "' " . ($value3->tax_id == $key->outlet_item_tax_id ? 'selected' : '' ) . ">" . (float) ($value3->tax_value) . "%</option>";
+                                                                <option value='" . $value3->tax_id . "-" . ($value3->tax_value) . "' " . ($value3->tax_id == $key->outlet_item_tax_id ? 'selected' : '' ) . " per=".(float) ($value3->tax_value).">" . (float) ($value3->tax_value) . "%</option>";
                                                                         }
                                                                     }
                                                                     ?></select>
                                                             </div> <span id='item_tax_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?= $key->outlet_item_tax_amount ? precise_amount($key->outlet_item_tax_amount) : 0 ?></span>
                                                         </td>
+
                                                         <td>
                                                             <input type='hidden' name='item_tax_cess_id' value='<?= ($key->outlet_item_tax_cess_id ? $key->outlet_item_tax_cess_id : 0); ?>'>
                                                             <input type='hidden' name='item_tax_cess_percentage' value='<?= $key->outlet_item_tax_cess_percentage ? (float) ($key->outlet_item_tax_cess_percentage) : 0; ?>'>
@@ -408,6 +434,7 @@ $this->load->view('layout/header');
                                                             </div> <span id='item_tax_cess_lbl_<?= $i ?>' class='pull-right' style='color:red;'><?= $key->outlet_item_tax_cess_amount ? precise_amount($key->outlet_item_tax_cess_amount) : 0 ?></span>
                                                         </td>
                                                         <!-- tax area  -->
+                                                        <?php } ?>
                                                         <td>
                                                             <input type='text' class='float_number form-control form-fixer text-right' name='item_grand_total' value='<?php
                                                             echo $key->outlet_item_grand_total ? precise_amount($key->outlet_item_grand_total) : 0;
@@ -498,8 +525,17 @@ $this->load->view('layout/header');
                                             </tr>                                           
                                             <tr <?= ( $cgst_exist != 1 || $data[0]->outlet_cgst_amount <= 0 ? 'style="display: none;"' : '');
                                                         ?>class='totalCGSTAmount_tr'>
-                                                <td align="right">CGST (+)</td>
-                                                <td align='right'><span id="totalCGSTAmount"><?= precise_amount($data[0]->outlet_cgst_amount); ?></span>
+                                                <?php
+                                                $txt_lbl = $txt_amt = '' ;
+                                                foreach ($txtAry as $k => $sgst) {
+                                                    $per = (float)($k/2);
+                                                    $sgst = (float)($sgst/2);
+                                                    $txt_lbl .= 'CGST('.$per.'%)<br>';
+                                                    $txt_amt .= precise_amount($sgst).'<br>';
+                                                }
+                                                ?>
+                                                <td align="right"><?=$txt_lbl;?></td>
+                                                <td align='right'><span id="totalCGSTAmount"><?=$txt_amt; ?></span>
                                                 </td>
                                             </tr>
                                             <tr <?= ( $sgst_exist != 1 || $data[0]->outlet_sgst_amount <= 0 ? 'style="display: none;"' : '');
@@ -508,16 +544,34 @@ $this->load->view('layout/header');
                                                 $lbl = 'SGST';
                                                 if ($is_utgst == '1')
                                                     $lbl = 'UTGST';
+
+                                                $txt_lbl = $txt_amt = '' ;
+                                                foreach ($txtAry as $k => $sgst) {
+                                                    $per = (float)($k/2);
+                                                    $sgst = (float)($sgst/2);
+                                                    $txt_lbl .= $lbl.'('.$per.'%)<br>';
+                                                    $txt_amt .= precise_amount($sgst).'<br>';
+                                                }
                                                 ?>
+
                                                 <td align="right <?= $data[0]->outlet_billing_state_id; ?>">
-                                                    <?= $lbl; ?>(+)</td>
-                                                <td align='right'><span id="totalSGSTAmount"><?= precise_amount($data[0]->outlet_sgst_amount); ?></span>
+                                                    <?= $txt_lbl; ?></td>
+                                                <td align='right'><span id="totalSGSTAmount"><?= $txt_amt; ?></span>
                                                 </td>
                                             </tr>
                                             <tr <?= ( $igst_exist != 1 || $data[0]->outlet_igst_amount <= 0 ? 'style="display: none;"' : '');
                                                     ?>class='totalIGSTAmount_tr'>
-                                                <td align="right">IGST (+)</td>
-                                                <td align='right'><span id="totalIGSTAmount"><?= precise_amount($data[0]->outlet_igst_amount); ?></span>
+                                                <?php
+                                                $txt_lbl = $txt_amt = '' ;
+                                                foreach ($txtAry as $k => $sgst) {
+                                                    $per = (float)($k/2);
+                                                    $sgst = (float)($sgst/2);
+                                                    $txt_lbl .= 'IGST('.$per.'%)<br>';
+                                                    $txt_amt .= precise_amount($sgst).'<br>';
+                                                }
+                                                ?>
+                                                <td align="right"><?=$txt_lbl?></td>
+                                                <td align='right'><span id="totalIGSTAmount"><?=$txt_amt; ?></span>
                                                 </td>
                                             </tr>
                                             <tr <?= ( $cess_exist != 1 || $data[0]->outlet_tax_cess_amount <= 0 ? 'style="display: none;"' : '');

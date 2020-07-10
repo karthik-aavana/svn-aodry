@@ -250,6 +250,7 @@ class Outlet extends MY_Controller{
         $data['branches'] = $this->branch_call();
         $data['data'] = $this->general_model->getRecords('*' , 'outlet' , array(
             'outlet_id' => $id ));
+
         /*$country  = $this->general_model->getRecords('*', 'countries', array('country_name' => 'india' ));
         $country_id = $country[0]->country_id;*/
         $data['product_exist'] = 1;
@@ -611,6 +612,7 @@ class Outlet extends MY_Controller{
             $inlet_table = $this->config->item('inlet_table');
             $inlet_main   = array_map('trim' , $inlet_main);
             $inlet_id = $this->general_model->insertData($inlet_table , $inlet_main);
+
             $successMsg = 'outlet Added Successfully';
             $this->session->set_flashdata('outlet_success',$successMsg);
             $log_data              = array(
@@ -1092,10 +1094,91 @@ class Outlet extends MY_Controller{
         }
         $data_main   = array_map('trim' , $outlet_data);
         $outlet_table = $this->config->item('outlet_table');
-        $where       = array(
-            'outlet_id' => $outlet_id );
+        $where       = array('outlet_id' => $outlet_id );
+
+        /* update same inlet table */
+        $inlet_table = $this->config->item('inlet_table');
+        $inlet_qry = $this->db->select('inlet_id')->from($inlet_table)->where('outlet_id',$outlet_id)->get()->row();
+        $inlet_id = $inlet_qry->inlet_id;
+        
+        $inlet_main = array(
+            "inlet_date"    => date('Y-m-d',strtotime($this->input->post('invoice_date'))),
+            "outlet_id"     => $outlet_id,
+            "inlet_invoice_number"                  => $invoice_number ,
+            "inlet_sub_total"                       => (float) $this->input->post('total_sub_total') ? (float) $this->input->post('total_sub_total') : 0 ,
+            "inlet_grand_total"                     => $this->input->post('total_grand_total') ? (float) $this->input->post('total_grand_total') : 0 ,
+            "inlet_discount_amount"                 => $this->input->post('total_discount_amount') ? (float) $this->input->post('total_discount_amount') : 0 ,
+            "inlet_tax_amount"                      => $this->input->post('total_tax_amount') ? (float) $this->input->post('total_tax_amount') : 0 ,
+            "inlet_tax_cess_amount"                 => 0 ,
+            "inlet_taxable_value"                   => $this->input->post('total_taxable_amount') ? (float) $this->input->post('total_taxable_amount') : 0 ,
+            "inlet_tcs_amount" => $this->input->post('total_tcs_amount') ? (float) $this->input->post('total_tcs_amount') : 0 ,
+            "inlet_igst_amount"                     => 0 ,
+            "inlet_cgst_amount"                     => 0 ,
+            "inlet_sgst_amount"                     => 0 ,
+            "financial_year_id"                     => $this->session->userdata('SESS_FINANCIAL_YEAR_ID') ,
+            "from_branch_id"                        => $this->session->userdata('SESS_BRANCH_ID'),
+            "inlet_nature_of_supply"                => $this->input->post('nature_of_supply'),
+            "inlet_type_of_supply"                  => $this->input->post('type_of_supply') ,
+            "due_days"                              => $this->input->post('due_days'),
+            "inlet_gst_payable"                     => $this->input->post('gst_payable') ,
+            "inlet_billing_country_id"              => $this->input->post('billing_country') ,
+            "inlet_billing_state_id"                => $this->input->post('billing_state') ,
+            "added_date"                            => date('Y-m-d') ,
+            "added_user_id"                         => $this->session->userdata('SESS_USER_ID') ,
+            "branch_id"                             => $this->input->post('to_branch_id'),
+            "currency_id"                           => $this->input->post('currency_id') ,
+            "updated_date"                          => "" ,
+            "updated_user_id"                       => "" ,
+            "warehouse_id"                          => "" ,
+            "transporter_name"                      => $this->input->post('transporter_name') ,
+            "transporter_gst_number"                => $this->input->post('transporter_gst_number') ,
+            "lr_no"                                 => $this->input->post('lr_no') ,
+            "vehicle_no"                            => $this->input->post('vehicle_no') ,
+            "mode_of_shipment"                      => $this->input->post('mode_of_shipment') ,
+            "ship_by"                               => $this->input->post('ship_by') ,
+            "net_weight"                            => $this->input->post('net_weight') ,
+            "gross_weight"                          => $this->input->post('gross_weight') ,
+            "origin"                                => $this->input->post('origin') ,
+            "destination"                           => $this->input->post('destination') ,
+            "shipping_type"                         => $this->input->post('shipping_type') ,
+            "shipping_type_place"                   => $this->input->post('shipping_type_place') ,
+            "lead_time"                             => $this->input->post('lead_time') ,
+            "warranty"                              => $this->input->post('warranty') ,
+            "freight_charge_amount"                 => $this->input->post('freight_charge_amount') ? (float) $this->input->post('freight_charge_amount') : 0 ,
+            "freight_charge_tax_percentage"         => $this->input->post('freight_charge_tax_percentage') ? (float) $this->input->post('freight_charge_tax_percentage') : 0 ,
+            "freight_charge_tax_amount"             => $this->input->post('freight_charge_tax_amount') ? (float) $this->input->post('freight_charge_tax_amount') : 0 ,
+            "total_freight_charge"                  => $this->input->post('total_freight_charge') ? (float) $this->input->post('total_freight_charge') : 0 ,
+            "insurance_charge_amount"               => $this->input->post('insurance_charge_amount') ? (float) $this->input->post('insurance_charge_amount') : 0 ,
+            "insurance_charge_tax_percentage"       => $this->input->post('insurance_charge_tax_percentage') ? (float) $this->input->post('insurance_charge_tax_percentage') : 0 ,
+            "insurance_charge_tax_amount"           => $this->input->post('insurance_charge_tax_amount') ? (float) $this->input->post('insurance_charge_tax_amount') : 0 ,
+            "total_insurance_charge"                => $this->input->post('total_insurance_charge') ? (float) $this->input->post('total_insurance_charge') : 0 ,
+            "packing_charge_amount"                 => $this->input->post('packing_charge_amount') ? (float) $this->input->post('packing_charge_amount') : 0 ,
+            "packing_charge_tax_percentage"         => $this->input->post('packing_charge_tax_percentage') ? (float) $this->input->post('packing_charge_tax_percentage') : 0 ,
+            "packing_charge_tax_amount"             => $this->input->post('packing_charge_tax_amount') ? (float) $this->input->post('packing_charge_tax_amount') : 0 ,
+            "total_packing_charge"                  => $this->input->post('total_packing_charge') ? (float) $this->input->post('total_packing_charge') : 0 ,
+            "incidental_charge_amount"              => $this->input->post('incidental_charge_amount') ? (float) $this->input->post('incidental_charge_amount') : 0 ,
+            "incidental_charge_tax_percentage"      => $this->input->post('incidental_charge_tax_percentage') ? (float) $this->input->post('incidental_charge_tax_percentage') : 0 ,
+            "incidental_charge_tax_amount"          => $this->input->post('incidental_charge_tax_amount') ? (float) $this->input->post('incidental_charge_tax_amount') : 0 ,
+            "total_incidental_charge"               => $this->input->post('total_incidental_charge') ? (float) $this->input->post('total_incidental_charge') : 0 ,
+            "inclusion_other_charge_amount"         => $this->input->post('inclusion_other_charge_amount') ? (float) $this->input->post('inclusion_other_charge_amount') : 0 ,
+            "inclusion_other_charge_tax_percentage" => $this->input->post('inclusion_other_charge_tax_percentage') ? (float) $this->input->post('inclusion_other_charge_tax_percentage') : 0 ,
+            "inclusion_other_charge_tax_amount"     => $this->input->post('inclusion_other_charge_tax_amount') ? (float) $this->input->post('inclusion_other_charge_tax_amount') : 0 ,
+            "total_inclusion_other_charge"          => $this->input->post('total_other_inclusive_charge') ? (float) $this->input->post('total_other_inclusive_charge') : 0 ,
+            "exclusion_other_charge_amount"         => $this->input->post('exclusion_other_charge_amount') ? (float) $this->input->post('exclusion_other_charge_amount') : 0 ,
+            "exclusion_other_charge_tax_percentage" => $this->input->post('exclusion_other_charge_tax_percentage') ? (float) $this->input->post('exclusion_other_charge_tax_percentage') : 0 ,
+            "exclusion_other_charge_tax_amount"     => $this->input->post('exclusion_other_charge_tax_amount') ? (float) $this->input->post('exclusion_other_charge_tax_amount') : 0 ,
+            "total_exclusion_other_charge"          => $this->input->post('total_other_exclusive_charge') ? (float) $this->input->post('total_other_exclusive_charge') : 0 ,
+            "total_other_amount"                    => $this->input->post('total_other_amount') ? (float) $this->input->post('total_other_amount') : 0 ,
+            "total_other_taxable_amount"            =>$this->input->post('total_other_taxable_amount') ? (float) $this->input->post('total_other_taxable_amount') : 0 ,
+            "note1"                                 => $this->input->post('note1') ,
+            "note2"                                 => $this->input->post('note2')
+        );
 
         if ($this->general_model->updateData($outlet_table , $data_main , $where)){
+
+            $inlet_main   = array_map('trim' , $inlet_main);
+            $this->general_model->updateData($inlet_table , $inlet_main, array('inlet_id' => $inlet_id));
+
             $successMsg = 'outlet Updated Successfully';
             $this->session->set_flashdata('outlet_success',$successMsg);
             $log_data              = array(
@@ -1127,6 +1210,9 @@ class Outlet extends MY_Controller{
                 $old_outlet_items = $this->general_model->getRecords($string , $table , $where , $order           = "");
                 $old_item_ids = $this->getValues($old_outlet_items,'item_id');
                 $not_deleted_ids= array();
+
+                $this->db->where('inlet_id',$inlet_id);
+                $this->db->delete('inlet_item');
 
                 foreach ($old_outlet_items as $key => $value){
                     
@@ -1213,53 +1299,101 @@ class Outlet extends MY_Controller{
                             "outlet_item_uom_id"  => (@$value->item_uom ? $value->item_uom : ""),
                             "debit_note_quantity"        => 0 ,
                             "outlet_id"                   => $outlet_id );
+                        
+                        $inlet_item_data = array(
+                            "item_id"                    => ($value->item_id != 0) ?  $value->item_id : $product_id ,
+                            "inlet_id" => $inlet_id,
+                            "inlet_item_quantity"        => $value->item_quantity ? (float) $value->item_quantity : 0 ,
+                            "inlet_item_unit_price"      => $value->item_price ? (float) $value->item_price : 0 ,
+                            "inlet_item_free_quantity"   => (@$value->free_item_quantity ? (float) $value->free_item_quantity : 0),
+                            "inlet_item_mrp_price"      => (@$value->item_mrp_price ? (float) $value->item_mrp_price : 0),
+                            "inlet_item_sub_total"       => $value->item_sub_total ? (float) $value->item_sub_total : 0 ,
+                            "inlet_item_taxable_value"   => $value->item_taxable_value ? (float) $value->item_taxable_value : 0 ,
+                            "inlet_item_cash_discount_amount" => (@$value->item_cash_discount ? (float) $value->item_cash_discount : 0) ,
+                            "inlet_item_discount_amount" => (@$value->item_discount_amount ? (float) $value->item_discount_amount : 0) ,
+                            "inlet_item_discount_id"     => (@$value->item_discount_id ? (float) $value->item_discount_id : 0 ),
+                            "inlet_item_tds_id"          => $value->item_tds_id ? (float) $value->item_tds_id : 0 ,
+                            "inlet_item_tds_percentage"  => $value->item_tds_percentage ? (float) $value->item_tds_percentage : 0 ,
+                            "inlet_item_tds_amount"      => $value->item_tds_amount ? (float) $value->item_tds_amount : 0 ,
+                            "inlet_item_grand_total"     => $value->item_grand_total ? (float) $value->item_grand_total : 0 ,
+                            "inlet_item_tax_id"          => $value->item_tax_id ? (float) $value->item_tax_id : 0 ,
+                            "inlet_item_tax_cess_id"          => $value->item_tax_cess_id ? (float) $value->item_tax_cess_id : 0 ,
+                            "inlet_item_igst_percentage" => 0 ,
+                            "inlet_item_igst_amount"     => 0 ,
+                            "inlet_item_cgst_percentage" => 0 ,
+                            "inlet_item_cgst_amount"     => 0 ,
+                            "inlet_item_sgst_percentage" => 0 ,
+                            "inlet_item_sgst_amount"     => 0 ,
+                            "inlet_item_tax_percentage"  => $value->item_tax_percentage ? (float) $value->item_tax_percentage : 0 ,
+                            "inlet_item_tax_cess_percentage"  => 0 ,
+                            "inlet_item_tax_amount"      => $value->item_tax_amount ? (float) $value->item_tax_amount : 0 ,
+                            'inlet_item_tax_cess_amount' => 0 ,
+                            "inlet_item_description"     => $value->item_description ? $value->item_description : "" ,
+                            "inlet_item_uom_id"  => (@$value->item_uom ? $value->item_uom : ""),
+                            "debit_note_quantity" => 0
+                        );
+
                         $outlet_item_tax_amount     = $item_data['outlet_item_tax_amount'];
                         $outlet_item_tax_percentage = $item_data['outlet_item_tax_percentage'];
 
                         /* Customization leather craft fields */
                         if(@$value->item_basic_total){
                             $item_data['outlet_item_basic_total'] = $value->item_basic_total;
+                            $inlet_item_data['inlet_item_basic_total'] = $value->item_basic_total;
                         }
                         if(@$value->item_selling_price){
                             $item_data['outlet_item_selling_price'] = $value->item_selling_price;
+                            $inlet_item_data['inlet_item_selling_price'] = $value->item_selling_price;
                         }
                         if(@$value->item_mrkd_discount_amount){
                             $item_data['outlet_item_mrkd_discount_amount'] = $value->item_mrkd_discount_amount;
+                            $inlet_item_data['inlet_item_mrkd_discount_amount'] = $value->item_mrkd_discount_amount;
                         }
                         if(@$value->item_mrkd_discount_id){
                             $item_data['outlet_item_mrkd_discount_id'] = $value->item_mrkd_discount_id;
+                            $inlet_item_data['inlet_item_mrkd_discount_id'] = $value->item_mrkd_discount_id;
                         }
                         if(@$value->item_mrkd_discount_percentage){
                             $item_data['outlet_item_mrkd_discount_percentage'] = $value->item_mrkd_discount_percentage;
+                            $inlet_item_data['inlet_item_mrkd_discount_percentage'] = $value->item_mrkd_discount_percentage;
                         }
                         if(@$value->item_mrgn_discount_amount){
                             $item_data['outlet_item_mrgn_discount_amount'] = $value->item_mrgn_discount_amount;
+                            $inlet_item_data['inlet_item_mrgn_discount_amount'] = $value->item_mrgn_discount_amount;
                         }
                         if(@$value->item_mrgn_discount_id){
                             $item_data['outlet_item_mrgn_discount_id'] = $value->item_mrgn_discount_id;
+                            $inlet_item_data['inlet_item_mrgn_discount_id'] = $value->item_mrgn_discount_id;
                         }
                         if(@$value->item_mrgn_discount_percentage){
                             $item_data['outlet_item_mrgn_discount_percentage'] = $value->item_mrgn_discount_percentage;
+                            $inlet_item_data['inlet_item_mrgn_discount_percentage'] = $value->item_mrgn_discount_percentage;
                         }
 
                         if(@$value->item_scheme_discount_amount){
                             $item_data['outlet_item_scheme_discount_amount'] = $value->item_scheme_discount_amount;
+                            $inlet_item_data['inlet_item_scheme_discount_amount'] = $value->item_scheme_discount_amount;
                         }
                         if(@$value->item_scheme_discount_id){
                             $item_data['outlet_item_scheme_discount_id'] = $value->item_scheme_discount_id;
+                            $inlet_item_data['inlet_item_scheme_discount_id'] = $value->item_scheme_discount_id;
                         }
                         if(@$value->item_scheme_discount_percentage){
                             $item_data['outlet_item_scheme_discount_percentage'] = $value->item_scheme_discount_percentage;
+                            $inlet_item_data['inlet_item_scheme_discount_percentage'] = $value->item_scheme_discount_percentage;
                         }
 
                         if(@$value->item_out_tax_percentage){
                             $item_data['outlet_item_out_tax_percentage'] = $value->item_out_tax_percentage;
+                            $inlet_item_data['inlet_item_out_tax_percentage'] = $value->item_out_tax_percentage;
                         }
                         if(@$value->item_out_tax_amount){
                             $item_data['outlet_item_out_tax_amount'] = $value->item_out_tax_amount;
+                            $inlet_item_data['inlet_item_out_tax_amount'] = $value->item_out_tax_amount;
                         }
                         if(@$value->item_out_tax_id){
                             $item_data['outlet_item_out_tax_id'] = $value->item_out_tax_id;
+                            $inlet_item_data['inlet_item_out_tax_id'] = $value->item_out_tax_id;
                         }
                        
                         /* End leather Craft */
@@ -1281,6 +1415,15 @@ class Outlet extends MY_Controller{
                                     $item_data['outlet_item_cgst_percentage'] = ($outlet_item_tax_percentage * $cgst_amount_percentage) / 100;
                                     $item_data['outlet_item_sgst_percentage'] = ($outlet_item_tax_percentage * $sgst_amount_percentage) / 100;
                                     $item_data['outlet_item_tax_cess_percentage'] = $item_tax_cess_percentage;
+
+                                    $inlet_item_data['inlet_item_igst_amount'] = 0;
+                                    $inlet_item_data['inlet_item_cgst_amount'] = ($outlet_item_tax_amount * $cgst_amount_percentage) / 100;
+                                    $inlet_item_data['inlet_item_sgst_amount'] = ($outlet_item_tax_amount * $sgst_amount_percentage) / 100;
+                                    $inlet_item_data['inlet_item_tax_cess_amount'] = $item_tax_cess_amount;
+                                    $inlet_item_data['inlet_item_igst_percentage'] = 0;
+                                    $inlet_item_data['inlet_item_cgst_percentage'] = ($outlet_item_tax_percentage * $cgst_amount_percentage) / 100;
+                                    $inlet_item_data['inlet_item_sgst_percentage'] = ($outlet_item_tax_percentage * $sgst_amount_percentage) / 100;
+                                    $inlet_item_data['inlet_item_tax_cess_percentage'] = $item_tax_cess_percentage;
                                 }
                                 else
                                 {
@@ -1292,6 +1435,15 @@ class Outlet extends MY_Controller{
                                     $item_data['outlet_item_cgst_percentage'] = 0;
                                     $item_data['outlet_item_sgst_percentage'] = 0;
                                     $item_data['outlet_item_tax_cess_percentage'] = $item_tax_cess_percentage;
+
+                                    $inlet_item_data['inlet_item_igst_amount'] = $outlet_item_tax_amount;
+                                    $inlet_item_data['inlet_item_cgst_amount'] = 0;
+                                    $inlet_item_data['inlet_item_sgst_amount'] = 0;
+                                    $inlet_item_data['inlet_item_tax_cess_amount'] = $item_tax_cess_amount;
+                                    $inlet_item_data['inlet_item_igst_percentage'] = $outlet_item_tax_percentage;
+                                    $inlet_item_data['inlet_item_cgst_percentage'] = 0;
+                                    $inlet_item_data['inlet_item_sgst_percentage'] = 0;
+                                    $inlet_item_data['inlet_item_tax_cess_percentage'] = $item_tax_cess_percentage;
                                 }
                             }else{
                                 if ($outlet_data['outlet_type_of_supply'] == "export_with_payment"){
@@ -1303,6 +1455,15 @@ class Outlet extends MY_Controller{
                                     $item_data['outlet_item_cgst_percentage'] = 0;
                                     $item_data['outlet_item_sgst_percentage'] = 0;
                                     $item_data['outlet_item_tax_cess_percentage'] = $item_tax_cess_percentage;
+
+                                    $inlet_item_data['inlet_item_igst_amount'] = $outlet_item_tax_amount;
+                                    $inlet_item_data['inlet_item_cgst_amount'] = 0;
+                                    $inlet_item_data['inlet_item_sgst_amount'] = 0;
+                                    $inlet_item_data['inlet_item_tax_cess_amount'] = $item_tax_cess_amount;
+                                    $inlet_item_data['inlet_item_igst_percentage'] = $outlet_item_tax_percentage;
+                                    $inlet_item_data['inlet_item_cgst_percentage'] = 0;
+                                    $inlet_item_data['inlet_item_sgst_percentage'] = 0;
+                                    $inlet_item_data['inlet_item_tax_cess_percentage'] = $item_tax_cess_percentage;
                                 }
                             }
                         }
@@ -1317,6 +1478,9 @@ class Outlet extends MY_Controller{
                         }else{
                             $this->general_model->insertData($table , $item_data);
                         }
+
+                        $this->general_model->insertData('inlet_item' , $inlet_item_data);
+
                         /* update product stock */
                         if ($value->item_type == "product" || $value->item_type == 'product_inventory'){
                             $product_string = '*';

@@ -18,10 +18,13 @@ $(document).ready(function () {
 
     $('#to_branch_id').on('change',function(){
         if($(this).val() != ''){
+            var state = $('#to_branch_id').find('option:selected').attr('state_id');
             $('.default_hide').show();
             $("#input_outlet_code").prop("disabled", false);
             $(".search_outlet_code").show();
             $("#err_outlet_code").text("");
+            $('#billing_state').val(state).change();
+            //$('#billing_state').find('option[value='+state+']').prop('selected',true).trigger('change');
         }else{
             $('.default_hide').hide();
         }
@@ -49,32 +52,13 @@ $(document).ready(function () {
             
         } else {
             flag2 = 2;
-            /*$("#billing_state").html("");
-            $("#billing_state").append('<option value="">Select</option>');
-            for (var i = 0; i < branch_state_list.length; i++) {
-                $("#billing_state").append(
-                    '<option value="' +
-                    branch_state_list[i].state_id +
-                    '">' +
-                    branch_state_list[i].state_name +
-                    "</option>"
-                );
-            }*/
+            
             $("#type_of_supply").html("");
             $("#type_of_supply").append('<option value="regular">Regular</option>');
             $('[name=gst_payable]').attr('disabled',false);
         }
         $("#type_of_supply").change();
-        /*var state = $('#billing_state').val();
-        if(state == '0'){
-            opt = "<option value='export_without_tax'>Export without tax</option>\n\
-                            <option value='export_with_tax'>Export with tax</option>";
-            $('[name=gst_payable]').val('no').trigger('change').attr('disabled',true);
-        }else{
-            opt = "<option selected='selected' value='regular'>Regular</option>";
-            $('[name=gst_payable]').attr('disabled',false);
-        }
-        $('#type_of_supply').html(opt);*/
+        
     }
     $("#billing_state").change(function (event) {
         if($(this).val() == '0'){
@@ -216,7 +200,6 @@ $(document).ready(function () {
             
             var item_ = mapping[k].toString().split("-");
             var product_id = item_[0];
-            console.log(addedItems,product_id);
             if (addedItems['pro_'+product_id]) {
                 var row_index = addedItems['pro_'+product_id];
                 var table_row = $("#"+ row_index);
@@ -1349,7 +1332,6 @@ function calculateTable(row) {
 }
 //calculate grand total
 function calculateGrandTotal() {
-    var txtAry = [];
     var sub_total = total_qty= 0;
     var discount = 0;
     var tax = 0;
@@ -1447,9 +1429,9 @@ function calculateGrandTotal() {
         });
 
     var total_other_amount = +$("#total_other_amount").val();
-    if(isNaN(total_other_amount) || typeof total_other_amount == 'undefined') total_other_amount = 0;
+    if(isNaN(total_other_amount) || typeof total_other_amount == 'undefined' || total_other_amount == '') total_other_amount = 0;
     var other_tax_amount = $('#total_other_taxable_amount').val();
-    if(isNaN(other_tax_amount) || typeof other_tax_amount == 'undefined' )
+    if(isNaN(other_tax_amount) || typeof other_tax_amount == 'undefined' || other_tax_amount == '')
         other_tax_amount = 0;
 
     if(tax > 0){

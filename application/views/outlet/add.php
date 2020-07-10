@@ -57,11 +57,11 @@ $this->load->view('layout/header');
                                             <?php
                                             foreach ($branches as $row) {
                                                 if($row->branch_id != $this->session->userdata('SESS_BRANCH_ID'))
-                                                echo "<option value='$row->branch_id'>$row->branch_name</option>";
+                                                echo "<option value='$row->branch_id' state_id='$row->state_id'>$row->branch_name</option>";
                                             }
                                             ?>
                                         </select>
-                                        <span class="validation-color" id="err_branch"><?php echo form_error('branch'); ?></span>
+                                        <span class="validation-color" id="err_to_branch_id"><?php echo form_error('branch'); ?></span>
                                     </div>
                                 </div>
                                 <!-- <div class="col-sm-3 default_hide">
@@ -396,7 +396,7 @@ $this->load->view('layout/header');
                                         </table>
                                     </div>
                                     <div class="box-footer">
-                                        <button type="submit" id="sales_submit" name="submit" value="add" class="btn btn-info">Add</button>
+                                        <button type="submit" id="outlet_submit" name="submit" value="add" class="btn btn-info">Add</button>
                                         <?php if (in_array($receipt_voucher_module_id, $active_add)) { ?>
                                             <button type="submit" id="sales_pay_now" name="submit" value="pay_now" class="btn btn-success"> Receive Now </button>
                                         <?php } ?>
@@ -434,6 +434,7 @@ var item_gst = new Array();
 var common_settings_round_off = "<?= $access_common_settings[0]->round_off_access ?>";
 var common_settings_amount_precision = "<?= $access_common_settings[0]->amount_precision ?>";
 var settings_tax_percentage = "<?= $access_common_settings[0]->tax_split_percentage ?>";
+
 var common_settings_inventory_advanced = "<?= $inventory_access ?>";
 var settings_tax_type = "<?= $access_settings[0]->tax_type ?>";
 var settings_discount_visible = "<?= $access_settings[0]->discount_visible ?>";

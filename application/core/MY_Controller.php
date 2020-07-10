@@ -19,7 +19,7 @@ class MY_Controller extends CI_Controller
 
     public function branch_call(){
         $branch_data  = $this->common->branch_list();
-        $branch       = $this->general_model->getRecords($branch_data['string'], $branch_data['table'], $branch_data['where'], $branch_data['order']);
+        $branch       = $this->general_model->getJoinRecords($branch_data['string'], $branch_data['table'], $branch_data['where'], $branch_data['join'], $branch_data['order']);
         return $branch;
     }
 

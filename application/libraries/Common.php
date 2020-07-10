@@ -2866,16 +2866,18 @@ class Common
     }
 
     public function branch_list(){
-        $string = "br.branch_name,br.branch_id,br.branch_code";
+        $string = "br.branch_name,br.branch_id,br.branch_code,sta.state_id";
         $table  = "branch br";
         $where  = array('br.delete_status' => 0,'br.firm_id'=>$this->ci->session->userdata('SESS_FIRM_ID'));
+        $join = ["states sta" => "br.branch_state_id = sta.state_id#left"];
         $order = [
             "br.branch_id" => "asc"];
         $data = array(
             'string' => $string,
             'table'  => $table,
             'where'  => $where,
-            'order'  => $order
+            'order'  => $order,
+            'join'   => $join
         );
         return $data;
     }
