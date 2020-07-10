@@ -368,7 +368,7 @@ if (!function_exists('precise_amount')) {
                                     <li class="has-children">
                                         <a href="">Stock Management</a>
                                         <?php if ($this->session->userdata('SESS_FIRM_ID') == $this->config->item('LeatherCraft')) { 
-                                            if(in_array($this->config->item('sales_stock_report'), $active_modules) || in_array($this->config->item('purchase_stock_report'), $active_modules) || in_array($this->config->item('closing_stock_report'), $active_modules)){ ?>
+                                            if(in_array($this->config->item('sales_stock_report'), $active_modules) || in_array($this->config->item('purchase_stock_report'), $active_modules) || in_array($this->config->item('closing_stock_report'), $active_modules) || in_array($this->config->item('outlet_module'), $active_modules) || in_array($this->config->item('inlet_module'), $active_modules)){ ?>
                                             <ul class="is-hidden">
                                                 <?php 
                                                     if (in_array($this->config->item('sales_stock_report'), $active_modules))
@@ -400,10 +400,26 @@ if (!function_exists('precise_amount')) {
                                                         </i>Closing stock
                                                     </a>
                                                 </li>
-                                                <?php } ?>     
+                                                <?php }
+                                                if (in_array($this->config->item('outlet_module'), $active_modules)){?>  
+                                                    <li>
+                                                        <a href="<?= base_url('outlet'); ?>">
+                                                            <i class="">
+                                                            </i>Outlet product
+                                                        </a>
+                                                    </li> 
+                                                <?php } 
+                                                if (in_array($this->config->item('inlet_module'), $active_modules)){?>  
+                                                    <li>
+                                                        <a href="<?= base_url('inlet'); ?>">
+                                                            <i class="">
+                                                            </i>Inlet product
+                                                        </a>
+                                                    </li> 
+                                                <?php } ?>
                                             </ul>
                                             <?php } } else { 
-                                                if(in_array($this->config->item('stock_module'), $active_modules) || in_array($this->config->item('sales_stock_report'), $active_modules) || in_array($this->config->item('damaged_stock_module'), $active_modules) || in_array($this->config->item('missing_stock_module'), $active_modules)) {?>
+                                                if(in_array($this->config->item('stock_module'), $active_modules) || in_array($this->config->item('sales_stock_report'), $active_modules) || in_array($this->config->item('damaged_stock_module'), $active_modules) || in_array($this->config->item('missing_stock_module'), $active_modules) || in_array($this->config->item('outlet_module'), $active_modules) || in_array($this->config->item('inlet_module'), $active_modules)) {?>
                                             <ul class="is-hidden">
                                                 <?php
                                                     if (in_array($this->config->item('stock_module'), $active_modules))
